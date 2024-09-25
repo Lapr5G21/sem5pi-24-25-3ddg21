@@ -1,0 +1,140 @@
+@startuml
+skinparam handwritten true
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor CustomerManager as Actor
+participant RegisterJobOpeningUI as UI <<presentation>>
+participant RegisterJobOpeningController as Controller <<application>>
+participant AuthorizationService as Authz <<service>>
+participant JobOpeningBuilder as JobOpeningBuilder <<builder>>
+participant "jobOpening : JobOpening" as Domain <<domain>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database JobOpeningRepository as JobOpeningRepository<<repository>>
+database CustomerRepository as CustomerRepository<<repository>>
+
+activate Actor
+
+    Actor -> UI : Register JobOpening
+
+    activate UI
+
+        UI -> Controller : create()
+
+        activate Controller
+
+        Controller -> AuthorizationService : create()
+
+        deactivate Controller
+
+        UI -> Actor : asks to insert the information about the jobOpening(jobTitle,jobDescription,numberOfVacancies,contractType and workRegime)
+
+        Actor -> UI : enters the information requested
+
+        UI -> Controller : findAllCustomers()
+
+        activate Controller
+
+            Controller -> Persistence : repositories()
+
+            activate Persistence
+
+            Persistence -> Factory : factory()
+
+            Persistence --> Controller : factory
+
+            deactivate Persistence
+
+            Controller -> Factory : customers()
+
+            activate Factory
+
+            Factory -> CustomerRepository : create()
+
+            Factory --> Controller : customerRepository
+
+            deactivate Factory
+
+            Controller -> CustomerRepository : findAll()
+
+            activate CustomerRepository
+
+            CustomerRepository --> Controller : allCustomers
+
+            Controller --> UI : allCustomers
+
+            deactivate Controller
+
+            UI -> Actor : shows the list of customers to associate with job opening
+
+            Actor -> UI : selects the customer
+
+            UI -> Controller : registerJobOpening(jobTitle,jobDescription, numberVacancies, contractType, workRegime, jobOpeningStatus, customer,serialNumber)
+
+            activate Controller
+
+                Controller -> Controller : addJobOpening(jobTitle,jobDescription, numberVacancies, contractType, workRegime, jobOpeningStatus, customer,serialNumber,createdOn)
+
+                Controller -> AuthorizationService : ensureAuthenticatedHasAnyOf(JobsuRoles.POWERUSER,Jobs4uRoles.CUSTOMER_MANAGER)
+
+                Controller -> JobTitle : create(jobTitle)
+
+                Controller -> Customer : identity()
+
+                activate Customer
+
+                Customer -> Controller : customerCode
+
+                deactivate Customer
+
+                    Controller -> JobReference : generateJobReference(code,serialNumber)
+
+                    Controller -> JobReference : create(jobReference,code,serialNumber)
+
+                    Controller -> NumberVacancies : create(numberOfVacancies)
+
+                    Controller -> WorkRegime : create(workRegime)
+
+                    Controller -> ContractType : create(contractType)
+
+                    Controller -> JobOpeningBuilder : create()
+
+                    activate JobOpeningBuilder
+
+                    JobOpeningBuilder -> JobOpeningBuilder : build()
+
+                    JobOpeningBuilder --> Controller : jobOpening
+
+                    deactivate JobOpeningBuilder
+
+                    Controller -> Factory : jobOpenings()
+
+                    activate Factory
+
+                    Factory -> JobOpeningRepository : create()
+
+                    Factory --> Controller : jobOpeningRepository
+
+                    deactivate Factory
+
+                    Controller -> JobOpeningRepository : save(jobOpening)
+
+                    activate JobOpeningRepository
+
+                    JobOpeningRepository --> Controller : jobOpening
+
+                    deactivate JobOpeningRepository
+
+                    Controller --> UI : jobOpening
+
+                    deactivate Controller
+
+                    UI -> Actor : displays success message
+
+                    deactivate UI
+
+                    deactivate Actor
+@enduml

@@ -1,0 +1,76 @@
+@startuml
+
+skinparam handwritten false
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor Candidate as Candidate
+participant NotifyCandidateApplicationStateUI as UI <<presentation>>
+participant NotifyCandidateApplicationStateController as Controller <<application>>
+participant NotificationService as NotificationService<<service>>
+participant AuthorizationService as Authz <<service>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database NotificationRepository as NotificationRepository<<repository>>
+
+activate Candidate
+
+Candidate -> UI : see unread notifications
+
+    activate UI
+
+        UI -> Controller : create()
+
+            UI -> Controller : getNotifications()
+            activate Controller
+
+            Controller -> NotificationService : findUnreadNotifications()
+            activate NotificationService
+
+             NotificationService -> Authz : session()
+             activate Authz
+
+             Authz --> NotificationService : session
+             deactivate Authz
+
+            NotificationService -> Persistence : repositories()
+            activate Persistence
+
+            Persistence -> Factory : create()
+
+            Persistence --> NotificationService : factory
+            deactivate Persistence
+
+            NotificationService -> Factory : notifications()
+            activate Factory
+
+            Factory -> NotificationRepository : create()
+
+            Factory --> NotificationService : notificationRepository
+            deactivate Factory
+
+                 NotificationService -> NotificationRepository : findNotificationsByCandidate(email)
+                 activate NotificationRepository
+
+                 NotificationRepository --> NotificationService : notifications
+                 deactivate NotificationRepository
+
+                 loop For each notification
+                         alt if notification.status() == NotificationStatus.READ
+                             NotificationService -> NotificationService : remove(notification)
+                 end
+
+                 NotificationService --> Controller : unread notifications
+                 deactivate NotificationService
+
+                 Controller --> UI : unread notifications
+                 deactivate Controller
+
+                 UI --> Candidate : display unread notifications
+
+        deactivate UI
+    deactivate Candidate
+
+@enduml

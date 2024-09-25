@@ -1,0 +1,25 @@
+@startuml
+
+
+entity Rank <<class>> {}
+
+enum RankStatus <<value>>{
+RANKED
+UNRANKED
+}
+
+entity Candidate <<entity>> <<root>> {}
+
+entity CustomerManager<<entity>> <<root>> { }
+
+entity Application<<entity>> <<root>>  {}
+
+entity JobOpening<<entity>><<root>>{}
+
+Rank --> Application : ranks
+Rank --> RankStatus : has
+Application "1..*" --> "1" Candidate : is refered to
+CustomerManager "1" --> "1.." Candidate : ranks
+Application "1" --> "1" JobOpening : related to
+
+@enduml

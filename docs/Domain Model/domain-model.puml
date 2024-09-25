@@ -1,0 +1,186 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+package JobOpeningAggregate {
+  entity JobOpening <<root>> <<entity>>{
+    description
+  }
+
+  class JobReference <<Value>> {}
+  class NumberOfVacancies <<Value>> {}
+  class ContractType<<Value>> {}
+  class WorkRegime <<Value>>{}
+  class JobTitle <<Value>> {}
+}
+
+package JobOpeningProcessAggregate {
+  class JobOpeningProcess <<Entity>> {}
+
+  enum JobOpeningPhases <<Value>>{
+    Application
+    Screening
+    Interview
+    Analysis
+    Result
+  }
+
+  class JobOpeningPhase{}
+  class StartDate<<value>>{}
+  class EndDate<<value>>{}
+
+  enum JobOpeningStatus <<value>>{
+    OPEN
+    CLOSED
+  }
+}
+
+package JobRequirementsAggregate {
+  entity JobRequirements<<root>> <<entity>> {}
+  class JobRequirementsPlugin<<Value>> {}
+}
+
+package InterviewModelAggregate {
+  entity InterviewModel<<root>> <<entity>> {}
+  class InterviewModelPlugin <<Value>>{}
+}
+
+package ApplicationAggregate {
+  entity Application<<entity>> <<root>>  {}
+  class ApplicationDate <<Value>> {}
+  enum ApplicationStatus <<Value>> {
+    Approved
+    Denied
+    WaitingInterview
+    InProgress
+  }
+}
+
+package UserAggregate {
+  entity User <<root>> <<entity>>{}
+  class Name <<Value>> {}
+  class Email <<Value>> {}
+  class Password <<Value>>{}
+}
+
+package ValidationService {
+  entity ANTLRValidator <<service>> {}
+}
+
+package RankingAggregate {
+  entity Rank <<entity>> {
+    position
+    isPublished
+  }
+  enum RankStatus<<value>>{
+    RANKED
+    UNRANKED
+  }
+}
+
+package CandidateAggregate{
+  entity Candidate <<entity>> <<root>> {}
+  class PhoneNumber<<Value>>{}
+}
+
+package CustomerEmployeeAggregate{
+  entity CustomerEmployee <<entity>> <<root>>{}
+}
+
+package CustomerManagerAggregate{
+  entity CustomerManager<<entity>> <<root>> { }
+}
+
+package CustomerAggregate {
+  entity Customer <<entity>> <<root>>{}
+  class CustomerName <<Value>>{}
+  class CustomerAddress <<Value>>{}
+}
+
+package NotificationsAggregate{
+  class Notification <<entity>>{
+    title
+    content
+  }
+  class Date<<value>>{}
+  enum NotificationStatus<<value>>{
+    READ
+    UNREAD
+  }
+}
+
+package OperatorAggregate{
+  entity Operator <<entity>> <<root>>{}
+}
+
+package SystemAdministratorAggregate{
+  entity SystemAdministrator <<entity>> <<root>>{}
+}
+
+package InterviewAggregate {
+  class Interview <<entity>><<root>>{}
+  class Score<<value>>{}
+  class JustificationText<<value>>{}
+  class InterviewDate<<value>>{}
+  class InterviewTime<<value>>{}
+}
+
+Rank "1" --> "1" RankStatus : has a
+Rank "1" --> "1" Application : ranks
+
+Interview "1" --> "1" Score : generates
+Interview "1" --> "1" JustificationText
+Interview "1" --> "1" InterviewDate
+Interview "1" --> "1" InterviewTime
+
+InterviewModel "1" --> "1" InterviewModelPlugin : has
+Interview "1" --> "1" InterviewModel : follows
+
+JobRequirements "1" --> "1" JobRequirementsPlugin
+
+ANTLRValidator --> Interview : validates
+ANTLRValidator --> JobRequirements : validates
+
+JobOpening "1" --> "1" JobTitle
+JobOpening "1" --> "1" ContractType
+JobOpening "1" --> "1" WorkRegime
+JobOpening "1" --> "1" NumberOfVacancies
+JobOpening "1" --> "1" JobRequirements
+JobOpening "1" --> "1" JobReference
+JobOpening "1" -> "1" Customer
+JobOpeningProcess "1" --> "1..*" JobOpening : has
+JobOpening "1" -> "0..1" Interview : has
+
+JobOpeningProcess "1" --> "1" JobOpeningPhase
+JobOpeningPhase "1" --> "1" JobOpeningPhases
+JobOpeningPhase "1" --> "0..1" StartDate
+JobOpeningPhase "1" --> "0..1" EndDate
+JobOpeningPhase "1" --> "1" JobOpeningStatus
+
+Candidate "1" --> "1" PhoneNumber : has
+
+CustomerManager "1" -> "0..*" JobOpening : creates
+CustomerEmployee "1" --> "1..*" Customer : belongs to
+Customer "1" --> "1" CustomerName : has
+Customer "1" --> "1" CustomerAddress : is located
+
+CustomerManager "1" --> "1" User : includes
+CustomerEmployee --> User : includes
+Candidate "1" --> "1" User : includes
+Operator "1" --> "1" User : includes
+SystemAdministrator "1" --> "1" User : includes
+User "1" --> "1" Name : has
+User "1" --> "1" Email : has
+User "1" --> "1" Password : has
+
+Application "1" --> "1" ApplicationDate
+Application "1" --> "1" Interview
+Application "1" --> "1" ApplicationStatus
+Application "1" --> "1" Candidate : belongs to
+Application "1" --> "1" JobOpening : has
+
+Notification "1" --> "1" Application : for
+Notification "1" --> "1" Date : has
+Notification "1" --> "1" NotificationStatus : has
+
+@enduml

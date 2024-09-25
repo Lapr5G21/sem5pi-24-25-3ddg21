@@ -1,0 +1,41 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+'UserAggregate
+package UserAggregate {
+entity User <<root>> <<entity>>{
+}
+
+class Name <<Value>> {
+}
+
+class Email <<Value>> {
+}
+
+class PhoneNumber<<Value>>{
+}
+
+class Password <<Value>>{
+}
+}
+
+'CandidateAggregate
+package CustomerManagerAggregate{
+entity CustomerManager <<entity>> <<root>> {
+}
+}
+
+package CustomerAggregate{
+entity Customer<<entity>><<root>>{
+}
+
+Customer "1" --> "1" User : includes
+CustomerManager "1" --> "1" User : includes
+User "1" --> "1" Name : has
+User "1" --> "1" PhoneNumber : has
+User "1" --> "1" Email : has
+User "1" --> "1" Password : has
+CustomerManager "1" --> "1.." Customer : registers
+
+@enduml

@@ -1,0 +1,93 @@
+@startuml
+skinparam handwritten true
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor Candidate as Actor
+participant CandidateListApplicationUI as UI <<presentation>>
+participant ListApplicationControlleraaaa as Controller <<application>>
+participant AuthorizationService as Authz <<service>>
+participant JobOpeningBuilder as JobOpeningBuilder <<builder>>
+participant "jobOpening : JobOpening" as Domain <<domain>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+participant CandidateService as CandidateService<<service>>
+participant JobApplicationService as JobApplicationService<<service>>
+database JobApplicationRepository as JobApplicationRepository<<repository>>
+database CustomerRepository as CustomerRepository<<repository>>
+
+activate Actor
+
+    Actor -> UI : List JobApplications
+
+    activate UI
+
+        UI -> Controller : create()
+
+            UI -> Controller : getApplicationByCandidateId()
+
+            activate Controller
+
+                Controller -> Persistence : repositories()
+
+                 activate Persistence
+
+                 Persistence -> Factory : factory()
+
+                 Persistence --> Controller : factory
+
+                 deactivate Persistence
+
+                 Controller -> Factory : applications()
+
+                 activate Factory
+
+                 Factory --> Controller : applicationRepository
+
+                 deactivate Factory
+
+                 Controller -> JobApplicationService : create(applicationRepository)
+
+                 Controller -> Factory : candidates()
+
+                 activate Factory
+
+                 Factory --> Controller : candidateRepository
+
+                 deactivate Factory
+
+                 Controller -> CandidateService : create(candidateRepository)
+
+                 Controller -> Authz : session()
+
+                 activate Authz
+
+                 Authz --> Controller : session
+
+                 Controller -> CandidateService : findByEmail(email)
+
+                 activate CandidateService
+
+                 CandidateService --> Controller : candidateId
+
+                 deactivate CandidateService
+
+                 Controller -> JobApplicationService : findApplicationsByCandidateId(candidateId)
+
+                 activate JobApplicationService
+
+                 JobApplicationService --> Controller : applicationList
+
+                 deactivate JobApplicationService
+
+                 Controller --> UI : applicationList
+
+                 deactivate Controller
+
+                 UI --> Actor : display applicationList
+
+        deactivate UI
+    deactivate Actor
+@enduml

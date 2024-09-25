@@ -1,0 +1,110 @@
+@startuml
+
+title Upload Interview File
+
+actor CustomerManager as Actor
+
+participant "UploadCandidateAnswersUI" as UI
+participant "UploadCandidateAnswersController" as Controller
+participant "PersistenceContext" as Persistence
+participant "RepositoryFactory" as Factory
+participant "JobApplicationService" as JobApplicationService
+participant "InterviewModelPlugin" as InterviewModelPlugin
+database "JobApplicationRepository" as JobApplicationRepository
+database "InterviewModelRepository" as InterviewModelRepository
+
+activate Actor
+
+Actor -> UI: Upload Candidate Answers
+    activate UI
+
+    UI -> Controller: create()
+
+    UI --> Actor : insert the job reference you want to upload the interview file
+
+    Actor -> UI : insert the job reference
+
+    UI -> Controller : allJobApplications(jobReference)
+        activate Controller
+
+            Controller -> Persistence : create()
+
+
+            Persistence -> Factory : factory()
+
+
+            Factory --> Controller : factory
+
+
+            Controller -> Factory : jobApplications()
+
+            activate Factory
+
+            Factory --> Controller : JobApplicationRepository
+
+            deactivate Factory
+
+            Controller -> JobApplicationService : create(jobApplicationRepository)
+
+            Controller -> JobApplicationService : findByJobReference(jobReference)
+
+            activate JobApplicationService
+
+            JobApplicationService -> JobApplicationRepository : findByJobReference(jobReference)
+
+            activate JobApplicationRepository
+
+            JobApplicationRepository --> JobApplicationService : applications
+
+            deactivate JobApplicationRepository
+
+            JobApplicationService --> Controller : applications
+
+            deactivate JobApplicationService
+
+            Controller --> UI : applications
+
+            deactivate Controller
+
+            UI --> Actor : show applications
+
+
+            Actor -> UI : choose an application
+
+            UI --> Actor : asks to insert the path of the file with the answers
+
+            Actor -> UI : inserts the path
+
+            UI -> Controller : validateInterviewSyntax(responsesFilePath,directoryPath,jobReference)
+
+            Controller -> Factory : interviewModels()
+
+            activate Factory
+
+            Factory --> Controller : interviewModelRepository
+
+            deactivate Factory
+            Controller -> InterviewModelRepository : findByJobReference(jobReference)
+
+            activate InterviewModelRepository
+
+            InterviewModelRepository --> Controller : interviewModel
+
+            deactivate InterviewModelRepository
+
+
+            Controller -> InterviewModelPlugin : evaluateInterview(responsesFilePath,directoryPath)
+
+            activate InterviewModelPlugin
+
+            InterviewModelPlugin --> Controller : message
+
+            deactivate InterviewModelPlugin
+
+            Controller --> UI : message
+
+            UI --> Actor : displays the message(syntax correct/ syntax not correct)
+             deactivate UI
+             deactivate Actor
+
+@enduml

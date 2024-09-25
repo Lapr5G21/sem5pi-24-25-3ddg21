@@ -1,0 +1,104 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+participant CustomerManager as Actor
+participant PublishRankResultsUI as UI
+participant PublishRankResultsController as Controller
+participant PersistenceContext as Persistence
+participant RepositoryFactory as Factory
+participant AuthorizationService as AuthzService
+participant JobOpeningService as JobOpeningService
+participant RankService as RankService
+participant JobApplicationService as JobApplicationService
+participant Rank as Domain
+database JobOpeningRepository as JobOpeningRepository
+database JobApplicationRepository as ApplicationRepository
+database RankRepository as RankRepository
+database JobOpeningProcessRepository as JobOpeningProcessRepository
+activate Actor
+
+Actor -> UI : publish rank results
+
+    activate UI
+
+        UI -> Controller : create()
+
+        UI --> Actor : asks to insert the jobReference
+
+        Actor -> UI : inserts the jobReference
+
+        UI -> Controller : verifyIsInResultPhase(jobReference)
+
+        activate Controller
+
+        Controller -> Persistence : repositories()
+
+        Persistence -> Factory : create()
+
+        Persistence --> Controller : factory
+
+        Controller -> Factory : jobOpeningProcesses()
+
+        activate Factory
+
+        Factory --> Controller : jobOpeningProcessRepository
+
+        deactivate Factory
+
+        Controller -> JobOpeningProcessRepository : findByJobReference(jobReference)
+
+        activate JobOpeningProcessRepository
+
+        JobOpeningProcessRepository --> Controller : jobOpeningProcess
+
+        deactivate JobOpeningProcessRepository
+
+        Controller --> UI : jobOpeningProcess
+
+        deactivate Controller
+
+        UI -> Controller : publishRankResults(jobReference)
+
+        activate Controller
+
+        Controller -> Factory : ranks()
+
+        activate Factory
+
+        Factory --> Controller : rankRepository
+
+        deactivate Factory
+
+        Controller -> RankService : create(rankRepository)
+
+        Controller -> Factory : applications()
+
+        activate Factory
+
+        Factory --> Controller : applicationRepository
+
+        deactivate Factory
+
+        Controller -> JobApplicationService : create(jobApplicationRepository)
+
+        Controller -> JobApplicationService : findByJobReference(jobReference)
+
+        activate JobApplicationService
+
+        JobApplicationService --> Controller : listAllApplications
+
+        deactivate JobApplicationService
+
+        Controller -> RankService : getRanksByJobApplications(applicationList)
+
+        activate RankService
+
+        RankService --> Controller : rankList
+
+        deactivate RankService
+
+        Controller -> RankService : publishRanks(ranksList,applicationList)
+
+        UI --> Actor : displays message saying email sent successfully
+
+@enduml

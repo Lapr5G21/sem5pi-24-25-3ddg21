@@ -1,0 +1,95 @@
+@startuml
+'http://plantuml.com/skinparam.html
+skinparam handwritten true
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor CostumerManager as CostumerManager
+participant SwitchJobOpeningPhasesUI as UI <<presentation>>
+participant SwitchJobOpeningPhasesController as Controller <<application>>
+participant AuthorizationService as AuthzService<<service>>
+participant JobOpeningService as JobOpeningService<<service>>
+participant JobOpeningBuilder as Builder <<builder>>
+participant "JobOpeningProcess.phaseState" as Domain <<domain>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database JobOpeningRepository as Repository <<repository>>
+
+CostumerManager --> UI: Disable backoffice Users
+activate CostumerManager
+activate UI
+
+    UI -> Controller: create
+
+        UI --> Controller : switchJobOpeningProcessPhase()
+
+        activate Controller
+
+        Controller --> AuthzService : ensureAuthenticatedUserHasAnyOf(Jobs4uRoles.POWER_USER,Jobs4uRoles.ADMIN)
+
+        deactivate AuthzService
+
+        Controller --> JobOpeningService : switchJobOpeningProcessPhase()
+
+        activate JobOpeningService
+
+        JobOpeningService --> Persistence : repositories()
+
+        Persistence --> Factory : create()
+
+        Persistence --> JobOpeningService : factory
+        deactivate Persistence
+
+        JobOpeningService --> Factory : jobOpeningProcess()
+        activate Factory
+
+        Factory --> Repository : create()
+
+        Factory --> JobOpeningService : jobOpeningRepository
+        deactivate Factory
+
+        JobOpeningService --> Repository : findByJobReference(jobReference)
+        activate Repository
+
+        Repository --> JobOpeningService : JobOpening
+        deactivate Repository
+
+        JobOpeningService --> Controller : JobOpening
+        deactivate JobOpeningService
+
+        Controller --> UI : switchJobOpeningProcessPhase
+
+        deactivate Controller
+
+        UI--> CostumerManager : display Job Opening Process Phases
+        deactivate UI
+
+        CostumerManager --> UI : choose between open or close the current Job Opening Process Phase
+
+        activate UI
+
+        UI --> Controller : activatePhase()
+
+        activate Controller
+
+        Controller --> JobOpeningService : activatePhase()
+
+        activate JobOpeningService
+
+        JobOpeningService --> Domain : activate()
+
+        JobOpeningService --> Repository : save(jobOpeningProcess)
+
+        JobOpeningService --> Controller : jobOpeningProcess
+        deactivate JobOpeningService
+
+        Controller --> UI : jobOpeningProcess
+        deactivate Controller
+
+        UI --> CostumerManager : display message saying process has been activated
+
+    deactivate UI
+    deactivate CostumerManager
+    @enduml

@@ -1,0 +1,57 @@
+@startuml
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+    class CustomerListJobOpeningsUI {
+        + create(): void
+        + getJobOpeningByCustomer(): Iterable<JobOpening>
+    }
+
+
+    class CustomerListJobOpeningsController {
+        + create()
+        + getJobOpeningByCustomer(): Iterable<JobOpening>
+    }
+
+
+    class AuthorizationService {
+        + session(): Session
+    }
+
+    class JobOpeningService {
+        + create(jobOpeningRepository: JobOpeningRepository): JobOpeningService
+        + listJobOpeningsByCustomer(customer: Customer): Iterable<JobOpening>
+    }
+
+    class JobApplicationService {
+        + create(applicationRepository: JobApplicationRepository): JobApplicationService
+        + findByJobReference(jobReference: String): Iterable<JobApplication>
+    }
+
+
+    class PersistenceContext {
+        + repositories(): RepositoryFactory
+    }
+
+    class RepositoryFactory {
+        + applications(): JobApplicationRepository
+        + customer(): CustomerRepository
+        + jobOpenings(): JobOpeningRepository
+    }
+
+CustomerListJobOpeningsUI --> CustomerListJobOpeningsController : theController
+CustomerListJobOpeningsController --> PersistenceContext : uses
+PersistenceContext --> RepositoryFactory : returns
+RepositoryFactory --> JobApplicationRepository : creates
+RepositoryFactory --> JobOpeningRepository : creates
+RepositoryFactory --> CustomerRepository : creates
+CustomerListJobOpeningsController --> JobApplicationService : uses
+CustomerListJobOpeningsController --> JobOpeningService : uses
+CustomerListJobOpeningsController --> CustomerRepository : uses
+JobOpeningService --> JobOpeningRepository : jobOpeningRepository
+JobOpeningService --> JobOpening : returns
+JobApplicationService --> JobApplicationRepository : jobApplicationRepository
+CustomerListJobOpeningsController --> AuthorizationService : uses
+JobApplicationService --> JobApplication : returns
+
+@enduml

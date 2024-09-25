@@ -1,0 +1,21 @@
+@startuml
+
+entity InterviewModel<<root>> <<entity>> {
+
+}
+
+class InterviewModelPlugin <<Value>>{}
+
+entity JobRequirements<<root>> <<entity>> {
+
+     }
+
+     class JobRequirementsPlugin<<Value>> {
+
+     }
+
+InterviewModel "1" --> "1" InterviewModelPlugin : has
+Interview "1" --> "1" InterviewModel : follows
+JobRequirements "1" --> "1" JobRequirementsPlugin
+
+@enduml

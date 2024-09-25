@@ -1,0 +1,95 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+package JobOpeningAggregate {
+ entity JobOpening <<root>> <<entity>>{
+ description
+ }
+
+ class JobReference <<Value>> {
+ }
+
+ class NumberOfVacancies <<Value>> {
+ }
+
+ enum ContractType<<Value>> {
+ full-time
+ part-time
+ }
+
+ enum WorkRegime <<Value>>{
+ remote
+ hybrid
+ onsite
+ }
+
+ class JobTitle <<Value>> {
+ }
+ }
+
+
+
+package JobRequirementsAggregate {
+entity JobRequirements<<root>> <<entity>> {
+
+     }
+
+     class JobRequirementsPlugin<<Value>> {
+
+     }
+
+  }
+
+
+
+
+
+
+
+'RankingServiceAggregate
+package Ranking<<aggregate>> {
+entity Ranking <<class>> {
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+'JobRequirements
+JobRequirements "1" --> "1" JobRequirementsPlugin
+
+
+
+'JobOpening
+JobOpening "1" --> "1" JobTitle : contains
+JobOpening "1" --> "1" ContractType
+JobOpening "1" --> "1" WorkRegime : contains
+JobOpening "1" --> "1" NumberOfVacancies : has
+JobOpening "1" --> "1" JobRequirements : requires
+JobOpening "1" --> "1"  JobReference
+
+JobOpening "1" --> "0..1" Interview : has
+JobOpening "1" ---> "1" Application : has
+
+
+'Candidate
+Candidate "1..*" --> "1" Application : makes
+
+'Ranking Service
+Ranking --> Application : ranks
+Ranking --> Interview : ranks
+
+
+
+
+@enduml

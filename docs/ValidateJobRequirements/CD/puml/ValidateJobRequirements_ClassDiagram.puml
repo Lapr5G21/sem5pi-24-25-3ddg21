@@ -1,0 +1,51 @@
+@startuml
+title Validate Job Requirements
+
+class ValidateJobRequirementsUI {
+    + doShow() : boolean
+    + headline() : String
+}
+
+class ValidateJobRequirementsController {
+    +listAllJobApplications(): Iterable<JobApplications>
+    +selectJobRequirements(jobReference: String, pluginName: String): void
+}
+
+class PersistenceContext {
+    +create(): void
+}
+
+class RepositoryFactory {
+    +factory(): void
+    +jobApplications(): JobApplicationRepository
+}
+
+class JobReference {
+    +create(jobReference : String, code : CustomerCode, serialNumber : Integer ): void
+}
+
+class JobRequirementsTemplate {
+    +create(jobReference: JobReference, pluginName: String): void
+}
+
+class JobApplicationRepository {
+ + findAllOpen() : Iterable<JobApplication>
+}
+
+class JobApplicationService {
+    + listAllApplications() : Iterable<JobApplication>
+    + findByJobReference( jobReference) : JobApplication
+    + changeApplicationStatus( application, check) : void
+    + updateApplication( jobApplication): jobApplication
+}
+
+
+
+ValidateJobRequirementsUI --> ValidateJobRequirementsController : theController
+ValidateJobRequirementsController --> PersistenceContext : persistence
+PersistenceContext --> RepositoryFactory : factory
+RepositoryFactory --> JobApplicationRepository : jobApplicationRepository
+ValidateJobRequirementsController --> JobReference : create
+ValidateJobRequirementsController --> JobRequirementsTemplate : create
+ValidateJobRequirementsController --> JobApplicationService : service
+@enduml

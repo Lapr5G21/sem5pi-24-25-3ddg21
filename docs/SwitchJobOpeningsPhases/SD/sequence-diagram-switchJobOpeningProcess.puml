@@ -1,0 +1,84 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor CostumerManager as CostumerManager
+participant SwitchJobOpeningPhasesUI as UI <<presentation>>
+participant SwitchJobOpeningPhasesController as Controller <<application>>
+participant AuthorizationService as AuthzService<<service>>
+participant JobOpeningService as JobOpeningService<<service>>
+participant JobOpeningBuilder as Builder <<builder>>
+participant "JobOpeningProcess" as Domain <<domain>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database JobOpeningRepository as JobOpeningRepository <<repository>>
+database JobOpeningProcessRepository as JobOpeningProcessRepository <<repository>>
+
+CostumerManager --> UI: asks to switch the Job Opening Process Phase
+activate CostumerManager
+activate UI
+
+    UI -> Controller: create
+
+    UI --> CostumerManager : asks to insert the jobReference
+
+    CostumerManager -> UI : inserts the jobReference
+
+    UI --> CostumerManager : asks to select the switch decision (Advance/Return)
+
+    CostumerManager -> UI : selects the decision
+
+        UI -> Controller : switchJobOpeningProcessPhase(jobReference,decision)
+
+        activate Controller
+
+        Controller -> AuthzService : ensureAuthenticatedUserHasAnyOf(Jobs4uRoles.POWER_USER,Jobs4uRoles.ADMIN)
+
+        Controller -> Persistence : repositories()
+
+        Persistence -> Factory : create()
+
+        Persistence --> Controller : factory
+        deactivate Persistence
+
+        Controller -> Factory : jobOpeningProcess()
+        activate Factory
+
+        Factory -> JobOpeningProcessRepository : create()
+
+        Factory --> Controller : jobOpeningProcessRepository
+        deactivate Factory
+
+        Controller -> JobOpeningProcessRepository : findByJobReference(jobReference)
+        activate JobOpeningProcessRepository
+
+        JobOpeningProcessRepository --> Controller : jobOpeningProcess
+        deactivate JobOpeningProcessRepository
+
+        Controller -> Domain : switchJobOpeningProcessPhase(jobOpeningProcess,decision)
+
+        activate Domain
+
+        Domain --> Controller : jobOpeningProcess
+
+        deactivate Domain
+
+        Controller -> JobOpeningProcessRepository : save(jobOpeningProcess)
+
+        activate JobOpeningProcessRepository
+
+        JobOpeningProcessRepository --> Controller : jobOpeningProcess
+
+        deactivate JobOpeningProcessRepository
+
+        Controller --> UI : jobOpeningProcess
+
+        deactivate Controller
+
+        UI --> CostumerManager : displays the actual phase
+        deactivate UI
+
+    deactivate CostumerManager
+    @enduml

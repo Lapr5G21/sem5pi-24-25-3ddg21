@@ -1,0 +1,53 @@
+@startuml
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+    class CandidateListApplicationUI {
+        + create(): void
+        + getApplicationByCandidateId(): void
+    }
+
+
+    class ListApplicationController {
+        + create()
+        + getApplicationByCandidateId()
+    }
+
+
+    class AuthorizationService {
+        + session(): Session
+    }
+
+    class CandidateService {
+        + create(candidateRepository: CandidateRepository): CandidateService
+        + findByEmail(email: String): Long
+    }
+
+    class JobApplicationService {
+        + create(applicationRepository: JobApplicationRepository): JobApplicationService
+        + findApplicationsByCandidateId(candidateId: CandidateId): Iterable<JobApplication>
+    }
+
+
+    class PersistenceContext {
+        + repositories(): RepositoryFactory
+    }
+
+    class RepositoryFactory {
+        + applications(): JobApplicationRepository
+        + candidates(): CandidateRepository
+    }
+
+CandidateListApplicationUI --> ListApplicationController : theController
+ListApplicationController --> PersistenceContext : uses
+PersistenceContext --> RepositoryFactory : returns
+RepositoryFactory --> JobApplicationRepository : creates
+RepositoryFactory --> CandidateRepository : creates
+ListApplicationController --> JobApplicationService : uses
+ListApplicationController --> CandidateService : uses
+CandidateService --> CandidateRepository : candidateRepository
+JobApplicationService --> JobApplicationRepository : jobApplicationRepository
+ListApplicationController --> AuthorizationService : uses
+JobApplicationService --> JobApplication : returns
+
+@enduml

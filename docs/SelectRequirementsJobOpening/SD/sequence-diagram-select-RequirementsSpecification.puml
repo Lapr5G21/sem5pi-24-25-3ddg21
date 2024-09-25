@@ -1,0 +1,69 @@
+@startuml
+title Select Interview Model
+
+actor CostumerManager as Actor
+
+participant "SelectRequirementsUI" as UI
+participant "SelectRequirementsController" as Controller
+participant "PersistenceContext" as Persistence
+participant "RepositoryFactory" as Factory
+participant "JobReference" as JobReferenceDomain
+participant "JobOpeningRequirements" as JobOpeningRequirementsDomain
+database "JobOpeningRepository" as JobOpeningRepository
+database "JobRequirementsRepository" as JobRequirementsRepository
+
+activate Actor
+
+Actor -> UI: Exports job requirements template
+    activate UI
+
+    UI -> Controller: create()
+
+    UI -> Controller : listAllJobOpenings()
+
+        activate Controller
+
+            Controller -> Persistence : create()
+
+            activate Persistence
+
+            Persistence -> Factory : factory()
+
+            deactivate Persistence
+
+            Factory --> Controller : factory
+
+
+            Controller -> Factory : jobOpenings()
+
+            activate Factory
+
+            Factory --> Controller : JobOpeningRepository
+
+            deactivate Factory
+
+            Controller -> JobOpeningRepository : findAllOpen()
+
+            activate JobOpeningRepository
+
+            JobOpeningRepository --> Controller : jobOpenings
+
+            deactivate JobOpeningRepository
+
+            Controller --> UI : jobOpenings
+
+            deactivate Controller
+
+            UI --> Actor : asks to select a jobOpening
+
+            Actor -> UI : selects the jobOpening
+
+            UI -> Controller : generateAndExportJobRequirementsTemplate(pluginName)
+
+            activate Controller
+
+
+            UI --> Actor : displays a message saying template exported successfully
+            deactivate UI
+        deactivate Actor
+@enduml

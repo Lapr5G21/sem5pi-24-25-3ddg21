@@ -1,0 +1,56 @@
+@startuml
+entity Application<<entity>> <<root>>  {}
+
+  class ApplicationDate <<Value>> {
+  }
+
+  enum ApplicationStatus <<Value>> {
+  Approved
+  Denied
+  WaitingInterview
+  InProgress
+  }
+
+  entity JobOpening <<root>> <<entity>>{
+   description
+   }
+
+   class JobReference <<Value>> {
+   }
+
+   class NumberOfVacancies <<Value>> {
+   }
+
+   enum ContractType<<Value>> {
+   full-time
+   part-time
+   }
+
+   enum WorkRegime <<Value>>{
+   remote
+   hybrid
+   onsite
+   }
+
+   class JobTitle <<Value>> {
+   }
+
+   class Operator <<entity>>{
+   }
+
+  Application "1" --> "1" ApplicationDate
+  Application "1" ---> "1" ApplicationStatus
+  JobOpening "1" --> "1" JobTitle : contains
+  JobOpening "1" --> "1" ContractType
+  JobOpening "1" --> "1" WorkRegime : contains
+  JobOpening "1" --> "1" NumberOfVacancies : has
+  JobOpening "1" --> "1" JobRequirements : requires
+  JobOpening "1" --> "1"  JobReference
+  JobOpening "1" --> "1" Company
+  JobOpening "1" --> "1..*" JobOpeningProcess : has
+  JobOpeningProcess "1" --> "1..*" JobOpeningStatus : has
+  JobOpening "1" --> "0..1" Interview : has
+  JobOpening "1" ---> "1" Application : has
+  Operator "1" --> "1" Application : registers
+
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+
+
+class NotifyCandidateApplicationStateUI {
+}
+
+class NotifyCandidateApplicationStateController {
+    +getNotifications() : Iterable<Notification>
+}
+
+class NotificationService {
+    +findUnreadNotifications(): List<Notification>
+    +remove(notification: Notification): void
+}
+
+class AuthorizationService {
+    +session(): Session
+}
+
+class PersistenceContext {
+    +repositories(): RepositoryFactory
+}
+
+class RepositoryFactory {
+    +notifications(): NotificationRepository
+}
+
+class NotificationRepository {
+    +findNotificationsByCandidate(email: String): List<Notification>
+}
+
+class Notification {
+}
+
+enum NotificationStatus {
+    READ
+    UNREAD
+}
+
+NotifyCandidateApplicationStateUI --> NotifyCandidateApplicationStateController : the controller
+NotifyCandidateApplicationStateController --> NotificationService : notification service
+NotificationService --> AuthorizationService : authz service
+NotificationService --> PersistenceContext : persistence
+PersistenceContext --> RepositoryFactory : factory
+RepositoryFactory --> NotificationRepository : notification repository
+NotificationRepository --> Notification : notification
+Notification --> NotificationStatus : notification status
+
+@enduml

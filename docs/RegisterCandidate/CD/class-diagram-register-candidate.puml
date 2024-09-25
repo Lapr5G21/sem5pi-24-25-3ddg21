@@ -1,0 +1,85 @@
+@startuml
+'skinparam
+skinparam handwritten true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+class RegisterCandidateUI <<presentation>> {
+    -doShow()
+    +headline()
+}
+
+class RegisterCandidateController <<application>> {
+    +addCandidate(String phoneNumber, String email, String password, String firstName, String lastname, String email, Jobs4UsRoles roles)
+    +addUser(String phoneNumber, String email, String password, String firstName, String lastname, String email, Jobs4UsRoles roles, CurrentTimeCalendars time)
+    +getGeneratedPassword()
+}
+
+class PasswordGenerator <<domain>> {
+    +generatePassword()
+}
+
+class UserManagementService <<service>> {
+    -registerNewUser(String email, String password, String firstName, String lastName, String email, Jobs4URoles roles, CurrentTimeCalendars time)
+}
+
+class CandidateService <<service>> {
+    -registerCandidate(SystemUser user, String phoneNumber)
+}
+
+class AuthorizationService <<service>> {
+    -ensureAuthenticatedUserHasAnyOf(roles)
+}
+
+class SystemUserBuilder <<builder>> {
+    +build() : SystemUser
+}
+
+class CandidateBuilder <<builder>> {
+    +withSystemUser(SystemUser user)
+    +withPhoneNumber(PhoneNumber phoneNumber)
+    +withPhoneNumber(String phoneNumber)
+    +build() : Candidate
+}
+
+class SystemUser <<domain>> {}
+
+class Candidate <<domain>> {
+    +Candidate(PhoneNumber phoneNumber, SystemUser user)
+}
+
+class PersistenceContext {
+    +repositories()
+}
+class RepositoryFactory {
+    +users()
+    +candidates()
+}
+class UserRepository {
+    +create(): void
+    +save(SystemUser user)
+}
+class CandidateRepository {
+    + create(): void
+    + save(Candidate candidate)
+}
+
+RegisterCandidateUI --> RegisterCandidateController: controller
+PersistenceContext --> RepositoryFactory : factory
+RepositoryFactory --> UserRepository : user repository
+RepositoryFactory --> CandidateRepository : candidate repository
+RegisterCandidateController --> PasswordGenerator: password generator
+RegisterCandidateController --> UserManagementService: register user
+RegisterCandidateController --> CandidateService: register candidate
+RegisterCandidateController --> AuthorizationService: authorization
+UserManagementService --> PersistenceContext: persistence
+UserManagementService --> UserRepository: user repository
+UserManagementService --> SystemUserBuilder : user builder
+CandidateService --> PersistenceContext: persistence
+CandidateService --> CandidateRepository: candidate repository
+CandidateService --> CandidateBuilder : candidate builder
+CandidateBuilder --> Candidate : build
+SystemUserBuilder --> SystemUser : build
+
+@enduml

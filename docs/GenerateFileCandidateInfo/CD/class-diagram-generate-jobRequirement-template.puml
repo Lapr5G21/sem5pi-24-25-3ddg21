@@ -1,0 +1,48 @@
+@startuml
+'skinparam
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing true
+
+class GenerateJobRequirementTemplateUI <<presentation>> {
+    +doShow()
+    +headline()
+    +showMenuAndGetSelection()
+}
+
+class GenerateJobRequirementTemplateController <<application>> {
+    +listAllJobOpenings() : Iterable<JobOpening>
+    +findPluginByJobReference(jobReference : JobReference) : JobRequirement
+    +generateAndExportJobRequirementTemplate(jobRequirement : JobRequirement) : String
+}
+
+class PersistenceContext {
+    +create(): void
+}
+
+class RepositoryFactory {
+    +factory(): void
+    +jobOpenings(): JobOpeningRepository
+    +jobRequirements(): JobRequirementsRepository
+}
+
+class JobOpeningRepository {
+ + findAllOpen() : Iterable<JobOpening>
+}
+
+class InterviewModelRepository {
+   + findByJobReference(jobReference : JobReference) : JobRequirement
+}
+
+class JobRequirementPlugin{
++generateAndExportJobRequirementTemplate() : String
+}
+
+GenerateJobRequirementTemplateUI --> GenerateJobRequirementTemplateController: the controller
+GenerateJobRequirementTemplateController -> PersistenceContext : persistence
+PersistenceContext --> RepositoryFactory : factory
+RepositoryFactory --> JobOpeningRepository : jobOpeningRepository
+RepositoryFactory --> JobRequirementsRepository : jobRequirementRepository
+GenerateJobRequirementTemplateController -> JobRequirementPlugin : jobRequirementPlugin
+
+@enduml

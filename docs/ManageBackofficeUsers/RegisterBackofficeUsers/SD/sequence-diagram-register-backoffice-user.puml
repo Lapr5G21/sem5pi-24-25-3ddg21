@@ -1,0 +1,114 @@
+@startuml
+'http://plantuml.com/skinparam.html
+skinparam handwritten true
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor Admin as Actor
+participant AddBackofficeUserUI as UI <<presentation>>
+participant AddBackofficeUserController as Controller <<application>>
+participant "jobs4uRoles:Jobs4uRoles" as Jobs4uRoles <<domain>>
+participant "passwordGenerator : PasswordGenerator" as PasswordGenerator<<domain>>
+participant AuthorizationService as AuthzService<<service>>
+participant UserManagementService as UserService<<service>>
+participant SystemUserBuilder as Builder <<builder>>
+participant "systemUser:SystemUser" as Domain <<domain>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database UserRepository as Repository <<repository>>
+
+Actor --> UI: Register Backoffice User
+activate Actor
+activate UI
+
+    UI -> Controller: create
+    UI --> Actor: Ask user information
+    Actor --> UI: Email,First Name,Last Name
+
+        UI --> Controller : getBackofficeRoles()
+
+        activate Controller
+
+        Controller --> Jobs4uRoles : backOfficeValues()
+
+        activate Jobs4uRoles
+
+        Jobs4uRoles --> Controller : backofficeRoles
+        deactivate Jobs4uRoles
+
+        Controller --> UI : backofficeRoles
+        deactivate Controller
+
+
+        UI --> Controller : getGeneratedPassword()
+
+        activate Controller
+
+        Controller --> PasswordGenerator : create()
+
+        Controller --> PasswordGenerator : generatePassword()
+
+        activate PasswordGenerator
+
+        PasswordGenerator --> Controller : password
+        deactivate PasswordGenerator
+
+        Controller --> UI : password
+        deactivate Controller
+
+
+        loop option != 0
+
+        UI --> Actor: Show List of Backoffice roles available (Admin,Operator,Customer Manager,Language)
+        Actor --> UI: Role Type
+    end
+
+    UI -> Controller: addBackofficeUser(email,password,firstName,lastName, email, roles)
+
+    activate Controller
+
+    Controller --> Controller : addBackofficeUser(email,password,firstName,lastName,email,roles,CurrentTimeCalendar.now())
+
+    Controller --> AuthzService : ensureAuthenticatedUserHasAnyOf(Jobs4uRoles.POWER_USER,Jobs4uRoles.ADMIN)
+
+    deactivate AuthzService
+
+    Controller --> UserService : registerUser(email,password,firstName,lastName,email,roles,date)
+
+    activate UserService
+
+    UserService --> Builder : create()
+
+    UserService --> Domain : build()
+
+    UserService --> Persistence : repositories()
+    activate Persistence
+
+    Persistence --> Factory : create()
+
+    Persistence --> UserService : factory
+    deactivate Persistence
+
+    UserService --> Factory : users()
+    activate Factory
+
+    Factory --> UserRepository : create()
+
+    Factory --> UserService : userRepository
+    deactivate Factory
+
+    UserService --> Repository : save(user)
+
+    UserService --> Controller : user
+    deactivate UserService
+
+    Controller --> UI : user
+    deactivate Controller
+
+    UI--> Actor : display user info
+
+deactivate UI
+deactivate Actor
+@enduml

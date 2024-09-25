@@ -1,0 +1,107 @@
+@startuml
+'http://plantuml.com/skinparam.html
+skinparam handwritten true
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+participant RegisterCandidateUI as UI <<presentation>>
+participant RegisterCandidateController as Controller <<application>>
+participant "passwordGenerator : PasswordGenerator" as PasswordGenerator<<domain>>
+participant UserManagementService as UserService<<service>>
+participant CandidateService as CandidateService<<service>>
+participant AuthorizationService as AuthzService<<service>>
+participant SystemUserBuilder as Builder <<builder>>
+participant CandidateBuilder as CandidateBuilder <<builder>>
+participant "systemUser:SystemUser" as Domain <<domain>>
+participant "candidate:Candidate" as CandidateDomain <<domain>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database UserRepository as UserRepository <<repository>>
+database CandidateRepository as CandidateRepository <<repository>>
+
+        UI -> Controller: addCandidate(phoneNumber, email,password,firstName,lastName, email, roles)
+        activate Controller
+
+        Controller --> Controller : addUser(email,password,firstName,lastName,email,roles,CurrentTimeCalendar.now())
+
+        Controller --> AuthzService : ensureAuthenticatedUserHasAnyOf(Jobs4uRoles.POWER_USER,Jobs4uRoles.OPERATOR)
+
+        deactivate AuthzService
+
+        Controller --> UserService : registerNewUser(email,password,firstName,lastName,email,roles,date)
+        activate UserService
+
+        UserService --> Builder : create()
+
+        UserService --> Domain : build()
+
+        UserService --> Persistence : repositories()
+        activate Persistence
+
+        Persistence --> Factory : create()
+
+        Persistence --> UserService : factory
+        deactivate Persistence
+
+        UserService --> Factory : users()
+        activate Factory
+
+        Factory --> UserRepository : create()
+
+        Factory --> UserService : userRepository
+        deactivate Factory
+
+        UserService --> UserRepository : save(user)
+
+        activate UserRepository
+
+        UserRepository --> UserService : user
+        deactivate UserRepository
+
+        UserService --> Controller : user
+        deactivate UserService
+
+
+
+                Controller --> CandidateService : registerCandidate(user,phoneNumber)
+                activate CandidateService
+
+                CandidateService --> CandidateBuilder : create()
+
+                CandidateService --> CandidateDomain : build()
+
+                CandidateService --> Persistence : repositories()
+                activate Persistence
+
+                Persistence --> Factory : create()
+
+                Persistence --> CandidateService : factory
+                deactivate Persistence
+
+                CandidateService --> Factory : candidates()
+                activate Factory
+
+                Factory --> CandidateRepository : create()
+
+                Factory --> CandidateService : candidateRepository
+                deactivate Factory
+
+                CandidateService --> CandidateRepository : save(candidate)
+                activate CandidateRepository
+
+                CandidateRepository --> CandidateService : candidate
+                deactivate CandidateRepository
+
+                CandidateService --> Controller : candidate
+                deactivate CandidateService
+
+                Controller --> UI : candidate
+                deactivate Controller
+                activate UI
+
+
+
+
+@enduml

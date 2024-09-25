@@ -1,0 +1,51 @@
+@startuml
+title Upload Interview File - Class Diagram
+
+class UploadCandidateAnswersUI {
+    +allJobApplications(jobReference: String): Iterable<JobApplication>
+    +validateInterviewSyntax(responsesFilePath: String, directoryPath: String, jobReference: String): String
+}
+
+class UploadCandidateAnswersController {
+    +create(): void
+    +allJobApplications(jobReference: String): Iterable<JobApplication>
+    +validateInterviewSyntax(responsesFilePath: String, directoryPath: String, jobReference: String): String
+}
+
+class PersistenceContext {
+    +create(): void
+}
+
+class RepositoryFactory {
+    +factory(): RepositoryFactory
+    +jobApplications(): JobApplicationRepository
+    +interviewModels(): InterviewModelRepository
+}
+
+class JobApplicationService {
+    +create(jobApplicationRepository: JobApplicationRepository): void
+    +findByJobReference(jobReference: String): Iterable<JobApplication>
+}
+
+class InterviewModelPlugin {
+    +evaluateInterview(responsesFilePath: String, directoryPath: String): String
+}
+
+class JobApplicationRepository {
+    +findByJobReference(jobReference: String): Iterable<JobApplication>
+}
+
+class InterviewModelRepository {
+    +findByJobReference(jobReference: String): InterviewModel
+}
+
+UploadCandidateAnswersUI --> UploadCandidateAnswersController : theController
+UploadCandidateAnswersController --> PersistenceContext : persistence
+UploadCandidateAnswersController --> RepositoryFactory : factory
+RepositoryFactory --> JobApplicationRepository : jobApplicationRepository
+RepositoryFactory --> InterviewModelRepository : interviewModelRepository
+UploadCandidateAnswersController --> JobApplicationService : jobApplicationService
+JobApplicationService --> JobApplicationRepository : jobApplicationRepository
+UploadCandidateAnswersController --> InterviewModelPlugin : interviewPlugin
+
+@enduml

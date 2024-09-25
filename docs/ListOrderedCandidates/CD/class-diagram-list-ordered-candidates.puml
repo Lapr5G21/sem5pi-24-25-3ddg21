@@ -1,0 +1,56 @@
+@startuml
+skinparam monochrome false
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+class ListOrderedCandidatesUI <<presentation>> {
+    +doShow()
+}
+
+class ListOrderedCandidatesController <<application>> {
+    +create()
+    +allApplications(String jobReference)
+    +findInterviewsAndSortCandidates(Iterator<JobApplication> applications)
+}
+
+class AuthorizationService <<service>> {
+    +ensureAuthenticatedUserHasAnyOf(roles)
+}
+
+class JobApplicationService <<service>> {
+    +listAllApplications(String jobReference)
+}
+
+class InterviewService <<service>> {
+    +associateInterviewsAndCandidates(Iterator<JobApplication> applications)
+    +sortingCandidates(Map<Candidate,Interview> interviewsAndCandidatesMap)
+}
+
+class PersistenceContext <<persistence>> {
+    +repositories()
+}
+
+class RepositoryFactory <<factory>> {
+    +create()
+}
+
+class JobApplicationRepository <<repository>> {
+    +findByJobReference(String jobReference)
+}
+
+class InterviewRepository <<repository>> {
+    +findInterview(Long applicationId)
+}
+
+ListOrderedCandidatesUI --> ListOrderedCandidatesController : the controller
+ListOrderedCandidatesController --> AuthorizationService : authz service
+ListOrderedCandidatesController --> JobApplicationService : job application service
+ListOrderedCandidatesController --> InterviewService : interview service
+JobApplicationService --> PersistenceContext : persistence
+PersistenceContext --> RepositoryFactory : factory
+RepositoryFactory --> JobApplicationRepository : job application repository
+RepositoryFactory --> InterviewRepository : interview repository
+InterviewService --> PersistenceContext : persistence
+
+@enduml

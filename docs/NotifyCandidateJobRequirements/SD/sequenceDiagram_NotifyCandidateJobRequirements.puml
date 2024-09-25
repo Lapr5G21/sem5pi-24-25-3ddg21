@@ -1,0 +1,82 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+participant CustomerManager as Actor
+participant NotifyCandidateJobRequirementsUI as UI
+participant NotifyCandidateJobRequirementsController as Controller
+participant PersistenceContext as Persistence
+participant RepositoryFactory as Factory
+
+participant CandidateService as CandidateService
+participant EmailSender as EmailSender
+
+database JobOpeningRepository as JobOpeningRepository
+
+
+activate Actor
+
+Actor -> UI : notify candidate job requirements
+
+    activate UI
+
+        UI -> Controller : create()
+
+        UI --> Actor : asks the Job Reference
+
+        Actor -> UI : inserts Job reference
+
+        UI -> Controller : findByJobReference(jobReference)
+        activate Controller
+
+        Controller -> Persistence : repositories()
+
+        Persistence -> Factory : create()
+
+        Persistence --> Controller : factory
+
+
+        Controller -> Factory : jobApplications()
+
+        activate Factory
+
+        Factory --> Controller : JobApplicationRepository
+
+        deactivate Factory
+
+        Controller -> JobOpeningRepository : findByJobReference(jobReference)
+
+        activate JobOpeningRepository
+
+        JobOpeningRepository --> Controller : jobApplicationsList
+
+        deactivate JobOpeningRepository
+
+        Controller --> UI : jobApplicationsList
+
+        deactivate Controller
+
+        UI --> Actor : displays job applications, asks to select one
+
+        Actor -> UI : selects job application
+
+        UI -> Controller : NotifyCandidateJobRequirements(application)
+
+        activate Controller
+
+
+        Controller -> CandidateService : create(candidateRepository)
+
+        activate CandidateService
+
+        CandidateService --> Controller : candidateService
+
+        Controller -> CandidateService : notifyCandidateRequirements(application)
+
+        deactivate CandidateService
+
+        CandidateService --> EmailSender : sendEmail(emailTo, emailFrom, \n emailSubject, emailBody)
+
+
+        UI --> Actor : displays message saying email sent successfully
+
+@enduml

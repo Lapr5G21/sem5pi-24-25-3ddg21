@@ -1,0 +1,50 @@
+@startuml
+'skinparam
+skinparam handwritten true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+'Entidades
+class SwitchJobOpeningPhasesUI <<presentation>> {
+- doShow()
+- headline()
+}
+class SwitchJobOpeningPhasesController <<application>>{
+- switchJobOpeningProcessPhase()
+}
+
+class AuthorizationService <<service>> {
+- ensureAuthenticatedUserHasAnyOf(roles : List<Jobs4uRoles>)
+}
+
+
+class RepositoryFactory <<factory>> {
+- jobOpenings()
+}
+class JobOpeningRepository <<repository>> {
+
+}
+
+class JobOpeningProcessRepository <<repository>> {
+
+}
+class JobOpening <<domain>> {
+}
+
+class JobOpeningProcess <<domain>> {
+}
+
+class Application <<domain>> {
+}
+
+'Associações
+SwitchJobOpeningPhasesUI --> SwitchJobOpeningPhasesController : theController
+SwitchJobOpeningPhasesController --> AuthorizationService : authz
+SwitchJobOpeningPhasesController --> JobOpening : activates
+RepositoryFactory --> JobOpeningRepository : jobOpeningRepository
+RepositoryFactory --> JobOpeningProcessRepository : jobOpeningProcessRepository
+JobOpening -- Application : may have
+JobOpeningProcess -- Application : contains
+SwitchJobOpeningPhasesController ..> RepositoryFactory
+@enduml

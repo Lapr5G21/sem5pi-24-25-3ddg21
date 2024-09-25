@@ -1,0 +1,87 @@
+@startuml
+skinparam handwritten true
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor Customer as Actor
+participant CustomerListJobOpeningsUI as UI <<presentation>>
+participant CustomerListJobOpeningsController as Controller <<application>>
+participant AuthorizationService as Authz <<service>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+participant JobOpeningService as JobOpeningService <<service>>
+database CustomerRepository as CustomerRepository <<repository>>
+database JobOpeningRepository as JobOpeningRepository <<repository>>
+
+activate Actor
+
+    Actor -> UI : List JobOpenings
+
+    activate UI
+
+        UI -> Controller : create()
+
+        UI -> Controller : getJobOpeningByCustomer()
+
+        activate Controller
+
+            Controller -> Persistence : repositories()
+
+            activate Persistence
+
+            Persistence -> Factory : factory()
+
+            Persistence --> Controller : factory
+
+            deactivate Persistence
+
+            Controller -> Factory : jobOpenings()
+
+            activate Factory
+
+            Factory --> Controller : jobOpeningRepository
+
+            deactivate Factory
+
+            Controller -> JobOpeningService : create(jobOpeningRepository)
+
+            Controller -> Authz : session()
+
+            Authz --> Controller : session
+
+            Controller -> Factory : customers()
+
+            activate Factory
+
+            Factory --> Controller : customerRepository
+
+            deactivate Factory
+
+            Controller -> CustomerRepository : findByCustomerEmployee(authenticatedUser)
+
+            activate CustomerRepository
+
+            CustomerRepository --> Controller : customer
+
+            deactivate CustomerRepository
+
+            Controller -> JobOpeningService : listJobOpeningsByCustomer(customer)
+
+            activate JobOpeningService
+
+            JobOpeningService --> Controller : jobOpeningList
+
+            deactivate JobOpeningService
+
+            Controller --> UI : jobOpeningList
+
+        deactivate Controller
+
+        UI --> Actor : display jobOpeningList
+
+    deactivate UI
+
+deactivate Actor
+@enduml

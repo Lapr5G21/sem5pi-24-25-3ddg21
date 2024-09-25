@@ -1,0 +1,59 @@
+@startuml
+'skinparam
+skinparam handwritten true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+'Entidades
+class AddBackofficeUserUI <<presentation>> {
+- showBackofficeRoles()
+- doShow(roles : Set<Role>)
+- buildRolesMenu(roles : Set<Role>)
+- headline()
+}
+class AddBackofficeUserController <<application>> {
+- getBackofficeRoles()
+- getGeneratedPassword()
+- addBackofficeUser(email : String, password : String, firstName : String, lastname : String, email : String, roles : Set<Role>)
+- addBackofficeUser(email : String, password : String, firstName : String, lastname : String, email : String, roles : Set<Role>, time : CurrentTimeCalendars)
+
+}
+class PersistenceContext <<persistence>> {
+- repositories()
+}
+class RepositoryFactory <<factory>> {
+- users()
+}
+
+class UserRepository <<repository>> {
+- save(user : SystemUser)
+}
+class Jobs4uRoles <<domain>> {
+- backofficeValues()
+}
+class PasswordGenerator <<domain>> {
+- generatePassword()
+}
+class AuthorizationService <<service>> {
+- ensureAuthenticatedUserHasAnyOf(roles : Set<Role>)
+}
+class UserManagementService <<service>> {
+- registerUser(email : String, password : String, firstName : String, lastname : String, email : String, roles : Set<Role>, time : CurrentTimeCalendars)
+}
+class SystemUserBuilder <<builder>>
+class SystemUser <<domain>>
+
+'Associações
+AddBackofficeUserUI --> AddBackofficeUserController : theController
+UserManagementService --> PersistenceContext : Persistence
+PersistenceContext --> RepositoryFactory : factory
+RepositoryFactory --> UserRepository : userRepository
+AddBackofficeUserController --> Jobs4uRoles : jobs4uRoles
+AddBackofficeUserController --> PasswordGenerator : passwordGenerator
+AddBackofficeUserController --> AuthorizationService : authz
+AddBackofficeUserController --> UserManagementService : userSvc
+UserManagementService --> SystemUserBuilder : userBuilder
+SystemUserBuilder --> SystemUser
+UserManagementService --> UserRepository : userRepository
+@enduml

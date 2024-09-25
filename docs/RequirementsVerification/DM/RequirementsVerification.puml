@@ -1,0 +1,121 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+package JobOpeningAggregate {
+ entity JobOpening <<root>> <<entity>>{
+ description
+ }
+
+ class JobReference <<Value>> {
+ }
+
+ class NumberOfVacancies <<Value>> {
+ }
+
+ enum ContractType<<Value>> {
+ full-time
+ part-time
+ }
+
+ enum WorkRegime <<Value>>{
+ remote
+ hybrid
+ onsite
+ }
+
+ class JobTitle <<Value>> {
+ }
+ }
+
+ package JobOpeningProcessAggregate {
+     class JobOpeningProcess <<Entity>> {
+      }
+
+      enum JobOpeningStatus <<Value>>{
+      Application
+      Screening
+      Interview
+      Analysis
+      Result
+      }
+
+
+     class JobOpeningApplicationIntervalDate<<Value>>{}
+     class JobOpeningScreeningIntervalDate<<Value>>{}
+     class JobOpeningInterviewIntervalDate<<Value>>{}
+     class JobOpeningAnalysisIntervalDate<<Value>>{}
+     class JobOpeningResultIntervalDate<<Value>>{}
+ }
+
+'ApplicationAggregate
+package ApplicationAggregate {
+  entity Application<<entity>> <<root>>  {}
+
+  class ApplicationDate <<Value>> {
+  }
+
+  enum ApplicationStatus <<Value>> {
+  Approved
+  Denied
+  WaitingInterview
+  InProgress
+  }
+}
+
+'CustomerEmployeeAggregate
+package CustomerEmployeeAggregate{
+entity CustomerEmployee <<entity>> <<root>>{
+}
+}
+
+'CustomerManagerAggregate
+package CustomerManagerAggregate{
+entity CustomerManager<<entity>> <<root>> { }
+}
+
+'CompanyAggregate
+package CompanyAggregate {
+entity Company <<entity>> <<root>>{
+}
+
+class CompanyName <<Value>>{}
+
+class CompanyAddress <<Value>>{}
+
+}
+
+
+'JobOpening
+JobOpening "1" --> "1" JobTitle : contains
+JobOpening "1" --> "1" ContractType
+JobOpening "1" --> "1" WorkRegime : contains
+JobOpening "1" --> "1" NumberOfVacancies : has
+
+JobOpening "1" --> "1"  JobReference
+JobOpening "1" -> "1" Company
+JobOpening "1" --> "1..*" JobOpeningProcess : has
+JobOpeningProcess "1" --> "1..*" JobOpeningStatus : has
+JobOpening "1" ---> "1" Application : has
+
+'JobOpeningProcess
+JobOpeningProcess "1" --> "1" JobOpeningApplicationIntervalDate
+JobOpeningProcess "1" --> "1" JobOpeningScreeningIntervalDate
+JobOpeningProcess "1" --> "0..1" JobOpeningInterviewIntervalDate
+JobOpeningProcess "1" --> "0..1" JobOpeningAnalysisIntervalDate
+JobOpeningProcess "1" --> "1" JobOpeningResultIntervalDate
+
+'Company
+CustomerManager "1" -> "0..*"JobOpening : creates
+CustomerEmployee "1" --> "1..*" Company :   belongs to
+Company "1" --> "1" CompanyName : has
+Company "1" --> "1" CompanyAddress : is located
+
+'Application
+Application "1" --> "1" ApplicationDate
+
+Application "1" ---> "1" ApplicationStatus
+
+
+
+@enduml

@@ -1,0 +1,105 @@
+@startuml
+title Generate Interview Model
+
+actor CostumerManager as Actor
+
+participant "GenerateInterviewTemplateUI" as UI
+participant "GenerateInterviewTemplateController" as Controller
+participant "PersistenceContext" as Persistence
+participant "RepositoryFactory" as Factory
+participant "JobReference" as JobReferenceDomain
+participant "InterviewModel" as InterviewModelDomain
+database "JobOpeningRepository" as JobOpeningRepository
+database "InterviewModelRepository" as InterviewModelRepository
+
+activate Actor
+
+Actor -> UI: Exports interview template
+    activate UI
+
+    UI -> Controller: create()
+
+    UI -> Controller : listAllJobOpenings()
+
+        activate Controller
+
+            Controller -> Persistence : create()
+
+            activate Persistence
+
+            Persistence -> Factory : factory()
+
+            deactivate Persistence
+
+            Factory --> Controller : factory
+
+
+            Controller -> Factory : jobOpenings()
+
+            activate Factory
+
+            Factory --> Controller : JobOpeningRepository
+
+            deactivate Factory
+
+            Controller -> JobOpeningRepository : findAllOpen()
+
+            activate JobOpeningRepository
+
+            JobOpeningRepository --> Controller : jobOpenings
+
+            deactivate JobOpeningRepository
+
+            Controller --> UI : jobOpenings
+
+            deactivate Controller
+
+            UI --> Actor : asks to select a jobOpening
+
+            Actor -> UI : selects the jobOpening
+
+            UI -> Controller : findPluginByJobReference(jobReference)
+
+            activate Controller
+
+                Controller -> Factory : interviewmodels()
+
+                activate Factory
+
+                Factory --> Controller : interviewRepository
+
+                deactivate Factory
+
+                Controller -> InterviewModelRepository : findByJobReference(jobReference)
+
+                activate InterviewModelRepository
+
+                InterviewModelRepository --> Controller : interviewModel
+
+                deactivate InterviewModelRepository
+
+                Controller --> UI : interviewModel
+
+                deactivate Controller
+
+                UI -> Controller : generateAndExportInterviewTemplate(interviewModel)
+
+                activate Controller
+
+                Controller -> InterviewModelPlugin : generateTemplateInterviewModel()
+
+                activate InterviewModelPlugin
+
+                InterviewModelPlugin --> Controller : interview model template
+
+                deactivate InterviewModelPlugin
+
+                Controller --> UI : interviewModel template
+
+                deactivate Controller
+
+                UI --> Actor : interviewModelTemplate
+
+            deactivate UI
+        deactivate Actor
+@enduml

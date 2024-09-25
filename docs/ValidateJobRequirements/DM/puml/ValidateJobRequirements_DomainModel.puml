@@ -1,0 +1,76 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+package JobOpeningAggregate {
+ entity JobOpening <<root>> <<entity>>{
+ description
+ }
+
+ class JobReference <<Value>> {
+ }
+
+ class NumberOfVacancies <<Value>> {
+ }
+
+ class ContractType<<Value>> {
+
+ }
+
+ class WorkRegime <<Value>>{
+
+ }
+
+ class JobTitle <<Value>> {
+ }
+ }
+
+package JobRequirementsAggregate {
+entity JobRequirements<<root>> <<entity>> {
+
+     }
+
+     class JobRequirementsPlugin<<Value>> {
+
+     }
+
+  }
+
+'ApplicationAggregate
+package ApplicationAggregate {
+  entity Application<<entity>> <<root>>  {}
+
+  class ApplicationDate <<Value>> {
+  }
+
+  enum ApplicationStatus <<Value>> {
+  Approved
+  Denied
+  WaitingInterview
+  InProgress
+  }
+}
+
+'JobRequirements
+JobRequirements "1" --> "1" JobRequirementsPlugin
+
+'JobOpening
+JobOpening "1" --> "1" JobTitle : contains
+JobOpening "1" --> "1" ContractType
+JobOpening "1" --> "1" WorkRegime : contains
+JobOpening "1" --> "1" NumberOfVacancies : has
+JobOpening "1" --> "1" JobRequirements : requires
+JobOpening "1" --> "1"  JobReference
+
+
+
+JobOpening "1" ---> "1" Application : has
+
+
+'Application
+Application "1" --> "1" ApplicationDate
+Application "1" ---> "1" ApplicationStatus
+
+
+
+@enduml

@@ -1,0 +1,103 @@
+@startuml
+title Generate Interview Model
+
+actor CostumerManager as Actor
+
+participant "GenerateJobRequirementTemplateUI" as UI
+participant "GenerateJobRequirementTemplateController" as Controller
+participant "PersistenceContext" as Persistence
+participant "RepositoryFactory" as Factory
+database "JobOpeningRepository" as JobOpeningRepository
+database "JobRequirementRepository" as JobRequirementRepository
+
+activate Actor
+
+Actor -> UI: Exports jobRequirements template
+    activate UI
+
+    UI -> Controller: create()
+
+    UI -> Controller : listAllJobOpenings()
+
+        activate Controller
+
+            Controller -> Persistence : create()
+
+            activate Persistence
+
+            Persistence -> Factory : factory()
+
+            deactivate Persistence
+
+            Factory --> Controller : factory
+
+
+            Controller -> Factory : jobOpenings()
+
+            activate Factory
+
+            Factory --> Controller : JobOpeningRepository
+
+            deactivate Factory
+
+            Controller -> JobOpeningRepository : findAllOpen()
+
+            activate JobOpeningRepository
+
+            JobOpeningRepository --> Controller : jobOpenings
+
+            deactivate JobOpeningRepository
+
+            Controller --> UI : jobOpenings
+
+            deactivate Controller
+
+            UI --> Actor : asks to select a jobOpening
+
+            Actor -> UI : selects the jobOpening
+
+            UI -> Controller : findPluginByJobReference(jobReference)
+
+            activate Controller
+
+                Controller -> Factory : jobRequirements()
+
+                activate Factory
+
+                Factory --> Controller : jobRequirementRepository
+
+                deactivate Factory
+
+                Controller -> JobRequirementRepository : findByJobReference(jobReference)
+
+                activate JobRequirementRepository
+
+                JobRequirementRepository --> Controller : jobRequirement
+
+                deactivate JobRequirementRepository
+
+                Controller --> UI : jobRequirement
+
+                deactivate Controller
+
+                UI -> Controller : generateAndExportJobRequirementTemplate(jobRequirement)
+
+                activate Controller
+
+                Controller -> JobRequirementPlugin : generateTemplateJobRequirement()
+
+                activate JobRequirementPlugin
+
+                JobRequirementPlugin --> Controller : job requirement template
+
+                deactivate JobRequirementPlugin
+
+                Controller --> UI : job requirement template
+
+                deactivate Controller
+
+                UI --> Actor : job requirement template
+
+            deactivate UI
+        deactivate Actor
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+
+
+entity Company <<class>> {}
+
+entity Candidate <<entity>> <<root>> {}
+
+entity CustomerManager<<entity>> <<root>> { }
+
+
+CustomerManager "1" --> "1.." Candidate : sents an email informing the result
+CustomerManager "1" --> "1" Company : sents an email informing the result
+
+@enduml

@@ -1,0 +1,91 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+package JobOpeningAggregate {
+ entity JobOpening <<root>> <<entity>>{
+ description
+ }
+
+ class JobReference <<Value>> {
+ }
+
+ class NumberOfVacancies <<Value>> {
+ }
+
+ enum ContractType<<Value>> {
+ full-time
+ part-time
+ }
+
+ enum WorkRegime <<Value>>{
+ remote
+ hybrid
+ onsite
+ }
+
+ class JobTitle <<Value>> {
+ }
+ }
+
+'ApplicationAggregate
+package ApplicationAggregate {
+  entity Application<<entity>> <<root>>  {}
+
+  class ApplicationDate <<Value>> {
+  }
+
+  enum ApplicationStatus <<Value>> {
+  Approved
+  Denied
+  WaitingInterview
+  InProgress
+  }
+}
+
+'CandidateAggregate
+package CandidateAggregate{
+entity Candidate <<entity>> <<root>> {
+}
+}
+
+'CustomerManagerAggregate
+package CustomerManagerAggregate{
+entity CustomerManager<<entity>> <<root>> { }
+}
+
+'CompanyAggregate
+package CompanyAggregate {
+entity Company <<entity>> <<root>>{
+}
+
+class CompanyName <<Value>>{}
+
+class CompanyAddress <<Value>>{}
+
+}
+
+'JobOpening
+JobOpening "1" --> "1" JobTitle : contains
+JobOpening "1" --> "1" ContractType
+JobOpening "1" --> "1" WorkRegime : contains
+JobOpening "1" --> "1" NumberOfVacancies : has
+JobOpening "1" --> "1"  JobReference
+JobOpening "1" --> "1" Company
+
+JobOpening "1" --> "1" Application : has
+
+'Candidate
+Candidate "1..*" --> "1" Application : makes
+
+'Company
+CustomerManager "1" -> "0..*"JobOpening : creates
+CustomerEmployee "1" --> "1..*" Company :   belongs to
+Company "1" --> "1" CompanyName : has
+Company "1" --> "1" CompanyAddress : is located
+
+'Application
+Application "1" --> "1" ApplicationDate
+Application "1" ---> "1" ApplicationStatus
+
+@enduml

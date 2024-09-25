@@ -1,0 +1,105 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+package JobOpeningAggregate {
+  entity JobOpening <<root>> <<entity>>{
+    description
+  }
+
+  class JobReference <<Value>> {}
+  class NumberOfVacancies <<Value>> {}
+  class ContractType<<Value>> {}
+  class WorkRegime <<Value>>{}
+  class JobTitle <<Value>> {}
+}
+
+package JobOpeningProcessAggregate {
+  class JobOpeningProcess <<Entity>> {}
+
+  enum JobOpeningPhases <<Value>>{
+    Application
+    Screening
+    Interview
+    Analysis
+    Result
+  }
+
+  class JobOpeningPhase{}
+  class StartDate<<value>>{}
+  class EndDate<<value>>{}
+
+  enum JobOpeningStatus <<value>>{
+    OPEN
+    CLOSED
+  }
+}
+
+package JobRequirementsAggregate {
+  entity JobRequirements<<root>> <<entity>> {}
+  class JobRequirementsPlugin<<Value>> {}
+}
+
+
+package ApplicationAggregate {
+  entity Application<<entity>> <<root>>  {}
+  class ApplicationDate <<Value>> {}
+  enum ApplicationStatus <<Value>> {
+    Approved
+    Denied
+    WaitingInterview
+    InProgress
+  }
+}
+
+
+package ValidationService {
+  entity ANTLRValidator <<service>> {}
+}
+
+
+package CandidateAggregate{
+  entity Candidate <<entity>> <<root>> {}
+  class PhoneNumber<<Value>>{}
+}
+
+
+package CustomerManagerAggregate{
+  entity CustomerManager<<entity>> <<root>> { }
+}
+
+
+
+JobRequirements "1" --> "1" JobRequirementsPlugin
+
+ANTLRValidator --> JobRequirements : validates
+
+JobOpening "1" --> "1" JobTitle
+JobOpening "1" --> "1" ContractType
+JobOpening "1" --> "1" WorkRegime
+JobOpening "1" --> "1" NumberOfVacancies
+JobOpening "1" --> "1" JobRequirements
+JobOpening "1" --> "1" JobReference
+
+JobOpeningProcess "1" --> "1..*" JobOpening : has
+
+
+JobOpeningProcess "1" --> "1" JobOpeningPhase
+JobOpeningPhase "1" --> "1" JobOpeningPhases
+JobOpeningPhase "1" --> "0..1" StartDate
+JobOpeningPhase "1" --> "0..1" EndDate
+JobOpeningPhase "1" --> "1" JobOpeningStatus
+
+Candidate "1" --> "1" PhoneNumber : has
+
+CustomerManager "1" -> "0..*" JobOpening : creates
+
+
+Application "1" --> "1" ApplicationDate
+
+Application "1" --> "1" ApplicationStatus
+Application "1" --> "1" Candidate : belongs to
+Application "1" --> "1" JobOpening : has
+
+
+@enduml

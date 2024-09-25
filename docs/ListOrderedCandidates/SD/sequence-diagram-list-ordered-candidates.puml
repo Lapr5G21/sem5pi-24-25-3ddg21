@@ -1,0 +1,113 @@
+@startuml
+'http://plantuml.com/skinparam.html
+skinparam monochrome false
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor CustomerManager as manager
+participant ListOrderedCandidatesUI as UI <<presentation>>
+participant ListOrderedCandidatesController as Controller <<application>>
+participant AuthorizationService as AuthzService<<service>>
+participant JobApplicationService as ApplicationService<<service>>
+participant InterviewService as InterviewService<<service>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database JobApplicationRepository as JobApplicationRepository <<repository>>
+database InterviewRepository as InterviewRepository <<repository>>
+
+
+activate manager
+activate UI
+manager -> UI: List an ordered list of candidates, using the job interview points
+
+        UI -> Controller: create
+        activate Controller
+
+UI --> manager : Asks for job reference
+
+manager -> UI : job reference
+
+UI -> Controller : allApplications(job reference)
+
+        Controller -> AuthzService : ensureAuthenticatedUserHasAnyOf(Jobs4uRoles.POWER_USER,Jobs4uRoles.CUSTOMER_MANAGER)
+        deactivate AuthzService
+
+        Controller -> ApplicationService : listAllApplications(job reference)
+        activate ApplicationService
+
+        ApplicationService -> Persistence : repositories()
+        activate Persistence
+
+        Persistence -> Factory : create()
+
+        Persistence --> ApplicationService : factory
+        deactivate Persistence
+
+        ApplicationService -> Factory : applications()
+        activate Factory
+
+        Factory -> JobApplicationRepository : create()
+
+        Factory -> ApplicationService : applicationRepository
+        deactivate Factory
+
+        ApplicationService -> JobApplicationRepository : findByJobReference()
+        activate JobApplicationRepository
+
+        JobApplicationRepository --> ApplicationService : applications
+        deactivate JobApplicationRepository
+
+        ApplicationService --> Controller : applications
+        deactivate ApplicationService
+
+        Controller --> UI : applications
+
+        UI -> Controller : findInterviewsAndSortCandidates(applications)
+
+        Controller -> InterviewService : associateInterviewsAndCandidates(applications)
+        activate InterviewService
+
+                InterviewService -> Persistence : repositories()
+                activate Persistence
+
+                Persistence -> Factory : create()
+
+                Persistence --> InterviewService : factory
+                deactivate Persistence
+
+                InterviewService -> Factory : interviews()
+                activate Factory
+
+                Factory -> InterviewRepository : create()
+
+                Factory -> InterviewService : interviewRepository
+                deactivate Factory
+
+                loop for each application id
+                InterviewService -> InterviewRepository : findInterview(applicationId)
+                activate InterviewRepository
+
+                InterviewRepository --> InterviewService : interview
+                deactivate InterviewRepository
+
+                InterviewService -> Map.Entry **: put(candidate,interview)
+                note right of InterviewService: Stores the candidate-interview pair in an entry<key,value>
+
+                end loop
+
+                InterviewService --> Controller : interviewsAndCandidatesMap
+
+                Controller -> InterviewService: sortingCandidates(interviewsAndCandidatesMap)
+
+        InterviewService --> Controller : orderedCandidates
+        deactivate InterviewService
+
+        Controller --> UI : orderedCandidates
+        deactivate Controller
+
+    UI--> manager : display ordered candidates
+
+deactivate UI
+deactivate manager
+@enduml

@@ -1,0 +1,132 @@
+@startuml
+'http://plantuml.com/skinparam.html
+skinparam handwritten true
+skinparam monochrome true
+skinparam packageStyle rect
+skinparam defaultFontName FG Virgil
+skinparam shadowing false
+
+actor Customer as op
+participant RegisterCustomerUI as UI <<presentation>>
+participant RegisterCustomerController as Controller <<application>>
+participant "passwordGenerator : PasswordGenerator" as PasswordGenerator<<domain>>
+participant UserManagementService as UserService<<service>>
+participant AuthorizationService as AuthzService<<service>>
+participant SystemUserBuilder as Builder <<builder>>
+participant CustomerBuilder as CustomerBuilder <<builder>>
+participant "systemUser:SystemUser" as Domain <<domain>>
+participant "customer:Customer" as Domain <<domain>>
+participant PersistenceContext as Persistence <<persistence>>
+participant RepositoryFactory as Factory <<factory>>
+database UserRepository as UserRepository <<repository>>
+database CustomerRepository as CustomerRepository <<repository>>
+participant UserSession as UserSession
+
+activate op
+
+op --> UI: Register Customer
+activate UI
+
+    UI -> Controller: create
+    UI --> op: Ask customer information
+    op --> UI: First Name, last name, email, address,customerCode, customerName
+            UI --> Controller : getGeneratedPassword()
+            activate Controller
+
+            Controller --> PasswordGenerator : create()
+
+            Controller --> PasswordGenerator : generatePassword()
+
+            activate PasswordGenerator
+
+            PasswordGenerator --> Controller : password
+            deactivate PasswordGenerator
+
+            Controller --> UI : password
+            deactivate Controller
+
+        UI -> Controller: addCustomer(address, email,password,firstName,lastName, email, roles,customerCode, customerName)
+        activate Controller
+
+        Controller --> AuthzService : ensureAuthenticatedUserHasAnyOf(Jobs4uRoles.POWER_USER,Jobs4uRoles.OPERATOR)
+
+        activate AuthzService
+
+        AuthzService --> UserSession : session()
+
+        activate UserSession
+
+        UserSession --> AuthzService : session
+
+        deactivate UserSession
+
+        AuthzService --> UserSession : authenticatedUser()
+
+        activate UserSession
+
+        UserSession --> AuthzService : customerManager
+
+        deactivate UserSession
+
+        AuthzService --> Controller : customerManager
+
+        deactivate AuthzService
+
+        Controller --> UserService : registerNewUser(email,password,firstName,lastName,email,roles,date)
+
+        ref over UserService : register-user
+
+         Controller --> CustomerBuilder : create()
+
+         activate CustomerBuilder
+         Controller -->  CustomerBuilder : withAddress(address)
+         Controller --> CustomerBuilder : withCustomerManager(customerManagerUser)
+         Controller --> CustomerBuilder : withCustomerCode (customerCode)
+         Controller --> CustomerBuilder : withCustomerName (customerName)
+         Controller --> CustomerBuilder : build()
+
+         CustomerBuilder --> Domain : Customer(user,customerManagerUser,address,customerCode,customerName)
+
+         activate Domain
+
+         Domain --> CustomerBuilder : customer
+
+         deactivate Domain
+
+         CustomerBuilder --> Controller : customer
+         deactivate CustomerBuilder
+         Controller --> Persistence : repositories()
+         activate Persistence
+
+         Persistence --> Factory : create()
+
+         Persistence --> Controller : factory
+         deactivate Persistence
+
+         Controller --> Factory : customers()
+         activate Factory
+
+          Factory --> CustomerRepository : create()
+
+          Factory --> Controller : customerRepository
+          deactivate Factory
+
+          Controller --> CustomerRepository : save(customer)
+
+          activate CustomerRepository
+
+          CustomerRepository -> Controller : customer
+          deactivate CustomerRepository
+
+          Controller --> UI : customer
+          deactivate Controller
+
+          UI --> op : display customer info
+          deactivate UI
+          deactivate op
+
+
+
+
+
+@enduml
