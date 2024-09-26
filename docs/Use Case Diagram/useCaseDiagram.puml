@@ -1,0 +1,74 @@
+@startuml
+
+skinparam packageStyle rectangle
+
+actor "Doctor" as Doctor
+actor "Admin" as Admin
+actor "Nurse" as Nurse
+actor "Technician" as Technician
+actor "Patient" as Patient
+actor "Non-Authenticated Backoffice user" as NonAuthenticatedBackofficeUser
+
+usecase "I want to register new backoffice users" as RegisterBackofficeUsers
+usecase "I want to reset my password" as ResetPassword
+usecase "I want to register for the healthcare application" as RegisterHealthcareApplication
+usecase "I want to update my user profile" as UpdateUserProfile
+usecase "I want to delete my account and all associated data" as DeleteAccount
+usecase "I want to login to the system using my credentials" as LoginBackofficeUser
+usecase "I want to login to the healthcare system using IAM credentials" as LoginPatient
+usecase "I want to create a new patient profile" as CreatePatientProfile
+usecase "I want to edit an existing patient profile" as EditPatientProfile
+usecase "I want to delete a patient profile" as DeletePatientProfile
+usecase "I want to list/search patient profiles by different atributtes" as ListPatientProfiles
+usecase "I want to create a new staff profile" as CreateStaffProfile
+usecase "I want to edit a staff profile" as EditStaffProfile
+usecase "I want to deactivate a staff profile" as DeactivateStaffProfile
+usecase "I want to list/search staff profiles" as ListStaffProfiles
+usecase "I want to request an operation" as RequestOperation
+usecase "I want to update an operation requisition" as UpdateOperationRequisition
+usecase "I want to remove an operation requisition" as RemoveOperationRequisition
+usecase "I want to list/search operation requisitions" as ListOperationRequisitions
+usecase "I want to add new types of operations" as AddNewOperationTypes
+usecase "I want to edit existing operation types" as EditOperationTypes
+usecase "I want to remove obsolete or no longer performed operation types" as RemoveObsoleteOperationTypes
+usecase "I want to list/search operation types" as ListOperationTypes
+
+
+Admin --> RegisterBackofficeUsers
+Admin --> ResetPassword
+Admin --> CreatePatientProfile
+Admin --> EditPatientProfile
+Admin --> DeletePatientProfile
+Admin --> ListPatientProfiles
+Admin --> CreateStaffProfile
+Admin --> EditStaffProfile
+Admin --> DeactivateStaffProfile
+Admin --> ListStaffProfiles
+Admin --> AddNewOperationTypes
+Admin --> EditOperationTypes
+Admin --> RemoveObsoleteOperationTypes
+Admin --> ListOperationTypes
+
+
+Doctor --> ResetPassword
+Doctor --> RequestOperation
+Doctor --> UpdateOperationRequisition
+Doctor --> RemoveOperationRequisition
+Doctor --> ListOperationRequisitions
+
+
+Nurse --> ResetPassword
+ 
+
+Technician --> ResetPassword
+ 
+
+Patient --> RegisterHealthcareApplication
+Patient --> UpdateUserProfile
+Patient --> DeleteAccount
+Patient --> LoginPatient
+
+
+NonAuthenticatedBackofficeUser --> LoginBackofficeUser
+
+@enduml
