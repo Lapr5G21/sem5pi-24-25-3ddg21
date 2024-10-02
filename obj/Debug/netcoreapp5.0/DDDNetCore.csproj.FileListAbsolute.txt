@@ -29,3 +29,34 @@
 /Users/brunaoo25/Desktop/Faculdade/sem5pi2425/sem5pi-24-25-3ddg21/obj/Debug/netcoreapp5.0/DDDNetCore.pdb
 /Users/brunaoo25/Desktop/Faculdade/sem5pi2425/sem5pi-24-25-3ddg21/obj/Debug/netcoreapp5.0/DDDNetCore.genruntimeconfig.cache
 /Users/brunaoo25/Desktop/Faculdade/sem5pi2425/sem5pi-24-25-3ddg21/obj/Debug/netcoreapp5.0/ref/DDDNetCore.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\appsettings.Development.json
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\appsettings.json
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\DDDNetCore.exe
+C:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\DDDNetCore.deps.json
+C:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\DDDNetCore.runtimeconfig.json
+C:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\DDDNetCore.runtimeconfig.dev.json
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\DDDNetCore.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\DDDNetCore.pdb
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Microsoft.AspNetCore.JsonPatch.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Microsoft.EntityFrameworkCore.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Microsoft.EntityFrameworkCore.InMemory.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Microsoft.EntityFrameworkCore.Relational.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Microsoft.EntityFrameworkCore.Relational.Design.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Newtonsoft.Json.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\bin\Debug\netcoreapp5.0\Newtonsoft.Json.Bson.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.csproj.AssemblyReference.cache
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.AssemblyInfoInputs.cache
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.AssemblyInfo.cs
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.csproj.CoreCompileInputs.cache
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.MvcApplicationPartsAssemblyInfo.cache
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.sourcelink.json
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.RazorTargetAssemblyInfo.cache
+C:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.csproj.Up2Date
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\refint\DDDNetCore.dll
+c:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.pdb
+C:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\DDDNetCore.genruntimeconfig.cache
+C:\Users\joao_.LAPTOP-SSCOTB99\Desktop\ISEP\3 ANO\LAPR5\sem5pi-24-25-3ddg21\obj\Debug\netcoreapp5.0\ref\DDDNetCore.dll

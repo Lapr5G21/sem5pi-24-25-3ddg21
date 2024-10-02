@@ -5526,19 +5526,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/brunaoo25/.nuget/packages/": {}
+    "C:\\Users\\joao_.LAPTOP-SSCOTB99\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/brunaoo25/Desktop/Faculdade/sem5pi2425/sem5pi-24-25-3ddg21/DDDNetCore.csproj",
+      "projectUniqueName": "C:\\Users\\joao_.LAPTOP-SSCOTB99\\Desktop\\ISEP\\3 ANO\\LAPR5\\sem5pi-24-25-3ddg21\\DDDNetCore.csproj",
       "projectName": "DDDNetCore",
-      "projectPath": "/Users/brunaoo25/Desktop/Faculdade/sem5pi2425/sem5pi-24-25-3ddg21/DDDNetCore.csproj",
-      "packagesPath": "/Users/brunaoo25/.nuget/packages/",
-      "outputPath": "/Users/brunaoo25/Desktop/Faculdade/sem5pi2425/sem5pi-24-25-3ddg21/obj/",
+      "projectPath": "C:\\Users\\joao_.LAPTOP-SSCOTB99\\Desktop\\ISEP\\3 ANO\\LAPR5\\sem5pi-24-25-3ddg21\\DDDNetCore.csproj",
+      "packagesPath": "C:\\Users\\joao_.LAPTOP-SSCOTB99\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\joao_.LAPTOP-SSCOTB99\\Desktop\\ISEP\\3 ANO\\LAPR5\\sem5pi-24-25-3ddg21\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/brunaoo25/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\joao_.LAPTOP-SSCOTB99\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp5.0"
@@ -5612,7 +5612,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.401/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401\\RuntimeIdentifierGraph.json"
       }
     }
   },

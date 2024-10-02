@@ -1,0 +1,11 @@
+
+bin/Debug/netcoreapp5.0/DDDNetCore.runtimeconfig.dev.json
+bin/Debug/netcoreapp5.0/DDDNetCore.runtimeconfig.dev.json
+obj/DDDNetCore.csproj.nuget.dgspec.json
+obj/DDDNetCore.csproj.nuget.g.props
+obj/Debug/netcoreapp5.0/DDDNetCore.AssemblyInfo.cs
+obj/Debug/netcoreapp5.0/DDDNetCore.csproj.FileListAbsolute.txt
+obj/Debug/netcoreapp5.0/DDDNetCore.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/netcoreapp5.0/DDDNetCore.sourcelink.json
+obj/project.assets.json
+obj/project.nuget.cache
