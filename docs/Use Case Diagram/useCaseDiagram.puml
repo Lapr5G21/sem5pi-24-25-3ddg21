@@ -8,7 +8,7 @@ actor "Admin" as Admin
 actor "Nurse" as Nurse
 actor "Technician" as Technician
 actor "Patient" as Patient
-actor "Non-Authenticated Backoffice user" as NonAuthenticatedBackofficeUser
+
 
 usecase "I want to register new backoffice users" as RegisterBackofficeUsers
 usecase "I want to reset my password" as ResetPassword
@@ -49,6 +49,8 @@ Admin --> AddNewOperationTypes
 Admin --> EditOperationTypes
 Admin --> RemoveObsoleteOperationTypes
 Admin --> ListOperationTypes
+Admin --> LoginBackofficeUser
+
 
 
 Doctor --> ResetPassword
@@ -56,20 +58,20 @@ Doctor --> RequestOperation
 Doctor --> UpdateOperationRequisition
 Doctor --> RemoveOperationRequisition
 Doctor --> ListOperationRequisitions
+Doctor --> LoginBackofficeUser
 
 
 Nurse --> ResetPassword
+Nurse --> LoginBackofficeUser
  
 
 Technician --> ResetPassword
+Technician --> LoginBackofficeUser
  
 
 Patient --> RegisterHealthcareApplication
 Patient --> UpdateUserProfile
 Patient --> DeleteAccount
 Patient --> LoginPatient
-
-
-NonAuthenticatedBackofficeUser --> LoginBackofficeUser
 
 @enduml

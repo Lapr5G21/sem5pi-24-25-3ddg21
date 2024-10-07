@@ -1,0 +1,39 @@
+@startuml
+
+autonumber
+participant BE as "Backend Management" <<system (C4)>>
+participant DB as "Database"
+
+?o-> BE : POST /api/users/patients
+activate BE
+
+BE -> DB : get patient
+
+activate DB 
+
+DB -> BE : patient
+
+deactivate DB 
+
+
+BE -> DB : save user
+
+activate DB 
+
+DB -> BE : user 
+
+deactivate DB
+
+BE -> DB : update pacient
+
+activate DB 
+
+DB -> BE : pacient
+
+deactivate DB 
+
+<- BE : 201 Created
+
+deactivate BE
+
+@enduml
