@@ -10,15 +10,10 @@ hide methods
 
 package UserAggregate #00ff00 {
     entity User <<root>> <<entity>> {}
-
-    class FirstName <<ValueObject>> {}
-    class LastName <<ValueObject>> {}
     class Email <<ValueObject>> {}
     class Username <<ValueObject>> {}
     class Role <<ValueObject>> {}
 
-    User "1" --> "1" FirstName 
-    User "1" --> "1" LastName 
     User "1" --> "1" Email 
     User "1" --> "1" Username
     User "1" --> "1" Role 
@@ -29,38 +24,54 @@ package StaffAggregate #ffaa00 {
 
     class LicenseNumber <<ValueObject>> {}
     class Specialization <<ValueObject>> {}  /' needs to be checked if its value '/
-    class ContactInformation <<ValueObject>> {}
-    class AvailabilitySlots {} /' ???? '/
+    class StaffContactInformation <<ValueObject>> {}
+    class StaffEmail<<ValueObject>> {}
+    class StaffPhoneNumber<<ValueObject>> {}
+    class AvailabilitySlots {}
+    class StaffFirstName <<ValueObject>> {}
+    class StaffLastName <<ValueObject>> {}
 
-    Staff "1" --> "1" User
+    Staff "1" --> "0..1" User
     Staff "1" --> "1" LicenseNumber
     Staff "1" --> "1" Specialization
-    Staff "1" --> "1" ContactInformation
+    Staff "1" --> "1" StaffContactInformation
     Staff "1" --> "1.." AvailabilitySlots
+    Staff "1" --> "1" StaffFirstName
+    Staff "1" --> "1" StaffLastName
+    StaffContactInformation "1" --> "1" StaffEmail
+    StaffContactInformation "1" --> "1" StaffPhoneNumber
 }
 
 package PatientAggregate #aabbdd {
     entity Patient <<root>> <<entity>> {}
-
     class BirthDate <<ValueObject>> {}
     class Gender <<enum>> <<ValueObject>> {
         male 
         female
+        ratherNotSay
     }
     class MedicalRecordNumber <<ValueObject>> {}
-    class ContactInformation <<ValueObject>> {} /' Repeated class '/
+    class PatientContactInformation <<ValueObject>> {} /' Repeated class '/
+    class PatientEmail<<ValueObject>> {}
+    class PatientPhoneNumber<<ValueObject>> {}
     class Allergies <<ValueObject>> {}
     class EmergencyContact <<ValueObject>> {}
-    class AppointmentHistory <<ValueObject>> {} /' ????? '/
+    class AppointmentHistory <<ValueObject>> {}
+    class PatientFirstName <<ValueObject>> {}
+    class PatientLastName <<ValueObject>> {}
 
-    Patient "1" --> "1" User 
+    Patient "1" --> "0..1" User 
     Patient "1" --> "1" BirthDate 
     Patient "1" --> "1" Gender 
     Patient "1" --> "1" MedicalRecordNumber 
-    Patient "1" --> "1" ContactInformation 
+    Patient "1" --> "1" PatientContactInformation 
     Patient "1" --> "0.." Allergies
     Patient "1" --> "1" EmergencyContact
     Patient "1" --> "0.." AppointmentHistory 
+    Patient "1" --> "1" PatientFirstName
+    Patient "1" --> "1" PatientLastName
+    PatientContactInformation "1" --> "1" PatientEmail
+    PatientContactInformation "1" --> "1" PatientPhoneNumber
 }
 
 
