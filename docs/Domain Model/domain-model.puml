@@ -1,0 +1,158 @@
+@startuml
+
+skinparam packageStyle rectangle
+skinparam package {
+    BackgroundColor #ffffff
+    BorderColor #000000
+}
+
+hide methods
+
+package UserAggregate #00ff00 {
+    entity User <<root>> <<entity>> {}
+
+    class FirstName <<ValueObject>> {}
+    class LastName <<ValueObject>> {}
+    class Email <<ValueObject>> {}
+    class Username <<ValueObject>> {}
+    class Role <<ValueObject>> {}
+
+    User "1" --> "1" FirstName 
+    User "1" --> "1" LastName 
+    User "1" --> "1" Email 
+    User "1" --> "1" Username
+    User "1" --> "1" Role 
+}
+
+package StaffAggregate #ffaa00 {
+    entity Staff <<root>> <<entity>> {}
+
+    class LicenseNumber <<ValueObject>> {}
+    class Specialization <<ValueObject>> {}  /' needs to be checked if its value '/
+    class ContactInformation <<ValueObject>> {}
+    class AvailabilitySlots {} /' ???? '/
+
+    Staff "1" --> "1" User
+    Staff "1" --> "1" LicenseNumber
+    Staff "1" --> "1" Specialization
+    Staff "1" --> "1" ContactInformation
+    Staff "1" --> "1.." AvailabilitySlots
+}
+
+package PatientAggregate #aabbdd {
+    entity Patient <<root>> <<entity>> {}
+
+    class BirthDate <<ValueObject>> {}
+    class Gender <<enum>> <<ValueObject>> {
+        male 
+        female
+    }
+    class MedicalRecordNumber <<ValueObject>> {}
+    class ContactInformation <<ValueObject>> {} /' Repeated class '/
+    class Allergies <<ValueObject>> {}
+    class EmergencyContact <<ValueObject>> {}
+    class AppointmentHistory <<ValueObject>> {} /' ????? '/
+
+    Patient "1" --> "1" User 
+    Patient "1" --> "1" BirthDate 
+    Patient "1" --> "1" Gender 
+    Patient "1" --> "1" MedicalRecordNumber 
+    Patient "1" --> "1" ContactInformation 
+    Patient "1" --> "0.." Allergies
+    Patient "1" --> "1" EmergencyContact
+    Patient "1" --> "0.." AppointmentHistory 
+}
+
+
+package DoctorAggregate #00aaff {
+    entity Doctor <<root>> <<entity>> {}
+
+    Doctor "1" -> "1" Staff : is a 
+}
+
+package NurseAggregate #aaff0f {
+    entity Nurse <<root>> <<entity>> {}
+
+    Nurse "1" -> "1" Staff : is a
+}
+
+package AdminAggregate #bbaa00 {
+    entity Admin <<root>> <<entity>> {}
+
+    Admin "1" --> "1" Staff : is a
+}
+
+package TechnicianAggregate #aaffcc {
+    entity Technician <<root>> <<entity>> {}
+
+    Technician "1" --> "1" Staff : is a
+}
+
+
+package OperationRequestAggregate #aaaaff {
+    entity OperationRequest <<root>> <<entity>> {}
+
+    class OperationRequestID <<ValueObject>> {}
+    class DeadlineDate <<date>> <<ValueObject>> {}
+    class Priority <<ValueObject>> {}
+
+    OperationRequest "1" --> "1" Doctor : has 
+    OperationRequest "1" --> "1" Patient : has 
+    OperationRequest "1" --> "1" OperationType : has 
+    OperationRequest "1" --> "1" OperationRequestID 
+    OperationRequest "1" --> "1" DeadlineDate
+    OperationRequest "1" --> "1" Priority    
+}
+
+
+package OperationTypeAggregate #bbbbbb {
+    entity OperationType <<root>> <<entity>> {}
+
+    class OperationTypeId <<ValueObject>> {}
+    class OperationTypeName <<ValueObject>> {}
+    class EstimatedDuration <<ValueObject>> {}
+
+    OperationType "1" --> "1" OperationTypeId
+    OperationType "1" --> "1" OperationTypeName
+    OperationType "1" --> "1" EstimatedDuration
+}
+
+
+package AppointmentAggregate #ddccdd {
+    entity Appointment <<root>> <<entity>> {}
+
+    class AppointmentId <<ValueObject>> {}
+    class DateAndTimeOfTheOperation <<ValueObject>> {}
+    enum Status <<enum>> {
+        scheduled
+        completed
+        canceled
+    }
+
+    Appointment "1" --> "1" OperationRequest : has 
+    Appointment "1" --> "1" SurgeryRoom : has 
+    Appointment "1" --> "1" AppointmentId
+    Appointment "1" --> "1" DateAndTimeOfTheOperation 
+    Appointment "1" --> "1" Status 
+}
+
+
+package SurgeryRoomAggregate #ddeeff {
+    entity SurgeryRoom <<root>> <<entity>> {}
+
+    class RoomId <<ValueObject>> {}
+    class Type <<ValueObject>> {}
+    class Capacity <<ValueObject>> {}
+    class Equipment <<ValueObject>> {}
+    enum CurrentStatus <<enum>> <<ValueObject>> {}
+    class MaintenanceSlots <<ValueObject>> {} /' ???? '/
+
+    SurgeryRoom "1" --> "1" RoomId
+    SurgeryRoom "1" --> "1" Type
+    SurgeryRoom "1" --> "1" Capacity
+    SurgeryRoom "1" --> "1.." Equipment
+    SurgeryRoom "1" --> "1" CurrentStatus
+    SurgeryRoom "1" --> "1.." MaintenanceSlots 
+}
+
+@enduml
