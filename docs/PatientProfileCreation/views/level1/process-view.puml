@@ -1,16 +1,16 @@
-@startuml
+@startuml Patient Profile Creation (level 1)
 
-actor Patient as "Patient"
+actor Admin as "Admin"
 participant SYS as "HealthCare System" <<system (C4)>>
 
 activate Patient 
 
-Patient --> SYS : asks to regist for the healthcare system 
+Patient --> SYS : asks to create a patient profile
 
 
 activate SYS 
 
-SYS --> Patient : confirms the registration
+SYS --> Patient : confirms the creation
 
 
 @enduml

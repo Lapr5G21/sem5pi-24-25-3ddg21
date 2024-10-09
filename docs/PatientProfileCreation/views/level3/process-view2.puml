@@ -1,4 +1,4 @@
-@startuml 
+@startuml Patient Profile Creation (level 3 - 2)
 autonumber
 participant CTRL as "UsersController"
 participant SERVICE as "UserService <<service>>"

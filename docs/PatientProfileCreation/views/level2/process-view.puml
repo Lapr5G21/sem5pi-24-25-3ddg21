@@ -1,14 +1,4 @@
-@startuml
-
-autonumber
-participant SYS as "Backend Management" <<system (C4)>>
-
-?o-> SYS : POST /api/users/patients
-activate SYS
-
-SYS -> SYS : registerPatientUser(creatingUserDTO)
-<-- SYS : 201 Created
-deactivate SYS
+@startuml Patient Profile Creation (level 2)
 
 
 @enduml
