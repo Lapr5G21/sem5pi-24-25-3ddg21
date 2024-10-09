@@ -1,22 +1,22 @@
-# US 5.1.19
+# US 5.1.21
 
-As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions 
+As an Admin, I want to edit existing operation types, so that I can update or correct information about the procedure.
 
 ## 2. Requirements
 
 
-**US 5.1.19** As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions  
+**US 5.1.21** As an Admin, I want to edit existing operation types, so that I can update or correct information about the procedure.
 
 
 **Acceptance Criteria:**
 
-- 5.1.19.1 - Doctors can search operation requests by patient name, operation type, priority, and status. 
+- 5.1.21.1 -  Admins can search for and select an existing operation type to edit. 
 
-- 5.1.19.2 -  The system displays a list of operation requests in a searchable and filterable view. 
+- 5.1.21.2 -  Editable fields include operation name, required staff by specialization, and estimated duration. 
 
-- 5.1.19.3 - Each entry in the list includes operation request details (e.g., patient name, operation type, status). 
+- 5.1.21.3 -  Changes are reflected in the system immediately for future operation requests. 
 
-- 5.1.19.4 - Doctors can select an operation request to view, update, or delete it.
+- 5.1.21.4 - Historical data is maintained, but new operation requests will use the updated operation type information. 
 
 ## 3. Views
 

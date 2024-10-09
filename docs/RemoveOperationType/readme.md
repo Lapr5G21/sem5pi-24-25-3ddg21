@@ -1,22 +1,20 @@
-# US 5.1.19
+# US 5.1.22
 
-As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions 
+As an Admin, I want to remove obsolete or no longer performed operation types, so that the system stays current with hospital practices. 
 
 ## 2. Requirements
 
 
-**US 5.1.19** As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions  
+**US 5.1.22** As an Admin, I want to remove obsolete or no longer performed operation types, so that the system stays current with hospital practices. 
 
 
 **Acceptance Criteria:**
 
-- 5.1.19.1 - Doctors can search operation requests by patient name, operation type, priority, and status. 
+- 5.1.22.1 -  Admins can search for and mark operation types as inactive (rather than deleting them) to preserve historical records. 
 
-- 5.1.19.2 -  The system displays a list of operation requests in a searchable and filterable view. 
+- 5.1.22.2 -  - Inactive operation types are no longer available for future scheduling but remain in historical data. 
 
-- 5.1.19.3 - Each entry in the list includes operation request details (e.g., patient name, operation type, status). 
-
-- 5.1.19.4 - Doctors can select an operation request to view, update, or delete it.
+- 5.1.22.3 -  A confirmation prompt is shown before deactivating an operation type. 
 
 ## 3. Views
 
