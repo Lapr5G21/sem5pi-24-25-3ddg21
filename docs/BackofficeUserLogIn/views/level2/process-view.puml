@@ -1,0 +1,14 @@
+@startuml
+
+autonumber
+participant SYS as "Backend Management" <<system (C4)>>
+
+?o-> SYS : POST /api/users/backoffice
+activate SYS
+
+SYS -> SYS : logIn(UserDTO)
+<-- SYS : 201 Logged in
+deactivate SYS
+
+
+@enduml

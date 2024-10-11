@@ -1,0 +1,37 @@
+@startuml 
+autonumber
+participant CTRL as "UsersController"
+participant SERVICE as "UserService <<service>>"
+participant User as "User <<domain>>"
+participant USERREPO as "UserRepository"
+participant BackofficeRepository as "Backoffice User Repository"
+
+?o-> CTRL : POST /api/users/backoffice
+activate CTRL
+
+CTRL -> SERVICE : logInBackofficeUser(UserDTO)
+activate SERVICE
+
+SERVICE -> BackofficeRepository : GetByEmailAsync(UserDTO.email)
+activate BackofficeRepository
+
+BackofficeRepository -> SERVICE : return user data
+deactivate BackofficeRepository
+
+alt valid credentials
+    SERVICE -> User : validate password(UserDTO.password)
+    activate User
+
+    User -> SERVICE : password is valid
+    deactivate User
+
+    SERVICE -> CTRL : return UserDTO with session info
+    <-- CTRL : 201 Logged in
+else invalid credentials
+    SERVICE -> CTRL : return error
+    <-- CTRL : 401 Unauthorized
+end
+
+deactivate SERVICE
+deactivate CTRL
+@enduml

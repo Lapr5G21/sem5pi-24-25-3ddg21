@@ -1,0 +1,20 @@
+@startuml
+
+actor BackofficeUser as "Backoffice User"
+participant SYS as "Backoffice System" <<system (C4)>>
+
+activate BackofficeUser
+
+BackofficeUser --> SYS : request login
+
+activate SYS
+
+SYS --> BackofficeUser : prompt for email and password
+
+BackofficeUser --> SYS : submit credentials
+
+SYS --> BackofficeUser : validate credentials
+
+deactivate SYS
+deactivate BackofficeUser
+@enduml
