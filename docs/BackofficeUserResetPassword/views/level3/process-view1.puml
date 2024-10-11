@@ -1,0 +1,39 @@
+@startuml
+
+autonumber
+participant BE as "Backend Management" <<system (C4)>>
+participant DB as "Database"
+
+?o-> BE : POST /api/users
+activate BE
+
+BE -> DB : get user
+
+activate DB 
+
+DB -> BE : user
+
+deactivate DB 
+
+
+BE -> DB : reset password
+
+activate DB 
+
+DB -> BE : send email 
+
+deactivate DB
+
+BE -> DB : enter the link and reset password
+
+activate DB 
+
+DB -> BE : password updated
+
+deactivate DB 
+
+<- BE : 201 Reseted
+
+deactivate BE
+
+@enduml

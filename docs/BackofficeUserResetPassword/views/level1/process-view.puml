@@ -1,0 +1,26 @@
+@startuml
+
+actor BackofficeUser as "Backoffice User"
+participant SYS as "Backoffice System" <<system (C4)>>
+
+activate BackofficeUser 
+
+BackofficeUser --> SYS : asks to reset my password 
+
+
+activate SYS 
+
+SYS --> BackofficeUser : asks to check the password reset link sent by email
+
+deactivate SYS
+
+
+BackofficeUser --> SYS : enter the link and reset the password
+
+activate SYS 
+
+SYS --> BackofficeUser : confirms the password
+
+deactivate SYS
+deactivate BackofficeUser
+@enduml
