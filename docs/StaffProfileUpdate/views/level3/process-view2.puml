@@ -1,0 +1,53 @@
+@startuml
+autonumber
+participant CTRL as "StaffController"
+participant SERVICE as "StaffService <<service>>"
+participant STAFFREPO as "StaffRepository"
+participant EmailService as "EmailService <<service>>"
+
+?o-> CTRL : PUT /api/users/staff
+activate CTRL
+
+CTRL -> SERVICE : updateStaffProfile(StaffDTO)
+activate SERVICE
+
+SERVICE -> STAFFREPO : Search profile by ID
+activate STAFFREPO
+STAFFREPO --> SERVICE : Return staff profile
+deactivate STAFFREPO
+
+SERVICE -> STAFFREPO : Validate contact info uniqueness
+activate STAFFREPO
+alt valid contact info
+    STAFFREPO --> SERVICE : Contact info is unique
+    deactivate STAFFREPO
+
+    SERVICE -> STAFFREPO : Save updated profile
+    activate STAFFREPO
+    STAFFREPO --> SERVICE : Profile updated
+    deactivate STAFFREPO
+
+    alt contact info changed
+        SERVICE -> EmailService : Send confirmation email
+        activate EmailService
+        EmailService --> SERVICE : Email sent
+        deactivate EmailService
+    end
+
+    SERVICE -> STAFFREPO : Log profile changes
+    activate STAFFREPO
+    STAFFREPO --> SERVICE : Changes logged
+    deactivate STAFFREPO
+
+    SERVICE --> CTRL : 200 Profile updated
+    <-- CTRL : 200 Profile updated
+else invalid contact info
+    STAFFREPO --> SERVICE : Contact info conflict
+    deactivate STAFFREPO
+    SERVICE --> CTRL : return error
+    <-- CTRL : 409 Conflict
+end
+
+deactivate SERVICE
+deactivate CTRL
+@enduml

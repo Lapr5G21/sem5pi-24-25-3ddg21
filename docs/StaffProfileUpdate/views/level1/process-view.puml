@@ -1,0 +1,24 @@
+@startuml
+autonumber
+actor Admin as "Admin"
+participant SYS as "Backend Management" <<system (C4)>>
+
+activate Admin
+Admin -> SYS : Search and select staff profile
+activate SYS
+
+SYS -> Admin : Return staff profile
+
+Admin -> SYS : Edit profile (contact info, availability slots, specialization)
+
+SYS -> SYS : Validate and save changes
+
+alt contact info changed
+    SYS -> SYS : Send confirmation email
+end
+
+SYS -> Admin : Confirm profile updated
+
+deactivate SYS
+deactivate Admin
+@enduml

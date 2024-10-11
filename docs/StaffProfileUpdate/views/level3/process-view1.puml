@@ -1,0 +1,35 @@
+@startuml
+autonumber
+participant SYS as "Backend Management" <<system (C4)>>
+participant DB as "Database" <<database>>
+
+    ?o-> SYS : POST /api/users/staff
+activate SYS
+
+SYS -> DB : Fetch staff profile for editing
+activate DB
+    DB --> SYS : Return staff profile
+deactivate DB
+
+SYS -> DB : Validate uniqueness of contact info
+activate DB
+    DB --> SYS : Return validation result
+deactivate DB
+
+alt valid contact info
+        SYS -> DB : Save updated profile
+    activate DB
+        DB --> SYS : Profile updated and send confirmation email to staff
+    deactivate DB
+
+        SYS -> DB : Log changes to profile
+    activate DB
+        DB --> SYS : Profile changes logged
+    deactivate DB
+    <-- SYS : 200 Profile updated
+else invalid contact info
+    <-- SYS : 409 Conflict (duplicate contact info)
+end
+
+deactivate SYS
+@enduml
