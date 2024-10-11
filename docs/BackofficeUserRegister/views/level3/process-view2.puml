@@ -1,0 +1,46 @@
+@startuml 
+autonumber
+participant CTRL as "UsersController"
+participant SERVICE as "UserService <<service>>"
+participant User as "User <<domain>>"
+participant BackofficeUser as "Backoffice User <<domain>>"
+participant USERREPO as "UserRepository"
+
+?o-> CTRL : POST /api/users/BackofficeUsers
+activate CTRL
+
+CTRL -> SERVICE : createBackofficeUser(creatingBackofficeUserDTO)
+activate SERVICE
+
+SERVICE -> USERREPO : GetByEmailAsync(creatingUserDTO.email)
+activate USERREPO
+
+    USERREPO -> SERVICE : sends email to set password
+    deactivate USERREPO
+
+    SERVICE -> User : create(creatingUserDTO.email, creatingUserDTO.username, creatingUserDTO.role)
+    activate User
+
+    User -> SERVICE : userCreated
+    deactivate User
+
+    SERVICE -> BackofficeUser : setUser(userCreated)
+    SERVICE -> USERREPO : save(userCreated)
+    activate USERREPO
+
+    USERREPO -> SERVICE : userSaved
+    deactivate USERREPO
+
+    SERVICE -> USERREPO : save(backofficeUser)
+    activate USERREPO
+
+    USERREPO -> SERVICE : backofficeUserSaved
+    deactivate USERREPO
+
+    SERVICE -> CTRL : userDTO
+    
+    <-- CTRL : 201 User created
+
+deactivate SERVICE
+deactivate CTRL
+@enduml
