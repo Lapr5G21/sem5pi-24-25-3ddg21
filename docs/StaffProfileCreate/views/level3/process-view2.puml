@@ -1,0 +1,37 @@
+@startuml
+autonumber
+participant CTRL as "StaffController"
+participant SERVICE as "StaffService <<service>>"
+participant STAFFREPO as "StaffRepository"
+
+?o-> CTRL : POST /api/users/staff
+
+CTRL -> SERVICE : createStaffProfile(StaffDTO)
+activate SERVICE
+
+SERVICE -> STAFFREPO : CheckEmailAndPhoneUnique(StaffDTO)
+activate STAFFREPO
+
+alt unique details
+    STAFFREPO -> SERVICE : Email/Phone unique
+    deactivate STAFFREPO
+
+    SERVICE -> STAFFREPO : Save staff profile and generate unique Staff ID
+    activate STAFFREPO
+
+    STAFFREPO -> SERVICE : Profile saved with ID
+    deactivate STAFFREPO
+
+    SERVICE -> CTRL : return success with StaffID
+    <-- CTRL : 201 Profile created
+else duplicate details
+    STAFFREPO -> SERVICE : Email/Phone conflict
+    deactivate STAFFREPO
+
+    SERVICE -> CTRL : return error
+    <-- CTRL : 409 Conflict (duplicate)
+end
+
+deactivate SERVICE
+deactivate CTRL
+@enduml
