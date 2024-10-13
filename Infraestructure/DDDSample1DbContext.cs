@@ -4,6 +4,11 @@ using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
 using DDDSample1.Infrastructure.Categories;
 using DDDSample1.Infrastructure.Products;
+using DDDSample1.Infrastructure.OperationTypes;
+using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Specializations;
+using DDDSample1.Infrastructure.Specializations;
+using DDDSample1.Domain.OperationTypesSpecializations;
 
 namespace DDDSample1.Infrastructure
 {
@@ -15,6 +20,12 @@ namespace DDDSample1.Infrastructure
 
         public DbSet<Family> Families { get; set; }
 
+        public DbSet<OperationType> OperationTypes { get; set; }
+
+        public DbSet<Specialization> Specializations { get; set; }
+
+        public DbSet<OperationTypeSpecialization> OperationTypeSpecializations { get; set; }
+
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
 
@@ -25,6 +36,9 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
         }
     }
 }

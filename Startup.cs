@@ -9,11 +9,17 @@ using DDDSample1.Infrastructure;
 using DDDSample1.Infrastructure.Categories;
 using DDDSample1.Infrastructure.Products;
 using DDDSample1.Infrastructure.Families;
+using DDDSample1.Infrastructure.OperationTypes; // Novo
+using DDDSample1.Infrastructure.Specializations; // Novo
+using DDDSample1.Infrastructure.OperationTypesSpecializations; // Novo
 using DDDSample1.Infrastructure.Shared;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
+using DDDSample1.Domain.OperationTypes; // Novo
+using DDDSample1.Domain.Specializations; // Novo
+using DDDSample1.Domain.OperationTypesSpecializations; // Novo
 
 namespace DDDSample1
 {
@@ -34,7 +40,6 @@ namespace DDDSample1
                 .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
             ConfigureMyServices(services);
-            
 
             services.AddControllers().AddNewtonsoftJson();
         }
@@ -66,16 +71,26 @@ namespace DDDSample1
 
         public void ConfigureMyServices(IServiceCollection services)
         {
-            services.AddTransient<IUnitOfWork,UnitOfWork>();
+            // Registro de serviços e repositórios existentes
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-            services.AddTransient<ICategoryRepository,CategoryRepository>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<CategoryService>();
 
-            services.AddTransient<IProductRepository,ProductRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<ProductService>();
 
-            services.AddTransient<IFamilyRepository,FamilyRepository>();
+            services.AddTransient<IFamilyRepository, FamilyRepository>();
             services.AddTransient<FamilyService>();
+
+            // Novos serviços e repositórios
+            services.AddTransient<IOperationTypeRepository, OperationTypeRepository>();
+            services.AddTransient<OperationTypeService>();
+
+            services.AddTransient<ISpecializationRepository, SpecializationRepository>();
+            services.AddTransient<SpecializationService>();
+
+            services.AddTransient<IOperationTypeSpecializationRepository, OperationTypeSpecializationRepository>();
         }
     }
 }
