@@ -1,0 +1,30 @@
+@startuml
+
+autonumber
+participant BE as "Backend Management" <<system (C4)>>
+participant DB as "Database"
+
+?o-> BE : POST /api/operationTypes
+activate BE
+
+BE -> DB : get specialization
+
+activate DB 
+
+DB -> BE : specialization
+
+deactivate DB 
+
+BE -> DB : save operationType
+
+activate DB 
+
+DB -> BE : operationType 
+
+deactivate DB 
+
+<- BE : 201 Created
+
+deactivate BE
+
+@enduml

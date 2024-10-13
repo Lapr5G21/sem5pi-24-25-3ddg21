@@ -1,0 +1,15 @@
+@startuml
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Admin 
+
+Admin --> SYS : asks to add a new operation type
+
+activate SYS 
+
+SYS --> Admin : confirms the operation type has been added successfully
+
+
+@enduml
