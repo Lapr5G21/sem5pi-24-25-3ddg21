@@ -19,11 +19,21 @@ package UserAggregate #00ff00 {
     User "1" --> "1" Role 
 }
 
+
+package SpecializationAggregate #ffffdd {
+
+    entity Specialization <<entity>> <<root>>{}
+
+    class SpecializationName <<ValueObject>>{}
+    class SpecializationId <<ValueObject>>{}
+
+    Specialization "1" --> "1" SpecializationId
+    Specialization "1" --> "1" SpecializationName
+}
 package StaffAggregate #ffaa00 {
     entity Staff <<root>> <<entity>> {}
 
     class LicenseNumber <<ValueObject>> {}
-    class Specialization <<ValueObject>> {}  /' needs to be checked if its value '/
     class StaffContactInformation <<ValueObject>> {}
     class StaffEmail<<ValueObject>> {}
     class StaffPhoneNumber<<ValueObject>> {}
@@ -126,6 +136,7 @@ package OperationTypeAggregate #bbbbbb {
     OperationType "1" --> "1" OperationTypeId
     OperationType "1" --> "1" OperationTypeName
     OperationType "1" --> "1" EstimatedDuration
+    OperationType "1" --> "1.." Specialization : has
 }
 
 
