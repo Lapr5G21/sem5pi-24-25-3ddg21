@@ -1,0 +1,60 @@
+@startuml 
+autonumber
+actor Admin as "Admin"
+participant CTRL as "OperationTypesController"
+participant SERVICE as "OperationTypeService <<service>>"
+participant OperationType as "OperationType <<domain>>"
+participant OperationTypeDTO as "OperationTypeDTO <<domain>>"
+participant OperationTypeSpecialization as "OperationTypeSpecialization <<domain>>"
+database IOperationTypeRepository as "IOperationTypeRepository"
+
+activate Admin
+
+Admin -> CTRL : PUT /api/operationTypes
+activate CTRL
+
+CTRL -> SERVICE : disableAsync(disablingOperationTypeDTO)
+activate SERVICE
+
+SERVICE -> OperationType : disable(disablingOperationTypeDTO.name)
+
+activate OperationType
+
+OperationType -> SERVICE : operationType
+
+deactivate OperationType
+
+SERVICE -> IOperationTypeRepository : disableAsync(operationType)
+
+activate IOperationTypeRepository
+
+IOperationTypeRepository -> SERVICE : operationType
+
+deactivate IOperationTypeRepository
+
+SERVICE -> OperationTypeSpecialization : disable(operationTypeId)
+
+activate OperationTypeSpecialization 
+
+OperationTypeSpecialization -> SERVICE : operationTypeSpecialization
+
+deactivate OperationTypeSpecialization
+
+SERVICE -> OperationTypeDTO : disable(operationTypeId,name)
+
+activate OperationTypeDTO
+
+OperationTypeDTO -> SERVICE : operationTypeDTO
+
+deactivate OperationTypeDTO
+
+SERVICE -> CTRL : operationTypeDTO
+
+deactivate SERVICE 
+
+CTRL -> Admin : 200 OK
+
+deactivate CTRL 
+
+deactivate Admin
+@enduml

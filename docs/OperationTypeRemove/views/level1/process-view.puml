@@ -1,0 +1,15 @@
+@startuml
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system >>
+
+activate Admin 
+
+Admin --> SYS : asks to remove an operation type
+
+activate SYS 
+
+SYS --> Admin : confirms the operation type has removed successfully
+
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+
+autonumber
+participant SYS as "Backend Management" <<system >>
+
+?o-> SYS : PUT /api/operationTypes
+activate SYS
+
+SYS -> SYS : disableOperationType(disablingOperationTypeDTO)
+<-- SYS : 200 OK 
+deactivate SYS
+
+
+@enduml

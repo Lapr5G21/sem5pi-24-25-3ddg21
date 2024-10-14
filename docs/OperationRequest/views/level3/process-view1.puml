@@ -1,0 +1,7 @@
+@startuml Patient Profile Creation (level 3 - 1)
+
+autonumber
+participant BE as "Backend Management" <<system (C4)>>
+participant DB as "Database"
+
+@enduml

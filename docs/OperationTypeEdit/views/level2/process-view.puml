@@ -1,0 +1,14 @@
+@startuml
+
+autonumber
+participant SYS as "Backend Management" <<system (C4)>>
+
+?o-> SYS : PUT /api/operationTypes
+activate SYS
+
+SYS -> SYS : editOperationType(creatingOperationTypeDTO)
+<-- SYS : 200 OK
+deactivate SYS
+
+
+@enduml
