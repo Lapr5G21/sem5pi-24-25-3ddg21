@@ -57,7 +57,7 @@ namespace DDDSample1.Domain.OperationTypes
             };
         }
 
-        public async Task<OperationTypeDto> AddAsync(CreatingOperationTypeDto dto)
+       public async Task<OperationTypeDto> AddAsync(CreatingOperationTypeDto dto)
         {       
             var operationType = new OperationType(
             new OperationTypeName(dto.Name),
@@ -67,7 +67,6 @@ namespace DDDSample1.Domain.OperationTypes
             new SurgeryTime(dto.SurgeryTime));
 
             await this._repo.AddAsync(operationType);
-            await this._unitOfWork.CommitAsync();
 
             foreach (var staffSpecialization in dto.Specializations)
             {
@@ -78,10 +77,10 @@ namespace DDDSample1.Domain.OperationTypes
                     throw new BusinessRuleValidationException($"Specialization with ID {specialization.Id} not found");
                 }
 
-                var operationTypeSpecialization = new OperationTypeSpecialization(
-                    operationType,
-                    specialization,
-                    new NumberOfStaff(staffSpecialization.NumberOfStaff)
+                 var operationTypeSpecialization = new OperationTypeSpecialization(
+                operationType,
+                specialization,
+                new NumberOfStaff(staffSpecialization.NumberOfStaff)
                 );
 
                 await _operationTypeSpecializationRepo.AddAsync(operationTypeSpecialization);
@@ -91,7 +90,7 @@ namespace DDDSample1.Domain.OperationTypes
 
             return new OperationTypeDto
             {
-            Id = operationType.Id.AsGuid(),
+                Id = operationType.Id.AsGuid(),
             Name = operationType.Name.ToString(),
             EstimatedTimeDuration = operationType.EstimatedTimeDuration.Minutes,
             AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
@@ -99,6 +98,7 @@ namespace DDDSample1.Domain.OperationTypes
             SurgeryTime = operationType.SurgeryTime.Minutes
             };
         }
+
 
         public async Task<OperationTypeDto> UpdateAsync(OperationTypeDto dto)
         {
