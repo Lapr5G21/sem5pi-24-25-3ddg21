@@ -7,18 +7,16 @@ participant OperationType as "OperationType <<domain>>"
 participant OperationTypeDTO as "OperationTypeDTO <<domain>>"
 participant OperationTypeSpecialization as "OperationTypeSpecialization <<domain>>"
 database IOperationTypeRepository as "IOperationTypeRepository"
-database SpecializationRepository as "SpecializationRepository"
-database IOperationTypeSpecializationRepository as "IOperationTypeSpecializationRepository"
 
 activate Admin
 
 Admin -> CTRL : POST /api/operationTypes
 activate CTRL
 
-CTRL -> SERVICE : addAsync(creatingOperationTypeDTO)
+CTRL -> SERVICE : editAsync(editOperationTypeDTO)
 activate SERVICE
 
-SERVICE -> OperationType : create(creatingOperationTypeDTO.name,creatingOperationTypeDTO.estimatedDuration,creatingOperationTypeDTO.anesthesiaTime,creatingOperationTypeDTO.surgeryTime,creatingOperationTypeDTO.cleaningTime)
+SERVICE -> OperationType : edit(editOperationTypeDTO.name,editOperationTypeDTO.estimatedDuration\n,editOperationTypeDTO.anesthesiaTime,editOperationTypeDTO.surgeryTime,\neditOperationTypeDTO.cleaningTime)
 
 activate OperationType
 
@@ -26,7 +24,7 @@ OperationType -> SERVICE : operationType
 
 deactivate OperationType
 
-SERVICE -> IOperationTypeRepository : addAsync(operationType)
+SERVICE -> IOperationTypeRepository : editAsync(operationType)
 
 activate IOperationTypeRepository
 
@@ -34,19 +32,7 @@ IOperationTypeRepository -> SERVICE : operationType
 
 deactivate IOperationTypeRepository
 
-loop forEach specialization 
-
-SERVICE -> SpecializationRepository : getByIdAsync (specializationId)
-
-activate SpecializationRepository 
-
-SpecializationRepository -> SERVICE : specialization
-
-deactivate SpecializationRepository
-
-alt specialization != null 
-
-SERVICE -> OperationTypeSpecialization : create(operationTypeId,SpecializationId,numberOfStaff)
+SERVICE -> OperationTypeSpecialization : edit(operationTypeId,SpecializationId,numberOfStaff)
 
 activate OperationTypeSpecialization 
 
@@ -54,18 +40,7 @@ OperationTypeSpecialization -> SERVICE : operationTypeSpecialization
 
 deactivate OperationTypeSpecialization
 
-SERVICE -> IOperationTypeSpecializationRepository : addAsync(operationTypeSpecialization)
-
-else 
-
-SERVICE -> CTRL : NotFoundException
-
-CTRL -> Admin : 404 Not Found
-
-end alt 
-end loop
-
-SERVICE -> OperationTypeDTO : create(operationTypeId,name,anesthesiaTime,surgeryTime,cleaningTime)
+SERVICE -> OperationTypeDTO : edit(operationTypeId,name,anesthesiaTime,surgeryTime,cleaningTime)
 
 activate OperationTypeDTO
 
@@ -77,7 +52,7 @@ SERVICE -> CTRL : operationTypeDTO
 
 deactivate SERVICE 
 
-CTRL -> Admin : 201 Created
+CTRL -> Admin : 200 OK
 
 deactivate CTRL 
 

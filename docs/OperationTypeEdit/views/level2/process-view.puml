@@ -1,7 +1,7 @@
 @startuml
 
 autonumber
-participant SYS as "Backend Management" <<system (C4)>>
+participant SYS as "Backend Management" <<system>>
 
 ?o-> SYS : PUT /api/operationTypes
 activate SYS

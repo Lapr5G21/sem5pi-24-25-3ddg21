@@ -1,61 +1,85 @@
-@startuml Patient Profile Creation (level 3 - 2)
+@startuml 
 autonumber
-participant CTRL as "UsersController"
-participant SERVICE as "UserService <<service>>"
-participant User as "User <<domain>>"
-participant Patient as "Patient <<domain>>"
-participant USERREPO as "UserRepository"
-participant PATIENTREPO as "Patient Repository"
-participant DTO as "creatingUserDTO : UserDTO"
+actor Doctor as "Doctor"
+participant CTRL as "OperationRequestController"
+participant SERVICE as "OperationRequestService <<service>>"
+participant OperationRequest as "OperationRequest <<domain>>"
+participant OperationTypeDTO as "OperationTypeDTO <<domain>>"
+database IOperationRequestRepository as "IOperationRequestRepository"
+database SpecializationRepository as "SpecializationRepository"
 
-?o-> CTRL : POST /api/users/patients
+
+activate Doctor
+
+Doctor -> CTRL : POST /api/operationRequest
 activate CTRL
 
-CTRL -> SERVICE : createUserPacientAsync(creatingUserDTO)
+CTRL -> SERVICE : addAsync(creatingOperationRequestDTO)
 activate SERVICE
 
-SERVICE -> PATIENTREPO : GetByEmailAsync(creatingUserDTO.email)
-activate PATIENTREPO
-alt Patient not found (patient == null)
+SERVICE -> OperationRequest : create(creatingOperationRequestDTO.patientID,creatingOperationRequestDTO.doctorID\n,creatingOperationRequestDTO.operationType,creatingOperationRequestDTO.deadline,\ncreatingOperationRequestDTO.priority)
 
-    activate PATIENTREPO
+activate OperationRequest
 
-    PATIENTREPO -> SERVICE : 404 NotFound
-    
-    deactivate PATIENTREPO
+OperationRequest -> SERVICE : OperationRequest
 
-    SERVICE -> CTRL : 404 NotFound
+deactivate OperationRequest
 
-else Patient found (patient != null)
-    PATIENTREPO -> SERVICE : patient
-    deactivate PATIENTREPO
+SERVICE -> IOperationRequestRepository : addAsync(OperationRequest)
 
-    SERVICE -> User : create(creatingUserDTO.email, creatingUserDTO.username, creatingUserDTO.role)
-    activate User
+activate IOperationRequestRepository
 
-    User -> SERVICE : userCreated
-    deactivate User
+IOperationRequestRepository -> SERVICE : operationRequest
 
-    SERVICE -> Patient : setUser(userCreated)
-    SERVICE -> USERREPO : save(userCreated)
-    activate USERREPO
+deactivate IOperationRequestRepository
 
-    USERREPO -> SERVICE : userSaved
-    deactivate USERREPO
+alt specializationValidated = 0 
 
-    SERVICE -> PATIENTREPO : save(patient)
-    activate PATIENTREPO
+SERVICE -> SpecializationRepository : getDoctorSpecialization (specializationId,doctorID)
 
-    PATIENTREPO -> SERVICE : patientSaved
-    deactivate PATIENTREPO
+activate SpecializationRepository 
 
-    SERVICE -> CTRL : userDTO
-    
-    <-- CTRL : 201 User created
+SpecializationRepository -> SERVICE : specializationValidated
 
-else 
-end
+deactivate SpecializationRepository
 
-deactivate SERVICE
-deactivate CTRL
+SERVICE -> CTRL : ValueErrorException
+
+CTRL -> Doctor : 406 Not Aceptable
+end alt 
+
+SERVICE -> SpecializationRepository : getDoctorSpecialization (specializationId,doctorID)
+
+activate SpecializationRepository 
+
+SpecializationRepository -> SERVICE : specializationValidated
+
+deactivate SpecializationRepository
+SERVICE -> OperationRequest : create(patientId, doctorId, operationType, deadline,priority)
+
+activate OperationRequest 
+
+OperationRequest -> SERVICE : operationRequest
+deactivate OperationRequest
+
+SERVICE -> IOperationRequestRepository : addAsync(operationRequest)
+
+
+SERVICE -> OperationTypeDTO : create(operationTypeId,name,anesthesiaTime,surgeryTime,cleaningTime)
+
+activate OperationTypeDTO
+
+OperationTypeDTO -> SERVICE : operationRequestDTO
+
+deactivate OperationTypeDTO
+
+SERVICE -> CTRL : operationRequestDTO
+
+deactivate SERVICE 
+
+CTRL -> Doctor : 201 Created
+
+deactivate CTRL 
+
+deactivate Doctor
 @enduml

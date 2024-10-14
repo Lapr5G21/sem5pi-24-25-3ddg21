@@ -1,4 +1,14 @@
-@startuml Patient Profile Creation (level 2)
+@startuml
+
+autonumber
+participant SYS as "Backend Management" <<system>>
+
+?o-> SYS : POST /api/operation
+activate SYS
+
+SYS -> SYS : requestOperation(requestOperationDTO)
+<-- SYS : 201 Created
+deactivate SYS
 
 
 @enduml
