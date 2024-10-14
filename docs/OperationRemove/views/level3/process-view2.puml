@@ -1,0 +1,74 @@
+@startuml 
+autonumber
+actor Doctor as "Doctor"
+participant CTRL as "OperationRequestController"
+participant SERVICE as "OperationRequestService <<service>>"
+participant Operation as "Operation <<domain>>"
+database IOperationRepository as "IOperationRepository"
+
+
+
+activate Doctor
+
+Doctor -> CTRL : POST /api/operation
+activate CTRL
+
+CTRL -> SERVICE : addAsync(OperationId)
+activate SERVICE
+
+SERVICE -> Operation : disable(operationId)
+
+activate Operation
+
+Operation-> SERVICE : operation
+
+deactivate Operation
+
+
+SERVICE -> IOperationRepository : addAsync(OperationRequest)
+activate IOperationRepository
+IOperationRepository -> SERVICE : operationRequest
+deactivate IOperationRepository
+
+
+alt OwnerShipValidated = 0 
+
+SERVICE -> IOperationRepository : getDoctorOwnerShip (doctorID)
+
+activate IOperationRepository 
+
+IOperationRepository -> SERVICE : OwnerShipValidated
+
+deactivate IOperationRepository
+
+SERVICE -> CTRL : ValueErrorException
+
+CTRL -> Doctor : 406 Not Aceptable
+end alt 
+
+SERVICE -> IOperationRepository : getDoctorOwnerShip (doctorID)
+
+activate IOperationRepository 
+
+IOperationRepository -> SERVICE : OwnerShipValidated
+
+deactivate IOperationRepository
+SERVICE -> Operation : create(patientId, doctorId, operationType, deadline,priority)
+
+activate Operation 
+
+Operation -> SERVICE : operationRequest
+deactivate Operation
+
+SERVICE -> IOperationRepository : addAsync(operationRequest)
+
+SERVICE -> CTRL : operation
+
+deactivate SERVICE 
+
+CTRL -> Doctor : 200 OK
+
+deactivate CTRL 
+
+deactivate Doctor
+@enduml

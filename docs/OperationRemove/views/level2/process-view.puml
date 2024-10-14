@@ -1,0 +1,14 @@
+@startuml
+
+autonumber
+participant SYS as "Backend Management" <<system>>
+
+?o-> SYS : POST /api/operation
+activate SYS
+
+SYS -> SYS : removeOperation(operationId)
+<-- SYS : 200 Ok
+deactivate SYS
+
+
+@enduml

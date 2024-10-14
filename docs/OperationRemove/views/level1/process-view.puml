@@ -1,0 +1,15 @@
+@startuml
+
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system>>
+
+activate Doctor 
+
+Doctor --> SYS : Request an Operation Removed
+
+activate SYS 
+
+SYS --> Doctor : confirms the operation  has been removed successfully
+
+
+@enduml

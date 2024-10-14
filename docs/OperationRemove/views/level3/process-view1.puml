@@ -1,0 +1,39 @@
+@startuml
+
+autonumber
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+?o-> BE : POST /api/operation
+activate BE
+
+BE -> DB : get operationRequestById
+
+activate DB 
+
+DB -> BE : operationRequest 
+
+deactivate DB 
+
+BE -> DB : confirms doctor ownership
+
+activate DB
+
+DB -> BE : operationRequest.doctorId
+
+deactivate DB
+
+
+BE -> DB : disable operationRequest
+
+activate DB 
+
+DB -> BE : operationRequest 
+
+deactivate DB 
+
+<- BE : 201 Created
+
+deactivate BE
+
+@enduml
