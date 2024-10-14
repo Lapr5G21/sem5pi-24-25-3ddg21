@@ -1,14 +1,14 @@
 using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.OperationTypes{
-public class AnesthesiaTime
+public class SurgeryTime : IValueObject
 {
     public int Minutes { get; private set; }
 
-    public AnesthesiaTime(int minutes)
+    public SurgeryTime(int minutes)
     {
         if (minutes <= 0)
-            throw new BusinessRuleValidationException("Anesthesia time must be greater than zero.");
+            throw new BusinessRuleValidationException("Surgery time must be greater than zero.");
 
         Minutes = minutes;
     }
@@ -23,13 +23,13 @@ public class AnesthesiaTime
         if (obj == null || GetType() != obj.GetType())
             return false;
 
-        var other = (AnesthesiaTime)obj;
+        var other = (SurgeryTime)obj;
         return Minutes == other.Minutes;
     }
 
     public override int GetHashCode()
     {
         return Minutes.GetHashCode();
-    }
+        }
     }
 }

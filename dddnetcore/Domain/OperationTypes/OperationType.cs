@@ -33,6 +33,9 @@ namespace DDDSample1.Domain.OperationTypes
             this.Id = new OperationTypeId(Guid.NewGuid());
             this.Name = operationTypeName;
             this.EstimatedTimeDuration = estimatedTimeDuration;
+            this.AnesthesiaTime = anesthesiaTime;
+            this.CleaningTime = cleaningTime;
+            this.SurgeryTime = surgeryTime;
             this.IsActive = true;
         }
 

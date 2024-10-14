@@ -1,16 +1,16 @@
 using DDDSample1.Domain.Shared;
 
-namespace DDDSample1.Domain.OperationTypes{
-public class OperationTypeName
+namespace DDDSample1.Domain.Specializations{
+public class SpecializationName : IValueObject
 {
     public string Name { get; }
 
+    private SpecializationName(){}
 
-    public OperationTypeName(string name)
+    public SpecializationName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new BusinessRuleValidationException("Operation type name cannot be empty or null.");
-
+            throw new BusinessRuleValidationException("Specialization name cannot be empty or null.");
         Name = name;
     }
 
@@ -19,7 +19,7 @@ public class OperationTypeName
         if (obj == null || GetType() != obj.GetType())
             return false;
 
-        var other = (OperationTypeName)obj;
+        var other = (SpecializationName)obj;
         return Name.Equals(other.Name);
     }
 

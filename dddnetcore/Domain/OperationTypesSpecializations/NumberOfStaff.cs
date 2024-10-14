@@ -1,8 +1,9 @@
 using System;
+using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.OperationTypesSpecializations
 {
-    public class NumberOfStaff
+    public class NumberOfStaff : IValueObject
     {
         public int Number { get; private set; }
 

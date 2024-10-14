@@ -1,7 +1,7 @@
 using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.OperationTypes{
-public class CleaningTime
+public class CleaningTime : IValueObject
 {
     public int Minutes { get; private set; }
 

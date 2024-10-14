@@ -1,14 +1,13 @@
 using DDDSample1.Domain.Shared;
-
 namespace DDDSample1.Domain.OperationTypes{
-public class EstimatedTimeDuration
+public class AnesthesiaTime : IValueObject
 {
     public int Minutes { get; private set; }
 
-    public EstimatedTimeDuration(int minutes)
+    public AnesthesiaTime(int minutes)
     {
         if (minutes <= 0)
-            throw new BusinessRuleValidationException("Estimated time must be greater than zero.");
+            throw new BusinessRuleValidationException("Anesthesia time must be greater than zero.");
 
         Minutes = minutes;
     }
@@ -23,7 +22,7 @@ public class EstimatedTimeDuration
         if (obj == null || GetType() != obj.GetType())
             return false;
 
-        var other = (EstimatedTimeDuration)obj;
+        var other = (AnesthesiaTime)obj;
         return Minutes == other.Minutes;
     }
 
