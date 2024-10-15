@@ -1,16 +1,14 @@
-@startuml
+@startuml Patient Profile Update (level 1)
 
-actor Patient as "Patient"
+actor Admin as "Admin"
 participant SYS as "HealthCare System" <<system (C4)>>
 
-activate Patient 
+activate Admin 
 
-Patient --> SYS : asks to regist for the healthcare system 
-
+Admin --> SYS : asks to edit a patient profile 
 
 activate SYS 
 
-SYS --> Patient : confirms the registration
-
+SYS --> Admin : confirms the patient profile editing was successful
 
 @enduml

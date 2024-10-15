@@ -4,4 +4,26 @@ autonumber
 participant BE as "Backend Management" <<system (C4)>>
 participant DB as "Database"
 
+?o-> BE : POST /api/users/patient
+activate BE
+
+BE -> DB : Check if email/phone are unique
+activate DB
+DB -> BE : Return uniqueness result
+deactivate DB
+
+alt unique details
+
+    BE -> DB : Store new profile and generate Patient ID
+    activate DB
+    DB -> BE : Profile stored
+    deactivate DB
+    <- BE : 201 Staff profile created
+else duplicate email/phone
+    <- BE : 409 Conflict (Duplicate found)
+end
+
+deactivate BE
+
+
 @enduml

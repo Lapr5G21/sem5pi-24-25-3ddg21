@@ -3,14 +3,20 @@
 actor Admin as "Admin"
 participant SYS as "HealthCare System" <<system (C4)>>
 
-activate Patient 
+activate Admin 
 
-Patient --> SYS : asks to create a patient profile
-
+Admin --> SYS : asks to create a patient profile
 
 activate SYS 
 
-SYS --> Patient : confirms the creation
+SYS -> SYS : Validate input (first name, last name, date of birth, gender, contact information, emergency contact)
+SYS -> SYS : Generate unique Patient ID (Medical Record Number)
+SYS -> SYS : Save profile
+
+SYS -> Admin : Confirm profile created
+
+deactivate SYS
+deactivate Admin
 
 
 @enduml
