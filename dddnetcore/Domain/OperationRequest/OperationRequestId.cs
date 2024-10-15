@@ -4,14 +4,14 @@ using Newtonsoft.Json;
 
 namespace DDDSample1.Domain.OperationRequest
 {
-    public class OperationId : EntityId
+    public class OperationRequestId : EntityId
     {
         [JsonConstructor]
-        public OperationId(Guid value) : base(value)
+        public OperationRequestId(Guid value) : base(value)
         {
         }
 
-        public OperationId(String value) : base(value)
+        public OperationRequestId(String value) : base(value)
         {
         }
 
