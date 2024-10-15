@@ -1,37 +1,14 @@
+using System;
 using DDDSample1.Domain.Shared;
-namespace DDDSample1.Domain.OperationRequest{
+using Newtonsoft.Json;
 
-public class Priority : IValueObject
+DDDSample1.Domain.OperationRequest
 {
-
-    public int PriorityLevel { get; private set;}
-
-    public Priority(int priorityLevel){
-
-        if (priorityLevel < 0 || priorityLevel > 5 )
-        throw new BusinessRuleValidationException("Priority level out of scale.");
-
-        PriorityLevel = priorityLevel;
-    }
-
-    public override string ToString()
+    public enum Priority
     {
-        return $"{PriorityLevel} -> priorityLevel";
+        Elective,    
+        Urgent,   
+        Emergency     
+        
     }
-
-public override bool Equals(object obj)
-    {
-        if (obj == null || GetType() != obj.GetType())
-            return false;
-
-        var other = (Priority)obj;
-        return PriorityLevel == other.PriorityLevel;
-    }
-
- public override int GetHashCode()
-    {
-        return PriorityLevel.GetHashCode();
-    }
-
-    }
-}
+} 
