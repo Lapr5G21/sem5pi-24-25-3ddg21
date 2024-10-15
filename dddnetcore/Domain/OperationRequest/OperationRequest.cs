@@ -17,32 +17,20 @@ public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
 
     public DeadlineDate DeadlineDate { get; private set;}
 
-    //public Doctor Doctor { get; private set;} 
+    public Doctor Doctor { get; private set;} 
 
     //public Patient Patient { get; private set;}
 
 
-    public OperationRequest(Priority priorityLevel, OperationType operationType, DeadlineDate deadlineDate){
+    public OperationRequest(Priority priorityLevel, OperationType operationType, DeadlineDate deadlineDate, Doctor doctor, Patient patient){
 
         this.Id = new OperationRequestId(Guid.NewGuid());
         this.PriorityLevel = priorityLevel;
         this.OperationType = operationType;
         this.DeadlineDate = deadlineDate;
-        //this.Doctor = doctor;
-        //this.Patient = patient; 
+        this.Doctor = doctor;
+        this.Patient = patient; 
     }
-
-    
-
-
-
-
-
-
-
-
-
-
 
 }
 
