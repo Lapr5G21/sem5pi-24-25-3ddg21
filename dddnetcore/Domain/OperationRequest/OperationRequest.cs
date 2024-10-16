@@ -16,13 +16,18 @@ public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
 
     public DeadlineDate DeadlineDate { get; private set;}
 
+    public Status Status { get; private set;}
 
-    public OperationRequest(Priority priorityLevel, OperationType operationType, DeadlineDate deadlineDate){
+
+    public OperationRequest(Priority priorityLevel, OperationType operationType, DeadlineDate deadlineDate, Status status){
 
         this.Id = new OperationRequestId(Guid.NewGuid());
         this.PriorityLevel = priorityLevel;
         this.OperationType = operationType;
         this.DeadlineDate = deadlineDate;
+        this.Status = status;
+        //falta doctor ID
+        //falta patient ID
     }
 
 }
