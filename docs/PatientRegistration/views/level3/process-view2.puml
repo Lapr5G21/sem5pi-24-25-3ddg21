@@ -1,14 +1,16 @@
 @startuml 
 autonumber
+actor Patient as PATIENT
 participant CTRL as "UsersController"
 participant SERVICE as "UserService <<service>>"
 participant User as "User <<domain>>"
 participant Patient as "Patient <<domain>>"
 participant USERREPO as "UserRepository"
 participant PATIENTREPO as "Patient Repository"
-participant DTO as "creatingUserDTO : UserDTO"
+participant DTO as "creatingPatientUserDTO : PatientUserDTO"
 
-?o-> CTRL : POST /api/users/patients
+activate PATIENT
+PATIENT-> CTRL : POST /api/users/patients
 activate CTRL
 
 CTRL -> SERVICE : createUserPacientAsync(creatingUserDTO)
@@ -30,10 +32,10 @@ else Patient found (patient != null)
     PATIENTREPO -> SERVICE : patient
     deactivate PATIENTREPO
 
-    SERVICE -> User : create(creatingUserDTO.email, creatingUserDTO.username, creatingUserDTO.role)
+    SERVICE -> User : create(creatingPatientUserDTO.email, creatingPatientUserDTO.username, creatingPatientUserDTO.password)
     activate User
 
-    User -> SERVICE : userCreated
+    User -> SERVICE : patientUserCreated
     deactivate User
 
     SERVICE -> Patient : setUser(userCreated)
@@ -49,13 +51,23 @@ else Patient found (patient != null)
     PATIENTREPO -> SERVICE : patientSaved
     deactivate PATIENTREPO
 
+    SERVICE -> DTO : create(creatingPatientUserDTO.email,creatingPatientUserDTO.username) 
+
+    activate DTO
+
+    DTO -> SERVICE : userPatientDTO
+
+    deactivate DTO 
+
     SERVICE -> CTRL : userDTO
+
+    deactivate SERVICE
     
-    <-- CTRL : 201 User created
+    PATIENT <-- CTRL : 201 User created and user information
 
 else 
 end
-
-deactivate SERVICE
 deactivate CTRL
+deactivate PATIENT
+
 @enduml

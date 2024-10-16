@@ -26,7 +26,7 @@ The global views are available in the views folder.
 
 ### LEVEL 1
 
-![level1_view](level1/process-view.png)
+![level1_view](views/level1/process-view.png)
 
 ### LEVEL 2
 

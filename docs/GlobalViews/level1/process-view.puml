@@ -1,0 +1,8 @@
+@startuml
+
+title "Logical View (Level 1) of HealthCareSystem"
+
+
+  IAM_API -up- [<<component>>\n<<System(C4)>>]
+
+@enduml
