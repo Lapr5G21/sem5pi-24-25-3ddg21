@@ -1,15 +1,15 @@
-@startuml Patient Profile Creation (level 1)
+@startuml Patient Profile Delete (level 1)
 
 actor Admin as "Admin"
 participant SYS as "HealthCare System" <<system (C4)>>
 
 activate Admin 
 
-Admin --> SYS : asks to create a patient profile
+Admin --> SYS : asks to delete a patient profile
 
 activate SYS 
 
-SYS -> Admin : Confirm profile created
+SYS -> Admin : Confirm patient profile deletion
 
 deactivate SYS
 deactivate Admin

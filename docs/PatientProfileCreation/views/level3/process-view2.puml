@@ -1,60 +1,38 @@
 @startuml Patient Profile Creation (level 3 - 2)
 autonumber
-participant CTRL as "UsersController"
-participant SERVICE as "UserService <<service>>"
-participant User as "User <<domain>>"
-participant Patient as "Patient <<domain>>"
-participant USERREPO as "UserRepository"
-participant PATIENTREPO as "Patient Repository"
-participant DTO as "creatingUserDTO : UserDTO"
+participant CTRL as "PatientsController"
+participant SERVICE as "PatientService <<service>>"
+participant PATIENT as "Patient <<domain>>"
+participant REPO as "Patient Repository"
+participant DTO as "creatingPatientProfileDTO : PatientProfileDTO"
 
-?o-> CTRL : POST /api/users/patients
+?o-> CTRL : POST /api/patients
 activate CTRL
 
-CTRL -> SERVICE : createUserPacientAsync(creatingUserDTO)
+CTRL -> SERVICE : createPatientProfileAsync(creatingPatientProfileDTO)
 activate SERVICE
 
-SERVICE -> PATIENTREPO : GetByEmailAsync(creatingUserDTO.email)
-activate PATIENTREPO
-alt Patient not found (patient == null)
+    SERVICE -> PATIENT : create(creatingPatientProfileDTO.firstName, creatingPatientProfileDTO.lastName, creatingPatientProfileDTO.fullName, creatingPatientProfileDTO.birthDate, creatingPatientProfileDTO.gender, creatingPatientProfileDTO.contactInformation, creatingPatientProfileDTO.emergencyContact)
+    activate PATIENT
 
-    activate PATIENTREPO
+    PATIENT -> SERVICE : patientCreated
+    deactivate PATIENT
 
-    PATIENTREPO -> SERVICE : 404 NotFound
-    
-    deactivate PATIENTREPO
-
-    SERVICE -> CTRL : 404 NotFound
-
-else Patient found (patient != null)
-    PATIENTREPO -> SERVICE : patient
-    deactivate PATIENTREPO
-
-    SERVICE -> User : create(creatingUserDTO.email, creatingUserDTO.username, creatingUserDTO.role)
-    activate User
-
-    User -> SERVICE : userCreated
-    deactivate User
-
-    SERVICE -> Patient : setUser(userCreated)
-    SERVICE -> USERREPO : save(userCreated)
+    SERVICE -> REPO : save(patientCreated)
     activate USERREPO
 
-    USERREPO -> SERVICE : userSaved
-    deactivate USERREPO
-
-    SERVICE -> PATIENTREPO : save(patient)
-    activate PATIENTREPO
-
-    PATIENTREPO -> SERVICE : patientSaved
-    deactivate PATIENTREPO
-
-    SERVICE -> CTRL : userDTO
+    REPO -> SERVICE : patientSaved
+    deactivate REPO
+    activate DTO
     
-    <-- CTRL : 201 User created
+    SERVICE -> DTO : create(creatingPatientProfileDTO.fullName, creatingPatientProfileDTO.birthDate, creatingPatientProfileDTO.gender, creatingPatientProfileDTO.contactInformation, creatingPatientProfileDTO.emergencyContact)
+    
+    DTO -> SERVICE : patientProfileDto
+    deactivate DTO
 
-else 
-end
+    SERVICE -> CTRL : patientProfileDto
+    
+    <-- CTRL : 201 Patient Profile Created
 
 deactivate SERVICE
 deactivate CTRL
