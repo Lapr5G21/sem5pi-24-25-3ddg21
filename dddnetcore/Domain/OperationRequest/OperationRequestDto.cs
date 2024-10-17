@@ -12,7 +12,7 @@ public class OperationRequestDto{
 
     public String PriorityLevel { get;  set;}
 
-    public String OperationType { get;  set;}
+    public String OperationTypeId { get;  set;}
 
     public DateTime DeadlineDate { get;  set;}
 

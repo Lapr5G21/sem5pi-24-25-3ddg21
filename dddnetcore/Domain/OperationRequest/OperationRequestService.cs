@@ -27,7 +27,7 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
             this._OperationTypeRepo = operationTypeRepo;
         }
 
-/*
+
         public async Task<List<OperationRequestDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
@@ -37,13 +37,15 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
              {
                 Id = op.Id.AsGuid(), 
                 PriorityLevel  = op.PriorityLevel.ToString(), 
-                DeadlineDate = op.DeadlineDate.ToString(),
+                OperationTypeId = op.OperationTypeId.ToString(),
+                DeadlineDate =  op.DeadlineDate.Value,
                 Status = op.Status.ToString()
              
              });
 
             return listDto;
         }
+
 
         public async Task<OperationRequestDto> GetByIdAsync(OperationRequestId id)
         {
@@ -56,7 +58,8 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
                 {
                 Id = op.Id.AsGuid(), 
                 PriorityLevel  = op.PriorityLevel.ToString(), 
-                DeadlineDate = op.DeadlineDate.ToString(),
+                OperationTypeId = op.OperationTypeId.ToString(),
+                DeadlineDate =  op.DeadlineDate.Value,
                 Status = op.Status.ToString()
                  };
         }
@@ -73,42 +76,57 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
             }
             
                 var priority = Enum.Parse<Priority>(dto.Priority.ToUpper());
-                var operationRequest = new OperationRequest( priority,operationType, new DeadlineDate(dto.DeadlineDate), )
+                var status = Enum.Parse<Status>(dto.Status.ToUpper()); 
+
+                var operationRequest = new OperationRequest( 
+                    priority,
+                    new OperationTypeId(dto.OperationTypeId),
+                    new DeadlineDate(dto.DeadlineDate),
+                    status );
+
 
             await this._repo.AddAsync(operationRequest);
             await this._unitOfWork.CommitAsync();
 
-            return new OperationRequestDto { 
-                Id = operationRequest.Id.AsGuid(),
-                PriorityLevel = operationRequest.PriorityLevel.ToString(),
-                DeadlineDate = operationRequest.DeadlineDate.ToString(),
+            return new OperationRequestDto 
+            { 
+                Id = operationRequest.Id.AsGuid(), 
+                PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
+                OperationTypeId = operationRequest.OperationTypeId.ToString(),
+                DeadlineDate =  operationRequest.DeadlineDate.Value,
                 Status = operationRequest.Status.ToString() };
         }
         
 
-/*
+
          public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto)
-        {
-            var operationRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
+{
+   
+    var operationRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
 
-            if (operationRequest == null)
-                return null;
+    if (operationRequest == null)
+        return null;
 
-            // Update fields
-            operationRequest.ChangeOperationRequestPriority(new Priority(dto.PriorityLevel));
-            operationRequest.ChangeOperationRequestDeadline(new DeadlineDate(dto.DeadlineDate));
-            operationRequest.ChangeOperationRequestStatus(new Status(dto.Status));
+    var priority = Enum.Parse<Priority>(dto.PriorityLevel.ToUpper()); 
+    var status = Enum.Parse<Status>(dto.Status.ToUpper()); 
 
-            await this._unitOfWork.CommitAsync();
+    operationRequest.ChangeOperationRequestPriority(priority); 
+    operationRequest.ChangeOperationRequestDeadline(new DeadlineDate(dto.DeadlineDate)); 
+    operationRequest.ChangeOperationRequestStatus(status); 
 
-            return new OperationRequestDto
-            {
-                Id = operationRequest.Id.AsGuid(),
-                PriorityLevel = operationRequest.PriorityLevel.ToString(),
-                DeadlineDate = operationRequest.DeadlineDate.ToString(),
-                Status = operationRequest.Status.ToString()
-            };
-        } 
+    
+    await this._unitOfWork.CommitAsync();
+
+    
+    return new OperationRequestDto
+    {
+        Id = operationRequest.Id.AsGuid(),
+        PriorityLevel  = operationRequest.PriorityLevel.ToString(),
+        OperationTypeId = operationRequest.OperationTypeId.ToString(),
+        DeadlineDate = operationRequest.DeadlineDate.Value, 
+        Status = operationRequest.Status.ToString() 
+    };
+}
 
         
 
@@ -124,22 +142,13 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
 
             return new OperationRequestDto 
             { 
-                Id = operationRequest.Id.AsGuid(),
+               Id = operationRequest.Id.AsGuid(), 
                 PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
-                DeadlineDate = operationRequest.DeadlineDate.ToString(),
-                Status = operationRequest.Status.ToString()
-            };
+                OperationTypeId = operationRequest.OperationTypeId.ToString(),
+                DeadlineDate =  operationRequest.DeadlineDate.Value,
+                Status = operationRequest.Status.ToString() };
         }
-*/
-        
-
-
-
-
-
     
 }
-
-
 
 }

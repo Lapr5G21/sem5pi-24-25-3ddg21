@@ -12,18 +12,18 @@ public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
     
     public Priority PriorityLevel { get; private set;}
 
-    public OperationType OperationType { get; private set;}
+    public OperationTypeId OperationTypeId { get; private set;}
 
     public DeadlineDate DeadlineDate { get; private set;}
 
     public Status Status { get; private set;}
 
 
-    public OperationRequest(Priority priorityLevel, OperationType operationType, DeadlineDate deadlineDate, Status status){
+    public OperationRequest(Priority priorityLevel, OperationTypeId operationTypeId, DeadlineDate deadlineDate, Status status){
 
         this.Id = new OperationRequestId (Guid.NewGuid());
         this.PriorityLevel = priorityLevel;
-        this.OperationType = operationType;
+        this.OperationTypeId = operationTypeId;
         this.DeadlineDate = deadlineDate;
         this.Status = status;
         //falta doctor ID
@@ -35,9 +35,9 @@ public class OperationRequest : Entity<OperationRequestId>, IAggregateRoot
             this.PriorityLevel = priority;
         }
 
-    public void ChangeOperationRequestOperationType(OperationType operationType){
+    public void ChangeOperationRequestOperationTypeId(OperationTypeId operationTypeId){
             
-            this.OperationType = operationType;
+            this.OperationTypeId = operationTypeId;
         }
 
     public void ChangeOperationRequestDeadline(DeadlineDate deadlineDate){
