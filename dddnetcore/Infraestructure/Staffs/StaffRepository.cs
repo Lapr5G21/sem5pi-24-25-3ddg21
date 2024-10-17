@@ -18,5 +18,6 @@ namespace DDDSample1.Infrastructure.Staffs
         {
             throw new System.NotImplementedException();
         }
+
     }
 }

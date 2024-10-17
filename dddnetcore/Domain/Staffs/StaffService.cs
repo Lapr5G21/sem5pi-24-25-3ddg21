@@ -78,13 +78,17 @@ namespace DDDSample1.Domain.Staffs
                 throw new InvalidOperationException("User not found.");
 
             RoleType roleType = user.Role.RoleValue;
-            // Gera o StaffId baseado na Role do User
-            var staffId = GenerateStaffId(roleType);
+        
+            var staffId = new StaffId(user.ToString().Split('@')[0]);
+
 
             // Obtém a Specialization associada
-            var specialization = await _specializationRepository.GetByIdAsync(dto.SpecializationId);
+            var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(dto.SpecializationId));
             if (specialization == null)
                 throw new InvalidOperationException("Specialization not found.");
+
+            // Extrai o ID da especialização
+            var specializationId = specialization.Id;
 
             // Cria o objeto Staff
             var staff = new Staff(
@@ -92,10 +96,10 @@ namespace DDDSample1.Domain.Staffs
                 new StaffFirstName(dto.FirstName), 
                 new StaffLastName(dto.LastName), 
                 new LicenseNumber(dto.LicenseNumber), 
-                specialization.SpecializationId, 
+                specializationId, 
                 new StaffEmail(dto.Email), 
                 new StaffPhoneNumber(dto.PhoneNumber), 
-                user.Username,  // associa o User ao Staff
+                user.Username,
                 new StaffAvailabilitySlots()
             );
 
@@ -161,8 +165,8 @@ namespace DDDSample1.Domain.Staffs
             };
         }
 
-        // Gera um novo ID de funcionário no formato "(N | D | O)aaaannnn"
-        public StaffId GenerateStaffId(RoleType roleType)
+        // Gera um novo ID de funcionário no formato "(N | D | O)aaaannnn"/* 
+      /*  public StaffId GenerateStaffId(RoleType roleType)
         {
             string prefix;
 
@@ -180,12 +184,12 @@ namespace DDDSample1.Domain.Staffs
             }
 
             var year = DateTime.Now.Year;
-            var sequentialNumber = _staffRepository.GetNextSequentialNumberAsync().Result; // Obtém o próximo número sequencial
+            var sequentialNumber = _userRepository.GetNextSequentialNumberAsync().Result; // Obtém o próximo número sequencial
 
             string staffId = $"{prefix}{year}{sequentialNumber:D4}";
 
             return new StaffId(staffId);
-        }
+        } */
 
     }
 }

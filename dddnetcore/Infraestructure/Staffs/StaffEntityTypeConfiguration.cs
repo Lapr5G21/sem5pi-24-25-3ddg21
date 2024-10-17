@@ -37,18 +37,12 @@ namespace DDDSample1.Infrastructure.Staffs
                 .IsRequired();
 
             // Configuração de relacionamento com Specialization
-            builder.HasOne(b => b.Specialization) // Cada Staff tem uma única Specialization
-                .WithMany(s => s.Staffs) // Uma Specialization pode ter muitos Staffs
-                .HasForeignKey("SpecializationId") // Nome da coluna de chave estrangeira em Staff
-                .OnDelete(DeleteBehavior.Cascade) // Comportamento ao deletar uma Specialization
-                .IsRequired(); // Se a especialização é obrigatória
+          //  builder.HasOne(b => b.Specialization).WithMany(s => s.Staffs).HasForeignKey("SpecializationId")
+            //    .OnDelete(DeleteBehavior.Cascade).IsRequired();
 
             // Configuração de relacionamento com User
-            builder.HasOne(b => b.User) // Cada Staff está associado a um User
-                .WithOne() // Um User pode ter apenas um Staff
-                .HasForeignKey<Staff>("UserId") // Nome da coluna de chave estrangeira em Staff
-                .OnDelete(DeleteBehavior.Cascade) // Comportamento ao deletar um User
-                .IsRequired(); // Se o User é obrigatório
+            // builder.HasOne(b => b.User).WithOne().HasForeignKey<Staff>("UserId") // Nome da coluna de chave estrangeira em Staff
+               // .OnDelete(DeleteBehavior.Cascade).IsRequired();
         }
     }
 }
