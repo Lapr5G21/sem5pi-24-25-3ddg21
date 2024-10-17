@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace DDDSample1.Domain.Staffs{
 public class StaffPhoneNumber
 {
-    public string PhoneNumber { get; private set; }
+    public string PhoneNumberString { get; private set; }
 
     public StaffPhoneNumber(string phoneNumber)
     {
@@ -13,7 +13,7 @@ public class StaffPhoneNumber
         {
             throw new ArgumentException("The phone number introduced is not portuguese or is invalid");
         }
-        PhoneNumber = phoneNumber;
+        PhoneNumberString = phoneNumber;
     }
 
     public static bool IsValidPhoneNumber(string phoneNumber)
