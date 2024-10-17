@@ -34,6 +34,7 @@ package StaffAggregate #ffaa00 {
     entity Staff <<root>> <<entity>> {}
 
     class LicenseNumber <<ValueObject>> {}
+    class StaffId<<ValueObject>> {}
     class StaffContactInformation <<ValueObject>> {}
     class StaffEmail<<ValueObject>> {}
     class StaffPhoneNumber<<ValueObject>> {}
@@ -47,6 +48,7 @@ package StaffAggregate #ffaa00 {
     Staff "1" --> "1" StaffContactInformation
     Staff "1" --> "1.." AvailabilitySlots
     Staff "1" --> "1" StaffFirstName
+    Staff "1" --> "1" StaffId
     Staff "1" --> "1" StaffLastName
     StaffContactInformation "1" --> "1" StaffEmail
     StaffContactInformation "1" --> "1" StaffPhoneNumber
@@ -85,44 +87,28 @@ package PatientAggregate #aabbdd {
 }
 
 
-package DoctorAggregate #00aaff {
-    entity Doctor <<root>> <<entity>> {}
-
-    Doctor "1" -> "1" Staff : is a 
-}
-
-package NurseAggregate #aaff0f {
-    entity Nurse <<root>> <<entity>> {}
-
-    Nurse "1" -> "1" Staff : is a
-}
-
-package AdminAggregate #bbaa00 {
-    entity Admin <<root>> <<entity>> {}
-
-    Admin "1" --> "1" Staff : is a
-}
-
-package TechnicianAggregate #aaffcc {
-    entity Technician <<root>> <<entity>> {}
-
-    Technician "1" --> "1" Staff : is a
-}
-
-
 package OperationRequestAggregate #aaaaff {
     entity OperationRequest <<root>> <<entity>> {}
 
     class OperationRequestID <<ValueObject>> {}
     class DeadlineDate <<date>> <<ValueObject>> {}
-    class Priority <<ValueObject>> {}
+    enum Priority <<ValueObject>> {
+        elective
+        urgent 
+        emergency 
+    }
+    enum Status <<ValueObject>>{
+        onScheduled
+        scheduled
+    }
 
-    OperationRequest "1" --> "1" Doctor : has 
+    OperationRequest "1" --> "1" Staff : has 
     OperationRequest "1" --> "1" Patient : has 
     OperationRequest "1" --> "1" OperationType : has 
     OperationRequest "1" --> "1" OperationRequestID 
     OperationRequest "1" --> "1" DeadlineDate
-    OperationRequest "1" --> "1" Priority    
+    OperationRequest "1" --> "1" Priority 
+    OperationRequest "1" --> "1" Status    
 }
 
 
@@ -132,10 +118,17 @@ package OperationTypeAggregate #bbbbbb {
     class OperationTypeId <<ValueObject>> {}
     class OperationTypeName <<ValueObject>> {}
     class EstimatedDuration <<ValueObject>> {}
+    class AnesthesiaTime <<ValueObject>>{}
+    class CleaningTime <<ValueObject>>{}
+    class SurgeryTime <<ValueObject>>{}
+
 
     OperationType "1" --> "1" OperationTypeId
     OperationType "1" --> "1" OperationTypeName
     OperationType "1" --> "1" EstimatedDuration
+    OperationType "1" --> "1" AnesthesiaTime
+    OperationType "1" --> "1" CleaningTime
+    OperationType "1" --> "1" SurgeryTime   
     OperationType "1" --> "1.." Specialization : has
 }
 

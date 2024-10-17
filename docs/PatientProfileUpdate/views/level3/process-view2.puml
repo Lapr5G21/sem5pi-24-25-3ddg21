@@ -1,60 +1,40 @@
 @startuml Patient Profile Update (level 3 - 2)
-autonumber
-participant CTRL as "UsersController"
-participant SERVICE as "UserService <<service>>"
-participant User as "User <<domain>>"
-participant Patient as "Patient <<domain>>"
-participant USERREPO as "UserRepository"
-participant PATIENTREPO as "Patient Repository"
-participant DTO as "creatingUserDTO : UserDTO"
 
-?o-> CTRL : POST /api/users/patients
+autonumber
+actor Admin as "Admin"
+participant CTRL as "PatientsController"
+participant SERVICE as "PatientService <<service>>"
+participant PATIENT as "Patient <<domain>>"
+participant REPO as "Patient Repository"
+participant DTO as "updatingPatientProfileDTO : PatientProfileDTO"
+
+Admin-> CTRL : PUT /api/patients
 activate CTRL
 
-CTRL -> SERVICE : createUserPacientAsync(creatingUserDTO)
+CTRL -> SERVICE : createPatientProfileAsync(creatingPatientProfileDTO)
 activate SERVICE
 
-SERVICE -> PATIENTREPO : GetByEmailAsync(creatingUserDTO.email)
-activate PATIENTREPO
-alt Patient not found (patient == null)
+    SERVICE -> PATIENT : update(updatingPatientProfileDTO.firstName, updatingPatientProfileDTO.lastName, updatingPatientProfileDTO.fullName, updatingPatientProfileDTO.medicalHistory, updatingPatientProfileDTO.allergies)
+    activate PATIENT
 
-    activate PATIENTREPO
+    PATIENT -> SERVICE : patientUpdated
+    deactivate PATIENT
 
-    PATIENTREPO -> SERVICE : 404 NotFound
-    
-    deactivate PATIENTREPO
-
-    SERVICE -> CTRL : 404 NotFound
-
-else Patient found (patient != null)
-    PATIENTREPO -> SERVICE : patient
-    deactivate PATIENTREPO
-
-    SERVICE -> User : create(creatingUserDTO.email, creatingUserDTO.username, creatingUserDTO.role)
-    activate User
-
-    User -> SERVICE : userCreated
-    deactivate User
-
-    SERVICE -> Patient : setUser(userCreated)
-    SERVICE -> USERREPO : save(userCreated)
+    SERVICE -> REPO : save(patientUpdated)
     activate USERREPO
 
-    USERREPO -> SERVICE : userSaved
-    deactivate USERREPO
-
-    SERVICE -> PATIENTREPO : save(patient)
-    activate PATIENTREPO
-
-    PATIENTREPO -> SERVICE : patientSaved
-    deactivate PATIENTREPO
-
-    SERVICE -> CTRL : userDTO
+    REPO -> SERVICE : patientUpdated
+    deactivate REPO
+    activate DTO
     
-    <-- CTRL : 201 User created
+    SERVICE -> DTO : update(updatingPatientProfileDTO.fullName, updatingPatientProfileDTO.medicalHistory, updatingPatientProfileDTO.allergies)
+    
+    DTO -> SERVICE : patientProfileDto
+    deactivate DTO
 
-else 
-end
+    SERVICE -> CTRL : patientProfileDto
+    
+    <-- CTRL : 201 Patient Profile Updated
 
 deactivate SERVICE
 deactivate CTRL

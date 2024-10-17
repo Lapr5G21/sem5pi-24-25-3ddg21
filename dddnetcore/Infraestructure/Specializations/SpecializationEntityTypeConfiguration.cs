@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DDDSample1.Domain.Specializations;
+using DDDSample1.Domain.OperationTypesSpecializations;
 
 namespace DDDSample1.Infrastructure.Specializations
 {
@@ -8,14 +9,16 @@ namespace DDDSample1.Infrastructure.Specializations
     {
         public void Configure(EntityTypeBuilder<Specialization> builder)
         {
-            // cf. https://www.entityframeworktutorial.net/efcore/fluent-api-in-entity-framework-core.aspx
-            
-            //builder.ToTable("Categories", SchemaNames.DDDSample1);
             builder.HasKey(b => b.Id);
-            //builder.Property<bool>("_active").HasColumnName("Active");
+            
+            builder.Property(b => b.SpecializationName)
+                   .HasConversion(b => b.Name, b => new SpecializationName(b))
+                   .IsRequired();
 
-            builder.Property(b => b.SpecializationName).HasConversion(b => b.Name, b => new SpecializationName(b)).IsRequired();
-
+            builder.HasMany(b => b.OperationTypes)
+                   .WithOne(b => b.Specialization)
+                   .HasForeignKey("SpecializationId")
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

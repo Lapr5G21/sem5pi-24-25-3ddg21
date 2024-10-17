@@ -1,29 +1,18 @@
 @startuml Patient Profile Creation (level 3 - 1)
 
 autonumber
+actor Admin as "Admin"
 participant BE as "Backend Management" <<system (C4)>>
 participant DB as "Database"
 
-?o-> BE : POST /api/users/patient
+Admin-> BE : POST /api/patients
 activate BE
 
-BE -> DB : Check if email/phone are unique
-activate DB
-DB -> BE : Return uniqueness result
-deactivate DB
-
-alt unique details
-
-    BE -> DB : Store new profile and generate Patient ID
+    BE -> DB : Store new patient profile
     activate DB
     DB -> BE : Profile stored
     deactivate DB
-    <- BE : 201 Staff profile created
-else duplicate email/phone
-    <- BE : 409 Conflict (Duplicate found)
-end
-
+    BE -> Admin : 201 Patient profile created
 deactivate BE
-
 
 @enduml
