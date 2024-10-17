@@ -13,7 +13,7 @@ namespace DDDSample1.Infrastructure.OperationRequests
             builder.Property(b => b.PriorityLevel)
                    .IsRequired();
 
-            builder.Property(b => b.OperationType)
+            builder.Property(b => b.OperationTypeId)
                    .IsRequired();
 
             // Adding Value Converter for DeadlineDate

@@ -26,7 +26,7 @@ namespace DDDSample1.Controllers
         }
 
 
-/*
+
 
         // GET: api/operationRequests List Of Operation Requests
         [HttpGet]
@@ -50,7 +50,7 @@ namespace DDDSample1.Controllers
             return Ok(operationRequest);
         }
 
-/*
+
         //POST: api/operationRequests
         [HttpPost]
         public async Task<ActionResult<OperationRequestDto>> Create([FromBody] CreatingOperationRequestDto dto){
@@ -61,11 +61,17 @@ namespace DDDSample1.Controllers
             }
 
             var operationRequest = await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new object{ id = operationRequest.Id}, operationRequest);
-        }
-        */
 
-/*
+
+            return CreatedAtAction(
+                nameof(GetById),
+                 new { id = operationRequest.Id},
+                  operationRequest
+            );
+        }
+        
+
+
          // PUT: api/operationTypes/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationRequestDto>> Update(string id, [FromBody] OperationRequestDto dto)
@@ -115,7 +121,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-*/
+
 
     }
 
