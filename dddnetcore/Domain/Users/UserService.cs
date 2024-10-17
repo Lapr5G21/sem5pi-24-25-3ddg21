@@ -112,6 +112,25 @@ namespace DDDSample1.Users
             };
         }
 
+
+        internal async Task<UserDto> InactivateAsync(Username username)
+        {
+            
+            var user = await this._userRepository.GetByIdAsync(username);
+            if (user == null) return null;
+
+            user.DeactivateUser();
+            
+            await this._unitOfWork.CommitAsync();
+
+            return new UserDto
+            {
+                Role = user.Role.ToString(),
+                Username = user.Username.ToString(),
+                Email = user.Email.ToString()
+            };
+        }
+
         public Username GenerateUsername(RoleType role)
         {
             var domain = "healthcare.com";
@@ -126,16 +145,12 @@ namespace DDDSample1.Users
                     prefix = "N";
                     break;
                 case RoleType.Technician:
-                    prefix = "T";   
-                    break;
                 case RoleType.Admin:
-                    prefix = "A";
-                    break;
                 case RoleType.Patient:
-                    prefix = "P";
+                    prefix = "O";
                     break;
                 default:
-                    throw new ArgumentException("RoleType inválido.");
+                    throw new ArgumentException("Invalid RoleType.");
             }
 
             var sequentialNumber = _userRepository.GetNextSequentialNumberAsync().Result;
@@ -144,5 +159,6 @@ namespace DDDSample1.Users
 
             return new Username(username);
         }
+
     }
 }
