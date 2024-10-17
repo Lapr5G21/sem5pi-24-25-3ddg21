@@ -14,7 +14,7 @@ public class OperationRequestDto{
 
     public String OperationType { get;  set;}
 
-    public String DeadlineDate { get;  set;}
+    public DateTime DeadlineDate { get;  set;}
 
     public String Status { get; set;}
 

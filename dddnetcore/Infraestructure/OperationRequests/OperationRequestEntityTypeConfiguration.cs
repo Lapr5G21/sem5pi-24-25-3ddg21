@@ -4,33 +4,27 @@ using DDDSample1.Domain.OperationRequest;
 
 namespace DDDSample1.Infrastructure.OperationRequests
 {
+    internal class OperationRequestEntityTypeConfiguration : IEntityTypeConfiguration<OperationRequest>
+    {
+        public void Configure(EntityTypeBuilder<OperationRequest> builder)
+        {
+            builder.HasKey(b => b.Id);
 
+            builder.Property(b => b.PriorityLevel)
+                   .IsRequired();
 
-internal class OperationRequestEntityTypeConfiguration: IEntityTypeConfiguration<OperationRequest>{
+            builder.Property(b => b.OperationType)
+                   .IsRequired();
 
-public void Configure(EntityTypeBuilder<OperationRequest> builder)
-{
+            // Adding Value Converter for DeadlineDate
+            builder.Property(b => b.DeadlineDate)
+                .HasConversion(
+                    v => v.Value, // from DeadlineDate to DateTime
+                    v => new DeadlineDate(v)) // from DateTime to DeadlineDate
+                .IsRequired();
 
-builder.HasKey(b => b.Id);
-
-builder.Property(b => b.PriorityLevel);
-
-builder.Property(b => b.OperationType);
-
-builder.Property(b => b.DeadlineDate );
-
-builder.Property(b => b.Status);
-
-}
-}
-
-
-
-
-
-
-
-
-
-
+            builder.Property(b => b.Status)
+                   .IsRequired();
+        }
+    }
 }

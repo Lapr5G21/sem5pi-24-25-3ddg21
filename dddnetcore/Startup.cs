@@ -9,17 +9,20 @@ using DDDSample1.Infrastructure;
 using DDDSample1.Infrastructure.Categories;
 using DDDSample1.Infrastructure.Products;
 using DDDSample1.Infrastructure.Families;
-using DDDSample1.Infrastructure.OperationTypes; // Novo
-using DDDSample1.Infrastructure.Specializations; // Novo
-using DDDSample1.Infrastructure.OperationTypesSpecializations; // Novo
+using DDDSample1.Infrastructure.OperationTypes;
+using DDDSample1.Infrastructure.Specializations; 
+using DDDSample1.Infrastructure.OperationTypesSpecializations; 
 using DDDSample1.Infrastructure.Shared;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
 using DDDSample1.Domain.Products;
 using DDDSample1.Domain.Families;
-using DDDSample1.Domain.OperationTypes; // Novo
-using DDDSample1.Domain.Specializations; // Novo
-using DDDSample1.Domain.OperationTypesSpecializations; // Novo
+using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Specializations;
+using DDDSample1.Domain.OperationTypesSpecializations;
+using DDDSample1.Domain.OperationRequest;
+using DDDSample1.Infrastructure.OperationRequests;
+
 
 namespace DDDSample1
 {
@@ -91,6 +94,9 @@ namespace DDDSample1
             services.AddTransient<SpecializationService>();
 
             services.AddTransient<IOperationTypeSpecializationRepository, OperationTypeSpecializationRepository>();
+            
+            services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
+            services.AddTransient<OperationRequestService>();
         }
     }
 }

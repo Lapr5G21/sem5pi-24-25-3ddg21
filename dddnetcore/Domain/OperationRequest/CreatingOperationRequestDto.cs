@@ -16,7 +16,7 @@ public String PriorityLevel {get; set; }
 
 public String OperationTypeId {get; set;}
 
-public String DeadlineDate {get; set;}
+public DateTime DeadlineDate {get; set;}
 
 public String Status {get; set;}
 

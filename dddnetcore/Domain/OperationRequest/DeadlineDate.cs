@@ -5,22 +5,21 @@ namespace DDDSample1.Domain.OperationRequest
 {
     public class DeadlineDate : IValueObject
     {
-        public DateTime DeadLineDate { get; private set; }
+        public DateTime Value { get; private set; }
 
-        public DeadlineDate(DateTime deadlineDate)
+        public DeadlineDate(DateTime value)
         {
-
-            if (deadlineDate <= DateTime.Now)
+            if (value <= DateTime.Now)
             {
                 throw new BusinessRuleValidationException("A data limite deve ser no futuro.");
             }
 
-            DeadLineDate = deadlineDate;
+            Value = value;
         }
 
         public override string ToString()
         {
-            return $"{DeadLineDate} -> DeadlineDate";
+            return $"{Value} -> DeadlineDate";
         }
 
         public override bool Equals(object obj)
@@ -29,12 +28,12 @@ namespace DDDSample1.Domain.OperationRequest
                 return false;
 
             var other = (DeadlineDate)obj;
-            return DeadLineDate == other.DeadLineDate;
+            return Value == other.Value;
         }
 
         public override int GetHashCode()
         {
-            return DeadLineDate.GetHashCode();
+            return Value.GetHashCode();
         }
     }
 }
