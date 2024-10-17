@@ -11,7 +11,8 @@ using DDDSample1.Infrastructure.Products;
 using DDDSample1.Infrastructure.Families;
 using DDDSample1.Infrastructure.OperationTypes;
 using DDDSample1.Infrastructure.Specializations; 
-using DDDSample1.Infrastructure.OperationTypesSpecializations; 
+using DDDSample1.Infrastructure.OperationTypesSpecializations;
+using DDDSample1.Infrastructure.Users;
 using DDDSample1.Infrastructure.Shared;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Categories;
@@ -21,7 +22,9 @@ using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.OperationTypesSpecializations;
 using DDDSample1.Domain.OperationRequest;
+using DDDSample1.Domain.Users;
 using DDDSample1.Infrastructure.OperationRequests;
+using DDDSample1.Users;
 
 
 namespace DDDSample1
@@ -97,6 +100,9 @@ namespace DDDSample1
             
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
+
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<UserService>();
         }
     }
 }
