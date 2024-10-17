@@ -12,6 +12,8 @@ using DDDSample1.Domain.OperationTypesSpecializations;
 using DDDSample1.Infrastructure.OperationTypesSpecializations;
 using DDDSample1.Infrastructure.Users;
 using DDDSample1.Domain.Users;
+using DDDSample1.Domain.OperationRequest;
+using DDDSample1.Infrastructure.OperationRequests;
 
 namespace DDDSample1.Infrastructure
 {
@@ -22,6 +24,8 @@ namespace DDDSample1.Infrastructure
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Family> Families { get; set; }
+
+        public DbSet<OperationRequest> OperationRequests { get;set; }
 
         public DbSet<OperationType> OperationTypes { get; set; }
 
@@ -41,6 +45,7 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new CategoryEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FamilyEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationRequestEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OperationTypeSpecializationEntityTypeConfiguration());
