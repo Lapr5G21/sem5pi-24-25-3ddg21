@@ -1,37 +1,34 @@
+using System;
 using DDDSample1.Domain.Shared;
+using Newtonsoft.Json;
 
-namespace DDDSample1.Domain.Patients{
-public class PatientMedicalRecordNumber : IValueObject
+namespace DDDSample1.Domain.Patients
 {
-    public string Number { get; set;}
-
-    private PatientMedicalRecordNumber() { }
-
-    public PatientMedicalRecordNumber(string number)
+    public class PatientMedicalRecordNumber : EntityId
     {
-        if (string.IsNullOrWhiteSpace(number))
-            throw new BusinessRuleValidationException("Medical Record Number cannot be empty or null.");
+        [JsonConstructor]
+        public PatientMedicalRecordNumber(Guid value) : base(value)
+        {
+        }
 
-        Number = number;
-    }
+        public PatientMedicalRecordNumber(String value) : base(value)
+        {
+        }
 
-    public override bool Equals(object obj)
-    {
-        if (obj == null || GetType() != obj.GetType())
-            return false;
+        override
+        protected  Object createFromString(String text){
+            return new Guid(text);
+        }
 
-        var other = (PatientMedicalRecordNumber)obj;
-        return Number.Equals(other.Number);
-    }
-
-    public override int GetHashCode()
-    {
-        return Number.GetHashCode();
-    }
-
-    public override string ToString()
-    {
-        return Number;
-    }
+        override
+        public String AsString(){
+            Guid obj = (Guid) base.ObjValue;
+            return obj.ToString();
+        }
+        
+       
+        public Guid AsGuid(){
+            return (Guid) base.ObjValue;
+        }
     }
 }
