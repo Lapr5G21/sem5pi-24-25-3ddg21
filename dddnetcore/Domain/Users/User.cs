@@ -20,8 +20,8 @@ namespace DDDSample1.Domain.Users
         public User(Role role, Email email,Username username)
         {
             this.Active = true;
-            this.Email = email;
             this.Role = role;
+            this.Email = email;
             this.Username = username;
         }
 
