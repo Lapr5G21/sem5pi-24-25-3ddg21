@@ -100,15 +100,15 @@ namespace DDDSample1.Controllers
 
 
 
-// DELETE: api/operationRequests/{id}/hard
-        [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<OperationRequestDto>> HardDelete(string id)
+// DELETE: api/operationRequests/{id}/delete
+        [HttpDelete("{id}/delete")]
+        public async Task<ActionResult<OperationRequestDto>> Delete(string id)
         {
             try
             {
                 var deletedOperationRequest = await _service.DeleteAsync(new OperationRequestId(id));
 
-                if (deletedOperationRequest == null)
+                if (!deletedOperationRequest)
                 {
                     return NotFound();
                 }

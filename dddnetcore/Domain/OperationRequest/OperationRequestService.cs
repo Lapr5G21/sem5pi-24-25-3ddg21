@@ -130,24 +130,18 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
 
         
 
-         public async Task<OperationRequestDto> DeleteAsync(OperationRequestId id)
-        {
-            var operationRequest = await this._repo.GetByIdAsync(id); 
+        public async Task<bool> DeleteAsync(OperationRequestId id)
+{
+    var operationRequest = await this._repo.GetByIdAsync(id);
 
-            if (operationRequest == null)
-                return null;   
-            
-            this._repo.Remove(operationRequest);
-            await this._unitOfWork.CommitAsync();
+    if (operationRequest == null)
+        throw new KeyNotFoundException($"OperationRequest with ID {id} not found.");
 
-            return new OperationRequestDto 
-            { 
-               Id = operationRequest.Id.AsGuid(), 
-                PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
-                OperationTypeId = operationRequest.OperationTypeId.ToString(),
-                DeadlineDate =  operationRequest.DeadlineDate.Value,
-                Status = operationRequest.Status.ToString() };
-        }
+    this._repo.Remove(operationRequest);
+    await this._unitOfWork.CommitAsync();
+
+    return true;
+}
     
 }
 
