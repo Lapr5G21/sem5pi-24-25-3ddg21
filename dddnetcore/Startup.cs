@@ -41,33 +41,45 @@ namespace DDDSample1
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<DDDSample1DbContext>(opt =>
-                opt.UseInMemoryDatabase("DDDSample1DB")
-                .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddDbContext<DDDSample1DbContext>(opt =>
+        opt.UseInMemoryDatabase("DDDSample1DB")
+        .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
-            ConfigureMyServices(services);
-            services.AddAuthentication(options => {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => { options.Authority = $"https://[Auth0:Domain]/";
-        });
+    ConfigureMyServices(services);
 
-        services.AddAuthorization(options =>{
-                options.AddPolicy("read:messages", policy =>
-                    policy.Requirements.Add(new HasScopeRequirement("read:messages", $"https://[Auth0:Domain]/")));
-                options.AddPolicy("BackofficeRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Admin","Doctor","Nurse","Technician"));
-                options.AddPolicy("AdminRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Admin"));
-                options.AddPolicy("DoctorRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Doctor"));
-                options.AddPolicy("NurseRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Nurse"));
-                options.AddPolicy("TechnicianRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Technician"));
-                options.AddPolicy("PatientRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Patient"));
-                });
+    services.AddAuthentication(options => {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options => {
+        options.Authority = $"https://{Configuration["Auth0:Domain"]}/";  
+        options.Audience = Configuration["Auth0:Audience"];              
+    });
 
-            services.AddControllers().AddNewtonsoftJson();
+    services.AddAuthorization(options =>
+    {
+        options.AddPolicy("read:messages", policy =>
+            policy.Requirements.Add(new HasScopeRequirement("read:messages", $"https://{Configuration["Auth0:Domain"]}/")));
 
-        }
+        options.AddPolicy("BackofficeRole", policy =>
+            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Admin", "Doctor", "Nurse", "Technician"));
+        options.AddPolicy("AdminRole", policy =>
+            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Admin"));
+        options.AddPolicy("DoctorRole", policy =>
+            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Doctor"));
+        options.AddPolicy("NurseRole", policy =>
+            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Nurse"));
+        options.AddPolicy("TechnicianRole", policy =>
+            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Technician"));
+        options.AddPolicy("PatientRole", policy =>
+            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Patient"));
+    });
+
+    services.AddControllers().AddNewtonsoftJson();
+}
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
