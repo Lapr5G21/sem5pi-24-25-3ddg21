@@ -8,7 +8,6 @@ namespace DDDSample1.Infrastructure.Users
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            // Definir a chave primária
             builder.HasKey(b => b.Id);
 
             builder.Property(b => b.Username)

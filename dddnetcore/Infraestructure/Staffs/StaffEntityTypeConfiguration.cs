@@ -1,4 +1,7 @@
+using System;
+using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.Staffs;
+using DDDSample1.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -36,13 +39,28 @@ namespace DDDSample1.Infrastructure.Staffs
                 .HasColumnName("IsActive")
                 .IsRequired();
 
-            // Configuração de relacionamento com Specialization
-          //  builder.HasOne(b => b.Specialization).WithMany(s => s.Staffs).HasForeignKey("SpecializationId")
-            //    .OnDelete(DeleteBehavior.Cascade).IsRequired();
+            builder.HasOne<Specialization>()
+                .WithMany()
+                .HasForeignKey(b => b.SpecializationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
 
-            // Configuração de relacionamento com User
-            // builder.HasOne(b => b.User).WithOne().HasForeignKey<Staff>("UserId") // Nome da coluna de chave estrangeira em Staff
-               // .OnDelete(DeleteBehavior.Cascade).IsRequired();
+            builder.HasOne<User>()
+                .WithOne()
+                .HasForeignKey<Staff>(b => b.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false);
+
+            builder.OwnsOne(s => s.StaffAvailabilitySlots, a =>
+            {
+                a.OwnsMany(s => s.Slots, slot =>
+                {
+                    slot.WithOwner().HasForeignKey("StaffId");
+                    slot.Property<DateTime>("Start");
+                    slot.Property<DateTime>("End");
+                    slot.HasKey("StaffId", "Start", "End");
+                });
+            });
         }
     }
 }

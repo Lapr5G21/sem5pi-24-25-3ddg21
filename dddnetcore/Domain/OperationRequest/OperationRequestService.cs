@@ -68,15 +68,15 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
-            var operationType = await _OperationTypeRepo.GetByIdAsync(new OperationTypeId(dto.Id));
+            var operationType = await _OperationTypeRepo.GetByIdAsync(new OperationTypeId(dto.OperationTypeId));
             
             
             if(operationType == null){
             throw new BusinessRuleValidationException("Operation Type doesnt exist");
             }
             
-                var priority = Enum.Parse<Priority>(dto.Priority.ToUpper());
-                var status = Enum.Parse<Status>(dto.Status.ToUpper()); 
+                var priority = Enum.Parse<Priority>(dto.Priority);
+                var status = Enum.Parse<Status>(dto.Status); 
 
                 var operationRequest = new OperationRequest( 
                     priority,
@@ -90,7 +90,7 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
 
             return new OperationRequestDto 
             { 
-                Id = operationRequest.Id.AsGuid(), 
+                Id = operationRequest.Id.AsGuid(),
                 PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
                 OperationTypeId = operationRequest.OperationTypeId.ToString(),
                 DeadlineDate =  operationRequest.DeadlineDate.Value,

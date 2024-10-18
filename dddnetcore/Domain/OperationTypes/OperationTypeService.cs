@@ -90,11 +90,12 @@ namespace DDDSample1.Domain.OperationTypes
 
             return new OperationTypeDto
             {
-                Id = operationType.Id.AsGuid(),
+            Id = operationType.Id.AsGuid(),
             Name = operationType.Name.ToString(),
             EstimatedTimeDuration = operationType.EstimatedTimeDuration.Minutes,
             AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
             CleaningTime = operationType.CleaningTime.Minutes,
+            IsActive = operationType.IsActive,
             SurgeryTime = operationType.SurgeryTime.Minutes
             };
         }
