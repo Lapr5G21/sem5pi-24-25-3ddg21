@@ -42,5 +42,10 @@ namespace DDDSample1.Domain.Users
             if (!this.Active) throw new BusinessRuleValidationException("User cannot be changed in this state");
             this.Email = email;
         }
+
+        public void DeactivateUser()
+        {
+            this.Active = false;
+        }
     }
 }

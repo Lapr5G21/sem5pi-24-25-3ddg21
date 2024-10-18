@@ -3,7 +3,7 @@ using DDDSample1.Domain.Shared;
 namespace DDDSample1.Domain.Staffs{
 public class LicenseNumber : IValueObject
 {
-    public string Number { get; set;}
+    public string LicenseNumberString { get; set;}
 
     private LicenseNumber() { }
 
@@ -12,7 +12,7 @@ public class LicenseNumber : IValueObject
         if (string.IsNullOrWhiteSpace(number))
             throw new BusinessRuleValidationException("License number cannot be empty or null.");
 
-        Number = number;
+        LicenseNumberString = number;
     }
 
     public override bool Equals(object obj)
@@ -21,17 +21,17 @@ public class LicenseNumber : IValueObject
             return false;
 
         var other = (LicenseNumber)obj;
-        return Number.Equals(other.Number);
+        return LicenseNumberString.Equals(other.LicenseNumberString);
     }
 
     public override int GetHashCode()
     {
-        return Number.GetHashCode();
+        return LicenseNumberString.GetHashCode();
     }
 
     public override string ToString()
     {
-        return Number;
+        return LicenseNumberString;
     }
     }
 }
