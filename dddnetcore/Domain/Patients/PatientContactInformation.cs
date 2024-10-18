@@ -4,23 +4,23 @@ namespace DDDSample1.Domain.Patients
 {
     public class PatientContactInformation : IValueObject
     {
-        public PatientBirthDate BirthDate { get; private set; }
+        public PatientEmail Email { get; private set; }
         public PatientPhoneNumber PhoneNumber { get; private set; }
 
-        public PatientContactInformation(PatientBirthDate birthDate, PatientPhoneNumber phoneNumber)
+        public PatientContactInformation(PatientEmail email, PatientPhoneNumber phoneNumber)
         {
-            if (birthDate == null || phoneNumber == null)
+            if (email == null || phoneNumber == null)
             {
-                throw new BusinessRuleValidationException("Both birth date and phone number must be provided.");
+                throw new BusinessRuleValidationException("Both email and phone number must be provided.");
             }
 
-            this.BirthDate = birthDate;
+            this.Email = email;
             this.PhoneNumber = phoneNumber;
         }
 
         public override string ToString()
         {
-            return $"Birth Date: {BirthDate}, Phone Number: {PhoneNumber.PhoneNumber}";
+            return $"Email: {Email}, Phone Number: {PhoneNumber.PhoneNumber}";
         }
     }
 }

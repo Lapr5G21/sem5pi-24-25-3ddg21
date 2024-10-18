@@ -18,11 +18,12 @@ namespace DDDSample1.Tests.Domain.Patients
             var birthDate = new Mock<PatientBirthDate>().Object;
             var gender = new Mock<PatientGender>().Object;
             var medicalRecordNumber = new Mock<PatientMedicalRecordNumber>().Object;
-            var contactInfo = new Mock<PatientContactInformation>().Object;
+            var email = new Mock<PatientEmail>().Object;
+            var phoneNumber = new Mock<PatientPhoneNumber>().Object;
             var emergencyContact = new Mock<PatientEmergencyContact>().Object;
 
             // Act
-            var patient = new Patient(firstName, lastName, fullName, birthDate, gender, medicalRecordNumber, contactInfo, emergencyContact);
+            var patient = new Patient(firstName, lastName, fullName, birthDate, gender, medicalRecordNumber, email, phoneNumber, emergencyContact);
 
             // Assert
             Assert.Equal(firstName, patient.FirstName);
@@ -31,7 +32,8 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(birthDate, patient.BirthDate);
             Assert.Equal(gender, patient.Gender);
             Assert.Equal(medicalRecordNumber, patient.MedicalRecordNumber);
-            Assert.Equal(contactInfo, patient.ContactInformation);
+            Assert.Equal(email, patient.Email);
+            Assert.Equal(phoneNumber, patient.PhoneNumber);
             Assert.Equal(emergencyContact, patient.EmergencyContact);
             Assert.True(patient.Active);
         }
@@ -133,27 +135,51 @@ namespace DDDSample1.Tests.Domain.Patients
         }
 
         [Fact]
-        public void ChangeContactInformation_ValidContactInformation_ShouldChangeContactInformation()
+        public void ChangeEmail_ValidEmail_ShouldChangeEmail()
         {
             // Arrange
-            var newContactInfo = new Mock<PatientContactInformation>().Object;
+            var newEmail = new Mock<PatientEmail>().Object;
             var patient = CreateValidPatient();
 
             // Act
-            patient.ChangeContactInformation(newContactInfo);
+            patient.ChangeEmail(newEmail);
 
             // Assert
-            Assert.Equal(newContactInfo, patient.ContactInformation);
+            Assert.Equal(newEmail, patient.Email);
         }
 
         [Fact]
-        public void ChangeContactInformation_NullContactInformation_ShouldThrowArgumentNullException()
+        public void ChangeEmail_NullEmail_ShouldThrowArgumentNullException()
         {
             // Arrange
             var patient = CreateValidPatient();
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeContactInformation(null));
+            Assert.Throws<ArgumentNullException>(() => patient.ChangeEmail(null));
+        }
+
+        [Fact]
+        public void ChangePhoneNumber_ValidPhoneNumber_ShouldChangePhoneNumber()
+        {
+            // Arrange
+            var newPhoneNumber = new Mock<PatientPhoneNumber>().Object;
+            var patient = CreateValidPatient();
+
+            // Act
+            patient.ChangePhoneNumber(newPhoneNumber);
+
+            // Assert
+            Assert.Equal(newPhoneNumber, patient.PhoneNumber);
+        }
+
+        [Fact]
+        public void ChangePhoneNumber_NullPhoneNumber_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var patient = CreateValidPatient();
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => patient.ChangePhoneNumber(null));
         }
 
         [Fact]
@@ -215,10 +241,11 @@ namespace DDDSample1.Tests.Domain.Patients
             var birthDate = new Mock<PatientBirthDate>().Object;
             var gender = new Mock<PatientGender>().Object;
             var medicalRecordNumber = new Mock<PatientMedicalRecordNumber>().Object;
-            var contactInfo = new Mock<PatientContactInformation>().Object;
+            var email = new Mock<PatientEmail>().Object;
+            var phoneNumber = new Mock<PatientPhoneNumber>().Object;
             var emergencyContact = new Mock<PatientEmergencyContact>().Object;
 
-            return new Patient(firstName, lastName, fullName, birthDate, gender, medicalRecordNumber, contactInfo, emergencyContact);
+            return new Patient(firstName, lastName, fullName, birthDate, gender, medicalRecordNumber, email, phoneNumber, emergencyContact);
         }
     }
 }

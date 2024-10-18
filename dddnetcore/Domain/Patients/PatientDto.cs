@@ -6,15 +6,16 @@ namespace DDDSample1.Domain.Patients
 {
     public class PatientDto
     {
-        public string MedicalRecordNumber { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string FullName { get; set; }
-        public string BirthDate { get; set; }
-        public string Gender { get; set; }
-        public string PhoneNumber { get; set; }
-        public string EmergencyContactName { get; set; }
-        public string EmergencyContactPhone { get; set; }
+
+        public PatientFirstName FirstName { get; set; }
+        public PatientLastName LastName { get; set; }
+        public PatientFullName FullName { get; set; }
+        public PatientBirthDate BirthDate { get; set; }
+        public PatientGender Gender { get; set; }
+        public PatientMedicalRecordNumber MedicalRecordNumber { get; set; }
+        public PatientEmail Email { get; set; }
+        public PatientPhoneNumber PhoneNumber { get; set; }
+        public PatientEmergencyContact EmergencyContact { get; set; }
         public bool Active { get; set; }
     }
 }

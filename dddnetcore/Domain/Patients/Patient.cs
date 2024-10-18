@@ -12,7 +12,8 @@ namespace DDDSample1.Domain.Patients
         public PatientBirthDate BirthDate { get; private set; }
         public PatientGender Gender { get; private set; }
         public PatientMedicalRecordNumber MedicalRecordNumber { get; private set; }
-        public PatientContactInformation ContactInformation { get; private set; }
+        public PatientEmail Email { get; private set; }
+        public PatientPhoneNumber PhoneNumber { get; private set; }
         public PatientEmergencyContact EmergencyContact { get; private set; }
         public bool Active { get; private set; }
 
@@ -23,7 +24,8 @@ namespace DDDSample1.Domain.Patients
             PatientBirthDate birthDate,
             PatientGender gender,
             PatientMedicalRecordNumber medicalRecordNumber,
-            PatientContactInformation contactInformation,
+            PatientEmail email,
+            PatientPhoneNumber phoneNumber,
             PatientEmergencyContact emergencyContact)
         {
 
@@ -33,7 +35,8 @@ namespace DDDSample1.Domain.Patients
             this.BirthDate = birthDate;
             this.Gender = gender;
             this.MedicalRecordNumber = medicalRecordNumber;
-            this.ContactInformation = contactInformation;
+            this.Email = email;
+            this.PhoneNumber = phoneNumber;
             this.EmergencyContact = emergencyContact;
             this.Active = true;
         }
@@ -63,10 +66,16 @@ namespace DDDSample1.Domain.Patients
             this.MedicalRecordNumber = newMedicalRecordNumber;
         }
 
-        public void ChangeContactInformation(PatientContactInformation newContactInformation)
+        public void ChangeEmail(PatientEmail newPatientEmail)
         {
-            if (newContactInformation == null) throw new ArgumentNullException(nameof(newContactInformation));
-            this.ContactInformation = newContactInformation;
+            if (newPatientEmail == null) throw new ArgumentNullException(nameof(newPatientEmail));
+            this.Email = newPatientEmail;
+        }
+
+        public void ChangePhoneNumber(PatientPhoneNumber newPhoneNumber)
+        {
+            if (newPhoneNumber == null) throw new ArgumentNullException(nameof(newPhoneNumber));
+            this.PhoneNumber = newPhoneNumber;
         }
 
         public void ChangeEmergencyContact(PatientEmergencyContact newEmergencyContact)
@@ -87,7 +96,7 @@ namespace DDDSample1.Domain.Patients
 
         public override string ToString()
         {
-            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {MedicalRecordNumber}, Contact Information: {ContactInformation}, Emergency Contact: {EmergencyContact}, Active: {Active}";
+            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {MedicalRecordNumber}, Email: {Email}, Phone Number : {PhoneNumber} Emergency Contact: {EmergencyContact}, Active: {Active}";
         }
     }
 }
