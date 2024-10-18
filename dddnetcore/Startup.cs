@@ -25,6 +25,8 @@ using DDDSample1.Domain.OperationRequest;
 using DDDSample1.Domain.Users;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DDDSample1.Domain.Authentication;
 
 
 namespace DDDSample1
@@ -46,8 +48,25 @@ namespace DDDSample1
                 .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
             ConfigureMyServices(services);
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => { options.Authority = $"https://[Auth0:Domain]/";
+        });
+
+        services.AddAuthorization(options =>{
+                options.AddPolicy("read:messages", policy =>
+                    policy.Requirements.Add(new HasScopeRequirement("read:messages", $"https://[Auth0:Domain]/")));
+                options.AddPolicy("BackofficeRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Admin","Doctor","Nurse","Technician"));
+                options.AddPolicy("AdminRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Admin"));
+                options.AddPolicy("DoctorRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Doctor"));
+                options.AddPolicy("NurseRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Nurse"));
+                options.AddPolicy("TechnicianRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Technician"));
+                options.AddPolicy("PatientRole",policy => policy.RequireClaim($"[Auth0:NameSpace]/roles","Patient"));
+                });
 
             services.AddControllers().AddNewtonsoftJson();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +85,8 @@ namespace DDDSample1
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
