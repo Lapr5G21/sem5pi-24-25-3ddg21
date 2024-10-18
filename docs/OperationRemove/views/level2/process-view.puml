@@ -1,13 +1,14 @@
 @startuml
 
 autonumber
+Actor Doctor as "Doctor"
 participant SYS as "Backend Management" <<system>>
 
-?o-> SYS : POST /api/operation
+Doctor-> SYS : DELETE /{id}/delete
 activate SYS
 
 SYS -> SYS : removeOperation(operationId)
-<-- SYS : 200 Ok
+Doctor<-- SYS : 200 Ok
 deactivate SYS
 
 

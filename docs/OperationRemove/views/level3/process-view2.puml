@@ -3,26 +3,26 @@ autonumber
 actor Doctor as "Doctor"
 participant CTRL as "OperationRequestController"
 participant SERVICE as "OperationRequestService <<service>>"
-participant Operation as "Operation <<domain>>"
+
 database IOperationRepository as "IOperationRepository"
 
 
 
 activate Doctor
 
-Doctor -> CTRL : POST /api/operation
+Doctor -> CTRL : DELETE /{id}/delete
 activate CTRL
 
-CTRL -> SERVICE : addAsync(OperationId)
+CTRL -> SERVICE : deleteAsync(OperationId)
 activate SERVICE
 
-SERVICE -> Operation : disable(operationId)
+SERVICE -> IOperationRepository : remove(operationId)
 
-activate Operation
+activate IOperationRepository
 
-Operation-> SERVICE : operation
+IOperationRepository-> SERVICE : operationRequest
 
-deactivate Operation
+deactivate IOperationRepository
 
 
 SERVICE -> IOperationRepository : addAsync(OperationRequest)
@@ -41,7 +41,7 @@ IOperationRepository -> SERVICE : OwnerShipValidated
 
 deactivate IOperationRepository
 
-SERVICE -> CTRL : ValueErrorException
+SERVICE -> CTRL : BussinessErrorException
 
 CTRL -> Doctor : 406 Not Aceptable
 end alt 
@@ -53,14 +53,12 @@ activate IOperationRepository
 IOperationRepository -> SERVICE : OwnerShipValidated
 
 deactivate IOperationRepository
-SERVICE -> Operation : create(patientId, doctorId, operationType, deadline,priority)
+SERVICE -> IOperationRepository : remove(operationId) 
 
-activate Operation 
+activate IOperationRepository 
 
-Operation -> SERVICE : operationRequest
-deactivate Operation
-
-SERVICE -> IOperationRepository : addAsync(operationRequest)
+IOperationRepository -> SERVICE : operationRequest
+deactivate IOperationRepository
 
 SERVICE -> CTRL : operation
 

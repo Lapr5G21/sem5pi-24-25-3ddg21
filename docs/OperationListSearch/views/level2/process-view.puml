@@ -1,0 +1,17 @@
+@startuml
+
+autonumber
+actor Doctor as "Doctor"
+participant SYS as "Backend Management" <<system>>
+
+
+
+Doctor -> SYS : POST /api/operationRequest{searchVariable}
+activate SYS
+
+SYS -> SYS : searchBy(searchVariable)
+Doctor <-- SYS : 200 Ok
+deactivate SYS
+
+
+@enduml

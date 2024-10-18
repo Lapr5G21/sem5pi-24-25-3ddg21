@@ -1,0 +1,28 @@
+@startuml
+
+autonumber
+actor Doctor as "doctor"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+
+Doctor -> BE : GET /api/operation{searchVariable}
+activate BE
+
+BE -> DB : get operationRequestBy(searchVariable)
+
+activate DB 
+
+DB -> BE : operationRequest 
+
+deactivate DB 
+
+BE -> BE : confirms doctor ownership
+
+
+
+Doctor <- BE : 200 OK (operationRequest)
+
+deactivate BE
+
+@enduml

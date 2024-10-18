@@ -1,0 +1,34 @@
+@startuml 
+autonumber
+actor Doctor as "Doctor"
+participant CTRL as "OperationRequestController"
+participant SERVICE as "OperationRequestService <<service>>"
+
+database IOperationRepository as "IOperationRepository"
+
+
+
+activate Doctor
+
+Doctor -> CTRL : GET /api/operation{searchVariable}
+activate CTRL
+
+CTRL -> SERVICE : getBy(searchVariable)
+activate SERVICE
+
+SERVICE -> IOperationRepository : getBy"searchVariable"(searchVariable)
+activate IOperationRepository
+IOperationRepository -> SERVICE : operationRequestList 
+deactivate IOperationRepository
+
+
+SERVICE -> CTRL : operationRequestList
+
+deactivate SERVICE 
+
+CTRL -> Doctor : 200 OK (operationRequestList)
+
+deactivate CTRL 
+
+deactivate Doctor
+@enduml

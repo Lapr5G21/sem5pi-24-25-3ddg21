@@ -1,13 +1,14 @@
 @startuml
 
 autonumber
+Actor Doctor as "Doctor"
 participant BE as "Backend Management" <<system>>
 participant DB as "Database"
 
-?o-> BE : POST /api/operation
+Doctor-> BE : DELETE /{id}/delete
 activate BE
 
-BE -> DB : get operationRequestById
+BE -> DB : deleteAsync(id)
 
 activate DB 
 
@@ -23,16 +24,9 @@ DB -> BE : operationRequest.doctorId
 
 deactivate DB
 
-
-BE -> DB : disable operationRequest
-
-activate DB 
-
-DB -> BE : operationRequest 
-
 deactivate DB 
 
-<- BE : 201 Created
+Doctor <- BE : 200 Deleted
 
 deactivate BE
 
