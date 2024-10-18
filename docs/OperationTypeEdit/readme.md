@@ -24,27 +24,16 @@ The global views are available in the views folder.
 
 ### LEVEL 1
 
-![level1_view](level1/process-view.png)
+![level1_view](views/level1/process-view.png)
 
 ### LEVEL 2
 
-![level2_view](level2/process-view.png)
+![level2_view](views/level2/process-view.png)
 
 ### LEVEL 3
 
-
-
-## 4. Design
-
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (presenting the classes that support the functionality), the identification and rational behind the applied design patterns and the specification of the main tests used to validade the functionality.*
-
-### 4.1. Realization
-
-### 4.2. Class Diagram
-
-![a class diagram](class-diagram-01.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
+![level3_view](views/level3/process-view1.png)
+![level3_view](views/level3/process-view2.png)
 
 ### 4.4. Tests
 

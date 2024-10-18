@@ -1,13 +1,14 @@
 @startuml
 
 autonumber
+actor Admin as "Admin"
 participant SYS as "Backend Management" <<system>>
 
-?o-> SYS : PUT /api/operationTypes
+Admin-> SYS : PUT /api/operationTypes
 activate SYS
 
-SYS -> SYS : editOperationType(creatingOperationTypeDTO)
-<-- SYS : 200 OK
+SYS -> SYS : updateOperationType(updateOperationTypeDTO)
+Admin <-- SYS : 200 OK
 deactivate SYS
 
 

@@ -72,7 +72,7 @@ namespace DDDSample1.Controllers
         
 
 
-         // PUT: api/operationTypes/{id}
+         // PUT: api/operationRequests/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationRequestDto>> Update(string id, [FromBody] OperationRequestDto dto)
         {

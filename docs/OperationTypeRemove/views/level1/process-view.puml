@@ -5,11 +5,11 @@ participant SYS as "HealthCare System" <<system >>
 
 activate Admin 
 
-Admin --> SYS : asks to remove an operation type
+Admin --> SYS : asks to disable an operation type
 
 activate SYS 
 
-SYS --> Admin : confirms the operation type has removed successfully
+SYS --> Admin : confirms the operation type has been disabled successfully
 
 
 @enduml

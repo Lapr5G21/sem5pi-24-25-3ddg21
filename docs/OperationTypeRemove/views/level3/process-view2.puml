@@ -3,9 +3,6 @@ autonumber
 actor Admin as "Admin"
 participant CTRL as "OperationTypesController"
 participant SERVICE as "OperationTypeService <<service>>"
-participant OperationType as "OperationType <<domain>>"
-participant OperationTypeDTO as "OperationTypeDTO <<domain>>"
-participant OperationTypeSpecialization as "OperationTypeSpecialization <<domain>>"
 database IOperationTypeRepository as "IOperationTypeRepository"
 
 activate Admin
@@ -13,18 +10,10 @@ activate Admin
 Admin -> CTRL : PUT /api/operationTypes
 activate CTRL
 
-CTRL -> SERVICE : disableAsync(disablingOperationTypeDTO)
+CTRL -> SERVICE : disableAsync(OperationTypeId)
 activate SERVICE
 
-SERVICE -> OperationType : disable(disablingOperationTypeDTO.name)
-
-activate OperationType
-
-OperationType -> SERVICE : operationType
-
-deactivate OperationType
-
-SERVICE -> IOperationTypeRepository : disableAsync(operationType)
+SERVICE -> IOperationTypeRepository : disableAsync(operationTypeId)
 
 activate IOperationTypeRepository
 
@@ -32,23 +21,7 @@ IOperationTypeRepository -> SERVICE : operationType
 
 deactivate IOperationTypeRepository
 
-SERVICE -> OperationTypeSpecialization : disable(operationTypeId)
-
-activate OperationTypeSpecialization 
-
-OperationTypeSpecialization -> SERVICE : operationTypeSpecialization
-
-deactivate OperationTypeSpecialization
-
-SERVICE -> OperationTypeDTO : disable(operationTypeId,name)
-
-activate OperationTypeDTO
-
-OperationTypeDTO -> SERVICE : operationTypeDTO
-
-deactivate OperationTypeDTO
-
-SERVICE -> CTRL : operationTypeDTO
+SERVICE -> CTRL : operationType
 
 deactivate SERVICE 
 

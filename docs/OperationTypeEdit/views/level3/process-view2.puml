@@ -3,28 +3,24 @@ autonumber
 actor Admin as "Admin"
 participant CTRL as "OperationTypesController"
 participant SERVICE as "OperationTypeService <<service>>"
-participant OperationType as "OperationType <<domain>>"
 participant OperationTypeDTO as "OperationTypeDTO <<domain>>"
-participant OperationTypeSpecialization as "OperationTypeSpecialization <<domain>>"
 database IOperationTypeRepository as "IOperationTypeRepository"
+database OperationTypeSpecializationRepositorie as "OperationTypeSpecializationRepositorie <<repositorie>>"
+
 
 activate Admin
 
-Admin -> CTRL : POST /api/operationTypes
+Admin -> CTRL : POST /api/operationTypes{id}
 activate CTRL
 
 CTRL -> SERVICE : editAsync(editOperationTypeDTO)
 activate SERVICE
 
-SERVICE -> OperationType : edit(editOperationTypeDTO.name,editOperationTypeDTO.estimatedDuration\n,editOperationTypeDTO.anesthesiaTime,editOperationTypeDTO.surgeryTime,\neditOperationTypeDTO.cleaningTime)
 
-activate OperationType
 
-OperationType -> SERVICE : operationType
+deactivate IOperationTypeRepository
 
-deactivate OperationType
-
-SERVICE -> IOperationTypeRepository : editAsync(operationType)
+SERVICE -> IOperationTypeRepository : editAsync(editOperationTypeDTO.name,editOperationTypeDTO.estimatedDuration)
 
 activate IOperationTypeRepository
 
@@ -32,23 +28,17 @@ IOperationTypeRepository -> SERVICE : operationType
 
 deactivate IOperationTypeRepository
 
-SERVICE -> OperationTypeSpecialization : edit(operationTypeId,SpecializationId,numberOfStaff)
+SERVICE -> OperationTypeSpecializationRepositorie : edit(operationTypeId,SpecializationId,numberOfStaff)
 
-activate OperationTypeSpecialization 
+activate OperationTypeSpecializationRepositorie 
 
-OperationTypeSpecialization -> SERVICE : operationTypeSpecialization
+OperationTypeSpecializationRepositorie -> SERVICE : operationTypeSpecialization
 
-deactivate OperationTypeSpecialization
+deactivate OperationTypeSpecializationRepositorie
 
-SERVICE -> OperationTypeDTO : edit(operationTypeId,name,anesthesiaTime,surgeryTime,cleaningTime)
 
-activate OperationTypeDTO
 
-OperationTypeDTO -> SERVICE : operationTypeDTO
-
-deactivate OperationTypeDTO
-
-SERVICE -> CTRL : operationTypeDTO
+SERVICE -> CTRL : operationType
 
 deactivate SERVICE 
 

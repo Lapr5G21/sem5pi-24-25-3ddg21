@@ -1,29 +1,22 @@
 @startuml
 
 autonumber
+actor Admin as "Admin"
 participant BE as "Backend Management" <<system (C4)>>
 participant DB as "Database"
 
-?o-> BE : PUT /api/operationTypes
+Admin -> BE : PUT /api/operationTypes{id}
 activate BE
 
-BE -> DB : get specialization
+BE -> DB : softDelete(operationTypesId)
 
 activate DB 
 
-DB -> BE : specialization
+DB -> BE : operationType
 
 deactivate DB 
 
-BE -> DB : disable operationType
-
-activate DB 
-
-DB -> BE : operationType 
-
-deactivate DB 
-
-<- BE : 200 OK
+Admin <- BE : 200 OK
 
 deactivate BE
 

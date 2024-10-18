@@ -1,7 +1,7 @@
 @startuml
 
 actor Admin as "Admin"
-participant SYS as "HealthCare System" <<system (C4)>>
+participant SYS as "HealthCare System" <<system>>
 
 activate Admin 
 
