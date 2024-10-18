@@ -1,3 +1,4 @@
+using System;
 using DDDSample1.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,14 +9,18 @@ namespace DDDSample1.Infrastructure.Users
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(b => b.Id);
+
+            builder.HasKey(b => b.Username);
 
             builder.Property(b => b.Username)
                 .HasConversion(u => u.UsernameString, u => new Username(u))
                 .IsRequired();
 
             builder.Property(b => b.Role)
-                .HasConversion(r => r.RoleValue, r => new Role(r))
+                .HasConversion(
+                    r => r.RoleValue.ToString(),
+                    r => new Role((RoleType)Enum.Parse(typeof(RoleType), r))
+                )
                 .IsRequired();
 
             builder.Property(b => b.Email)

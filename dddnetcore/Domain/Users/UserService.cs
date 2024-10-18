@@ -48,15 +48,25 @@ namespace DDDSample1.Users
             };
         }
 
+
         public async Task<UserDto> AddAsync(CreatingUserDto dto)
         {
             var roleType = (RoleType)Enum.Parse(typeof(RoleType), dto.Role, true);
             var role = new Role(roleType);
-            var username = GenerateUsername(roleType);
-            var user = new User(role, new Email(dto.Email),username);
+            
+            // Aguarda a geração do username
+            var username = await GenerateUsernameAsync(roleType);
+            
+            // Cria um novo usuário com a role, email e username gerado
+            var user = new User(role, new Email(dto.Email), username);
+            
+            // Adiciona o usuário ao repositório
             await this._userRepository.AddAsync(user);
+            
+            // Comita as mudanças no banco de dados
             await this._unitOfWork.CommitAsync();
 
+            // Retorna o DTO do usuário criado
             return new UserDto
             {
                 Role = user.Role.ToString(),
@@ -64,6 +74,7 @@ namespace DDDSample1.Users
                 Email = user.Email.ToString()
             };
         }
+
 
         public async Task<UserDto> UpdateAsync(UserDto dto)
         {
@@ -131,34 +142,21 @@ namespace DDDSample1.Users
             };
         }
 
-        public Username GenerateUsername(RoleType role)
+        public async Task<Username> GenerateUsernameAsync(RoleType role)
         {
             var domain = "healthcare.com";
-            string prefix;
-
-            switch (role)
+            string prefix = role switch
             {
-                case RoleType.Doctor:
-                    prefix = "D";
-                    break;
-                case RoleType.Nurse:
-                    prefix = "N";
-                    break;
-                case RoleType.Technician:
-                case RoleType.Admin:
-                case RoleType.Patient:
-                    prefix = "O";
-                    break;
-                default:
-                    throw new ArgumentException("Invalid RoleType.");
-            }
-
-            var sequentialNumber = _userRepository.GetNextSequentialNumberAsync().Result;
+                RoleType.Doctor => "D",
+                RoleType.Nurse => "N",
+                RoleType.Technician or RoleType.Admin or RoleType.Patient => "O",
+                _ => throw new ArgumentException("Invalid RoleType."),
+            };
+            var sequentialNumber = await _userRepository.GetNextSequentialNumberAsync();
 
             string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}@{domain}";
 
             return new Username(username);
         }
-
     }
 }

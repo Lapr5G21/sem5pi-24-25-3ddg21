@@ -28,9 +28,5 @@ namespace DDDSample1.Infrastructure.Users
             return userCount + 1;
         }
 
-        public async Task<User> GetByIdAsync(Username username)
-        {
-            return await _context.Users.FindAsync(username);
-        }
     }
 }

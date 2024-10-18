@@ -43,16 +43,28 @@ namespace DDDSample1.Controllers
 
         // POST: api/users
         [HttpPost]
-        public async Task<ActionResult<UserDto>> Create([FromBody] CreatingUserDto dto)
+        public async Task<IActionResult> Create([FromBody] CreatingUserDto dto)
         {
             if (dto == null)
             {
-                return BadRequest("Invalid data.");
+                return BadRequest("Invalid user data.");
             }
 
-            var user = await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = user.Username }, user);
+            Console.WriteLine("Creating user: " + dto.Email); // Example logging
+
+            var userDto = await _service.AddAsync(dto);
+            if (userDto == null)
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            // Verifique o valor do Username
+            Console.WriteLine("Created user username: " + userDto.Username);
+
+            return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto); // Alterado para 'id'
         }
+
+
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
@@ -84,14 +96,21 @@ namespace DDDSample1.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<UserDto>> SoftDelete(string id)
         {
-            var user = await _service.InactivateAsync(new Username(id));
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var user = await _service.InactivateAsync(new Username(id));
 
-            return Ok(user);
+                if (user == null)
+                {
+                    return NotFound("User not found for soft delete.");
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex) // Captura qualquer exceção que pode ocorrer
+            {
+                return StatusCode(500, "An error occurred while soft deleting the user: " + ex.Message);
+            }
         }
 
         // DELETE: api/users/{id}/hard
@@ -104,7 +123,7 @@ namespace DDDSample1.Controllers
 
                 if (deletedUser == null)
                 {
-                    return NotFound();
+                    return NotFound("User not found for hard delete.");
                 }
 
                 return Ok(deletedUser);
@@ -112,6 +131,10 @@ namespace DDDSample1.Controllers
             catch (BusinessRuleValidationException ex)
             {
                 return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex) // Captura qualquer exceção que pode ocorrer
+            {
+                return StatusCode(500, "An error occurred while hard deleting the user: " + ex.Message);
             }
         }
     }
