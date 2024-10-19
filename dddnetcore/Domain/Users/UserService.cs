@@ -54,19 +54,14 @@ namespace DDDSample1.Users
             var roleType = (RoleType)Enum.Parse(typeof(RoleType), dto.Role, true);
             var role = new Role(roleType);
             
-            // Aguarda a geração do username
             var username = await GenerateUsernameAsync(roleType);
             
-            // Cria um novo usuário com a role, email e username gerado
             var user = new User(role, new Email(dto.Email), username);
             
-            // Adiciona o usuário ao repositório
             await this._userRepository.AddAsync(user);
             
-            // Comita as mudanças no banco de dados
             await this._unitOfWork.CommitAsync();
 
-            // Retorna o DTO do usuário criado
             return new UserDto
             {
                 Role = user.Role.ToString(),
@@ -94,36 +89,6 @@ namespace DDDSample1.Users
             };
         }
 
-        public async Task<UserDto> DeleteAsync(Username username)
-        {
-            var user = await this._userRepository.GetByIdAsync(username);
-            if (user == null) return null;
-
-            this._userRepository.Remove(user);
-            await this._unitOfWork.CommitAsync();
-
-            return new UserDto
-            {
-                Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
-                Email = user.Email.ToString()
-            };
-        }
-
-        public async Task<UserDto> FindByEmailAsync(string email)
-        {
-            var user = await this._userRepository.FindByEmailAsync(new Email(email));
-            if (user == null) return null;
-
-            return new UserDto
-            {
-                Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
-                Email = user.Email.ToString()
-            };
-        }
-
-
         internal async Task<UserDto> InactivateAsync(Username username)
         {
             
@@ -133,6 +98,39 @@ namespace DDDSample1.Users
             user.DeactivateUser();
             
             await this._unitOfWork.CommitAsync();
+
+            return new UserDto
+            {
+                Username = user.Username.ToString(),
+                Role = user.Role.ToString(),
+                Email = user.Email.ToString()
+            };
+        }
+
+
+        public async Task<UserDto> DeleteAsync(Username username)
+        {
+            var user = await this._userRepository.GetByIdAsync(username);
+            if (user == null) return null;
+
+            if (user.Active)
+                throw new BusinessRuleValidationException("It is not possible to delete an active user.");
+
+            this._userRepository.Remove(user);
+            await this._unitOfWork.CommitAsync();
+
+            return new UserDto
+            {
+                Username = user.Username.ToString(),
+                Role = user.Role.ToString(),
+                Email = user.Email.ToString()
+            };
+        }
+
+        public async Task<UserDto> FindByEmailAsync(string email)
+        {
+            var user = await this._userRepository.FindByEmailAsync(new Email(email));
+            if (user == null) return null;
 
             return new UserDto
             {

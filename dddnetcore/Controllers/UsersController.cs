@@ -43,7 +43,7 @@ namespace DDDSample1.Controllers
 
         // POST: api/users
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreatingUserDto dto)
+        public async Task<ActionResult<UserDto>> Create([FromBody] CreatingUserDto dto)
         {
             if (dto == null)
             {
@@ -96,22 +96,16 @@ namespace DDDSample1.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<UserDto>> SoftDelete(string id)
         {
-            try
-            {
-                var user = await _service.InactivateAsync(new Username(id));
+            var user = await _service.InactivateAsync(new Username(id));
 
-                if (user == null)
-                {
-                    return NotFound("User not found for soft delete.");
-                }
-
-                return Ok(user);
-            }
-            catch (Exception ex) // Captura qualquer exceção que pode ocorrer
+            if (user == null)
             {
-                return StatusCode(500, "An error occurred while soft deleting the user: " + ex.Message);
+                return NotFound();
             }
+
+            return Ok(user);
         }
+
 
         // DELETE: api/users/{id}/hard
         [HttpDelete("{id}/hard")]
@@ -123,7 +117,7 @@ namespace DDDSample1.Controllers
 
                 if (deletedUser == null)
                 {
-                    return NotFound("User not found for hard delete.");
+                    return NotFound();
                 }
 
                 return Ok(deletedUser);
@@ -131,10 +125,6 @@ namespace DDDSample1.Controllers
             catch (BusinessRuleValidationException ex)
             {
                 return BadRequest(new { Message = ex.Message });
-            }
-            catch (Exception ex) // Captura qualquer exceção que pode ocorrer
-            {
-                return StatusCode(500, "An error occurred while hard deleting the user: " + ex.Message);
             }
         }
     }
