@@ -6,26 +6,24 @@ namespace DDDSample1.Domain.Patients
 {
     public class CreatingPatientDto
     {
-        public PatientFirstName FirstName { get; set; }
-        public PatientLastName LastName { get; set; }
-        public PatientFullName FullName { get; set; }
-        public PatientBirthDate BirthDate { get; set; }
-        public PatientGender Gender { get; set; }
-        public PatientMedicalRecordNumber MedicalRecordNumber { get; set; }
-        public PatientEmail Email { get; set; }
-        public PatientPhoneNumber PhoneNumber { get; set; }
-        public PatientEmergencyContact EmergencyContact { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string FullName { get; set; }
+        public string BirthDate { get; set; }
+        public Gender Gender { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public string EmergencyContact { get; set; }
         public bool Active { get; set; }
         public CreatingPatientDto(
-            PatientFirstName firstName,
-            PatientLastName lastName,
-            PatientFullName fullName,
-            PatientBirthDate birthDate,
-            PatientGender gender,
-            PatientMedicalRecordNumber medicalRecordNumber,
-            PatientEmail email,
-            PatientPhoneNumber phoneNumber,
-            PatientEmergencyContact emergencyContact)
+            string firstName,
+            string lastName,
+            string fullName,
+            string birthDate,
+            Gender gender,
+            string email,
+            string phoneNumber,
+            string emergencyContact)
         {
 
             this.FirstName = firstName;
@@ -33,7 +31,6 @@ namespace DDDSample1.Domain.Patients
             this.FullName = fullName;
             this.BirthDate = birthDate;
             this.Gender = gender;
-            this.MedicalRecordNumber = medicalRecordNumber;
             this.Email = email;
             this.PhoneNumber = phoneNumber;
             this.EmergencyContact = emergencyContact;

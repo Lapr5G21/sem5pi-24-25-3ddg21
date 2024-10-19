@@ -38,5 +38,85 @@ namespace DDDSample1.Domain.Patients
             return listDto;
         }
 
+
+        public async Task<PatientDto> GetByIdAsync(PatientMedicalRecordNumber mrn)
+        {
+            var patient = await this._patientRepository.GetByIdAsync(mrn);
+            if (patient == null) return null;
+
+            return new PatientDto
+            {
+                FullName = patient.FullName,
+                BirthDate = patient.BirthDate,
+                Gender = patient.Gender,
+                Email = patient.Email,
+                PhoneNumber = patient.PhoneNumber,
+                EmergencyContact = patient.EmergencyContact
+            };
+        }
+
+
+        public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
+        {            
+            var mrn = await GenerateMedicalRecordNumberAsync();
+            
+            var patient = new Patient(mrn, new PatientFirstName(dto.FirstName), new PatientLastName(dto.LastName), new PatientFullName(dto.FullName), new PatientBirthDate(dto.BirthDate), new PatientGender(dto.Gender), new PatientEmail(dto.Email), new PatientPhoneNumber(dto.PhoneNumber), null, new PatientEmergencyContact(dto.EmergencyContact));
+            
+            await this._patientRepository.AddAsync(patient);
+            
+            await this._unitOfWork.CommitAsync();
+
+            return new PatientDto
+            {
+                FullName = patient.FullName,
+                BirthDate = patient.BirthDate,
+                Gender = patient.Gender,
+                Email = patient.Email,
+                PhoneNumber = patient.PhoneNumber,
+                EmergencyContact = patient.EmergencyContact
+            };
+        }
+
+
+        
+        public async Task<PatientDto> UpdateAsync(PatientDto dto)
+        {
+            var patient = await this._patientRepository.FindByEmailAsync(dto.Email);
+            if (patient == null) return null;
+            patient.ChangeName(dto.FullName);
+            patient.ChangeEmail(dto.Email);
+            patient.ChangePhoneNumber(dto.PhoneNumber);
+            patient.ChangeMedicalRecord(dto.MedicalRecord);
+
+            await this._unitOfWork.CommitAsync();
+
+            return new PatientDto
+            {
+                FullName = patient.FullName,
+                Email = patient.Email,
+                PhoneNumber = patient.PhoneNumber,
+                MedicalRecord = patient.MedicalRecord
+            };
+        }
+
+
+
+
+
+
+        public async Task<PatientMedicalRecordNumber> GenerateMedicalRecordNumberAsync()
+        {
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+
+            var sequentialNumber = await _patientRepository.GetNextSequentialNumberAsync();
+
+            string formattedSequentialNumber = sequentialNumber.ToString("D6");
+
+            // Formato desejado: YYYYMMnnnnnn
+            string medicalRecordNumber = $"{currentYear}{currentMonth:D2}{formattedSequentialNumber}";
+
+            return new PatientMedicalRecordNumber(medicalRecordNumber);
+        }
     }
 }

@@ -6,37 +6,40 @@ namespace DDDSample1.Domain.Patients
     public class Patient : Entity<PatientMedicalRecordNumber>, IAggregateRoot
     {
         
+        public PatientMedicalRecordNumber MedicalRecordNumber { get; private set; }
         public PatientFirstName FirstName { get; private set; }
         public PatientLastName LastName { get; private set; }
         public PatientFullName FullName { get; private set; }
         public PatientBirthDate BirthDate { get; private set; }
         public PatientGender Gender { get; private set; }
-        public PatientMedicalRecordNumber MedicalRecordNumber { get; private set; }
         public PatientEmail Email { get; private set; }
         public PatientPhoneNumber PhoneNumber { get; private set; }
+        public PatientMedicalRecord MedicalRecord { get; private set; }
         public PatientEmergencyContact EmergencyContact { get; private set; }
         public bool Active { get; private set; }
 
         public Patient(
+            PatientMedicalRecordNumber medicalRecordNumber,
             PatientFirstName firstName,
             PatientLastName lastName,
             PatientFullName fullName,
             PatientBirthDate birthDate,
             PatientGender gender,
-            PatientMedicalRecordNumber medicalRecordNumber,
             PatientEmail email,
             PatientPhoneNumber phoneNumber,
+            PatientMedicalRecord medicalRecord,
             PatientEmergencyContact emergencyContact)
         {
 
+            this.MedicalRecordNumber = medicalRecordNumber;
             this.FirstName = firstName;
             this.LastName = lastName;
             this.FullName = fullName;
             this.BirthDate = birthDate;
             this.Gender = gender;
-            this.MedicalRecordNumber = medicalRecordNumber;
             this.Email = email;
             this.PhoneNumber = phoneNumber;
+            this.MedicalRecord = medicalRecord;
             this.EmergencyContact = emergencyContact;
             this.Active = true;
         }
@@ -78,6 +81,12 @@ namespace DDDSample1.Domain.Patients
             this.PhoneNumber = newPhoneNumber;
         }
 
+        public void ChangeMedicalRecord(PatientMedicalRecord newMedicalRecord)
+        {
+            if (newMedicalRecord == null) throw new ArgumentNullException(nameof(newMedicalRecord));
+            this.MedicalRecord = newMedicalRecord;
+        }
+
         public void ChangeEmergencyContact(PatientEmergencyContact newEmergencyContact)
         {
             if (newEmergencyContact == null) throw new ArgumentNullException(nameof(newEmergencyContact));
@@ -96,7 +105,7 @@ namespace DDDSample1.Domain.Patients
 
         public override string ToString()
         {
-            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {MedicalRecordNumber}, Email: {Email}, Phone Number : {PhoneNumber} Emergency Contact: {EmergencyContact}, Active: {Active}";
+            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {MedicalRecordNumber}, Email: {Email}, Phone Number : {PhoneNumber}, Medical Record: {MedicalRecord}, Emergency Contact: {EmergencyContact}, Active: {Active}";
         }
     }
 }
