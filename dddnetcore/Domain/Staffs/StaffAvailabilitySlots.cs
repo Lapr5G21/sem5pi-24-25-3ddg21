@@ -16,8 +16,20 @@ namespace DDDSample1.Domain.Staffs
 
         public void AddSlot(DateTime start, DateTime end)
         {
+            if (start >= end)
+                throw new ArgumentException("Start time must be earlier than end time.");
+
+            foreach (var slot in Slots)
+            {
+                if ((start < slot.End) && (end > slot.Start))
+                {
+                    throw new InvalidOperationException("The availability slot overlaps with an existing slot.");
+                }
+            }
+
             Slots.Add(new AvailabilitySlot(start, end));
         }
+
 
         public string SerializeSlots()
         {

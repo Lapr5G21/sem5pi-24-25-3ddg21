@@ -11,10 +11,8 @@ namespace DDDSample1.Infrastructure.Staffs
     {
         public void Configure(EntityTypeBuilder<Staff> builder)
         {
-            // Definir a chave primária
             builder.HasKey(b => b.StaffId);
 
-            // Configurações para as propriedades
             builder.Property(b => b.StaffFirstName)
                 .HasConversion(s => s.FirstNameString, s => new StaffFirstName(s))
                 .IsRequired();
@@ -23,8 +21,12 @@ namespace DDDSample1.Infrastructure.Staffs
                 .HasConversion(s => s.LastNameString, s => new StaffLastName(s))
                 .IsRequired();
 
-            builder.Property(b => b.LicenseNumber)
-                .HasConversion(l => l.LicenseNumberString, l => new LicenseNumber(l))
+            builder.Property(b => b.StaffFullName)
+                .HasConversion(s => s.FullNameString, s => new StaffFullName(s))
+                .IsRequired();
+                
+            builder.Property(b => b.StaffLicenseNumber)
+                .HasConversion(l => l.LicenseNumberString, l => new StaffLicenseNumber(l))
                 .IsRequired();
 
             builder.Property(b => b.StaffEmail)

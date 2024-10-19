@@ -10,7 +10,8 @@ namespace DDDSample1.Domain.Staffs
         public string StaffId { get; set; }
         public string StaffFirstName { get; set; }
         public string StaffLastName { get; set; }
-        public string LicenseNumber { get; set; }
+        public string StaffFullName { get; set; }
+        public string StaffLicenseNumber { get; set; }
         public string SpecializationId { get; set; }
         public string StaffEmail { get; set; }
         public string StaffPhoneNumber { get; set; }

@@ -7,6 +7,7 @@ namespace DDDSample1.Domain.Staffs
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string FullName { get; set; }
         public string LicenseNumber { get; set; }
         public string SpecializationId { get; set; }
         public string Email { get; set; }

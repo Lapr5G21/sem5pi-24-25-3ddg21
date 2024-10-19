@@ -27,6 +27,8 @@ using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DDDSample1.Domain.Authentication;
+using DDDSample1.Domain.Staffs;
+using DDDSample1.Infrastructure.Staffs;
 
 
 namespace DDDSample1
@@ -136,6 +138,9 @@ public void ConfigureServices(IServiceCollection services)
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<UserService>();
+
+            services.AddTransient<IStaffRepository, StaffRepository>();
+            services.AddTransient<StaffService>();
         }
     }
 }

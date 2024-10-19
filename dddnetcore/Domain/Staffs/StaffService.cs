@@ -30,7 +30,6 @@ namespace DDDSample1.Domain.Staffs
             _userRepository = userRepository;
         }
 
-        // Obtém todos os funcionários
         public async Task<List<StaffDto>> GetAllAsync()
         {
             var list = await this._staffRepository.GetAllAsync();
@@ -39,7 +38,8 @@ namespace DDDSample1.Domain.Staffs
                 StaffId = staff.StaffId.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
-                LicenseNumber = staff.LicenseNumber.ToString(),
+                StaffFullName = staff.StaffFullName.ToString(),
+                StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
                 SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
@@ -49,7 +49,6 @@ namespace DDDSample1.Domain.Staffs
             return listDto;
         }
 
-        // Obtém funcionário pelo ID
         public async Task<StaffDto> GetByIdAsync(StaffId staffId)
         {
             var staff = await this._staffRepository.GetByIdAsync(staffId);
@@ -60,7 +59,8 @@ namespace DDDSample1.Domain.Staffs
                 StaffId = staff.StaffId.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
-                LicenseNumber = staff.LicenseNumber.ToString(),
+                StaffFullName = staff.StaffFullName.ToString(),
+                StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
                 SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
@@ -69,10 +69,8 @@ namespace DDDSample1.Domain.Staffs
             };
         }
 
-        // Adiciona um novo funcionário// Adiciona um novo funcionário
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
         {
-            // Obtém o User associado ao Staff
             var user = await _userRepository.GetByIdAsync(new Username(dto.UserId));
             if (user == null)
                 throw new InvalidOperationException("User not found.");
@@ -81,21 +79,18 @@ namespace DDDSample1.Domain.Staffs
         
             var staffId = new StaffId(user.ToString().Split('@')[0]);
 
-
-            // Obtém a Specialization associada
             var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(dto.SpecializationId));
             if (specialization == null)
                 throw new InvalidOperationException("Specialization not found.");
 
-            // Extrai o ID da especialização
             var specializationId = specialization.Id;
 
-            // Cria o objeto Staff
             var staff = new Staff(
                 staffId, 
                 new StaffFirstName(dto.FirstName), 
                 new StaffLastName(dto.LastName), 
-                new LicenseNumber(dto.LicenseNumber), 
+                new StaffFullName(dto.FullName),
+                new StaffLicenseNumber(dto.LicenseNumber), 
                 specializationId, 
                 new StaffEmail(dto.Email), 
                 new StaffPhoneNumber(dto.PhoneNumber), 
@@ -103,28 +98,25 @@ namespace DDDSample1.Domain.Staffs
                 new StaffAvailabilitySlots()
             );
 
-            // Adiciona o Staff no repositório
             await this._staffRepository.AddAsync(staff);
             await this._unitOfWork.CommitAsync();
 
-            // Retorna o DTO de Staff
             return new StaffDto
             {
                 StaffId = staff.StaffId.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
-                LicenseNumber = staff.LicenseNumber.ToString(),
+                StaffFullName = staff.StaffFullName.ToString(),
+                StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
                 SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                UserId = user.Username.ToString()
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                UserId = staff.UserId.ToString()
             };
         }
 
 
-
-
-        // Atualiza um funcionário existente
         public async Task<StaffDto> UpdateAsync(StaffDto dto)
         {
             var staff = await this._staffRepository.GetByIdAsync(new StaffId(dto.StaffId));
@@ -132,6 +124,7 @@ namespace DDDSample1.Domain.Staffs
 
             staff.ChangeFirstName(new StaffFirstName(dto.StaffFirstName));
             staff.ChangeLastName(new StaffLastName(dto.StaffLastName));
+            staff.ChangeFullName(new StaffFullName(dto.StaffFullName));
             staff.ChangeEmail(new StaffEmail(dto.StaffEmail));
             staff.ChangePhoneNumber(new StaffPhoneNumber(dto.StaffPhoneNumber));
 
@@ -139,14 +132,19 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
+                StaffId = staff.StaffId.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
+                StaffFullName = staff.StaffFullName.ToString(),
+                StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
+                SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                UserId = staff.UserId.ToString()
             };
         }
 
-        // Remove um funcionário
         public async Task<StaffDto> DeleteAsync(StaffId staffId)
         {
             var staff = await this._staffRepository.GetByIdAsync(staffId);
@@ -160,8 +158,13 @@ namespace DDDSample1.Domain.Staffs
                 StaffId = staff.StaffId.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
+                StaffFullName = staff.StaffFullName.ToString(),
+                StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
+                SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
-                StaffPhoneNumber = staff.StaffPhoneNumber.ToString()
+                StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                UserId = staff.UserId.ToString()
             };
         }
 

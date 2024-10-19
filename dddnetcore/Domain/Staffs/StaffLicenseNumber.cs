@@ -1,18 +1,18 @@
 using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Staffs{
-public class LicenseNumber : IValueObject
+public class StaffLicenseNumber : IValueObject
 {
-    public string LicenseNumberString { get; set;}
+    public string LicenseNumberString { get; private set; }
 
-    private LicenseNumber() { }
+    private StaffLicenseNumber() { }
 
-    public LicenseNumber(string number)
+    public StaffLicenseNumber(string value)
     {
-        if (string.IsNullOrWhiteSpace(number))
+        if (string.IsNullOrWhiteSpace(value))
             throw new BusinessRuleValidationException("License number cannot be empty or null.");
 
-        LicenseNumberString = number;
+        LicenseNumberString = value;
     }
 
     public override bool Equals(object obj)
@@ -20,7 +20,7 @@ public class LicenseNumber : IValueObject
         if (obj == null || GetType() != obj.GetType())
             return false;
 
-        var other = (LicenseNumber)obj;
+        var other = (StaffLicenseNumber)obj;
         return LicenseNumberString.Equals(other.LicenseNumberString);
     }
 
@@ -33,5 +33,5 @@ public class LicenseNumber : IValueObject
     {
         return LicenseNumberString;
     }
-    }
+}
 }

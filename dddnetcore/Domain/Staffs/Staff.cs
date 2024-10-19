@@ -2,7 +2,6 @@ using System;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.Users;
-using DDDSample1.Domain.Staffs;
 
 namespace DDDSample1.Domain.Staffs
 {
@@ -11,7 +10,8 @@ namespace DDDSample1.Domain.Staffs
         public StaffId StaffId { get; private set; }
         public StaffFirstName StaffFirstName { get; private set; }
         public StaffLastName StaffLastName { get; private set; }
-        public LicenseNumber LicenseNumber { get; private set; }
+        public StaffFullName StaffFullName { get; private set; }
+        public StaffLicenseNumber StaffLicenseNumber { get; private set; }
         public SpecializationId SpecializationId { get; private set; }
         public StaffEmail StaffEmail { get; private set; }
         public StaffPhoneNumber StaffPhoneNumber { get; private set; }
@@ -25,13 +25,14 @@ namespace DDDSample1.Domain.Staffs
             this.Active = true;
         }
 
-        public Staff(StaffId staffId, StaffFirstName staffFirstName, StaffLastName staffLastName, LicenseNumber licenseNumber, SpecializationId specializationId, StaffEmail staffEmail, StaffPhoneNumber staffPhoneNumber, Username userId, StaffAvailabilitySlots staffAvailabilitySlots)
+        public Staff(StaffId staffId, StaffFirstName staffFirstName, StaffLastName staffLastName, StaffFullName staffFullName, StaffLicenseNumber licenseNumber, SpecializationId specializationId, StaffEmail staffEmail, StaffPhoneNumber staffPhoneNumber, Username userId, StaffAvailabilitySlots staffAvailabilitySlots)
         {
             this.Active = true;
             this.StaffId = staffId;
             this.StaffFirstName = staffFirstName;
             this.StaffLastName = staffLastName;
-            this.LicenseNumber = licenseNumber;
+            this.StaffFullName = staffFullName;
+            this.StaffLicenseNumber = licenseNumber;
             this.SpecializationId = specializationId;
             this.StaffEmail = staffEmail;
             this.StaffPhoneNumber = staffPhoneNumber;
@@ -53,6 +54,14 @@ namespace DDDSample1.Domain.Staffs
                 throw new InvalidOperationException("Cannot modify an inactive staff member.");
 
             this.StaffLastName = newLastName ?? throw new ArgumentNullException(nameof(newLastName));
+        }
+
+        public void ChangeFullName(StaffFullName newFullName)
+        {
+            if (!this.Active)
+                throw new InvalidOperationException("Cannot modify an inactive staff member.");
+
+            this.StaffFullName = newFullName ?? throw new ArgumentNullException(nameof(newFullName));
         }
 
         public void ChangeEmail(StaffEmail newEmail)
@@ -104,7 +113,6 @@ namespace DDDSample1.Domain.Staffs
                 throw new InvalidOperationException("The availability slot does not exist.");
             }
         }
-
 
         public void Deactivate()
         {

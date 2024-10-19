@@ -3,7 +3,7 @@ using DDDSample1.Domain.Shared;
 namespace DDDSample1.Domain.Staffs{
 public class StaffFullName : IValueObject
 {
-    public string Name { get; set;}
+    public string FullNameString { get; set;}
 
     private StaffFullName() { }
 
@@ -12,7 +12,7 @@ public class StaffFullName : IValueObject
         if (string.IsNullOrWhiteSpace(name))
             throw new BusinessRuleValidationException("Name cannot be empty or null.");
 
-        Name = name;
+        FullNameString = name;
     }
 
     public override bool Equals(object obj)
@@ -21,17 +21,17 @@ public class StaffFullName : IValueObject
             return false;
 
         var other = (StaffFullName)obj;
-        return Name.Equals(other.Name);
+        return FullNameString.Equals(other.FullNameString);
     }
 
     public override int GetHashCode()
     {
-        return Name.GetHashCode();
+        return FullNameString.GetHashCode();
     }
 
     public override string ToString()
     {
-        return Name;
+        return FullNameString;
     }
     }
 }

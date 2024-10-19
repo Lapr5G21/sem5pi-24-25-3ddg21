@@ -30,5 +30,6 @@ namespace DDDSample1.Domain.Specializations
         public Guid AsGuid(){
             return (Guid) base.ObjValue;
         }
+        
     }
 }
