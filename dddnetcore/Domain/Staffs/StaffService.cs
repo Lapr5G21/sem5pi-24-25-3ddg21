@@ -83,15 +83,13 @@ namespace DDDSample1.Domain.Staffs
             if (specialization == null)
                 throw new InvalidOperationException("Specialization not found.");
 
-            var specializationId = specialization.Id;
-
             var staff = new Staff(
                 staffId, 
                 new StaffFirstName(dto.FirstName), 
                 new StaffLastName(dto.LastName), 
                 new StaffFullName(dto.FullName),
                 new StaffLicenseNumber(dto.LicenseNumber), 
-                specializationId, 
+                specialization.Id, 
                 new StaffEmail(dto.Email), 
                 new StaffPhoneNumber(dto.PhoneNumber), 
                 user.Username,
@@ -108,7 +106,7 @@ namespace DDDSample1.Domain.Staffs
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
                 StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
-                SpecializationId = staff.SpecializationId.ToString(),
+                SpecializationId = specialization.Id.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
                 StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
