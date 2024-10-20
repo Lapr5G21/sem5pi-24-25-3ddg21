@@ -1,0 +1,15 @@
+@startuml
+
+autonumber
+actor Doctor as "Doctor"
+participant SYS as "Backend Management" <<system>>
+
+Doctor-> SYS : PUT /api/operationRequests
+activate SYS
+
+SYS -> SYS : updateOperationRequest(updateOperationRequestDTO)
+Doctor <-- SYS : 200 OK
+deactivate SYS
+
+
+@enduml

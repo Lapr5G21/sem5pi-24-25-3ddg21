@@ -3,8 +3,6 @@ autonumber
 actor Doctor as "Doctor"
 participant CTRL as "OperationRequestController"
 participant SERVICE as "OperationRequestService <<service>>"
-participant OperationRequest as "OperationRequest <<domain>>"
-participant OperationTypeDTO as "OperationTypeDTO <<domain>>"
 database IOperationRequestRepository as "IOperationRequestRepository"
 database SpecializationRepository as "SpecializationRepository"
 
@@ -16,22 +14,6 @@ activate CTRL
 
 CTRL -> SERVICE : addAsync(creatingOperationRequestDTO)
 activate SERVICE
-
-SERVICE -> OperationRequest : create(creatingOperationRequestDTO.patientID,creatingOperationRequestDTO.doctorID\n,creatingOperationRequestDTO.operationType,creatingOperationRequestDTO.deadline,\ncreatingOperationRequestDTO.priority)
-
-activate OperationRequest
-
-OperationRequest -> SERVICE : OperationRequest
-
-deactivate OperationRequest
-
-SERVICE -> IOperationRequestRepository : addAsync(OperationRequest)
-
-activate IOperationRequestRepository
-
-IOperationRequestRepository -> SERVICE : operationRequest
-
-deactivate IOperationRequestRepository
 
 alt specializationValidated = 0 
 
@@ -55,23 +37,13 @@ activate SpecializationRepository
 SpecializationRepository -> SERVICE : specializationValidated
 
 deactivate SpecializationRepository
-SERVICE -> OperationRequest : create(patientId, doctorId, operationType, deadline,priority)
+SERVICE -> IOperationRequestRepository : addAsync(creatingOperationRequestDTO.patientID,creatingOperationRequestDTO.doctorID\n,creatingOperationRequestDTO.operationType,creatingOperationRequestDTO.deadline,\ncreatingOperationRequestDTO.priority)
 
-activate OperationRequest 
+activate IOperationRequestRepository 
 
-OperationRequest -> SERVICE : operationRequest
-deactivate OperationRequest
+IOperationRequestRepository -> SERVICE : operationRequest
+deactivate IOperationRequestRepository
 
-SERVICE -> IOperationRequestRepository : addAsync(operationRequest)
-
-
-SERVICE -> OperationTypeDTO : create(operationTypeId,name,anesthesiaTime,surgeryTime,cleaningTime)
-
-activate OperationTypeDTO
-
-OperationTypeDTO -> SERVICE : operationRequestDTO
-
-deactivate OperationTypeDTO
 
 SERVICE -> CTRL : operationRequestDTO
 

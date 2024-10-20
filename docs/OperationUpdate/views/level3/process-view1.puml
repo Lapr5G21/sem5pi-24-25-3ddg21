@@ -1,0 +1,23 @@
+@startuml
+
+autonumber
+actor Doctor as "Doctor"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+Doctor-> BE : PUT api/operationRequest/{id}
+activate BE
+
+BE -> DB : update operationRequest
+
+activate DB 
+
+DB -> BE : operationRequest
+
+deactivate DB 
+
+Doctor <- BE : 200 OK
+
+deactivate BE
+
+@enduml

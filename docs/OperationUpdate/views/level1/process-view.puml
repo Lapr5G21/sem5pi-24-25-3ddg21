@@ -1,0 +1,15 @@
+@startuml
+
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system>>
+
+activate Doctor 
+
+Doctor --> SYS : asks to edit an operation request
+
+activate SYS 
+
+SYS --> Doctor : confirms the operation request edit was successfull
+
+
+@enduml

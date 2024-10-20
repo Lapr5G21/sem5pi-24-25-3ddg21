@@ -1,30 +1,24 @@
 @startuml
 
 autonumber
+actor Doctor as "Doctor"
 participant BE as "Backend Management" <<system>>
 participant DB as "Database"
 
-?o-> BE : POST /api/operationTypes
+Doctor-> BE : POST: api/operationRequests
 activate BE
 
-BE -> DB : get pacient
+BE -> DB : addAsync(creatingOperationRequestDTO)
+
+
 
 activate DB 
 
-DB -> BE : pacient
+DB -> DB : confirms Pacient ID
 
-deactivate DB 
+DB -> DB : confirms doctor specialization
 
-BE -> DB : confirms doctor specialization
-
-activate DB
-
-DB -> BE : doctorSpecialization
-
-deactivate DB
-
-
-BE -> DB : save operationRequest
+DB -> DB : save operationRequest
 
 activate DB 
 
@@ -32,7 +26,7 @@ DB -> BE : operationRequest
 
 deactivate DB 
 
-<- BE : 201 Created
+Doctor <- BE : 201 Created
 
 deactivate BE
 

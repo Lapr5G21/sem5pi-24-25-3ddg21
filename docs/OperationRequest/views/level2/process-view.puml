@@ -6,7 +6,7 @@ participant SYS as "Backend Management" <<system>>
 ?o-> SYS : POST /api/operation
 activate SYS
 
-SYS -> SYS : requestOperation(requestOperationDTO)
+SYS -> SYS : requestOperation(creatingOperationRequestDTO)
 <-- SYS : 201 Created
 deactivate SYS
 

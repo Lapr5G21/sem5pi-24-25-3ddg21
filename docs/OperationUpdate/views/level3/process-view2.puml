@@ -1,0 +1,40 @@
+@startuml 
+autonumber
+actor Doctor as "Doctor"
+participant CTRL as "OperationRequestController"
+participant SERVICE as "OperationRequestService <<service>>"
+
+database IOperationRequestRepository as "IOperationRequestRepository"
+
+
+activate Doctor
+
+Doctor -> CTRL : POST /api/operationRequest{id}
+activate CTRL
+
+CTRL -> SERVICE : editAsync(editOperationRequestDTO)
+activate SERVICE
+
+
+
+deactivate IOperationRequestRepository
+
+SERVICE -> IOperationRequestRepository : editAsync(editOperationRequestDTO.deadline,editOperationRequestDTO.priority)
+
+activate IOperationRequestRepository
+
+IOperationRequestRepository -> SERVICE : operationRequest
+
+deactivate IOperationRequestRepository
+
+
+SERVICE -> CTRL : operationRequest
+
+deactivate SERVICE 
+
+CTRL -> Doctor : 200 OK
+
+deactivate CTRL 
+
+deactivate Doctor
+@enduml
