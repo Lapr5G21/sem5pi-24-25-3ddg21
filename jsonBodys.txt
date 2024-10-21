@@ -1,0 +1,23 @@
+// Insert Specialization 
+{
+    "specializationName" : "Cardiology"
+}
+
+
+
+//Insert operation type
+{
+    "name": "Cardio Exame",
+    "estimatedTimeDuration": 120,
+    "anesthesiaTime": 30,
+    "cleaningTime": 15,
+    "surgeryTime": 90,
+    "specializations": [
+        {
+            "specializationId": "Substituir pelo id do specilization",
+            "specializationName" : "Cardiology"
+        }
+        ]
+    }
+
+// Insert 
