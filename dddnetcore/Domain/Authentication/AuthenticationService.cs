@@ -19,7 +19,7 @@ namespace DDDSample1.Domain.Authentication
         {
             var tokenEndpoint = $"https://{auth0domain}/oauth/token";
 
-            var requestBody = new StringContent(JsonConvert.SerializeObject(new{client_id = auth0clientId,client_secret = auth0clientSecret,audience=auth0clientSecret,grant_type = "client_credentials"
+            var requestBody = new StringContent(JsonConvert.SerializeObject(new{client_id = auth0clientId,client_secret = auth0clientSecret,audience=auth0audience,grant_type = "client_credentials"
             }), Encoding.UTF8, "application/json");
             
             var response = await _httpClient.PostAsync(tokenEndpoint, requestBody);

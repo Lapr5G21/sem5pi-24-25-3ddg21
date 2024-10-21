@@ -1,34 +1,63 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
 using Newtonsoft.Json;
+
 
 namespace DDDSample1.Domain.Patients
 {
     public class PatientMedicalRecordNumber : EntityId
     {
-        [JsonConstructor]
-        public PatientMedicalRecordNumber(Guid value) : base(value)
+        public PatientMedicalRecordNumber(string value) : base(value)
         {
+            if (string.IsNullOrWhiteSpace(value) || !IsValidFormat(value))
+            {
+                throw new ArgumentException("Invalid Medical Record Number format.");
+            }
         }
 
-        public PatientMedicalRecordNumber(String value) : base(value)
+        private bool IsValidFormat(string value)
         {
+            return System.Text.RegularExpressions.Regex.IsMatch(value, @"^\d{6}\d{6}$");
         }
 
-        override
-        protected  Object createFromString(String text){
-            return new Guid(text);
+        protected override object createFromString(string text)
+        {
+            if (!IsValid(text))
+            {
+                throw new ArgumentException("Invalid medical record number format.");
+            }
+            return text;
         }
 
-        override
-        public String AsString(){
-            Guid obj = (Guid) base.ObjValue;
-            return obj.ToString();
+        public override string AsString()
+        {
+            return (string)this.ObjValue;
         }
-        
-       
-        public Guid AsGuid(){
-            return (Guid) base.ObjValue;
+
+        private static bool IsValid(string entityId)
+        {
+            if (string.IsNullOrEmpty(entityId) || entityId.Length != 12)
+                return false;
+
+            if (!int.TryParse(entityId.Substring(0, 6), out _))
+                return false;
+
+            int month = int.Parse(entityId.Substring(4, 2));
+            if (month < 1 || month > 12)
+                return false;
+
+            return true;
+        }
+
+        public static string GenerateNewRecordNumber(DateTime registrationDate, int sequentialNumber)
+        {
+            string year = registrationDate.ToString("yyyy");
+            string month = registrationDate.ToString("MM");
+            string seqNum = sequentialNumber.ToString("D6");
+            return year + month + seqNum;
         }
     }
 }

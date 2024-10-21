@@ -1,12 +1,11 @@
 using System;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Domain.Patients
 {
     public class Patient : Entity<PatientMedicalRecordNumber>, IAggregateRoot
     {
-        
-        public PatientMedicalRecordNumber MedicalRecordNumber { get; private set; }
         public PatientFirstName FirstName { get; private set; }
         public PatientLastName LastName { get; private set; }
         public PatientFullName FullName { get; private set; }
@@ -16,8 +15,10 @@ namespace DDDSample1.Domain.Patients
         public PatientPhoneNumber PhoneNumber { get; private set; }
         public PatientMedicalRecord MedicalRecord { get; private set; }
         public PatientEmergencyContact EmergencyContact { get; private set; }
+        public User User { get; set; }
         public bool Active { get; private set; }
 
+        private Patient(){}
         public Patient(
             PatientMedicalRecordNumber medicalRecordNumber,
             PatientFirstName firstName,
@@ -30,8 +31,7 @@ namespace DDDSample1.Domain.Patients
             PatientMedicalRecord medicalRecord,
             PatientEmergencyContact emergencyContact)
         {
-
-            this.MedicalRecordNumber = medicalRecordNumber;
+            this.Id = medicalRecordNumber;
             this.FirstName = firstName;
             this.LastName = lastName;
             this.FullName = fullName;
@@ -42,6 +42,7 @@ namespace DDDSample1.Domain.Patients
             this.MedicalRecord = medicalRecord;
             this.EmergencyContact = emergencyContact;
             this.Active = true;
+            this.User = null;
         }
 
 
@@ -66,7 +67,7 @@ namespace DDDSample1.Domain.Patients
         public void ChangeMedicalRecordNumber(PatientMedicalRecordNumber newMedicalRecordNumber)
         {
             if (newMedicalRecordNumber == null) throw new ArgumentNullException(nameof(newMedicalRecordNumber));
-            this.MedicalRecordNumber = newMedicalRecordNumber;
+            this.Id = newMedicalRecordNumber;
         }
 
         public void ChangeEmail(PatientEmail newPatientEmail)
@@ -103,9 +104,12 @@ namespace DDDSample1.Domain.Patients
             this.Active = true;
         }
 
+        public void SetUser(User user){
+            this.User= user; 
+        }
         public override string ToString()
         {
-            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {MedicalRecordNumber}, Email: {Email}, Phone Number : {PhoneNumber}, Medical Record: {MedicalRecord}, Emergency Contact: {EmergencyContact}, Active: {Active}";
+            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {Id}, Email: {Email}, Phone Number : {PhoneNumber}, Medical Record: {MedicalRecord}, Emergency Contact: {EmergencyContact}, Active: {Active}";
         }
     }
 }

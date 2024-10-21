@@ -6,6 +6,9 @@ using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Users;
 using System.Collections.Generic;
+using DDDSample1.Infrastructure.Patients;
+using DDDSample1.Domain.Authentication;
+using DDDSample1.Domain.Patients;
 
 namespace DDDSample1.Tests.Domain.Users
 {
@@ -14,12 +17,13 @@ namespace DDDSample1.Tests.Domain.Users
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly UserService _userService;
-
+        private readonly Mock<IPatientRepository> _patientRepositoryMock;
+        private readonly AuthenticationService _authenticationServiceMock;
         public UserServiceTest()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _userService = new UserService(_unitOfWorkMock.Object, _userRepositoryMock.Object, null);
+            _userService = new UserService(_unitOfWorkMock.Object, _userRepositoryMock.Object, null,_authenticationServiceMock,_patientRepositoryMock.Object);
         }
 
         [Fact]
@@ -74,12 +78,12 @@ namespace DDDSample1.Tests.Domain.Users
         [Fact]
         public async Task AddAsyncValidUserTest()
         {
-            var creatingUserDto = new CreatingUserDto("Doctor", "doctor@example.com");
+            var creatingUserDto = new CreatingUserDto("Doctor", "doctor@example.com","Password1!");
             var generatedUsername = new Username("D20240001@healthcare.com");
 
             _userRepositoryMock.Setup(repo => repo.GetNextSequentialNumberAsync()).ReturnsAsync(1);
 
-            var result = await _userService.AddAsync(creatingUserDto);
+            var result = await _userService.AddBackofficeUserAsync(creatingUserDto);
 
             Assert.NotNull(result);
             Assert.Equal("Doctor", result.Role);

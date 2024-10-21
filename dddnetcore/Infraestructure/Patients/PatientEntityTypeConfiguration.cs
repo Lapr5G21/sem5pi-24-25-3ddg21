@@ -4,58 +4,58 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DDDSample1.Infrastructure.Patients
 {
-    internal class PatientEntityTypeConfiguration : IEntityTypeConfiguration<Patient>
+    public class PatientEntityTypeConfiguration : IEntityTypeConfiguration<Patient>
     {
         public void Configure(EntityTypeBuilder<Patient> builder)
         {
-            // MedicalRecordNumber is the primary key
-            builder.HasKey(p => p.MedicalRecordNumber);
-
-            builder.Property(p => p.MedicalRecordNumber)
-                .HasConversion(mrn => mrn.AsString(), mrn => new PatientMedicalRecordNumber(mrn))
-                .IsRequired();
+            builder.HasKey(p => p.Id);
 
             builder.Property(p => p.FirstName)
-                .HasConversion(fn => fn.FirstName, fn => new PatientFirstName(fn))
+                .HasConversion(b => b.FirstName, b => new PatientFirstName(b))
                 .IsRequired();
 
             builder.Property(p => p.LastName)
-                .HasConversion(ln => ln.LastName, ln => new PatientLastName(ln))
+                .HasConversion(b => b.LastName, b => new PatientLastName(b))
                 .IsRequired();
 
             builder.Property(p => p.FullName)
-                .HasConversion(fn => fn.FullName, fn => new PatientFullName(fn))
+                .HasConversion(b => b.FullName, b => new PatientFullName(b))
                 .IsRequired();
 
             builder.Property(p => p.BirthDate)
-                .HasConversion(
-                    bd => bd.BirthDateString, bd => new PatientBirthDate(bd)
-                )
+                .HasConversion(b => b.BirthDateString, b => new PatientBirthDate(b))
                 .IsRequired();
 
             builder.Property(p => p.Gender)
-                .HasConversion(g => g.GenderValue, g => new PatientGender(g))
+                .HasConversion(
+                    g => g.GenderValue, // Convert PatientGender to Gender enum
+                    g => new PatientGender(g) // Convert Gender enum back to PatientGender
+                )
                 .IsRequired();
 
             builder.Property(p => p.Email)
-                .HasConversion(
-                    em => em.EmailString, em => new PatientEmail(em)
-                )
+                .HasConversion(b => b.EmailString, b => new PatientEmail(b))
                 .IsRequired();
 
             builder.Property(p => p.PhoneNumber)
-                .HasConversion(
-                    pn => pn.PhoneNumber, pn => new PatientPhoneNumber(pn)
-                )
+                .HasConversion(b => b.PhoneNumber, b => new PatientPhoneNumber(b))
+                .IsRequired();
+
+            builder.Property(p => p.MedicalRecord)
+                .HasConversion(b => b.MedicalRecord, b => new PatientMedicalRecord(b))
                 .IsRequired();
 
             builder.Property(p => p.EmergencyContact)
-                .HasConversion(ec => ec.EmergencyContact, ec => new PatientEmergencyContact(ec))
+                .HasConversion(b => b.EmergencyContact, b => new PatientEmergencyContact(b))
                 .IsRequired();
 
             builder.Property(p => p.Active)
-                .HasColumnName("IsActive")
                 .IsRequired();
+
+            builder.HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey("UserId")
+                .IsRequired(false);
         }
     }
 }

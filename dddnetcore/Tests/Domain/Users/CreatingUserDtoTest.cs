@@ -10,8 +10,9 @@ namespace DDDSample1.Tests.Domain.Users
         {
             string role = "Doctor";
             string email = "doctor@example.com";
+            string password = "Password1!";
 
-            var dto = new CreatingUserDto(role, email);
+            var dto = new CreatingUserDto(role, email,password);
 
             Assert.Equal(role, dto.Role);
             Assert.Equal(email, dto.Email);
@@ -20,7 +21,7 @@ namespace DDDSample1.Tests.Domain.Users
         [Fact]
         public void Properties_ShouldAllowSettingValues()
         {
-            var dto = new CreatingUserDto("Doctor", "doctor@example.com");
+            var dto = new CreatingUserDto("Doctor", "doctor@example.com","Password1!");
 
             dto.Role = "Nurse";
             dto.Email = "nurse@example.com";

@@ -43,7 +43,7 @@ namespace DDDSample1.Controllers
 
         // POST: api/users
         [HttpPost]
-        public async Task<ActionResult<UserDto>> Create([FromBody] CreatingUserDto dto)
+        public async Task<ActionResult<UserDto>> CreateBackofficeUser([FromBody] CreatingUserDto dto)
         {
             if (dto == null)
             {
@@ -52,7 +52,7 @@ namespace DDDSample1.Controllers
 
             Console.WriteLine("Creating user: " + dto.Email); // Example logging
 
-            var userDto = await _service.AddAsync(dto);
+            var userDto = await _service.AddBackofficeUserAsync(dto);
             if (userDto == null)
             {
                 return StatusCode(500, "A problem happened while handling your request.");
