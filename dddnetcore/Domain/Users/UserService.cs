@@ -140,7 +140,7 @@ namespace DDDSample1.Users
             };
             var sequentialNumber = await _userRepository.GetNextSequentialNumberAsync();
 
-            string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}@{domain}";
+            string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}";
 
             return new Username(username);
         }
@@ -155,30 +155,36 @@ namespace DDDSample1.Users
 
             var roleType = (RoleType)Enum.Parse(typeof(RoleType), dto.Role, true);
             var role = new Role(roleType);
-
             var username = await GenerateUsernameAsync(roleType);
 
             var auth0Domain = _configuration["Auth0:Domain"];
-            var auth0Audience = _configuration["Auth0:Audience"];
+            var auth0Audience = _configuration["Auth0:APIAudience"];
             var auth0ClientId = _configuration["Auth0:ClientId"];
             var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
-
             var auth0User = new
-            {       
-            email = dto.Email,
-            username = username.ToString(),
-            password = dto.Password, 
+            {
+                email = dto.Email,
+                username = username.ToString(),
+                password = dto.Password,
+                connection = "Username-Password-Authentication"
             };
 
-             var client = new HttpClient();
             var token = await _authenticationService.GetToken(auth0Domain, auth0Audience, auth0ClientId, auth0ClientSecret);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+ 
+             using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.PostAsJsonAsync($"https://{auth0Domain}/api/v2/users", auth0User);
-            response.EnsureSuccessStatusCode();
+                var response = await client.PostAsJsonAsync($"https://{auth0Domain}/api/v2/users", auth0User);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Request failed with status {response.StatusCode}: {errorContent}");
+                }
+            }
 
             var user = new User(role, new Email(dto.Email), username);
-
             await this._userRepository.AddAsync(user);
             await this._unitOfWork.CommitAsync();
 
@@ -189,6 +195,7 @@ namespace DDDSample1.Users
                 Email = user.Email.ToString()
             };
         }
+
 
 
          public async Task<UserDto> AddPatientUserSync(CreatingPatientUserDto dto)

@@ -5,7 +5,7 @@ using DDDSample1.Domain.Staffs;
 
 namespace DDDSample1.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/staffs")]
     [ApiController]
     public class StaffsController : ControllerBase
     {

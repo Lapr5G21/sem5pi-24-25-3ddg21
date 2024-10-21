@@ -4,12 +4,21 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using DDDSample1.Domain.Authentication;
 
 namespace DDDSample1.Controllers
 {
     [Route("api")]
     public class ApiController : Controller
     {
+
+        private readonly AuthenticationService _authenticationService;
+
+        public ApiController(AuthenticationService authenticationService)
+        {
+           
+            _authenticationService=authenticationService;
+        }
         [HttpGet("private")]
         [Authorize]
         public IActionResult Private()
@@ -42,25 +51,8 @@ namespace DDDSample1.Controllers
         // Método para obter o token da API Auth0
         public async Task<string> GetToken(string auth0domain, string auth0audience, string auth0clientId, string auth0clientSecret)
         {
-            using (var client = new HttpClient())
-            {
-                var tokenEndpoint = $"https://{auth0domain}/oauth/token";
-
-                var requestBody = new StringContent(JsonConvert.SerializeObject(new
-                {
-                    client_id = auth0clientId,
-                    client_secret = auth0clientSecret,
-                    audience = auth0audience,
-                    grant_type = "client_credentials"
-                }), Encoding.UTF8, "application/json");
-
-                var response = await client.PostAsync(tokenEndpoint, requestBody);
-                response.EnsureSuccessStatusCode();
-
-                var content = await response.Content.ReadAsStringAsync();
-                dynamic tokenResponse = JsonConvert.DeserializeObject(content);
-                return tokenResponse.access_token;
-            }
+          return await _authenticationService.GetToken(auth0domain,auth0audience,auth0clientId,auth0clientSecret);
+             
         }
 
         // Novo endpoint para obter o token
@@ -68,7 +60,7 @@ namespace DDDSample1.Controllers
         public async Task<IActionResult> RetrieveToken()
         {
             string auth0Domain = "dev-6i3wexhx2n4mo0q6.us.auth0.com";
-            string auth0Audience = "https://api.healthcaresystem";
+            string auth0Audience = "https://dev-6i3wexhx2n4mo0q6.us.auth0.com/api/v2/";
             string auth0ClientId = "J78zluuQR5KZ8e55668Nt0gf34e54EDO";
             string auth0ClientSecret = "4wV2Eb47KCYzEJOMMm3VlRMJCwdeB79N6JZujA0gXRzNiH1hjqYscQFI1AJZNjeK";
 
