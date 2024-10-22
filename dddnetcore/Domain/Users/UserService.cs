@@ -141,7 +141,6 @@ namespace DDDSample1.Users
             var sequentialNumber = await _userRepository.GetNextSequentialNumberAsync();
 
             string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}";
-
             return new Username(username);
         }
 
@@ -162,12 +161,18 @@ namespace DDDSample1.Users
             var auth0ClientId = _configuration["Auth0:ClientId"];
             var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
             var auth0User = new
-            {
+            {   
                 email = dto.Email,
                 username = username.ToString(),
                 password = dto.Password,
-                connection = "Username-Password-Authentication"
+                connection = "Username-Password-Authentication",
+                app_metadata = new Dictionary<string, object>
+                {
+                     {"roles", new string[] { role.ToString() }}
+                },
+                email_verified = false 
             };
+
 
             var token = await _authenticationService.GetToken(auth0Domain, auth0Audience, auth0ClientId, auth0ClientSecret);
  

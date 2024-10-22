@@ -13,6 +13,6 @@ namespace DDDSample1.Domain.Staffs
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string StaffAvailabilitySlots { get; set; }
-        public string UserId { get; set; }
+        public string UserId {get;set;}
     }
 }

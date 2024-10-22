@@ -50,18 +50,14 @@ namespace DDDSample1.Controllers
                 return BadRequest("Invalid user data.");
             }
 
-            Console.WriteLine("Creating user: " + dto.Email); // Example logging
-
             var userDto = await _service.AddBackofficeUserAsync(dto);
             if (userDto == null)
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            // Verifique o valor do Username
-            Console.WriteLine("Created user username: " + userDto.Username);
 
-            return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto); // Alterado para 'id'
+            return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto); 
         }
 
 
