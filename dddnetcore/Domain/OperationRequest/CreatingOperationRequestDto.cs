@@ -15,5 +15,9 @@ public DateTime DeadlineDate {get; set;}
 
 public String Status {get; set;}
 
+public String DoctorId {get; set;}
+
+public String PatientId {get; set;}
+
 }
 }

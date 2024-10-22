@@ -18,8 +18,9 @@ public class OperationRequestDto{
 
     public String Status { get; set;}
 
-    //falta doctorId 
-    //falta pacientId
+    public String DoctorId {get; set;}
+    
+    public String PacientMedicalRecordNumber { get; set;}
 
 }
 }
