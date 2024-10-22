@@ -35,7 +35,7 @@ namespace DDDSample1.Domain.Staffs
             var list = await this._staffRepository.GetAllAsync();
             List<StaffDto> listDto = list.ConvertAll(staff => new StaffDto
             {
-                StaffId = staff.StaffId.ToString(),
+                StaffId = staff.Id.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
@@ -56,7 +56,7 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.StaffId.ToString(),
+                StaffId = staff.Id.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
@@ -92,7 +92,7 @@ namespace DDDSample1.Domain.Staffs
                 specialization.Id, 
                 new StaffEmail(dto.Email), 
                 new StaffPhoneNumber(dto.PhoneNumber), 
-                user.Username,
+                user.Id,
                 new StaffAvailabilitySlots()
             );
 
@@ -101,7 +101,7 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.StaffId.ToString(),
+                StaffId = staff.Id.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
@@ -130,7 +130,7 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.StaffId.ToString(),
+                StaffId = staff.Id.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
@@ -153,7 +153,7 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.StaffId.ToString(),
+                StaffId = staff.Id.ToString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),

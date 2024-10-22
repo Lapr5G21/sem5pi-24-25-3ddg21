@@ -11,7 +11,7 @@ namespace DDDSample1.Infrastructure.Staffs
     {
         public void Configure(EntityTypeBuilder<Staff> builder)
         {
-            builder.HasKey(b => b.StaffId);
+            builder.HasKey(b => b.Id);
 
             builder.Property(b => b.StaffFirstName)
                 .HasConversion(s => s.FirstNameString, s => new StaffFirstName(s))
@@ -51,7 +51,7 @@ namespace DDDSample1.Infrastructure.Staffs
                 .WithOne()
                 .HasForeignKey<Staff>(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired(false);
+                .IsRequired();
 
             builder.OwnsOne(s => s.StaffAvailabilitySlots, a =>
             {

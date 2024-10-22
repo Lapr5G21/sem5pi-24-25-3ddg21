@@ -7,28 +7,29 @@ namespace DDDSample1.Domain.Staffs
     public class StaffId : EntityId
     {
         [JsonConstructor]
-        public StaffId(Guid value) : base(value)
+        public StaffId(string value) : base(value)
         {
         }
 
-        public StaffId(String value) : base(value)
+        public StaffId(Guid value) : base(value.ToString())
         {
         }
 
         override
-        protected  Object createFromString(String text){
-            return new Guid(text);
+        protected object createFromString(string text)
+        {
+            return text; 
         }
 
         override
-        public String AsString(){
-            Guid obj = (Guid) base.ObjValue;
-            return obj.ToString();
+        public string AsString()
+        {
+            return (string)base.ObjValue;
         }
-        
-       
-        public Guid AsGuid(){
-            return (Guid) base.ObjValue;
+
+        public string Value()
+        {
+            return (string)base.ObjValue;
         }
     }
 }

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.OperationTypesSpecializations;
+using System.Linq;
+using System;
+using Microsoft.IdentityModel.Tokens;
+using Castle.Components.DictionaryAdapter.Xml;
 
 namespace DDDSample1.Domain.OperationTypes
 {
@@ -96,7 +100,13 @@ namespace DDDSample1.Domain.OperationTypes
             AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
             CleaningTime = operationType.CleaningTime.Minutes,
             IsActive = operationType.IsActive,
-            SurgeryTime = operationType.SurgeryTime.Minutes
+            SurgeryTime = operationType.SurgeryTime.Minutes,
+            Specializations = operationType.Specializations
+            .Select(s => new OperationTypeSpecializationDto
+            {
+            Id = s.Specialization.Id.ToString(),
+            NumberOfStaff = s.NumberOfStaff.Number
+            }).ToList()
             };
         }
 
@@ -126,6 +136,42 @@ namespace DDDSample1.Domain.OperationTypes
                 SurgeryTime = operationType.SurgeryTime.Minutes
             };
         }
+
+        public async Task<IEnumerable<OperationTypeDto>> SearchOperationTypesAsync(SearchOperationTypeDto searchDto)
+    {
+        var operationTypes = await _repo.GetAllAsync();
+
+        if (!string.IsNullOrEmpty(searchDto.Name))
+        {
+            operationTypes = (List<OperationType>)operationTypes.Where(o => o.Name.ToString().Contains(searchDto.Name));
+        }
+        if (searchDto.SpecializationId != Guid.Empty)
+        {
+            operationTypes = (List<OperationType>)operationTypes.Where(o => o.Specializations.Any(s => s.Specialization.Id.AsGuid() == searchDto.SpecializationId));
+        }
+        
+        if (searchDto.IsActive != null)
+        {
+            operationTypes = (List<OperationType>)operationTypes.Where(o => o.IsActive == searchDto.IsActive);
+        }
+
+        return operationTypes.Select(o => new OperationTypeDto
+        {
+            Id = o.Id.AsGuid(),
+            Name = o.Name.ToString(),
+            EstimatedTimeDuration = o.EstimatedTimeDuration.Minutes,
+            AnesthesiaTime = o.AnesthesiaTime.Minutes,
+            SurgeryTime = o.SurgeryTime.Minutes,
+            CleaningTime = o.CleaningTime.Minutes,
+            IsActive = o.IsActive,
+             Specializations = o.Specializations
+            .Select(s => new OperationTypeSpecializationDto
+            {
+            Id = s.Specialization.Id.ToString(),
+            NumberOfStaff = s.NumberOfStaff.Number
+            }).ToList()
+        }).ToList();
+}
 
         public async Task<OperationTypeDto> InactivateAsync(OperationTypeId id)
         {
