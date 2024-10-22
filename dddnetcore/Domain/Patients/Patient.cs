@@ -6,17 +6,19 @@ namespace DDDSample1.Domain.Patients
 {
     public class Patient : Entity<PatientMedicalRecordNumber>, IAggregateRoot
     {
-        public PatientFirstName FirstName { get; private set; }
-        public PatientLastName LastName { get; private set; }
-        public PatientFullName FullName { get; private set; }
-        public PatientBirthDate BirthDate { get; private set; }
-        public PatientGender Gender { get; private set; }
-        public PatientEmail Email { get; private set; }
-        public PatientPhoneNumber PhoneNumber { get; private set; }
-        public PatientMedicalRecord MedicalRecord { get; private set; }
-        public PatientEmergencyContact EmergencyContact { get; private set; }
+        public PatientFirstName FirstName { get; set; }
+        public PatientLastName LastName { get; set; }
+        public PatientFullName FullName { get; set; }
+        public PatientBirthDate BirthDate { get; set; }
+        public PatientGender Gender { get; set; }
+        public PatientEmail Email { get; set; }
+        public PatientPhoneNumber PhoneNumber { get; set; }
+        public PatientAddress Address { get; set; }
+        public PatientMedicalRecord MedicalRecord { get; set; }
+        public PatientEmergencyContact EmergencyContact { get; set; }
+        public PatientAppointmentHistory AppointmentHistory { get; set; }
         public User User { get; set; }
-        public bool Active { get; private set; }
+        public bool Active { get; set; }
 
         private Patient(){}
         public Patient(
@@ -28,8 +30,10 @@ namespace DDDSample1.Domain.Patients
             PatientGender gender,
             PatientEmail email,
             PatientPhoneNumber phoneNumber,
+            PatientAddress address,
             PatientMedicalRecord medicalRecord,
-            PatientEmergencyContact emergencyContact)
+            PatientEmergencyContact emergencyContact,
+            PatientAppointmentHistory appointmentHistory)
         {
             this.Id = medicalRecordNumber;
             this.FirstName = firstName;
@@ -39,13 +43,27 @@ namespace DDDSample1.Domain.Patients
             this.Gender = gender;
             this.Email = email;
             this.PhoneNumber = phoneNumber;
+            this.Address = address;
             this.MedicalRecord = medicalRecord;
             this.EmergencyContact = emergencyContact;
+            this.AppointmentHistory = appointmentHistory;
             this.Active = true;
             this.User = null;
         }
 
 
+        public void ChangeFirstName(PatientFirstName newFirstName)
+        {
+            if (newFirstName == null) throw new ArgumentNullException(nameof(newFirstName));
+            this.FirstName = newFirstName; 
+        }
+
+        public void ChangeLastName(PatientLastName newLastName)
+        {
+            if (newLastName == null) throw new ArgumentNullException(nameof(newLastName));
+            this.LastName = newLastName; 
+        }
+        
         public void ChangeName(PatientFullName newFullName)
         {
             if (newFullName == null) throw new ArgumentNullException(nameof(newFullName));
@@ -82,6 +100,12 @@ namespace DDDSample1.Domain.Patients
             this.PhoneNumber = newPhoneNumber;
         }
 
+        public void ChangeAddress(PatientAddress newAddress)
+        {
+            if (newAddress == null) throw new ArgumentNullException(nameof(newAddress));
+            this.Address = newAddress;
+        }
+
         public void ChangeMedicalRecord(PatientMedicalRecord newMedicalRecord)
         {
             if (newMedicalRecord == null) throw new ArgumentNullException(nameof(newMedicalRecord));
@@ -94,6 +118,16 @@ namespace DDDSample1.Domain.Patients
             this.EmergencyContact = newEmergencyContact;
         }
 
+        public void ChangeAppointmentHistory(PatientAppointmentHistory newAppointmentHistory)
+        {
+            if (newAppointmentHistory == null) throw new ArgumentNullException(nameof(newAppointmentHistory));
+            this.AppointmentHistory = newAppointmentHistory;
+        }
+
+        public void SetUser(User user){
+            this.User= user; 
+        }
+
         public void Deactivate()
         {
             this.Active = false;
@@ -104,12 +138,9 @@ namespace DDDSample1.Domain.Patients
             this.Active = true;
         }
 
-        public void SetUser(User user){
-            this.User= user; 
-        }
         public override string ToString()
         {
-            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {Id}, Email: {Email}, Phone Number : {PhoneNumber}, Medical Record: {MedicalRecord}, Emergency Contact: {EmergencyContact}, Active: {Active}";
+            return $"Patient: {FullName}, Gender: {Gender}, Birth Date: {BirthDate}, Medical Record Number: {Id}, Email: {Email}, Phone Number : {PhoneNumber}, Address : {Address}, Medical Record: {MedicalRecord}, Emergency Contact: {EmergencyContact}, Active: {Active}";
         }
     }
 }

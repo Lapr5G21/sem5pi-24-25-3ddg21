@@ -13,6 +13,7 @@ namespace DDDSample1.Domain.Patients
         public Gender Gender { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string Address { get; set; }
         public string EmergencyContact { get; set; }
         public bool Active { get; set; }
         public CreatingPatientDto(
@@ -23,6 +24,7 @@ namespace DDDSample1.Domain.Patients
             Gender gender,
             string email,
             string phoneNumber,
+            string address,
             string emergencyContact)
         {
 
@@ -33,6 +35,7 @@ namespace DDDSample1.Domain.Patients
             this.Gender = gender;
             this.Email = email;
             this.PhoneNumber = phoneNumber;
+            this.Address = address;
             this.EmergencyContact = emergencyContact;
             this.Active = true;
         }

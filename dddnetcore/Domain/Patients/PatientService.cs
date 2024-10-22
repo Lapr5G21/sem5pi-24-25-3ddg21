@@ -28,12 +28,12 @@ namespace DDDSample1.Domain.Patients
             var list = await this._patientRepository.GetAllAsync();
             List<PatientDto> listDto = list.ConvertAll(patient => new PatientDto
             {
-                FullName = patient.FullName,
-                BirthDate = patient.BirthDate,
-                Gender = patient.Gender,
-                Email = patient.Email,
-                PhoneNumber = patient.PhoneNumber,
-                EmergencyContact = patient.EmergencyContact
+                FullName = patient.FullName.ToString(),
+                BirthDate = patient.BirthDate.ToString(),
+                Gender = patient.Gender.GenderValue,
+                Email = patient.Email.ToString(),
+                PhoneNumber = patient.PhoneNumber.ToString(),
+                EmergencyContact = patient.EmergencyContact.ToString()
             });
             return listDto;
         }
@@ -46,12 +46,12 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
-                FullName = patient.FullName,
-                BirthDate = patient.BirthDate,
-                Gender = patient.Gender,
-                Email = patient.Email,
-                PhoneNumber = patient.PhoneNumber,
-                EmergencyContact = patient.EmergencyContact
+                FullName = patient.FullName.ToString(),
+                BirthDate = patient.BirthDate.ToString(),
+                Gender = patient.Gender.GenderValue,
+                Email = patient.Email.ToString(),
+                PhoneNumber = patient.PhoneNumber.ToString(),
+                EmergencyContact = patient.EmergencyContact.ToString()
             };
         }
 
@@ -60,7 +60,19 @@ namespace DDDSample1.Domain.Patients
         {            
             var mrn = await GenerateMedicalRecordNumberAsync();
             
-            var patient = new Patient(mrn, new PatientFirstName(dto.FirstName), new PatientLastName(dto.LastName), new PatientFullName(dto.FullName), new PatientBirthDate(dto.BirthDate), new PatientGender(dto.Gender), new PatientEmail(dto.Email), new PatientPhoneNumber(dto.PhoneNumber), null, new PatientEmergencyContact(dto.EmergencyContact));
+            var patient = new Patient(
+                mrn, 
+                new PatientFirstName(dto.FirstName), 
+                new PatientLastName(dto.LastName), 
+                new PatientFullName(dto.FullName), 
+                new PatientBirthDate(dto.BirthDate), 
+                new PatientGender(dto.Gender), 
+                new PatientEmail(dto.Email), 
+                new PatientPhoneNumber(dto.PhoneNumber),
+                new PatientAddress(dto.Address), 
+                null, 
+                new PatientEmergencyContact(dto.EmergencyContact),
+                null);
             
             await this._patientRepository.AddAsync(patient);
             
@@ -68,12 +80,15 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
-                FullName = patient.FullName,
-                BirthDate = patient.BirthDate,
-                Gender = patient.Gender,
-                Email = patient.Email,
-                PhoneNumber = patient.PhoneNumber,
-                EmergencyContact = patient.EmergencyContact
+                FirstName = patient.FirstName.ToString(),
+                LastName = patient.LastName.ToString(),
+                FullName = patient.FullName.ToString(),
+                BirthDate = patient.BirthDate.ToString(),
+                Gender = patient.Gender.GenderValue,
+                Email = patient.Email.ToString(),
+                PhoneNumber = patient.PhoneNumber.ToString(),
+                Address = patient.Address.ToString(),
+                EmergencyContact = patient.EmergencyContact.ToString()
             };
         }
 
@@ -81,21 +96,30 @@ namespace DDDSample1.Domain.Patients
         
         public async Task<PatientDto> UpdateAsync(PatientDto dto)
         {
-            var patient = await this._patientRepository.FindByEmailAsync(dto.Email);
+            var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
             if (patient == null) return null;
-            patient.ChangeName(dto.FullName);
-            patient.ChangeEmail(dto.Email);
-            patient.ChangePhoneNumber(dto.PhoneNumber);
-            patient.ChangeMedicalRecord(dto.MedicalRecord);
+
+            patient.ChangeFirstName(new PatientFirstName(dto.FirstName));
+            patient.ChangeLastName(new PatientLastName(dto.LastName));
+            patient.ChangeName(new PatientFullName(dto.FullName));
+            patient.ChangeEmail(new PatientEmail(dto.Email));
+            patient.ChangePhoneNumber(new PatientPhoneNumber(dto.PhoneNumber));
+            patient.ChangeAddress(new PatientAddress(dto.Address));
+            patient.ChangeMedicalRecord(new PatientMedicalRecord(dto.MedicalRecord));
 
             await this._unitOfWork.CommitAsync();
 
             return new PatientDto
             {
-                FullName = patient.FullName,
-                Email = patient.Email,
-                PhoneNumber = patient.PhoneNumber,
-                MedicalRecord = patient.MedicalRecord
+                FirstName = patient.FirstName.ToString(),
+                LastName = patient.LastName.ToString(),
+                FullName = patient.FullName.ToString(),
+                BirthDate = patient.BirthDate.ToString(),
+                Gender = patient.Gender.GenderValue,
+                Email = patient.Email.ToString(),
+                PhoneNumber = patient.PhoneNumber.ToString(),
+                Address = patient.Address.ToString(),
+                EmergencyContact = patient.EmergencyContact.ToString()
             };
         }
 
@@ -104,6 +128,9 @@ namespace DDDSample1.Domain.Patients
 
 
 
+        
+        
+        
         public async Task<PatientMedicalRecordNumber> GenerateMedicalRecordNumberAsync()
         {
             var currentYear = DateTime.Now.Year;
