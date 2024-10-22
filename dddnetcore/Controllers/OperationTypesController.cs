@@ -80,6 +80,27 @@ namespace DDDSample1.Controllers
             }
         }
 
+            [HttpGet("search")]
+            public async Task<IActionResult> SearchOperationTypes([FromQuery] string name, [FromQuery] Guid specializationId, [FromQuery] bool isActive)
+            {      
+                try
+                {
+                    var searchDto = new SearchOperationTypeDto
+                {
+                    Name = name,
+                    SpecializationId = specializationId,
+                    IsActive = isActive
+                };
+
+                var operationTypes = await _service.SearchOperationTypesAsync(searchDto);
+                return Ok(operationTypes);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"An error occurred while searching: {ex.Message}");
+                }
+            }
+
         // DELETE: api/operationTypes/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<OperationTypeDto>> SoftDelete(string id)

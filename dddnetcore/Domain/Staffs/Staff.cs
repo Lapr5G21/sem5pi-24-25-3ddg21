@@ -7,7 +7,6 @@ namespace DDDSample1.Domain.Staffs
 {
     public class Staff : Entity<StaffId>, IAggregateRoot
     {
-        public StaffId StaffId { get; private set; }
         public StaffFirstName StaffFirstName { get; private set; }
         public StaffLastName StaffLastName { get; private set; }
         public StaffFullName StaffFullName { get; private set; }
@@ -28,7 +27,7 @@ namespace DDDSample1.Domain.Staffs
         public Staff(StaffId staffId, StaffFirstName staffFirstName, StaffLastName staffLastName, StaffFullName staffFullName, StaffLicenseNumber licenseNumber, SpecializationId specializationId, StaffEmail staffEmail, StaffPhoneNumber staffPhoneNumber, Username userId, StaffAvailabilitySlots staffAvailabilitySlots)
         {
             this.Active = true;
-            this.StaffId = staffId;
+            this.Id = staffId;
             this.StaffFirstName = staffFirstName;
             this.StaffLastName = staffLastName;
             this.StaffFullName = staffFullName;

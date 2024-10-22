@@ -147,7 +147,7 @@ namespace DDDSample1.Tests.Domain.Users
 
             Assert.NotNull(result);
             Assert.Equal(existingUser.Role.ToString(), result.Role);
-            Assert.Equal(existingUser.Username.ToString(), result.Username);
+            Assert.Equal(existingUser.Id.ToString(), result.Username);
             Assert.Equal(existingUser.Email.ToString(), result.Email);
             
             _userRepositoryMock.Verify(repo => repo.FindByEmailAsync(new Email("doctor@example.com")), Times.Once);

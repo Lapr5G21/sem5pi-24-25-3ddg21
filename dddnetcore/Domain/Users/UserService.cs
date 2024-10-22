@@ -41,7 +41,7 @@ namespace DDDSample1.Users
             List<UserDto> listDto = list.ConvertAll(user => new UserDto
             {
                 Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Email = user.Email.ToString()
             });
             return listDto;
@@ -55,7 +55,7 @@ namespace DDDSample1.Users
             return new UserDto
             {
                 Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Email = user.Email.ToString()
             };
         }
@@ -72,7 +72,7 @@ namespace DDDSample1.Users
             return new UserDto
             {
                 Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Email = user.Email.ToString()
             };
         }
@@ -89,7 +89,7 @@ namespace DDDSample1.Users
 
             return new UserDto
             {
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Role = user.Role.ToString(),
                 Email = user.Email.ToString()
             };
@@ -109,7 +109,7 @@ namespace DDDSample1.Users
 
             return new UserDto
             {
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Role = user.Role.ToString(),
                 Email = user.Email.ToString()
             };
@@ -123,7 +123,7 @@ namespace DDDSample1.Users
             return new UserDto
             {
                 Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Email = user.Email.ToString()
             };
         }
@@ -196,7 +196,7 @@ namespace DDDSample1.Users
             return new UserDto
             {
                 Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Email = user.Email.ToString()
             };
         }
@@ -246,7 +246,7 @@ namespace DDDSample1.Users
             return new UserDto
             {
                 Role = user.Role.ToString(),
-                Username = user.Username.ToString(),
+                Username = user.Id.ToString(),
                 Email = user.Email.ToString()
             };
         }

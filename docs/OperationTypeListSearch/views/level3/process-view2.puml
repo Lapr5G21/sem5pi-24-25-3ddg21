@@ -1,0 +1,34 @@
+@startuml 
+autonumber
+actor Admin as "Admin"
+participant CTRL as "OperationTypesController"
+participant SERVICE as "OperationTypeService <<service>>"
+
+database IOperationTypeRepository as "IOperationTypeRepository"
+
+
+
+activate Admin
+
+Admin -> CTRL : GET /api/operation/filters
+activate CTRL
+
+CTRL -> SERVICE : SearchOperationTypesAsync(searchOperationTypeDto)
+activate SERVICE
+
+SERVICE -> IOperationTypeRepository : getBy(operationTypeName,specializationName,status)
+activate IOperationTypeRepository
+IOperationTypeRepository -> SERVICE : operationTypesList 
+deactivate IOperationTypeRepository
+
+
+SERVICE -> CTRL : operationTypesList
+
+deactivate SERVICE 
+
+CTRL -> Admin : 200 OK (operationTypesList)
+
+deactivate CTRL 
+
+deactivate Admin
+@enduml

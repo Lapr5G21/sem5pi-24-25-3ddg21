@@ -10,9 +10,9 @@ namespace DDDSample1.Infrastructure.Users
         public void Configure(EntityTypeBuilder<User> builder)
         {
 
-            builder.HasKey(b => b.Username);
+            builder.HasKey(b => b.Id);
 
-            builder.Property(b => b.Username)
+            builder.Property(b => b.Id)
                 .HasConversion(u => u.UsernameString, u => new Username(u))
                 .IsRequired();
 

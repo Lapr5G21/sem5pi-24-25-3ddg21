@@ -6,6 +6,10 @@ using DDDSample1.Domain.OperationRequest;
 using DDDSample1.Domain.OperationRequestsx;
 using DDDSample1.Domain.OperationTypes;
 using System;
+using System.Diagnostics.CodeAnalysis;
+using DDDSample1.Domain.Staffs;
+using DDDSample1.Domain.Patients;
+using Microsoft.AspNetCore.Routing;
 
 
 namespace DDDSample1.Domain.OperationRequest
@@ -18,6 +22,8 @@ private readonly IUnitOfWork _unitOfWork;
 private readonly IOperationRequestRepository _repo;
 
 private readonly IOperationTypeRepository _OperationTypeRepo;
+
+private readonly IStaffRepository _StaffRepository;
 
 
         public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IOperationTypeRepository operationTypeRepo)
@@ -39,7 +45,9 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
                 PriorityLevel  = op.PriorityLevel.ToString(), 
                 OperationTypeId = op.OperationTypeId.ToString(),
                 DeadlineDate =  op.DeadlineDate.Value,
-                Status = op.Status.ToString()
+                Status = op.Status.ToString(),
+                DoctorId = op.StaffId.ToString(),
+                PacientMedicalRecordNumber = op.PatientMedicalRecordNumber.ToString()
              
              });
 
@@ -50,6 +58,7 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
         public async Task<OperationRequestDto> GetByIdAsync(OperationRequestId id)
         {
             var op = await this._repo.GetByIdAsync(id);
+
             
             if(op == null)
                 return null;
@@ -60,7 +69,9 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
                 PriorityLevel  = op.PriorityLevel.ToString(), 
                 OperationTypeId = op.OperationTypeId.ToString(),
                 DeadlineDate =  op.DeadlineDate.Value,
-                Status = op.Status.ToString()
+                Status = op.Status.ToString(),
+                DoctorId = op.StaffId.ToString(),
+                PacientMedicalRecordNumber = op.PatientMedicalRecordNumber.ToString()
                  };
         }
 
@@ -69,20 +80,31 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
             var operationType = await _OperationTypeRepo.GetByIdAsync(new OperationTypeId(dto.OperationTypeId));
+            var doctor = await _StaffRepository.GetByIdAsync(new StaffId(dto.DoctorId));
             
             
             if(operationType == null){
             throw new BusinessRuleValidationException("Operation Type doesnt exist");
             }
-            
+
+        foreach ( var  Specialization in operationType.Specializations)
+        {
+            if (!Specialization.Id.Equals(doctor.SpecializationId)){
+                throw new BusinessRuleValidationException("Doctor Specialization does´t match Operation Type Specialization");
+            }
+        }
                 var priority = Enum.Parse<Priority>(dto.Priority);
                 var status = Enum.Parse<Status>(dto.Status); 
+                var doctorId = dto.DoctorId;
+                var PatientMedicalRecordNumber= dto.PatientId;
 
                 var operationRequest = new OperationRequest( 
                     priority,
                     new OperationTypeId(dto.OperationTypeId),
                     new DeadlineDate(dto.DeadlineDate),
-                    status );
+                    status,
+                    new StaffId(doctorId),
+                    new PatientMedicalRecordNumber(PatientMedicalRecordNumber));
 
 
             await this._repo.AddAsync(operationRequest);
@@ -94,15 +116,21 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
                 PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
                 OperationTypeId = operationRequest.OperationTypeId.ToString(),
                 DeadlineDate =  operationRequest.DeadlineDate.Value,
-                Status = operationRequest.Status.ToString() };
+                Status = operationRequest.Status.ToString(),
+                DoctorId = operationRequest.StaffId.ToString(),
+                PacientMedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.ToString() };
         }
         
 
 
-         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto)
-{
+
+
+         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto){
    
     var operationRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
+
+     //if(!dto.DoctorId.Equals() Qualquer coisa do active user)
+
 
     if (operationRequest == null)
         return null;
@@ -112,36 +140,44 @@ private readonly IOperationTypeRepository _OperationTypeRepo;
 
     operationRequest.ChangeOperationRequestPriority(priority); 
     operationRequest.ChangeOperationRequestDeadline(new DeadlineDate(dto.DeadlineDate)); 
-    operationRequest.ChangeOperationRequestStatus(status); 
+    operationRequest.ChangeOperationRequestStatus(status);
 
     
     await this._unitOfWork.CommitAsync();
 
     
     return new OperationRequestDto
-    {
-        Id = operationRequest.Id.AsGuid(),
-        PriorityLevel  = operationRequest.PriorityLevel.ToString(),
-        OperationTypeId = operationRequest.OperationTypeId.ToString(),
-        DeadlineDate = operationRequest.DeadlineDate.Value, 
-        Status = operationRequest.Status.ToString() 
-    };
-}
+    { 
+                Id = operationRequest.Id.AsGuid(),
+                PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
+                OperationTypeId = operationRequest.OperationTypeId.ToString(),
+                DeadlineDate =  operationRequest.DeadlineDate.Value,
+                Status = operationRequest.Status.ToString(),
+                DoctorId = operationRequest.StaffId.ToString(),
+                PacientMedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.ToString() };
+    }
 
         
 
         public async Task<bool> DeleteAsync(OperationRequestId id)
-{
+        {
     var operationRequest = await this._repo.GetByIdAsync(id);
+
 
     if (operationRequest == null)
         throw new KeyNotFoundException($"OperationRequest with ID {id} not found.");
+
+    //if (!operationRequest.StaffId.ToString.Equals(QualquercoisaDoCurrentUser)
+    
+    if(operationRequest.Status.Equals("SCHEDULED")){
+    throw new BusinessRuleValidationException("Scheduled operation requests cannot be removed.");
+    }
 
     this._repo.Remove(operationRequest);
     await this._unitOfWork.CommitAsync();
 
     return true;
-}
+    }
     
 }
 

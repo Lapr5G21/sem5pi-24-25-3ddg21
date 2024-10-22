@@ -1,0 +1,24 @@
+@startuml
+
+autonumber
+actor Admin as "Admin"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+
+Admin -> BE : GET /api/operationTypes/filter
+activate BE
+
+BE -> DB : getOperationTypeBy(name,specialization,status)
+
+activate DB 
+
+DB -> BE : operation types 
+
+deactivate DB
+
+Admin <- BE : 200 OK (operationTypes)
+
+deactivate BE
+
+@enduml
