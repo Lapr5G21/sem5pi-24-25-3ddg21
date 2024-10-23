@@ -31,6 +31,9 @@ using DDDSample1.Domain.Staffs;
 using DDDSample1.Infrastructure.Staffs;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
+using System;
+using DDDSample1.Domain.Emails;
+
 
 
 namespace DDDSample1
@@ -47,9 +50,19 @@ namespace DDDSample1
         // This method gets called by the runtime. Use this method to add services to the container.
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddDbContext<DDDSample1DbContext>(opt =>
-        opt.UseInMemoryDatabase("DDDSample1DB")
-        .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
+        var server = Configuration["DataBaseConnection:Server"];
+        var name = Configuration["DataBaseConnection:Name"];
+        var user = Configuration["DataBaseConnection:User"];
+        var password = Configuration["DataBaseConnection:Password"];
+        var port = Configuration["DataBaseConnection:Port"];
+
+        var connectionString = $"Server={server};Database={name};User={user};Password={password};Port={port};";
+
+        // Configuração do contexto com MySQL
+        services.AddDbContext<DDDSample1DbContext>(opt =>
+            opt.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)))
+               .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
+
 
     ConfigureMyServices(services);
 
@@ -82,6 +95,7 @@ public void ConfigureServices(IServiceCollection services)
     });
 
     services.AddControllers().AddNewtonsoftJson();
+    services.AddScoped<EmailService>(); 
 }
 
 
@@ -148,6 +162,7 @@ public void ConfigureServices(IServiceCollection services)
             services.AddTransient<PatientService>();
 
             services.AddTransient<AuthenticationService>();
+
         }
     }
 }

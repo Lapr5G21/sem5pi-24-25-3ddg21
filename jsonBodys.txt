@@ -19,4 +19,43 @@
         }
         ]
     }
-// Insert 
+// Insert the patient
+{
+    "firstName": "Goncalo",
+    "lastName": "Ribeiro",
+    "fullName": "Goncalo Ribeiro",
+    "birthDate": "2000-01-01",
+    "gender": "Male", 
+    "email": "goncaloribeiro@gmail.com",
+    "phoneNumber": "913456789",
+    "address": "Rua da Ribeira",
+    "emergencyContact": "916754321"
+}
+
+//Insert backofficeUser
+{
+    "role" : "backofficeRole",
+    "email" : "email",
+    "password" : "Password1!"
+}
+
+//Insert Patient User 
+{
+    "email" : "email",
+    "username" : "username",
+    "password" : "Password1!"
+}
+
+//Insert staff 
+{
+  "FirstName": "Joao",
+  "LastName": "Silva",
+  "FullName": "Joao Siva",
+  "LicenseNumber": "123456789",
+  "SpecializationId": "specializationId",
+  "Email": "joao.silva@test.com",
+  "PhoneNumber": "961435278",
+  "StaffAvailabilitySlots": "09:00-17:00",
+  "UserId": "userId"
+}
+

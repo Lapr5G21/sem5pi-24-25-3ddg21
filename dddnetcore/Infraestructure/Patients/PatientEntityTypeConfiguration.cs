@@ -1,3 +1,4 @@
+using System;
 using DDDSample1.Domain.Patients;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -27,11 +28,11 @@ namespace DDDSample1.Infrastructure.Patients
                 .IsRequired();
 
             builder.Property(p => p.Gender)
-                .HasConversion(
-                    g => g.GenderValue, // Convert PatientGender to Gender enum
-                    g => new PatientGender(g) // Convert Gender enum back to PatientGender
-                )
-                .IsRequired();
+            .HasConversion(
+            g => g.ToString(),
+            g => (PatientGender)Enum.Parse(typeof(PatientGender), g) 
+            )
+            .IsRequired();
 
             builder.Property(p => p.Email)
                 .HasConversion(b => b.EmailString, b => new PatientEmail(b))

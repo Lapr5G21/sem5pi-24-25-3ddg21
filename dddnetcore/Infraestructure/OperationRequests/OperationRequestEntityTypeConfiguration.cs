@@ -34,10 +34,6 @@ namespace DDDSample1.Infrastructure.OperationRequests
 
             builder.Property(b => b.StaffId)
                     .IsRequired();
-
-            builder.Property(b => b.PatientMedicalRecordNumber)
-                    .IsRequired();
-
         }
     }
 }

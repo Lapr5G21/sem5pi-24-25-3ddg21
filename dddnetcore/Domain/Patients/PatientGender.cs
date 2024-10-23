@@ -2,12 +2,14 @@ using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Patients
 {
+
     public enum Gender
     {
         Male,
         Female,
         RatherNotSay
     }
+    
 
     public class PatientGender : IValueObject
     {

@@ -24,13 +24,17 @@ private readonly IOperationRequestRepository _repo;
 private readonly IOperationTypeRepository _OperationTypeRepo;
 
 private readonly IStaffRepository _StaffRepository;
+private readonly IPatientRepository _PatientRepository;
 
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IOperationTypeRepository operationTypeRepo)
+
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository repo, IOperationTypeRepository operationTypeRepo, IStaffRepository staffRepository, IPatientRepository patientRepository)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._OperationTypeRepo = operationTypeRepo;
+            this._StaffRepository=staffRepository;
+            this._PatientRepository=patientRepository;
         }
 
 
@@ -80,11 +84,22 @@ private readonly IStaffRepository _StaffRepository;
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
             var operationType = await _OperationTypeRepo.GetByIdAsync(new OperationTypeId(dto.OperationTypeId));
+
+            if(operationType == null){
+            throw new BusinessRuleValidationException("Operation Type doesnt exist");
+            }
+
             var doctor = await _StaffRepository.GetByIdAsync(new StaffId(dto.DoctorId));
             
             
-            if(operationType == null){
-            throw new BusinessRuleValidationException("Operation Type doesnt exist");
+            if(doctor == null){
+            throw new BusinessRuleValidationException("Doctor doesnt exist");
+            }
+
+            var patient = await _PatientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.PatientId));
+
+            if(patient == null){
+            throw new BusinessRuleValidationException("Patient doesnt exist");
             }
 
         foreach ( var  Specialization in operationType.Specializations)
@@ -114,11 +129,11 @@ private readonly IStaffRepository _StaffRepository;
             { 
                 Id = operationRequest.Id.AsGuid(),
                 PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
-                OperationTypeId = operationRequest.OperationTypeId.ToString(),
+                OperationTypeId = operationRequest.OperationTypeId.AsString(),
                 DeadlineDate =  operationRequest.DeadlineDate.Value,
                 Status = operationRequest.Status.ToString(),
-                DoctorId = operationRequest.StaffId.ToString(),
-                PacientMedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.ToString() };
+                DoctorId = operationRequest.StaffId.AsString(),
+                PacientMedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.AsString() };
         }
         
 

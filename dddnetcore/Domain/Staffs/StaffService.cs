@@ -35,12 +35,12 @@ namespace DDDSample1.Domain.Staffs
             var list = await this._staffRepository.GetAllAsync();
             List<StaffDto> listDto = list.ConvertAll(staff => new StaffDto
             {
-                StaffId = staff.Id.ToString(),
+                StaffId = staff.Id.AsString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
                 StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
-                SpecializationId = staff.SpecializationId.ToString(),
+                SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
                 StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
@@ -56,12 +56,12 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.Id.ToString(),
+                StaffId = staff.Id.AsString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
                 StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
-                SpecializationId = staff.SpecializationId.ToString(),
+                SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
                 StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
@@ -77,7 +77,7 @@ namespace DDDSample1.Domain.Staffs
 
             RoleType roleType = user.Role.RoleValue;
         
-            var staffId = new StaffId(user.ToString().Split('@')[0]);
+            var staffId = new StaffId(user.Id.ToString().Split('@')[0]);
 
             var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(dto.SpecializationId));
             if (specialization == null)
@@ -101,7 +101,7 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.Id.ToString(),
+                StaffId = staff.Id.AsString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
