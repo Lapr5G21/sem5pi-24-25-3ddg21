@@ -26,7 +26,7 @@ namespace DDDSample1.Controllers
             return Ok(patients);
         }
 
-        // GET: api/users/{id}
+        // GET: api/patients/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<PatientDto>> GetById(string id)
         {
@@ -59,6 +59,74 @@ namespace DDDSample1.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = patient.MedicalRecordNumber }, patient); 
         }
+
+
+        // PUT: api/patients/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult<PatientDto>> Update(string id, [FromBody] EditingPatientDto dto)
+        {
+            if (id != dto.MedicalRecordNumber)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            try
+            {
+                var updatedPatient = await _service.UpdateAsync(dto);
+
+                if (updatedPatient == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(updatedPatient);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
+        // DELETE: api/patients/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<PatientDto>> SoftDelete(string id)
+        {
+            var patient = await _service.InactivateAsync(new PatientMedicalRecordNumber(id));
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(patient);
+        }
+
+
+        // DELETE: api/patients/{id}/hard
+        [HttpDelete("{id}/hard")]
+        public async Task<ActionResult<PatientDto>> HardDelete(string id)
+        {
+            try
+            {
+                var deletedPatient = await _service.DeleteAsync(new PatientMedicalRecordNumber(id));
+
+                if (deletedPatient == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(deletedPatient);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
+
+
 
     }
 }

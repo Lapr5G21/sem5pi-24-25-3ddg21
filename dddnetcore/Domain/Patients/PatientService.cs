@@ -97,7 +97,7 @@ namespace DDDSample1.Domain.Patients
 
 
         
-        public async Task<PatientDto> UpdateAsync(PatientDto dto)
+        public async Task<PatientDto> UpdateAsync(EditingPatientDto dto)
         {
             var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
             if (patient == null) return null;
@@ -105,10 +105,10 @@ namespace DDDSample1.Domain.Patients
             patient.ChangeFirstName(new PatientFirstName(dto.FirstName));
             patient.ChangeLastName(new PatientLastName(dto.LastName));
             patient.ChangeName(new PatientFullName(dto.FullName));
+            patient.ChangeBirthDate(new PatientBirthDate(dto.BirthDate));
             patient.ChangeEmail(new PatientEmail(dto.Email));
             patient.ChangePhoneNumber(new PatientPhoneNumber(dto.PhoneNumber));
             patient.ChangeAddress(new PatientAddress(dto.Address));
-            patient.ChangeMedicalRecord(new PatientMedicalRecord(dto.MedicalRecord));
 
             await this._unitOfWork.CommitAsync();
 
@@ -127,11 +127,57 @@ namespace DDDSample1.Domain.Patients
             };
         }
 
+        internal async Task<PatientDto> InactivateAsync(PatientMedicalRecordNumber mrn)
+        {
+            
+            var patient = await this._patientRepository.GetByIdAsync(mrn);
+            if (patient == null) return null;
+
+            patient.Deactivate();
+            
+            await this._unitOfWork.CommitAsync();
+
+            return new PatientDto
+            {
+                FirstName = patient.FirstName.ToString(),
+                LastName = patient.LastName.ToString(),
+                FullName = patient.FullName.ToString(),
+                BirthDate = patient.BirthDate.ToString(),
+                Gender = patient.Gender.GenderValue.ToString(),
+                Email = patient.Email.ToString(),
+                PhoneNumber = patient.PhoneNumber.ToString(),
+                Address = patient.Address.ToString(),
+                EmergencyContact = patient.EmergencyContact.ToString(),
+                Active = patient.Active
+            };
+        }
 
 
+        public async Task<PatientDto> DeleteAsync(PatientMedicalRecordNumber mrn)
+        {
+            var patient = await this._patientRepository.GetByIdAsync(mrn);
+            if (patient == null) return null;
 
+            if (patient.Active)
+                throw new BusinessRuleValidationException("It is not possible to delete an active patient.");
 
+            this._patientRepository.Remove(patient);
+            await this._unitOfWork.CommitAsync();
 
+            return new PatientDto
+            {
+                FirstName = patient.FirstName.ToString(),
+                LastName = patient.LastName.ToString(),
+                FullName = patient.FullName.ToString(),
+                BirthDate = patient.BirthDate.ToString(),
+                Gender = patient.Gender.GenderValue.ToString(),
+                Email = patient.Email.ToString(),
+                PhoneNumber = patient.PhoneNumber.ToString(),
+                Address = patient.Address.ToString(),
+                EmergencyContact = patient.EmergencyContact.ToString(),
+                Active = patient.Active
+            };
+        }
         
         
         
