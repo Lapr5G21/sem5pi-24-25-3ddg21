@@ -9,6 +9,6 @@ namespace DDDSample1.Domain.OperationTypes
     {
     public string Name { get; set; }
     public Guid SpecializationId { get; set; }
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
     }
 }

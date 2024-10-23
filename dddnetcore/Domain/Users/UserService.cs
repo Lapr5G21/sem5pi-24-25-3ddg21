@@ -202,7 +202,6 @@ namespace DDDSample1.Users
         }
 
 
-
          public async Task<UserDto> AddPatientUserSync(CreatingPatientUserDto dto)
         {
 
@@ -216,7 +215,7 @@ namespace DDDSample1.Users
                 throw new BusinessRuleValidationException("Email is already taken");
             }
 
-            var username = new Username(dto.Email);
+            var username = new Username(dto.Username);
 
             var user = new User(new Role(RoleType.Patient), new Email(dto.Email), username);
             patient.SetUser(user);
@@ -231,27 +230,40 @@ namespace DDDSample1.Users
             email = dto.Email,
             username = username.ToString(),
             password = dto.Password, 
-            connection="Username-Password-Authentication"
+            connection="Username-Password-Authentication",
+            app_metadata = new Dictionary<string, object>
+                {
+                     {"roles", new string[] { RoleType.Patient.ToString() }}
+                },
+                email_verified = false 
             };
 
-            var client = new HttpClient();
             var token = await _authenticationService.GetToken(auth0Domain, auth0Audience, auth0ClientId, auth0ClientSecret);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+ 
+             using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.PostAsJsonAsync($"https://{auth0Domain}/api/v2/users", auth0User);
-            response.EnsureSuccessStatusCode();
+                var response = await client.PostAsJsonAsync($"https://{auth0Domain}/api/v2/users", auth0User);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Request failed with status {response.StatusCode}: {errorContent}");
+                }
+            }
+
+            var user1 = new User(new Role(RoleType.Patient), new Email(dto.Email), username);
             await this._userRepository.AddAsync(user);
             await this._unitOfWork.CommitAsync();
-            
+
             return new UserDto
             {
-                Role = user.Role.ToString(),
-                Username = user.Id.ToString(),
-                Email = user.Email.ToString()
+                Role = user1.Role.ToString(),
+                Username = user1.Id.ToString(),
+                Email = user1.Email.ToString()
             };
         }
 
-
-    
     }
 }

@@ -80,8 +80,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-            [HttpGet("search")]
-            public async Task<IActionResult> SearchOperationTypes([FromQuery] string name, [FromQuery] Guid specializationId, [FromQuery] bool isActive)
+            public async Task<IActionResult> SearchOperationTypes([FromQuery] string name, [FromQuery] Guid specializationId, [FromQuery] bool? isActive)
             {      
                 try
                 {

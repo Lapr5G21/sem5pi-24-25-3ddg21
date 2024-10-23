@@ -9,7 +9,7 @@ participant SYS as "Backend Management" <<system>>
 Admin -> SYS : GET /api/operationTypes/filters
 activate SYS
 
-SYS -> SYS : getBy(name,specialization,status)
+SYS -> SYS : searchOperationTypes(name,specialization,status)
 Admin <-- SYS : 200 Ok
 deactivate SYS
 

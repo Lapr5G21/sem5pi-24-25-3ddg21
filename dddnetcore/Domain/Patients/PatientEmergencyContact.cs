@@ -21,5 +21,10 @@ public class PatientEmergencyContact : IValueObject
         string pattern = @"^9[1236]\d{7}$";
         return Regex.IsMatch(emergencyContact, pattern);
     }
+
+    public override string ToString()
+    {
+        return EmergencyContact;
+    }
 }
 }

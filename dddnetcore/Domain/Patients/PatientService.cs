@@ -30,7 +30,7 @@ namespace DDDSample1.Domain.Patients
             {
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue,
+                Gender = patient.Gender.GenderValue.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 EmergencyContact = patient.EmergencyContact.ToString()
@@ -48,7 +48,7 @@ namespace DDDSample1.Domain.Patients
             {
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue,
+                Gender = patient.Gender.GenderValue.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 EmergencyContact = patient.EmergencyContact.ToString()
@@ -59,14 +59,15 @@ namespace DDDSample1.Domain.Patients
         public async Task<PatientDto> AddAsync(CreatingPatientDto dto)
         {            
             var mrn = await GenerateMedicalRecordNumberAsync();
-            
+            Console.WriteLine(mrn);
+            var genderValue = (Gender)Enum.Parse(typeof(Gender), dto.Gender, true);
             var patient = new Patient(
                 mrn, 
                 new PatientFirstName(dto.FirstName), 
                 new PatientLastName(dto.LastName), 
                 new PatientFullName(dto.FullName), 
                 new PatientBirthDate(dto.BirthDate), 
-                new PatientGender(dto.Gender), 
+                new PatientGender(genderValue), 
                 new PatientEmail(dto.Email), 
                 new PatientPhoneNumber(dto.PhoneNumber),
                 new PatientAddress(dto.Address), 
@@ -80,15 +81,17 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
+                MedicalRecordNumber = patient.Id.AsString(),
                 FirstName = patient.FirstName.ToString(),
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue,
+                Gender = patient.Gender.GenderValue.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 Address = patient.Address.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString()
+                EmergencyContact = patient.EmergencyContact.ToString(),
+                Active = patient.Active
             };
         }
 
@@ -115,11 +118,12 @@ namespace DDDSample1.Domain.Patients
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue,
+                Gender = patient.Gender.GenderValue.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 Address = patient.Address.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString()
+                EmergencyContact = patient.EmergencyContact.ToString(),
+                Active = patient.Active
             };
         }
 

@@ -60,6 +60,25 @@ namespace DDDSample1.Controllers
             return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto); 
         }
 
+        // POST: api/users
+        [HttpPost("patients")]
+        public async Task<ActionResult<UserDto>> CreatePatientUser([FromBody] CreatingPatientUserDto dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Invalid user data.");
+            }
+
+            var userDto = await _service.AddPatientUserSync(dto);
+            if (userDto == null)
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+
+            return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto); 
+        }
+
 
 
         // PUT: api/users/{id}

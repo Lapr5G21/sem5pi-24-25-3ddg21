@@ -3,30 +3,30 @@ autonumber
 actor Admin as "Admin"
 participant CTRL as "OperationTypesController"
 participant SERVICE as "OperationTypeService <<service>>"
-
+participant OperationTypeDtoList as "OperationTypeDtoList"
 database IOperationTypeRepository as "IOperationTypeRepository"
-
-
 
 activate Admin
 
-Admin -> CTRL : GET /api/operation/filters
+Admin -> CTRL : GET /api/operationtypes/?name=...&specializationId=...&isActive=...
 activate CTRL
 
 CTRL -> SERVICE : SearchOperationTypesAsync(searchOperationTypeDto)
 activate SERVICE
 
-SERVICE -> IOperationTypeRepository : getBy(operationTypeName,specializationName,status)
+SERVICE -> IOperationTypeRepository : GetAllAsync()
 activate IOperationTypeRepository
+
 IOperationTypeRepository -> SERVICE : operationTypesList 
 deactivate IOperationTypeRepository
 
-
-SERVICE -> CTRL : operationTypesList
+SERVICE -> SERVICE : Filter operationTypesList \n- Apply Name filter \n- Apply Specialization filter \n- Apply IsActive filter
+SERVICE -> OperationTypeDtoList : create()
+SERVICE -> CTRL : return filteredOperationTypesList
 
 deactivate SERVICE 
 
-CTRL -> Admin : 200 OK (operationTypesList)
+CTRL -> Admin : 200 OK (filteredOperationTypesList)
 
 deactivate CTRL 
 

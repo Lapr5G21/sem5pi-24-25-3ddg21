@@ -40,7 +40,7 @@ namespace DDDSample1.Controllers
             return Ok(patient);
         }
 
-        // POST: api/users
+        // POST: api/patients
         [HttpPost]
         public async Task<ActionResult<PatientDto>> Create([FromBody] CreatingPatientDto dto)
         {
@@ -51,16 +51,13 @@ namespace DDDSample1.Controllers
 
             Console.WriteLine("Creating patient profile: " + dto.Email); // Example logging
 
-            var patientDto = await _service.AddAsync(dto);
-            if (patientDto == null)
+            var patient = await _service.AddAsync(dto);
+            if (patient == null)
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            // Verifique o valor do Email
-            Console.WriteLine("Created patient medical record number: " + patientDto.MedicalRecordNumber);
-
-            return CreatedAtAction(nameof(GetById), new { id = patientDto.MedicalRecordNumber }, patientDto); // Alterado para 'id'
+            return CreatedAtAction(nameof(GetById), new { id = patient.MedicalRecordNumber }, patient); 
         }
 
     }

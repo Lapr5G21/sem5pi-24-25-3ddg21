@@ -37,7 +37,14 @@ namespace DDDSample1.Domain.OperationTypes
                     EstimatedTimeDuration = op.EstimatedTimeDuration.Minutes,
                     AnesthesiaTime = op.AnesthesiaTime.Minutes,
                     CleaningTime = op.CleaningTime.Minutes,
-                    SurgeryTime = op.SurgeryTime.Minutes
+                    SurgeryTime = op.SurgeryTime.Minutes,
+                    IsActive = op.IsActive,
+                    Specializations = op.Specializations
+                    .Select(s => new OperationTypeSpecializationDto
+                    {
+                        Id = s.Specialization.Id.AsString(),
+                        NumberOfStaff = s.NumberOfStaff.Number
+                    }).ToList()
                 });
 
             return listDto;
@@ -57,7 +64,14 @@ namespace DDDSample1.Domain.OperationTypes
                 EstimatedTimeDuration = op.EstimatedTimeDuration.Minutes,
                 AnesthesiaTime = op.AnesthesiaTime.Minutes,
                 CleaningTime = op.CleaningTime.Minutes,
-                SurgeryTime = op.SurgeryTime.Minutes
+                SurgeryTime = op.SurgeryTime.Minutes,
+                IsActive = op.IsActive,
+                Specializations = op.Specializations
+                .Select(s => new OperationTypeSpecializationDto
+                {
+                    Id = s.Specialization.Id.AsString(),
+                    NumberOfStaff = s.NumberOfStaff.Number
+                }).ToList()
             };
         }
 
@@ -104,7 +118,7 @@ namespace DDDSample1.Domain.OperationTypes
             Specializations = operationType.Specializations
             .Select(s => new OperationTypeSpecializationDto
             {
-            Id = s.Specialization.Id.ToString(),
+            Id = s.Specialization.Id.AsString(),
             NumberOfStaff = s.NumberOfStaff.Number
             }).ToList()
             };
@@ -141,18 +155,20 @@ namespace DDDSample1.Domain.OperationTypes
     {
         var operationTypes = await _repo.GetAllAsync();
 
+        IEnumerable<OperationType> filteredOperationTypes = operationTypes.AsEnumerable();
+
         if (!string.IsNullOrEmpty(searchDto.Name))
         {
-            operationTypes = (List<OperationType>)operationTypes.Where(o => o.Name.ToString().Contains(searchDto.Name));
+            filteredOperationTypes = filteredOperationTypes.Where(o => o.Name.ToString().Contains(searchDto.Name));
         }
         if (searchDto.SpecializationId != Guid.Empty)
         {
-            operationTypes = (List<OperationType>)operationTypes.Where(o => o.Specializations.Any(s => s.Specialization.Id.AsGuid() == searchDto.SpecializationId));
+            filteredOperationTypes = filteredOperationTypes.Where(o => o.Specializations.Any(s => s.Specialization.Id.AsGuid() == searchDto.SpecializationId));
         }
         
         if (searchDto.IsActive != null)
         {
-            operationTypes = (List<OperationType>)operationTypes.Where(o => o.IsActive == searchDto.IsActive);
+            filteredOperationTypes = filteredOperationTypes.Where(o => o.IsActive == searchDto.IsActive);
         }
 
         return operationTypes.Select(o => new OperationTypeDto
@@ -195,6 +211,7 @@ namespace DDDSample1.Domain.OperationTypes
             };
         }
 
+         
         public async Task<OperationTypeDto> DeleteAsync(OperationTypeId id)
         {
             var operationType = await this._repo.GetByIdAsync(id);

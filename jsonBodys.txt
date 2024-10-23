@@ -7,17 +7,16 @@
 
 //Insert operation type
 {
-    "name": "Cardio Exame",
+    "name": "Ortopedista",
     "estimatedTimeDuration": 120,
     "anesthesiaTime": 30,
     "cleaningTime": 15,
     "surgeryTime": 90,
     "specializations": [
         {
-            "specializationId": "Substituir pelo id do specilization",
-            "specializationName" : "Cardiology"
+            "specializationId": "75059d46-dc68-464d-816e-f8c1dcbade78",
+            "numberOfStaff" : 5
         }
         ]
     }
-
 // Insert 
