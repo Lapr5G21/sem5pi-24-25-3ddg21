@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using DDDSample1.Domain;
 using DDDSample1.Domain.Authentication;
@@ -140,7 +141,7 @@ namespace DDDSample1.Users
             };
             var sequentialNumber = await _userRepository.GetNextSequentialNumberAsync();
 
-            string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}";
+            string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}{domain}";
             return new Username(username);
         }
 
@@ -265,5 +266,46 @@ namespace DDDSample1.Users
             };
         }
 
+        public async Task<string> LoginBackofficeUserAsync(LoginUserDto dto)
+        {
+            var auth0Domain = _configuration["Auth0:Domain"];
+            var auth0ClientId = _configuration["Auth0:ClientId"];
+            var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
+            var auth0Audience = _configuration["Auth0:APIAudience"];
+
+            var loginRequest = new
+            {
+                client_id = auth0ClientId,
+                client_secret = auth0ClientSecret,
+                audience = auth0Audience,
+                grant_type = "password",
+                username = dto.Email,
+                password = dto.Password,
+                scope = "openid profile email"
+            };
+
+            using (var client = new HttpClient())
+            {
+                var response = await client.PostAsJsonAsync($"https://{auth0Domain}/oauth/token", loginRequest);
+        
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new HttpRequestException($"Login failed: {errorContent}");
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                using var jsonDocument = JsonDocument.Parse(responseContent);
+        
+                var accessToken = jsonDocument.RootElement.GetProperty("access_token").GetString();
+
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    throw new InvalidOperationException("Invalid login attempt, token not received.");
+                }
+
+                return accessToken;
+            }
+        }           
     }
 }

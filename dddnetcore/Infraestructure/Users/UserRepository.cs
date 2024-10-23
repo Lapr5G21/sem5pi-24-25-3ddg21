@@ -23,7 +23,7 @@ namespace DDDSample1.Infrastructure.Users
         public async Task<int> GetNextSequentialNumberAsync()
         {
             var userCount = await _context.Users
-                .Where(u => !u.Role.ToString().Equals("Patient"))
+                .Where(u => !u.Role.Equals(RoleType.Patient))
                 .CountAsync();
             return userCount + 1;
         }
