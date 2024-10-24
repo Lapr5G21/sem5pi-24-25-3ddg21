@@ -125,31 +125,45 @@ namespace DDDSample1.Domain.OperationTypes
         }
 
 
-        public async Task<OperationTypeDto> UpdateAsync(OperationTypeDto dto)
+public async Task<EditOperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
+{
+    var operationType = await this._repo.GetByIdAsync(new OperationTypeId(dto.OperationTypeId));
+
+    if (operationType == null)
+        return null;
+
+    if (!string.IsNullOrWhiteSpace(dto.Name))
+    {
+        operationType.ChangeOperationTypeName(new OperationTypeName(dto.Name));
+    }
+
+    if (dto.EstimatedTimeDuration > 0)
+    {
+        operationType.ChangeOperationTypeDuration(new EstimatedTimeDuration(dto.EstimatedTimeDuration));
+    }
+
+    if (dto.Specializations != null && dto.Specializations.Count > 0)
+    {
+        foreach (var specializationDto in dto.Specializations)
         {
-            var operationType = await this._repo.GetByIdAsync(new OperationTypeId(dto.Id));
-
-            if (operationType == null)
-                return null;
-
-            operationType.ChangeOperationTypeName(new OperationTypeName(dto.Name));
-            operationType.ChangeOperationTypeDuration(new EstimatedTimeDuration(dto.EstimatedTimeDuration));
-            operationType.ChangeAnesthesiaTime(new AnesthesiaTime(dto.AnesthesiaTime));
-            operationType.ChangeCleaningTime(new CleaningTime(dto.CleaningTime));
-            operationType.ChangeSurgeryTime(new SurgeryTime(dto.SurgeryTime));
-            
-            await this._unitOfWork.CommitAsync();
-
-            return new OperationTypeDto
-            {
-                Id = operationType.Id.AsGuid(),
-                Name = operationType.Name.ToString(),
-                EstimatedTimeDuration = operationType.EstimatedTimeDuration.Minutes,
-                AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
-                CleaningTime = operationType.CleaningTime.Minutes,
-                SurgeryTime = operationType.SurgeryTime.Minutes
-            };
+          
+            operationType.Specializations.Add(specializationDto);
         }
+    }
+
+    await this._unitOfWork.CommitAsync();
+
+    return new EditOperationTypeDto
+    {
+        Name = operationType.Name.ToString(),
+        EstimatedTimeDuration = operationType.EstimatedTimeDuration.Minutes,
+        Specializations = dto.Specializations 
+    };
+}
+
+
+
+
 
         public async Task<IEnumerable<OperationTypeDto>> SearchOperationTypesAsync(SearchOperationTypeDto searchDto)
     {

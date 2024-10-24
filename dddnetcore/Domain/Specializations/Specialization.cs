@@ -22,6 +22,8 @@ namespace DDDSample1.Domain.Specializations
             this.SpecializationName = specializationName;
         }
 
+        
+
         public void ChangeSpecializationName(SpecializationName name)
         {
             this.SpecializationName = name;

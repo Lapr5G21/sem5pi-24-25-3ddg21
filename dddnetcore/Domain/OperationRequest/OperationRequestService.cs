@@ -79,6 +79,50 @@ private readonly IPatientRepository _PatientRepository;
                  };
         }
 
+    /*public async Task<OperationRequestDto> FindByPatientNameAsync(string patientName)
+        {
+            var operationRequest = _repo.FindByEmailAsync(new Email(email));
+            if (operationRequest == null){
+                    return null;
+            } 
+
+            return new SearchOperationRequestDto
+            {
+                PatientName = operationRequest. ,
+                OperationType = operationRequest. ,
+                Priority = operationRequest. ,
+                Status = operationRequest. 
+                
+            };
+        }
+
+         public async Task<OperationRequestDto> FindByEmailAsync(string email)
+        {
+            var operationRequest = await this.IOperationRequestRepository.FindByEmailAsync(new Email(email));
+            if (user == null) return null;
+
+            return new SearchOperationRequestDto
+            {
+                Role = user.Role.ToString(),
+                Username = user.Id.ToString(),
+                Email = user.Email.ToString()
+            };
+        }
+
+         public async Task<OperationRequestDto> FindByEmailAsync(string email)
+        {
+            var operationRequest = await this.IOperationRequestRepository.FindByEmailAsync(new Email(email));
+            if (user == null) return null;
+
+            return new SearchOperationRequestDto
+            {
+                Role = user.Role.ToString(),
+                Username = user.Id.ToString(),
+                Email = user.Email.ToString()
+            };
+        }
+
+        */
 
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)

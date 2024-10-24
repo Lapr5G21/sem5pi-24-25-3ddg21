@@ -56,9 +56,9 @@ namespace DDDSample1.Controllers
 
         // PUT: api/operationTypes/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<OperationTypeDto>> Update(string id, [FromBody] OperationTypeDto dto)
+        public async Task<ActionResult<OperationTypeDto>> Update(string id, [FromBody] EditOperationTypeDto dto)
         {
-            if (id != dto.Id.ToString())
+            if (id != dto.OperationTypeId.ToString())
             {
                 return BadRequest("ID mismatch.");
             }
