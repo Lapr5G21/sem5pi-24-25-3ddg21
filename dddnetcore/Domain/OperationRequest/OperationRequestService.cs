@@ -184,15 +184,28 @@ private readonly IPatientRepository _PatientRepository;
 
 
 
-         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto){
+
+
+
+
+
+
+         public async Task<OperationRequestDto> UpdateAsync(OperationRequestDto dto, StaffId authenticatedStaffId){
    
     var operationRequest = await this._repo.GetByIdAsync(new OperationRequestId(dto.Id));
 
-     //if(!dto.DoctorId.Equals() Qualquer coisa do active user)
+     
 
 
-    if (operationRequest == null)
+    if (operationRequest == null){
         return null;
+    }
+
+
+     if (!operationRequest.StaffId.Equals(authenticatedStaffId))
+    {
+        throw new BusinessRuleValidationException("You are not authorized to delete this operation request.");
+    }    
 
     var priority = Enum.Parse<Priority>(dto.PriorityLevel.ToUpper()); 
     var status = Enum.Parse<Status>(dto.Status.ToUpper()); 
@@ -218,25 +231,28 @@ private readonly IPatientRepository _PatientRepository;
 
         
 
-        public async Task<bool> DeleteAsync(OperationRequestId id)
+        public async Task<bool> DeleteAsync(OperationRequestId id, StaffId authenticatedStaffId)
         {
-    var operationRequest = await this._repo.GetByIdAsync(id);
+            var operationRequest = await this._repo.GetByIdAsync(id);
 
 
-    if (operationRequest == null)
-        throw new KeyNotFoundException($"OperationRequest with ID {id} not found.");
+                if (operationRequest == null)
+                    throw new KeyNotFoundException($"OperationRequest with ID {id} not found.");
 
-    //if (!operationRequest.StaffId.ToString.Equals(QualquercoisaDoCurrentUser)
+                     if (!operationRequest.StaffId.Equals(authenticatedStaffId))
+                            {
+                                throw new BusinessRuleValidationException("You are not authorized to delete this operation request.");
+                            }
     
-    if(operationRequest.Status.Equals("SCHEDULED")){
-    throw new BusinessRuleValidationException("Scheduled operation requests cannot be removed.");
-    }
+                if(operationRequest.Status.Equals("SCHEDULED")){
+                    throw new BusinessRuleValidationException("Scheduled operation requests cannot be removed.");
+                        }
 
-    this._repo.Remove(operationRequest);
-    await this._unitOfWork.CommitAsync();
+            this._repo.Remove(operationRequest);
+            await this._unitOfWork.CommitAsync();
 
-    return true;
-    }
+        return true;
+        }
     
 }
 
