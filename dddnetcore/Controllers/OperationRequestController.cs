@@ -9,6 +9,7 @@ using Azure;
 using DDDSample1.Domain.OperationRequest;
 using DDDSample1.Domain.OperationRequestsx;
 using Microsoft.AspNetCore.Authorization;
+using DDDSample1.Domain.Staffs;
 
 namespace DDDSample1.Controllers
 {
@@ -85,7 +86,18 @@ namespace DDDSample1.Controllers
 
             try
             {
-                var updatedOperationRequest = await _service.UpdateAsync(dto);
+
+                var userId = User.FindFirst("sub")?.Value;
+
+                if (userId == null)
+                        {
+                            return Unauthorized(new { Message = "User is not authenticated" });
+                        }
+
+                    
+                    var staffId = new StaffId(userId); 
+
+                var updatedOperationRequest = await _service.UpdateAsync(dto, staffId);
 
                 if (updatedOperationRequest == null)
                 {
@@ -108,7 +120,18 @@ namespace DDDSample1.Controllers
         {
             try
             {
-                var deletedOperationRequest = await _service.DeleteAsync(new OperationRequestId(id));
+               
+                 var userId = User.FindFirst("sub")?.Value;
+
+                    if (userId == null)
+                        {
+                            return Unauthorized(new { Message = "User is not authenticated" });
+                        }
+
+                    
+                    var staffId = new StaffId(userId); 
+
+                var deletedOperationRequest = await _service.DeleteAsync(new OperationRequestId(id), staffId);
 
                 if (!deletedOperationRequest)
                 {

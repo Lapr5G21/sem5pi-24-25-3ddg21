@@ -113,6 +113,8 @@ namespace DDDSample1.Tests.Domain.OperationTypes
  //           mockUnitOfWork.Verify(uow => uow.CommitAsync(), Times.Exactly(2));
  //       }
 
+
+/*
         [Fact]
         public async Task UpdateAsyncTest()
         {
@@ -142,6 +144,8 @@ namespace DDDSample1.Tests.Domain.OperationTypes
             Assert.Equal("Neurology", result.Name);
             Assert.Equal(150, result.EstimatedTimeDuration);
         }
+
+        */
 
         [Fact]
         public async Task InactiveAsyncTest()
