@@ -6,6 +6,7 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace DDDSample1.Domain.Patients
 {
@@ -15,10 +16,10 @@ namespace DDDSample1.Domain.Patients
         private readonly IPatientRepository _patientRepository;
         private readonly IConfiguration _configuration;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository userRepository, IConfiguration configuration)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
-            _patientRepository = userRepository;
+            _patientRepository = patientRepository;
             _configuration = configuration;
         }
 
@@ -28,11 +29,15 @@ namespace DDDSample1.Domain.Patients
             var list = await this._patientRepository.GetAllAsync();
             List<PatientDto> listDto = list.ConvertAll(patient => new PatientDto
             {
+                MedicalRecordNumber = patient.Id.ToString(),
+                FirstName = patient.FirstName.ToString(),
+                LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
                 Gender = patient.Gender.GenderValue.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
+                Address = patient.Address.ToString(),
                 EmergencyContact = patient.EmergencyContact.ToString()
             });
             return listDto;
@@ -46,11 +51,15 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
+                MedicalRecordNumber = patient.Id.ToString(),
+                FirstName = patient.FirstName.ToString(),
+                LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
                 Gender = patient.Gender.GenderValue.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
+                Address = patient.Address.ToString(),
                 EmergencyContact = patient.EmergencyContact.ToString()
             };
         }
@@ -178,7 +187,60 @@ namespace DDDSample1.Domain.Patients
                 Active = patient.Active
             };
         }
+
         
+        public async Task<IEnumerable<PatientDto>> SearchPatientsAsync(SearchPatientDto searchDto)
+        {
+            var patients = await _patientRepository.GetAllAsync();
+
+            IEnumerable<Patient> filteredPatients = patients.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(searchDto.FullName))
+            {
+                filteredPatients = filteredPatients.Where(o => o.FullName.ToString().Contains(searchDto.FullName));
+            }
+        
+            if (!string.IsNullOrEmpty(searchDto.BirthDate))
+            {
+                filteredPatients = filteredPatients.Where(o => o.BirthDate.ToString().Contains(searchDto.BirthDate));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Gender))
+            {
+                filteredPatients = filteredPatients.Where(o => o.Gender.ToString().Contains(searchDto.Gender));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Email))
+            {
+                filteredPatients = filteredPatients.Where(o => o.Email.ToString().Contains(searchDto.Email));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.PhoneNumber))
+            {
+                filteredPatients = filteredPatients.Where(o => o.PhoneNumber.ToString().Contains(searchDto.PhoneNumber));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.MedicalRecordNumber))
+            {
+                filteredPatients = filteredPatients.Where(o => o.Id.ToString().Contains(searchDto.MedicalRecordNumber));
+            }
+        
+            if (searchDto.Active != null)
+            {
+                filteredPatients = filteredPatients.Where(o => o.Active == searchDto.Active);
+            }
+
+            return patients.Select(o => new PatientDto
+            {
+                MedicalRecordNumber = o.Id.AsString(),
+                FullName = o.FullName.ToString(),
+                BirthDate = o.BirthDate.ToString(),
+                Gender = o.Gender.ToString(),
+                Email = o.Email.ToString(),
+                PhoneNumber = o.PhoneNumber.ToString(),
+                Active = o.Active
+            }).ToList();
+            }    
         
         
         public async Task<PatientMedicalRecordNumber> GenerateMedicalRecordNumberAsync()
@@ -195,5 +257,6 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientMedicalRecordNumber(medicalRecordNumber);
         }
+
     }
 }

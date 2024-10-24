@@ -126,6 +126,33 @@ namespace DDDSample1.Controllers
 
 
 
+            public async Task<IActionResult> SearchPatients([FromQuery] string fullName, [FromQuery] string birthDate, [FromQuery] string gender, [FromQuery] string email, [FromQuery] string phoneNumber, [FromQuery] string mrn, [FromQuery] bool? isActive)
+            {      
+                try
+                {
+                    var searchDto = new SearchPatientDto
+                {
+                    FullName = fullName,
+                    BirthDate = birthDate,
+                    Gender = gender,
+                    Email = email,
+                    PhoneNumber = phoneNumber,
+                    MedicalRecordNumber = mrn,
+                    Active = isActive
+                };
+
+                var patients = await _service.SearchPatientsAsync(searchDto);
+                return Ok(patients);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"An error occurred while searching: {ex.Message}");
+                }
+            }
+
+
+
+
 
 
     }
