@@ -5,11 +5,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-<<<<<<< Updated upstream
-using System.Text.Json;
-=======
 using System.Text;
->>>>>>> Stashed changes
+using System.Text.Json;
 using System.Threading.Tasks;
 using DDDSample1.Domain;
 using DDDSample1.Domain.Authentication;
