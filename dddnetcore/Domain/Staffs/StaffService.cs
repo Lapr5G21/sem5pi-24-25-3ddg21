@@ -44,7 +44,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(),
                 UserId = staff.UserId.ToString()
             });
             return listDto;
@@ -65,7 +65,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(),
                 UserId = staff.UserId.ToString()
             };
         }
@@ -111,7 +111,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = specialization.Id.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(), // Serializa para string JSON se necessário
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(),
                 UserId = staff.UserId.ToString()
             };
         }
@@ -135,7 +135,7 @@ namespace DDDSample1.Domain.Staffs
 
             foreach (var slotDto in dto.AvailabilitySlots)
             {
-                staff.StaffAvailabilitySlots.AddSlot(slotDto.Start, slotDto.End);  // Adiciona os slots do DTO
+                staff.StaffAvailabilitySlots.AddSlot(slotDto.Start, slotDto.End);
             }
 
             await this._unitOfWork.CommitAsync();
@@ -150,7 +150,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(), // Serializa os slots
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(),
                 UserId = staff.UserId.ToString()
             };
         }
@@ -173,7 +173,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(),
                 UserId = staff.UserId.ToString()
             };
         }
@@ -219,7 +219,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = s.SpecializationId.ToString(),
                 StaffEmail = s.StaffEmail.ToString(),
                 StaffPhoneNumber = s.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = s.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = s.StaffAvailabilitySlots.SerializeSlots(),
             }).ToList();
         }
     }
