@@ -144,7 +144,7 @@ namespace DDDSample1.Users
             };
             var sequentialNumber = await _userRepository.GetNextSequentialNumberAsync();
 
-            string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}{domain}";
+            string username = $"{prefix}{DateTime.Now.Year}{sequentialNumber:D4}{"@"}{domain}";
             return new Username(username);
         }
 
@@ -164,6 +164,12 @@ namespace DDDSample1.Users
             var auth0Audience = _configuration["Auth0:APIAudience"];
             var auth0ClientId = _configuration["Auth0:ClientId"];
             var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
+
+            Console.WriteLine(auth0Domain);
+            Console.WriteLine(auth0Audience);
+            Console.WriteLine(auth0ClientId);
+            Console.WriteLine(auth0ClientSecret);
+            
             var auth0User = new
             {   
                 email = dto.Email,

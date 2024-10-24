@@ -59,10 +59,10 @@ namespace DDDSample1.Controllers
         [HttpGet("get-token")]
         public async Task<IActionResult> RetrieveToken()
         {
-            string auth0Domain = "dev-6i3wexhx2n4mo0q6.us.auth0.com";
-            string auth0Audience = "https://dev-6i3wexhx2n4mo0q6.us.auth0.com/api/v2/";
-            string auth0ClientId = "J78zluuQR5KZ8e55668Nt0gf34e54EDO";
-            string auth0ClientSecret = "4wV2Eb47KCYzEJOMMm3VlRMJCwdeB79N6JZujA0gXRzNiH1hjqYscQFI1AJZNjeK";
+            string auth0Domain = "dev-teie1lfprp6bjr5x.us.auth0.com";
+            string auth0Audience = "https://dev-teie1lfprp6bjr5x.us.auth0.com/api/v2/";
+            string auth0ClientId = "aDC2jQ3ep5kyOVjUWLvbgVmFt7P5Nyco";
+            string auth0ClientSecret = "xzmQIQnCLVLgKjPy7vEUbTWSo-7ErobDvt-l7gWrc9Gx0n3MOpmHJ6oGqZdqL8eo";
 
             var token = await GetToken(auth0Domain, auth0Audience, auth0ClientId, auth0ClientSecret);
             return Ok(new
