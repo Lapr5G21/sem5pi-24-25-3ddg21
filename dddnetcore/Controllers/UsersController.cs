@@ -159,5 +159,24 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpPost("reset-password")]
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        {
+            if (resetPasswordDto == null || string.IsNullOrEmpty(resetPasswordDto.Email))
+            {
+                return BadRequest("Email required.");
+            }
+
+            try
+            {
+                await _service.ResetPasswordAsync(resetPasswordDto.Email);
+                return Ok("Reset Password Email sent.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

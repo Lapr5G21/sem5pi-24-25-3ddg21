@@ -5,7 +5,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+<<<<<<< Updated upstream
 using System.Text.Json;
+=======
+using System.Text;
+>>>>>>> Stashed changes
 using System.Threading.Tasks;
 using DDDSample1.Domain;
 using DDDSample1.Domain.Authentication;
@@ -16,6 +20,7 @@ using DDDSample1.Infrastructure.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace DDDSample1.Users
 {
@@ -267,6 +272,7 @@ namespace DDDSample1.Users
             };
         }
 
+<<<<<<< Updated upstream
         public async Task<LoginUserDto> LoginAsync(RequestLoginDto requestLoginDto)
         {
             var auth0Domain = _configuration["Auth0:Domain"];
@@ -317,6 +323,31 @@ namespace DDDSample1.Users
             var error = await tokenResponse.Content.ReadAsStringAsync();
             throw new Exception($"Erro ao obter token de acesso: {error}");
         }
+=======
+        public async Task ResetPasswordAsync(string email)
+        {
+            var auth0Domain = _configuration["Auth0:Domain"];
+            var resetPasswordUrl = $"https://{auth0Domain}/dbconnections/change_password";
+
+            var requestBody = new
+            {
+                email = email,
+                connection = "Username-Password-Authentication"
+            };
+
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsync(resetPasswordUrl, new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Fail reset password: {error}");
+                }
+            }
+        }
+
+>>>>>>> Stashed changes
     }
         }
     }
