@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Staffs;
+using DDDSample1.Domain.Shared;
+using System;
 
 namespace DDDSample1.Controllers
 {
@@ -44,15 +46,30 @@ namespace DDDSample1.Controllers
             return CreatedAtAction(nameof(GetById), new { id = staff.StaffId }, staff);
         }
 
-        // PUT: api/staff
-        [HttpPut]
-        public async Task<ActionResult<StaffDto>> Update(StaffDto dto)
+        // PUT: api/staffs/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult<StaffDto>> Update(string id, [FromBody] EditingStaffDto dto)
         {
-            var updatedStaff = await _staffService.UpdateAsync(dto);
-            if (updatedStaff == null)
-                return NotFound();
+            if (id != dto.StaffId)
+            {
+                return BadRequest("ID mismatch.");
+            }
 
-            return Ok(updatedStaff);
+            try
+            {
+                var updatedStaff = await _staffService.UpdateAsync(dto);
+
+                if (updatedStaff == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(updatedStaff);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         // DELETE: api/staff/{id}
@@ -66,5 +83,28 @@ namespace DDDSample1.Controllers
 
             return Ok(deletedStaff);
         }
+
+            public async Task<IActionResult> SearchStaffs([FromQuery] string fullName, [FromQuery] string phoneNumber, string email, [FromQuery] Guid specializationId, [FromQuery] bool? isActive)
+            {      
+                try
+                {
+                    var searchDto = new StaffSearchDto
+                {
+                    FullName = fullName,
+                    PhoneNumber = phoneNumber,
+                    Email = email,
+                    SpecializationId = specializationId,
+                    Active = isActive
+                };
+
+                var staffs = await _staffService.SearchStaffAsync(searchDto);
+                return Ok(staffs);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"An error occurred while searching: {ex.Message}");
+                }
+            }
+
     }
 }

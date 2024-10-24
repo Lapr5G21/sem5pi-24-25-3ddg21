@@ -41,6 +41,11 @@ namespace DDDSample1.Domain.Staffs
             var slots = JsonSerializer.Deserialize<List<AvailabilitySlot>>(json);
             return new StaffAvailabilitySlots { Slots = slots ?? new List<AvailabilitySlot>() };
         }
+
+        public void Clear()
+        {
+            Slots.Clear();
+        }
     }
 
     public class AvailabilitySlot

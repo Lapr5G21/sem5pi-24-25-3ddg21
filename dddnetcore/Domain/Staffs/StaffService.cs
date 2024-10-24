@@ -8,6 +8,7 @@ using DDDSample1.Domain.Staffs;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Specializations;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace DDDSample1.Domain.Staffs
 {
@@ -68,7 +69,6 @@ namespace DDDSample1.Domain.Staffs
                 UserId = staff.UserId.ToString()
             };
         }
-
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
         {
             var user = await _userRepository.GetByIdAsync(new Username(dto.UserId));
@@ -76,12 +76,14 @@ namespace DDDSample1.Domain.Staffs
                 throw new InvalidOperationException("User not found.");
 
             RoleType roleType = user.Role.RoleValue;
-        
+            
             var staffId = new StaffId(user.Id.ToString().Split('@')[0]);
 
             var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(dto.SpecializationId));
             if (specialization == null)
                 throw new InvalidOperationException("Specialization not found.");
+
+            var availabilitySlots = StaffAvailabilitySlots.DeserializeSlots(dto.StaffAvailabilitySlots);
 
             var staff = new Staff(
                 staffId, 
@@ -93,7 +95,7 @@ namespace DDDSample1.Domain.Staffs
                 new StaffEmail(dto.Email), 
                 new StaffPhoneNumber(dto.PhoneNumber), 
                 user.Id,
-                new StaffAvailabilitySlots()
+                availabilitySlots
             );
 
             await this._staffRepository.AddAsync(staff);
@@ -109,22 +111,32 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = specialization.Id.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(), // Serializa para string JSON se necessário
                 UserId = staff.UserId.ToString()
             };
         }
 
-
-        public async Task<StaffDto> UpdateAsync(StaffDto dto)
+        public async Task<StaffDto> UpdateAsync(EditingStaffDto dto)
         {
             var staff = await this._staffRepository.GetByIdAsync(new StaffId(dto.StaffId));
-            if (staff == null) return null;
+            if (staff == null) 
+            {
+                throw new ArgumentException("Staff not found.");
+            }
 
-            staff.ChangeFirstName(new StaffFirstName(dto.StaffFirstName));
-            staff.ChangeLastName(new StaffLastName(dto.StaffLastName));
-            staff.ChangeFullName(new StaffFullName(dto.StaffFullName));
-            staff.ChangeEmail(new StaffEmail(dto.StaffEmail));
-            staff.ChangePhoneNumber(new StaffPhoneNumber(dto.StaffPhoneNumber));
+            staff.ChangeFirstName(new StaffFirstName(dto.FirstName));
+            staff.ChangeLastName(new StaffLastName(dto.LastName));
+            staff.ChangeFullName(new StaffFullName(dto.FullName));
+            staff.ChangeEmail(new StaffEmail(dto.Email));
+            staff.ChangePhoneNumber(new StaffPhoneNumber(dto.PhoneNumber));
+            staff.ChangeSpecialization(new SpecializationId(dto.SpecializationId));
+
+            staff.StaffAvailabilitySlots.Clear(); 
+
+            foreach (var slotDto in dto.AvailabilitySlots)
+            {
+                staff.StaffAvailabilitySlots.AddSlot(slotDto.Start, slotDto.End);  // Adiciona os slots do DTO
+            }
 
             await this._unitOfWork.CommitAsync();
 
@@ -138,7 +150,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.ToString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.SerializeSlots(), // Serializa os slots
                 UserId = staff.UserId.ToString()
             };
         }
@@ -166,31 +178,49 @@ namespace DDDSample1.Domain.Staffs
             };
         }
 
-        // Gera um novo ID de funcionário no formato "(N | D | O)aaaannnn"/* 
-      /*  public StaffId GenerateStaffId(RoleType roleType)
+       public async Task<IEnumerable<StaffDto>> SearchStaffAsync(StaffSearchDto searchDto)
         {
-            string prefix;
+            var staffs = await _staffRepository.GetAllAsync();
 
-            switch (roleType)
+            IEnumerable<Staff> filteredStaffs = staffs.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(searchDto.FullName))
             {
-                case RoleType.Doctor:
-                    prefix = "D";
-                    break;
-                case RoleType.Nurse:
-                    prefix = "N";
-                    break;
-                default:
-                    prefix = "O";
-                    break;
+                filteredStaffs = filteredStaffs.Where(s => s.StaffFullName.ToString().Contains(searchDto.FullName, StringComparison.OrdinalIgnoreCase));
             }
 
-            var year = DateTime.Now.Year;
-            var sequentialNumber = _userRepository.GetNextSequentialNumberAsync().Result; // Obtém o próximo número sequencial
+            if (searchDto.SpecializationId != Guid.Empty)
+            {
+                filteredStaffs = filteredStaffs.Where(s => s.SpecializationId.Equals(searchDto.SpecializationId));
+            }
+            
+            if (!string.IsNullOrEmpty(searchDto.PhoneNumber))
+            {
+                filteredStaffs = filteredStaffs.Where(s => s.StaffPhoneNumber.ToString().Contains(searchDto.PhoneNumber));
+            }
+            
+            if (!string.IsNullOrEmpty(searchDto.Email))
+            {
+                filteredStaffs = filteredStaffs.Where(s => s.StaffEmail.ToString().Contains(searchDto.Email));
+            }
 
-            string staffId = $"{prefix}{year}{sequentialNumber:D4}";
+            if (searchDto.Active != null)
+            {
+                filteredStaffs = filteredStaffs.Where(s => s.Active == searchDto.Active);
+            }
 
-            return new StaffId(staffId);
-        } */
-
+            return filteredStaffs.Select(s => new StaffDto
+            {
+                StaffId = s.Id.ToString(),
+                StaffFirstName = s.StaffFirstName.ToString(),
+                StaffLastName = s.StaffLastName.ToString(),
+                StaffFullName = s.StaffFullName.ToString(),
+                StaffLicenseNumber = s.StaffLicenseNumber.ToString(),
+                SpecializationId = s.SpecializationId.ToString(),
+                StaffEmail = s.StaffEmail.ToString(),
+                StaffPhoneNumber = s.StaffPhoneNumber.ToString(),
+                StaffAvailabilitySlots = s.StaffAvailabilitySlots.ToString(),
+            }).ToList();
+        }
     }
 }
