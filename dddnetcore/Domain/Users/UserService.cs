@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -266,46 +267,57 @@ namespace DDDSample1.Users
             };
         }
 
-        public async Task<string> LoginBackofficeUserAsync(LoginUserDto dto)
+        public async Task<LoginUserDto> LoginAsync(RequestLoginDto requestLoginDto)
         {
             var auth0Domain = _configuration["Auth0:Domain"];
             var auth0ClientId = _configuration["Auth0:ClientId"];
             var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
-            var auth0Audience = _configuration["Auth0:APIAudience"];
+            var auth0Audience = _configuration["Auth0:Audience"];
+            var tokenEndpoint = $"https://{auth0Domain}/oauth/token";
 
-            var loginRequest = new
+            var tokenRequestBody = new Dictionary<string, string> 
             {
-                client_id = auth0ClientId,
-                client_secret = auth0ClientSecret,
-                audience = auth0Audience,
-                grant_type = "password",
-                username = dto.Email,
-                password = dto.Password,
-                scope = "openid profile email"
+                { "grant_type", "password" },
+                { "username", requestLoginDto.Email },
+                { "password", requestLoginDto.Password },
+                { "client_id", auth0ClientId },
+                { "client_secret", auth0ClientSecret },
+                { "audience", auth0Audience },
+                { "connection", "Username-Password-Authentication" },
             };
 
-            using (var client = new HttpClient())
+            var requestContent = new FormUrlEncodedContent(tokenRequestBody);
+
+            using (var httpClient = new HttpClient())
+    {
+        var tokenResponse = await httpClient.PostAsync(tokenEndpoint, requestContent);
+
+        if (tokenResponse.IsSuccessStatusCode)
+        {
+            var tokenResponseBody = await tokenResponse.Content.ReadAsStringAsync();
+            var tokenResult = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(tokenResponseBody);
+            string loginToken = tokenResult.GetProperty("access_token").GetString();
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(loginToken);
+
+            var roles = jwtToken.Claims
+                .Where(c => c.Type == $"{_configuration["Auth0:Namespace"]}/roles")
+                .Select(c => c.Value)
+                .ToList();
+
+            return new LoginUserDto
             {
-                var response = await client.PostAsJsonAsync($"https://{auth0Domain}/oauth/token", loginRequest);
-        
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    throw new HttpRequestException($"Login failed: {errorContent}");
-                }
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                using var jsonDocument = JsonDocument.Parse(responseContent);
-        
-                var accessToken = jsonDocument.RootElement.GetProperty("access_token").GetString();
-
-                if (string.IsNullOrEmpty(accessToken))
-                {
-                    throw new InvalidOperationException("Invalid login attempt, token not received.");
-                }
-
-                return accessToken;
-            }
-        }           
+                LoginToken = loginToken,
+                Roles = roles
+            };
+        }
+        else
+        {
+            var error = await tokenResponse.Content.ReadAsStringAsync();
+            throw new Exception($"Erro ao obter token de acesso: {error}");
+        }
+    }
+        }
     }
 }

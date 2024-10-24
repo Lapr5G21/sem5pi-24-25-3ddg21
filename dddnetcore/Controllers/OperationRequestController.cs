@@ -8,6 +8,7 @@ using DDDSample1.Domain.OperationTypesSpecializations;
 using Azure;
 using DDDSample1.Domain.OperationRequest;
 using DDDSample1.Domain.OperationRequestsx;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DDDSample1.Controllers
 {
@@ -53,6 +54,7 @@ namespace DDDSample1.Controllers
 
         //POST: api/operationRequests
         [HttpPost]
+        [Authorize(Policy="DoctorRole")]
         public async Task<ActionResult<OperationRequestDto>> Create([FromBody] CreatingOperationRequestDto dto){
 
             if (dto == null)

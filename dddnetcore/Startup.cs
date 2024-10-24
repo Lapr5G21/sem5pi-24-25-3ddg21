@@ -63,7 +63,6 @@ public void ConfigureServices(IServiceCollection services)
             opt.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)))
                .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
-
     ConfigureMyServices(services);
 
     services.AddAuthentication(options => {
@@ -81,17 +80,17 @@ public void ConfigureServices(IServiceCollection services)
             policy.Requirements.Add(new HasScopeRequirement("read:messages", $"https://{Configuration["Auth0:Domain"]}/")));
 
         options.AddPolicy("BackofficeRole", policy =>
-            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Admin", "Doctor", "Nurse", "Technician"));
+            policy.RequireClaim($"{Configuration["Auth0:Namespace"]}/roles", "Admin", "Doctor", "Nurse", "Technician"));
         options.AddPolicy("AdminRole", policy =>
-            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Admin"));
+            policy.RequireClaim($"{Configuration["Auth0:Namespace"]}/roles", "Admin"));
         options.AddPolicy("DoctorRole", policy =>
-            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Doctor"));
+            policy.RequireClaim($"{Configuration["Auth0:Namespace"]}/roles", "Doctor"));
         options.AddPolicy("NurseRole", policy =>
-            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Nurse"));
+            policy.RequireClaim($"{Configuration["Auth0:Namespace"]}/roles", "Nurse"));
         options.AddPolicy("TechnicianRole", policy =>
-            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Technician"));
+            policy.RequireClaim($"{Configuration["Auth0:Namespace"]}/roles", "Technician"));
         options.AddPolicy("PatientRole", policy =>
-            policy.RequireClaim($"{Configuration["Auth0:NameSpace"]}/roles", "Patient"));
+            policy.RequireClaim($"{Configuration["Auth0:Namespace"]}/roles", "Patient"));
     });
 
     services.AddControllers().AddNewtonsoftJson();

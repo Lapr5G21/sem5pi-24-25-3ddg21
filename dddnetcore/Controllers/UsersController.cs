@@ -79,7 +79,24 @@ namespace DDDSample1.Controllers
             return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto); 
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] RequestLoginDto loginDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            try
+            {
+                var loginResult = await _service.LoginAsync(loginDto);
+                return Ok(loginResult);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+        }
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
