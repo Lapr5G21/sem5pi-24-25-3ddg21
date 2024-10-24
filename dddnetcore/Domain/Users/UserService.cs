@@ -164,16 +164,10 @@ namespace DDDSample1.Users
             var auth0Audience = _configuration["Auth0:APIAudience"];
             var auth0ClientId = _configuration["Auth0:ClientId"];
             var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
-
-            Console.WriteLine(auth0Domain);
-            Console.WriteLine(auth0Audience);
-            Console.WriteLine(auth0ClientId);
-            Console.WriteLine(auth0ClientSecret);
             
             var auth0User = new
             {   
                 email = dto.Email,
-                username = username.ToString(),
                 password = dto.Password,
                 connection = "Username-Password-Authentication",
                 app_metadata = new Dictionary<string, object>
@@ -185,6 +179,7 @@ namespace DDDSample1.Users
 
 
             var token = await _authenticationService.GetToken(auth0Domain, auth0Audience, auth0ClientId, auth0ClientSecret);
+            Console.WriteLine(token);
  
              using (var client = new HttpClient())
             {
@@ -239,7 +234,7 @@ namespace DDDSample1.Users
             {       
             email = dto.Email,
             username = username.ToString(),
-            password = dto.Password, 
+            password = dto.Password,
             connection="Username-Password-Authentication",
             app_metadata = new Dictionary<string, object>
                 {
@@ -255,6 +250,7 @@ namespace DDDSample1.Users
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 var response = await client.PostAsJsonAsync($"https://{auth0Domain}/api/v2/users", auth0User);
+                Console.WriteLine(response.ToString());
 
                 if (!response.IsSuccessStatusCode)
                 {

@@ -60,7 +60,7 @@ namespace DDDSample1.Controllers
         public async Task<IActionResult> RetrieveToken()
         {
             string auth0Domain = "dev-teie1lfprp6bjr5x.us.auth0.com";
-            string auth0Audience = "https://dev-teie1lfprp6bjr5x.us.auth0.com/api/v2/";
+            string auth0Audience = "https://api.healthcaresystem";
             string auth0ClientId = "aDC2jQ3ep5kyOVjUWLvbgVmFt7P5Nyco";
             string auth0ClientSecret = "xzmQIQnCLVLgKjPy7vEUbTWSo-7ErobDvt-l7gWrc9Gx0n3MOpmHJ6oGqZdqL8eo";
 
