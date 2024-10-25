@@ -1,4 +1,4 @@
-@startuml Patient Profile Update (level 3 - 2)
+@startuml PatientProfileUpdate(level3-2)
 
 autonumber
 actor Admin as "Admin"
@@ -6,35 +6,49 @@ participant CTRL as "PatientsController"
 participant SERVICE as "PatientService <<service>>"
 participant PATIENT as "Patient <<domain>>"
 participant REPO as "Patient Repository"
-participant DTO as "updatingPatientProfileDTO : PatientProfileDTO"
+participant EMAILSERVICE as "EmailService <<service>>"
+participant DTO as "editingPatientDTO : PatientDTO"
 
-Admin-> CTRL : PUT /api/patients
+Admin-> CTRL : PUT /api/patients/{id}
 activate CTRL
 
-CTRL -> SERVICE : createPatientProfileAsync(creatingPatientProfileDTO)
+CTRL -> SERVICE : UpdateAsync(editingPatientDTO)
 activate SERVICE
 
-    SERVICE -> PATIENT : update(updatingPatientProfileDTO.firstName, updatingPatientProfileDTO.lastName, updatingPatientProfileDTO.fullName, updatingPatientProfileDTO.medicalHistory, updatingPatientProfileDTO.allergies)
+    SERVICE -> REPO : GetByIdAsync()
+    activate REPO
+
+    REPO --> SERVICE : patient
+    deactivate REPO
+    
+    SERVICE -> PATIENT : update(editingPatientDTO.FirstName, editingPatientDTO.LastName, editingPatientDTO.FullName, editingPatientDTO.Email, editingPatientDTO.PhoneNumber, editingPatientDTO.Address)
     activate PATIENT
 
-    PATIENT -> SERVICE : patientUpdated
+    PATIENT --> SERVICE : patientUpdated
     deactivate PATIENT
 
     SERVICE -> REPO : save(patientUpdated)
-    activate USERREPO
+    activate REPO
 
-    REPO -> SERVICE : patientUpdated
+    REPO --> SERVICE : patientUpdated
     deactivate REPO
+
+    SERVICE -> EMAILSERVICE : sendEmailAsync(patient.Email, message)
+    activate EMAILSERVICE
+
+    EMAILSERVICE --> SERVICE : emailSent
+    deactivate EMAILSERVICE
+
     activate DTO
     
-    SERVICE -> DTO : update(updatingPatientProfileDTO.fullName, updatingPatientProfileDTO.medicalHistory, updatingPatientProfileDTO.allergies)
+    SERVICE -> DTO : create(editingPatientDTO.FirstName, editingPatientDTO.LastName, editingPatientDTO.FullName, editingpatientDTO.BirthDate, editingPatientDTO.Gender, editingPatientDTO.Email, editingPatientDTO.PhoneNumber, editingPatientDTO.Address, editingPatientDTO.EmergencyContact)
     
-    DTO -> SERVICE : patientProfileDto
+    DTO --> SERVICE : patientDto
     deactivate DTO
 
-    SERVICE -> CTRL : patientProfileDto
+    SERVICE -> CTRL : patientDto
     
-    <-- CTRL : 201 Patient Profile Updated
+    CTRL --> Admin : 200 Patient Profile Updated
 
 deactivate SERVICE
 deactivate CTRL

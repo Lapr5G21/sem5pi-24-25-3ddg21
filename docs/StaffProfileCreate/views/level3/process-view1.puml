@@ -1,27 +1,32 @@
 @startuml
 
 autonumber
-participant BE as "Backend Management" <<system (C4)>>
+actor Admin as "Admin"
+participant BE as "Backend Management" <<system>>
 participant DB as "Database"
 
-?o-> BE : POST /api/users/staff
+Admin-> BE : POST: api/staffs
 activate BE
 
-BE -> DB : Check if email/phone are unique
-activate DB
-DB -> BE : Return uniqueness result
-deactivate DB
+BE -> DB : addAsync(creatingStaffDTO)
 
-alt unique details
 
-    BE -> DB : Store new profile and generate Staff ID
-    activate DB
-    DB -> BE : Profile stored with ID
-    deactivate DB
-    <- BE : 201 Staff profile created
-else duplicate email/phone
-    <- BE : 409 Conflict (Duplicate found)
-end
+
+activate DB 
+
+DB -> DB : confirms User ID
+
+DB -> DB : confirms User specialization
+
+DB -> DB : save staff
+
+activate DB 
+
+DB -> BE : staff 
+
+deactivate DB 
+
+Admin <- BE : 201 Created
 
 deactivate BE
 

@@ -1,4 +1,4 @@
-@startuml Patient Profile Creation (level 3 - 1)
+@startuml PatientProfileCreation(level3-1)
 
 autonumber
 actor Admin as "Admin"

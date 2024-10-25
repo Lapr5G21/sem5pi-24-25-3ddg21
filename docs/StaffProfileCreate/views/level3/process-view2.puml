@@ -1,37 +1,80 @@
-@startuml
+@startuml 
 autonumber
-participant CTRL as "StaffController"
+actor Admin as "Admin"
+participant CTRL as "StaffsController"
 participant SERVICE as "StaffService <<service>>"
-participant STAFFREPO as "StaffRepository"
+database UserRepository as "UserRepository"
+database SpecializationRepository as "SpecializationRepository"
+database IOperationRequestRepository as "IStaffRepository"
 
-?o-> CTRL : POST /api/users/staff
+activate Admin
 
-CTRL -> SERVICE : createStaffProfile(StaffDTO)
+Admin -> CTRL : POST /api/staffs
+activate CTRL
+
+CTRL -> SERVICE : addAsync(creatingStaffDTO)
 activate SERVICE
 
-SERVICE -> STAFFREPO : CheckEmailAndPhoneUnique(StaffDTO)
-activate STAFFREPO
+alt userValidated = 0 
 
-alt unique details
-    STAFFREPO -> SERVICE : Email/Phone unique
-    deactivate STAFFREPO
+SERVICE -> UserRepository : GetByIdAsync(new Username(creatingStaffDTO.UserId))
 
-    SERVICE -> STAFFREPO : Save staff profile and generate unique Staff ID
-    activate STAFFREPO
+activate UserRepository 
 
-    STAFFREPO -> SERVICE : Profile saved with ID
-    deactivate STAFFREPO
+UserRepository -> SERVICE : userValidated
 
-    SERVICE -> CTRL : return success with StaffID
-    <-- CTRL : 201 Profile created
-else duplicate details
-    STAFFREPO -> SERVICE : Email/Phone conflict
-    deactivate STAFFREPO
+deactivate UserRepository
 
-    SERVICE -> CTRL : return error
-    <-- CTRL : 409 Conflict (duplicate)
-end
+SERVICE -> CTRL : ValueErrorException
 
-deactivate SERVICE
-deactivate CTRL
+CTRL -> Admin : 406 Not Aceptable
+end alt 
+
+alt specializationValidated = 0 
+
+SERVICE -> SpecializationRepository : GetByIdAsync(new SpecializationId(creatingStaffDTO.SpecializationId))
+
+activate SpecializationRepository 
+
+SpecializationRepository -> SERVICE : specializationValidated
+
+deactivate SpecializationRepository
+
+SERVICE -> CTRL : ValueErrorException
+
+CTRL -> Admin : 406 Not Aceptable
+end alt 
+
+SERVICE -> UserRepository :  GetByIdAsync(new Username(creatingStaffDTO.UserId))
+
+activate UserRepository 
+
+UserRepository -> SERVICE : userValidated
+
+deactivate UserRepository
+
+SERVICE -> SpecializationRepository : GetByIdAsync(new SpecializationId(creatingStaffDTO.SpecializationId))
+
+activate SpecializationRepository 
+
+SpecializationRepository -> SERVICE : specializationValidated
+
+deactivate SpecializationRepository
+SERVICE -> IOperationRequestRepository : addAsync(creatingStaffDTO.FistName,creatingStaffDTO.LastName,creatingStaffDTO.FullName,\n creatingStaffDTO.LicenseNumber, creatingStaffDTO.SpecializationId, creatingStaffDTO.Email,\ncreatingStaffDTO.PhoneNumber, creatingStaffDTO.StaffAvailabilitySlots,creatingStaffDTO.UserId)
+
+activate IOperationRequestRepository 
+
+IOperationRequestRepository -> SERVICE : staff
+deactivate IOperationRequestRepository
+
+
+SERVICE -> CTRL : staffDTO
+
+deactivate SERVICE 
+
+CTRL -> Admin : 201 Created
+
+deactivate CTRL 
+
+deactivate Admin
 @enduml
