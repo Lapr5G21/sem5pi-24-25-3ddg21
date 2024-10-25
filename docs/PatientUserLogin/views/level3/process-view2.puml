@@ -1,0 +1,51 @@
+@startuml
+autonumber
+participant Patient as "Patient"
+participant CTRL as "UsersController"
+participant SERVICE as "UserService <<service>>"
+participant AUTH0 as "Auth0 API<<external>>"
+participant JWT as "JWT Decoder"
+participant CONFIG as "Configuration"
+
+activate Patient
+Patient -> CTRL : POST /api/users/login
+activate CTRL
+
+CTRL -> SERVICE : LoginAsync(RequestLoginDto)
+activate SERVICE
+
+SERVICE -> CONFIG : Get Auth0:Domain, Auth0:ClientId, Auth0:ClientSecret, Auth0:Audience
+activate CONFIG
+CONFIG --> SERVICE : return values
+deactivate CONFIG
+
+SERVICE -> AUTH0 : POST /oauth/token (RequestLoginDto.Email, RequestLoginDto.Password)
+activate AUTH0
+
+alt token is valid
+    AUTH0 --> SERVICE : tokenResponse
+    deactivate AUTH0
+
+    SERVICE -> JWT : ReadJwtToken(tokenResponse)
+    activate JWT
+    JWT --> SERVICE : JwtSecurityToken
+    deactivate JWT
+
+    SERVICE -> CTRL : return new LoginUserDto { tokenResponse, Roles }
+    deactivate SERVICE
+    CTRL --> Patient : 201 Login confirmed
+
+else token is not valid
+    activate AUTH0
+    activate SERVICE
+    AUTH0 --> SERVICE : tokenResponse
+    deactivate AUTH0
+
+    SERVICE -> CTRL : Exception("Error to obtain token")
+    deactivate SERVICE
+    CTRL <-- Patient : 500 Internal Server Error
+end
+
+deactivate CTRL
+deactivate Patient
+@enduml

@@ -40,6 +40,11 @@ namespace DDDSample1.Infrastructure.Staffs
             builder.Property(b => b.Active)
                 .HasColumnName("IsActive")
                 .IsRequired();
+            
+            builder.Property(b=> b.StaffAvailabilitySlots )
+                    .HasConversion(p => p.Slots, p => new StaffAvailabilitySlots(p))
+                    .HasColumnName("Slots")
+                    .IsRequired();
 
             builder.HasOne<Specialization>()
                 .WithMany()
@@ -53,16 +58,7 @@ namespace DDDSample1.Infrastructure.Staffs
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
-            builder.OwnsOne(s => s.StaffAvailabilitySlots, a =>
-            {
-                a.OwnsMany(s => s.Slots, slot =>
-                {
-                    slot.WithOwner().HasForeignKey("StaffId");
-                    slot.Property<DateTime>("Start");
-                    slot.Property<DateTime>("End");
-                    slot.HasKey("StaffId", "Start", "End");
-                });
-            });
+            
         }
     }
 }

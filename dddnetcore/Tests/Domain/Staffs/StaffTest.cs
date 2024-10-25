@@ -17,7 +17,6 @@ namespace DDDSample1.Domain.Staffs.Tests
             var staffId = new StaffId(Guid.NewGuid().ToString());
             var specializationId = new SpecializationId("1");
             var userId = new Username("O20240001@healthcare.com");
-            var availabilitySlots = new StaffAvailabilitySlots();
 
             _staff = new Staff(
                 staffId,
@@ -29,7 +28,7 @@ namespace DDDSample1.Domain.Staffs.Tests
                 new StaffEmail("john.doe@example.com"),
                 new StaffPhoneNumber("912345678"),
                 userId,
-                availabilitySlots
+                new StaffAvailabilitySlots("9:00-17:00")
             );
         }
 
@@ -79,29 +78,6 @@ namespace DDDSample1.Domain.Staffs.Tests
         }
 
         [Fact]
-        public void AddOrUpdateAvailabilitySlotTest()
-        {
-            DateTime start = new DateTime(2024, 10, 20, 9, 0, 0);
-            DateTime end = new DateTime(2024, 10, 20, 17, 0, 0);
-            _staff.AddOrUpdateAvailabilitySlot(start, end);
-
-            Assert.Single(_staff.StaffAvailabilitySlots.Slots);
-            Assert.Equal(start, _staff.StaffAvailabilitySlots.Slots[0].Start);
-            Assert.Equal(end, _staff.StaffAvailabilitySlots.Slots[0].End);
-        }
-
-        [Fact]
-        public void RemoveAvailabilitySlotTest()
-        {
-            DateTime start = new DateTime(2024, 10, 20, 9, 0, 0);
-            DateTime end = new DateTime(2024, 10, 20, 17, 0, 0);
-            _staff.AddOrUpdateAvailabilitySlot(start, end);
-            _staff.RemoveAvailabilitySlot(start, end);
-
-            Assert.Empty(_staff.StaffAvailabilitySlots.Slots);
-        }
-
-        [Fact]
         public void DeactivateTest()
         {
             _staff.Deactivate();
@@ -124,24 +100,6 @@ namespace DDDSample1.Domain.Staffs.Tests
             _staff.Deactivate();
 
             Assert.Throws<InvalidOperationException>(() => _staff.ChangeFirstName(new StaffFirstName("Jane")));
-        }
-
-        [Fact]
-        public void RemoveAvailabilitySlotNonExistingSlotTest()
-        {
-            DateTime start = new DateTime(2024, 10, 20, 9, 0, 0);
-            DateTime end = new DateTime(2024, 10, 20, 17, 0, 0);
-            Assert.Throws<InvalidOperationException>(() => _staff.RemoveAvailabilitySlot(start, end));
-        }
-
-        [Fact]
-        public void AddOrUpdateAvailabilitySlotOverlappingSlotTest()
-        {
-            DateTime start = new DateTime(2024, 10, 20, 9, 0, 0);
-            DateTime end = new DateTime(2024, 10, 20, 17, 0, 0);
-            _staff.AddOrUpdateAvailabilitySlot(start, end);
-
-            Assert.Throws<InvalidOperationException>(() => _staff.AddOrUpdateAvailabilitySlot(start, end));
         }
     }
 }

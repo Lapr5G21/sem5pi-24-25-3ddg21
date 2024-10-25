@@ -7,6 +7,7 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using DDDSample1.Domain.Emails;
 
 namespace DDDSample1.Domain.Patients
 {
@@ -15,12 +16,14 @@ namespace DDDSample1.Domain.Patients
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPatientRepository _patientRepository;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _patientRepository = patientRepository;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         // Obtém todos os pacientes
@@ -108,18 +111,33 @@ namespace DDDSample1.Domain.Patients
         
         public async Task<PatientDto> UpdateAsync(EditingPatientDto dto)
         {
-            var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
+            var allPatients = await this._patientRepository.GetAllAsync();
+
+            var patient = allPatients.FirstOrDefault(p => p.Id.ToString() == dto.MedicalRecordNumber);
+
             if (patient == null) return null;
+
+            var oldEmail = patient.Email.ToString();
+            var oldPhoneNumber = patient.PhoneNumber.ToString();
 
             patient.ChangeFirstName(new PatientFirstName(dto.FirstName));
             patient.ChangeLastName(new PatientLastName(dto.LastName));
             patient.ChangeName(new PatientFullName(dto.FullName));
-            patient.ChangeBirthDate(new PatientBirthDate(dto.BirthDate));
+            patient.ChangeMedicalRecord(new PatientMedicalRecord(dto.MedicalHistory));
             patient.ChangeEmail(new PatientEmail(dto.Email));
             patient.ChangePhoneNumber(new PatientPhoneNumber(dto.PhoneNumber));
             patient.ChangeAddress(new PatientAddress(dto.Address));
 
             await this._unitOfWork.CommitAsync();
+
+            if (oldEmail != patient.Email.ToString() || oldPhoneNumber != patient.PhoneNumber.ToString())
+            {
+                await _emailService.SendEmailAsync(patient.Email.ToString(), "Your contact information has been updated.", 
+                "Dear " + patient.FullName.ToString() + ",\n\n" +
+                "Your contact information has been successfully updated.\n\n" +
+                "Thank you,\n" +
+                "The HealthCare Team");
+            }
 
             return new PatientDto
             {

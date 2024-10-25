@@ -30,9 +30,9 @@ namespace DDDSample1.Infrastructure.Patients
             builder.Property(p => p.Gender)
             .HasConversion(
             g => g.ToString(),
-            g => (PatientGender)Enum.Parse(typeof(PatientGender), g) 
-            )
+            g => (PatientGender)Enum.Parse(typeof(PatientGender), g))
             .IsRequired();
+
 
             builder.Property(p => p.Email)
                 .HasConversion(b => b.EmailString, b => new PatientEmail(b))

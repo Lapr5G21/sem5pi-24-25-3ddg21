@@ -33,6 +33,7 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
 using System;
 using DDDSample1.Domain.Emails;
+using DDDSample1.Infrastructure.Emails;
 
 
 
@@ -94,7 +95,6 @@ public void ConfigureServices(IServiceCollection services)
     });
 
     services.AddControllers().AddNewtonsoftJson();
-    services.AddScoped<EmailService>(); 
 }
 
 
@@ -161,6 +161,8 @@ public void ConfigureServices(IServiceCollection services)
             services.AddTransient<PatientService>();
 
             services.AddTransient<AuthenticationService>();
+
+            services.AddScoped<IEmailService,EmailService>();
 
         }
     }

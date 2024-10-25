@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    [Migration("20241023114629_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241024235302_RecreateDatabase")]
+    partial class RecreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -251,6 +251,11 @@ namespace DDDNetCore.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("StaffAvailabilitySlots")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("Slots");
+
                     b.Property<string>("StaffEmail")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -359,42 +364,6 @@ namespace DDDNetCore.Migrations
                         .HasForeignKey("DDDSample1.Domain.Staffs.Staff", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.OwnsOne("DDDSample1.Domain.Staffs.StaffAvailabilitySlots", "StaffAvailabilitySlots", b1 =>
-                        {
-                            b1.Property<string>("StaffId")
-                                .HasColumnType("varchar(255)");
-
-                            b1.HasKey("StaffId");
-
-                            b1.ToTable("Staffs");
-
-                            b1.WithOwner()
-                                .HasForeignKey("StaffId");
-
-                            b1.OwnsMany("DDDSample1.Domain.Staffs.AvailabilitySlot", "Slots", b2 =>
-                                {
-                                    b2.Property<string>("StaffId")
-                                        .HasColumnType("varchar(255)");
-
-                                    b2.Property<DateTime>("Start")
-                                        .HasColumnType("datetime(6)");
-
-                                    b2.Property<DateTime>("End")
-                                        .HasColumnType("datetime(6)");
-
-                                    b2.HasKey("StaffId", "Start", "End");
-
-                                    b2.ToTable("AvailabilitySlot");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("StaffId");
-                                });
-
-                            b1.Navigation("Slots");
-                        });
-
-                    b.Navigation("StaffAvailabilitySlots");
                 });
 
             modelBuilder.Entity("DDDSample1.Domain.OperationTypes.OperationType", b =>

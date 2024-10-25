@@ -95,39 +95,6 @@ namespace DDDSample1.Domain.Staffs
             this.StaffAvailabilitySlots = newAvailabilitySlots ?? throw new ArgumentNullException(nameof(newAvailabilitySlots));
         }
 
-        public void AddOrUpdateAvailabilitySlot(DateTime start, DateTime end)
-        {
-            if (!this.Active)
-                throw new InvalidOperationException("Cannot modify availability slots of an inactive staff member.");
-
-            var existingSlot = this.StaffAvailabilitySlots.Slots.Find(slot => slot.Start == start && slot.End == end);
-
-            if (existingSlot == null)
-            {
-                this.StaffAvailabilitySlots.AddSlot(start, end);
-            }
-            else
-            {
-                throw new InvalidOperationException("This availability slot already exists.");
-            }
-        }
-
-        public void RemoveAvailabilitySlot(DateTime start, DateTime end)
-        {
-            if (!this.Active)
-                throw new InvalidOperationException("Cannot modify availability slots of an inactive staff member.");
-
-            var slotToRemove = this.StaffAvailabilitySlots.Slots.Find(slot => slot.Start == start && slot.End == end);
-            if (slotToRemove != null)
-            {
-                this.StaffAvailabilitySlots.Slots.Remove(slotToRemove);
-            }
-            else
-            {
-                throw new InvalidOperationException("The availability slot does not exist.");
-            }
-        }
-
         public void Deactivate()
         {
             this.Active = false;

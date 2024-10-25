@@ -2,11 +2,12 @@ using System;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using DDDSample1.Domain.Emails;
 using Microsoft.Extensions.Configuration;
 
-namespace DDDSample1.Domain.Emails
+namespace DDDSample1.Infrastructure.Emails
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
         private readonly string _smtpServer;
         private readonly int _smtpPort;
@@ -24,33 +25,34 @@ namespace DDDSample1.Domain.Emails
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
+    {
+        using (var client = new SmtpClient(_smtpServer, _smtpPort))
         {
-            using (var client = new SmtpClient(_smtpServer, _smtpPort))
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
+            client.EnableSsl = true;
+
+            var mailMessage = new MailMessage
             {
-                client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
-                client.EnableSsl = true;
+                From = new MailAddress(_smtpUsername),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
 
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress(_smtpUsername),
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-                
-                mailMessage.To.Add(toEmail);
+            mailMessage.To.Add(toEmail);
 
-                try
-                {
-                    await client.SendMailAsync(mailMessage);
-                    Console.WriteLine("Email sent successfully.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error sending email: {ex.Message}");
-                }
+            try
+            {
+                await client.SendMailAsync(mailMessage);
+                Console.WriteLine("Email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending email: {ex.Message}");
+                throw; 
             }
         }
+    }
     }
 }

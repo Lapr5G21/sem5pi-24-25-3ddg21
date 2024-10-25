@@ -18,38 +18,39 @@ namespace DDDSample1.Infrastructure.Patients
 
         public async Task<Patient> FindByEmailAsync(PatientEmail email)
         {
-            return await _context.Patients.FirstOrDefaultAsync(p => p.Email.ToString().Equals(email.ToString()));
+            return await _context.Patients.FirstOrDefaultAsync(p => p.Email.Equals(email));
         }
 
         public async Task<int> GetNextSequentialNumberAsync()
+    {
+        var currentYearMonth = DateTime.Now.ToString("yyyyMM");
+
+        var allPatientIds = await _context.Patients
+        .Select(p => p.Id.AsString()) 
+        .ToListAsync(); 
+
+        var lastPatientId = allPatientIds
+        .Where(id => id.StartsWith(currentYearMonth))
+        .OrderByDescending(id => id)
+        .FirstOrDefault(); 
+
+        if (lastPatientId == null)
         {
-            // Obtém todos os registros do banco de dados que correspondem ao ano e mês atuais
-            var currentYearMonth = DateTime.Now.ToString("yyyyMM");
+            return 1; // Retorna 1 se não houver registros
+        }
 
-            var patients = await _context.Patients
-                .ToListAsync(); // Primeiro, traz todos os pacientes do banco de dados para a memória
+        var lastSequentialNumberString = lastPatientId.Substring(8);
 
-            // Em seguida, aplica o filtro de StartsWith no lado do cliente
-            var filteredPatients = patients
-                .Where(p => p.Id.AsString().StartsWith(currentYearMonth))
-                .ToList(); // Usamos ToList (síncrono) porque já estamos em memória
-
-            // Caso não existam pacientes no mês corrente, o número sequencial começa em 1
-            if (!filteredPatients.Any())
-            {
-                return 1;
-            }
-
-            // Extrai o maior número sequencial existente para o mês corrente
-            var lastPatient = filteredPatients
-                .OrderByDescending(p => p.Id.AsString()) // Ordena pelo ID em ordem decrescente
-                .First();
-
-            // Extrai os últimos 6 dígitos do número do prontuário para determinar o próximo sequencial
-            var lastSequentialNumber = int.Parse(lastPatient.Id.AsString().Substring(8)); // Aqui ocorre o erro
-
-            return lastSequentialNumber + 1;
+        if (int.TryParse(lastSequentialNumberString, out int lastSequentialNumber))
+        {
+            return lastSequentialNumber + 1; 
+        }
+    else
+    {
+        throw new InvalidOperationException("O número sequencial extraído não é válido."); // Lida com erro caso a conversão falhe
+    }
 }
+
 
     }
 }
