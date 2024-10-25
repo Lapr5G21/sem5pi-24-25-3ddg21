@@ -72,8 +72,22 @@ namespace DDDSample1.Controllers
             }
         }
 
-        // DELETE: api/staff/{id}
+        // DELETE: api/staffs/{id}
         [HttpDelete("{id}")]
+        public async Task<ActionResult<StaffDto>> SoftDelete(string id)
+        {
+            var staff = await _staffService.InactivateAsync(new StaffId(id));
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(staff);
+        }
+
+        // DELETE: api/staff/{id}/hard
+        [HttpDelete("{id}/hard")]
         public async Task<ActionResult<StaffDto>> Delete(string id)
         {
             var staffId = new StaffId(id);

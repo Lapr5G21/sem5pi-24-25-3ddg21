@@ -1,0 +1,16 @@
+@startuml StaffProfileDeactivation(level2)
+
+autonumber
+actor Admin as "Admin"
+participant SYS as "Healthcare System" <<system (C4)>>
+
+activate Admin
+
+Admin-> SYS : DELETE /api/staffs/{id}
+activate SYS
+
+SYS -> SYS : deactivateStaffProfile(id)
+SYS--> Admin : 200 Deactivated
+deactivate SYS
+
+@enduml

@@ -1,4 +1,4 @@
-@startuml Patient Profile Delete (level 2)
+@startuml PatientProfileDelete(level2)
 
 autonumber
 actor Admin as "Admin"
@@ -6,11 +6,11 @@ participant SYS as "Healthcare System" <<system (C4)>>
 
 activate Admin
 
-Admin-> SYS : DELETE /api/patients
+Admin-> SYS : DELETE api/patients/{id}/hard
 activate SYS
 
 SYS -> SYS : deletePatientProfile(medicalRecordNumber)
-SYS--> Admin : 201 Deleted
+SYS--> Admin : 200 Deleted
 deactivate SYS
 
 @enduml

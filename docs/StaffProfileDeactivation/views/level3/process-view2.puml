@@ -1,0 +1,48 @@
+@startuml StaffProfileDeactivation(level3-2)
+
+autonumber
+actor Admin as "Admin"
+participant CTRL as "StaffsController"
+participant SERVICE as "StaffService <<service>>"
+participant REPO as "StaffRepository"
+participant STAFF as "Staff <<domain>>"
+participant DTO as "StaffDTO : StaffDTO"
+
+Admin-> CTRL : DELETE /api/staffs/{id}
+activate CTRL
+
+CTRL -> SERVICE : InactivateAsync(id)
+activate SERVICE
+
+    SERVICE -> REPO : GetByIdAsync(id)
+    activate REPO
+
+    REPO --> SERVICE : staff
+    deactivate REPO
+    
+    SERVICE -> STAFF : Deactivate()
+    activate STAFF
+
+    STAFF --> SERVICE : staffDeactivated
+    deactivate STAFF
+
+    SERVICE -> REPO : save(staffDeactivated)
+    activate REPO
+
+    REPO --> SERVICE : staffDeactivated
+    deactivate REPO
+    
+    SERVICE -> DTO : create(StaffDTO.FirstName, StaffDTO.LastName, StaffDTO.FullName,\n StaffDTO.LicenseNumber, StaffDTO.SpecializationId, StaffDTO.Email, \n StaffDTO.PhoneNumber, StaffDTO.StaffAvailabilitySlots, StaffDTO.UserId)
+    activate DTO
+    
+    DTO --> SERVICE : staffDto
+    deactivate DTO
+
+    SERVICE -> CTRL : staffDto
+    
+    CTRL --> Admin : 200 Staff Profile Deactivated
+
+deactivate SERVICE
+deactivate CTRL
+@enduml
+

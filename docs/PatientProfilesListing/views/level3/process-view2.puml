@@ -1,61 +1,31 @@
-@startuml 
-autonumber
-participant CTRL as "UsersController"
-participant SERVICE as "UserService <<service>>"
-participant User as "User <<domain>>"
-participant Patient as "Patient <<domain>>"
-participant USERREPO as "UserRepository"
-participant PATIENTREPO as "Patient Repository"
-participant DTO as "creatingUserDTO : UserDTO"
+@startuml PatientProfilesListing(level3-2)
 
-?o-> CTRL : POST /api/users/patients
+autonumber
+actor Admin as "Admin"
+participant CTRL as "PatientsController"
+participant SERVICE as "PatientService <<service>>"
+
+database REPO as "PatientRepository"
+
+activate Admin
+
+Admin -> CTRL : GET /api/patients{searchVariable}
 activate CTRL
 
-CTRL -> SERVICE : createUserPacientAsync(creatingUserDTO)
+CTRL --> SERVICE : getBy(searchVariable)
 activate SERVICE
 
-SERVICE -> PATIENTREPO : GetByEmailAsync(creatingUserDTO.email)
-activate PATIENTREPO
-alt Patient not found (patient == null)
+SERVICE -> REPO : getBy"searchVariable"(searchVariable)
+activate REPO
 
-    activate PATIENTREPO
+REPO --> SERVICE : patientsList 
+deactivate REPO
 
-    PATIENTREPO -> SERVICE : 404 NotFound
-    
-    deactivate PATIENTREPO
+SERVICE --> CTRL : patientsList
+deactivate SERVICE 
 
-    SERVICE -> CTRL : 404 NotFound
+CTRL --> Admin : 200 OK (patientsList)
 
-else Patient found (patient != null)
-    PATIENTREPO -> SERVICE : patient
-    deactivate PATIENTREPO
-
-    SERVICE -> User : create(creatingUserDTO.email, creatingUserDTO.username, creatingUserDTO.role)
-    activate User
-
-    User -> SERVICE : userCreated
-    deactivate User
-
-    SERVICE -> Patient : setUser(userCreated)
-    SERVICE -> USERREPO : save(userCreated)
-    activate USERREPO
-
-    USERREPO -> SERVICE : userSaved
-    deactivate USERREPO
-
-    SERVICE -> PATIENTREPO : save(patient)
-    activate PATIENTREPO
-
-    PATIENTREPO -> SERVICE : patientSaved
-    deactivate PATIENTREPO
-
-    SERVICE -> CTRL : userDTO
-    
-    <-- CTRL : 201 User created
-
-else 
-end
-
-deactivate SERVICE
-deactivate CTRL
+deactivate CTRL 
+deactivate Admin
 @enduml

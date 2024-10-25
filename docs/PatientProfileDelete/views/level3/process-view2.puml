@@ -1,0 +1,50 @@
+@startuml PatientProfileDelete(level3-2)
+
+autonumber
+actor Admin as "Admin"
+participant CTRL as "PatientsController"
+participant SERVICE as "PatientService <<service>>"
+participant PATIENT as "Patient <<domain>>"
+participant REPO as "PatientRepository"
+participant DTO as "PatientDTO : PatientDTO"
+
+Admin-> CTRL : DELETE /api/patients/{id}/hard
+activate CTRL
+
+CTRL -> SERVICE : DeleteAsync(id)
+activate SERVICE
+
+    SERVICE -> REPO : GetByIdAsync(id)
+    activate REPO
+
+    REPO --> SERVICE : patient
+    deactivate REPO
+
+    alt patient is active
+
+    SERVICE -> SERVICE : BusinessRuleValidationException("It is not possible to delete an active patient.")
+
+    else
+
+    SERVICE -> REPO : Remove(patient)
+    activate REPO
+
+    REPO --> SERVICE : patientRemoved
+    deactivate REPO
+
+    activate DTO
+    
+    SERVICE -> DTO : create(PatientDTO.FirstName, PatientDTO.LastName, PatientDTO.FullName, PatientDTO.BirthDate, PatientDTO.Gender, PatientDTO.Email, PatientDTO.PhoneNumber, PatientDTO.Address, PatientDTO.EmergencyContact)
+    
+    DTO --> SERVICE : patientDto
+    deactivate DTO
+
+    SERVICE --> CTRL : patientDto
+    
+    CTRL --> Admin : 200 Patient Profile Deleted
+
+deactivate SERVICE
+deactivate CTRL
+
+end
+@enduml
