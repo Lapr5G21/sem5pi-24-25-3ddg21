@@ -1,13 +1,14 @@
 @startuml
 
 autonumber
-participant SYS as "Backend Management" <<system (C4)>>
+actor Admin as "Admin"
+participant SYS as "Backend Management" <<system>>
 
-?o-> SYS : POST /api/users/staff
+Admin-> SYS : PUT /api/staffs
 activate SYS
 
-SYS -> SYS : updateStaffProfile(staffProfileDTO)
-<-- SYS : 201 Updated
+SYS -> SYS : updateStaff(EditingStaffDTO)
+Admin <-- SYS : 200 OK
 deactivate SYS
 
 

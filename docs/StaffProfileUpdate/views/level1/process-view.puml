@@ -1,24 +1,15 @@
 @startuml
-autonumber
+
 actor Admin as "Admin"
-participant SYS as "Backend Management" <<system (C4)>>
+participant SYS as "HealthCare System" <<system>>
 
-activate Admin
-Admin -> SYS : Search and select staff profile
-activate SYS
+activate Admin 
 
-SYS -> Admin : Return staff profile
+Admin --> SYS : asks to edit an staff
 
-Admin -> SYS : Edit profile (contact info, availability slots, specialization)
+activate SYS 
 
-SYS -> SYS : Validate and save changes
+SYS --> Admin : confirms the staff edit was successfull
 
-alt contact info changed
-    SYS -> SYS : Send confirmation email
-end
 
-SYS -> Admin : Confirm profile updated
-
-deactivate SYS
-deactivate Admin
 @enduml

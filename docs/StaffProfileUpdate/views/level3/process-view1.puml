@@ -1,35 +1,23 @@
 @startuml
+
 autonumber
-participant SYS as "Backend Management" <<system (C4)>>
-participant DB as "Database" <<database>>
+actor Admin as "Admin"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
 
-    ?o-> SYS : POST /api/users/staff
-activate SYS
+Admin-> BE : PUT api/staffs/{id}
+activate BE
 
-SYS -> DB : Fetch staff profile for editing
-activate DB
-    DB --> SYS : Return staff profile
-deactivate DB
+BE -> DB : updateAsync(editingStaffDto)
 
-SYS -> DB : Validate uniqueness of contact info
-activate DB
-    DB --> SYS : Return validation result
-deactivate DB
+activate DB 
 
-alt valid contact info
-        SYS -> DB : Save updated profile
-    activate DB
-        DB --> SYS : Profile updated and send confirmation email to staff
-    deactivate DB
+DB -> BE : staffDto
 
-        SYS -> DB : Log changes to profile
-    activate DB
-        DB --> SYS : Profile changes logged
-    deactivate DB
-    <-- SYS : 200 Profile updated
-else invalid contact info
-    <-- SYS : 409 Conflict (duplicate contact info)
-end
+deactivate DB 
 
-deactivate SYS
+Admin <- BE : 200 OK
+
+deactivate BE
+
 @enduml
