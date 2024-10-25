@@ -1,18 +1,14 @@
 @startuml
 
 actor Admin as "Admin"
-participant SYS as "Backoffice System" <<system (C4)>>
+participant SYS as "HealthCare System" <<system (C4)>>
 
 activate Admin
 
-Admin -> SYS : Create new staff profile (input details)
+Admin -> SYS : create new staff profile
 activate SYS
 
-SYS -> SYS : Validate input ( first name, last name, contact information, specialization)
-SYS -> SYS : Generate unique Staff ID (License Number)
-SYS -> SYS : Save profile
-
-SYS -> Admin : Confirm profile created
+SYS -> Admin : confirms the profile~has been created successfully
 
 deactivate SYS
 deactivate Admin
