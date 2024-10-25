@@ -13,7 +13,7 @@ information when needed.
 
 - 5.1.9.1 - Admins can search for and select a patient profile to edit.
 
-- 5.1.9.2 - Editable fields include name, contact information, medical history, and allergies.
+- 5.1.9.2 - Editable fields include name, date of birth and contact information.
 
 - 5.1.9.3 - Changes to sensitive data (e.g., contact information) trigger an email notification to the patient.
 
@@ -25,13 +25,17 @@ The global views are available in the views folder.
 
 ### LEVEL 1
 
-![level1_view](level1/process-view.png)
+![level1_view](views/level1/PatientProfileUpdate(level1).png)
 
 ### LEVEL 2
 
-![level2_view](level2/process-view.png)
+![level2_view](views/level2/PatientProfileUpdate(level2).png)
 
 ### LEVEL 3
+
+![level3_view1](views/level3/PatientProfileUpdate(level3-1).png)
+
+![level3_view2](views/level3/PatientProfileUpdate(level3-2).png)
 
 
 ## Observations

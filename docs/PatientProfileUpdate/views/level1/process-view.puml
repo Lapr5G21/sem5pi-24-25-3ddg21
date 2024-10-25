@@ -1,4 +1,4 @@
-@startuml Patient Profile Update (level 1)
+@startuml PatientProfileUpdate(level1)
 
 actor Admin as "Admin"
 participant SYS as "HealthCare System" <<system (C4)>>

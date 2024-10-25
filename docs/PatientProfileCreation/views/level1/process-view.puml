@@ -1,4 +1,4 @@
-@startuml Patient Profile Creation (level 1)
+@startuml PatientProfileCreation(level1)
 
 actor Admin as "Admin"
 participant SYS as "HealthCare System" <<system (C4)>>

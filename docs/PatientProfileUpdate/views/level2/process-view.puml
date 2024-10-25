@@ -1,15 +1,15 @@
-@startuml Patient Profile Update (level 2)
+@startuml PatientProfileUpdate(level2)
 
 autonumber
 actor Admin as "Admin"
 participant SYS as "Backend Management" <<system (C4)>>
 
 activate Admin
-Admin -> SYS : POST /api/patients
+Admin -> SYS : PUT /api/patients/{id}
 activate SYS
 
-SYS -> SYS : updatePatientProfile(updatingPatientProfileDTO)
-SYS --> Admin : 201 Updated
+SYS -> SYS : updatePatientProfile(editingPatientDTO)
+SYS --> Admin : 200 Updated
 deactivate SYS
 
 

@@ -10,8 +10,7 @@ As an Admin, I want to create a new patient profile, so that I can register thei
 
 **Acceptance Criteria:**
 
-- 5.1.8.1 - Admins can input patient details such as first name, last name, date of birth, contact
-information, and medical history.
+- 5.1.8.1 - Admins can input patient details such as first name, last name, date of birth and contact information.
 
 - 5.1.8.2 -  A unique patient ID (Medical Record Number) is generated upon profile creation.
 
@@ -25,13 +24,17 @@ The global views are available in the views folder.
 
 ### LEVEL 1
 
-![level1_view](level1/process-view.png)
+![level1_view](views/level1/PatientProfileCreation(level1).png)
 
 ### LEVEL 2
 
-![level2_view](level2/process-view.png)
+![level2_view](views/level2/PatientProfileCreation(level2).png)
 
 ### LEVEL 3
+
+![level3_view1](views/level3/PatientProfileCreation(level3-1).png)
+
+![level3_view2](views/level3/PatientProfileCreation(level3-2).png)
 
 
 ## Observations
