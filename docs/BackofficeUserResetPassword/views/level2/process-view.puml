@@ -3,11 +3,11 @@
 autonumber
 participant SYS as "Backend Management" <<system (C4)>>
 
-?o-> SYS : POST /api/users/backoffice
+?o-> SYS : POST /api/users/reset-password
 activate SYS
 
-SYS -> SYS : resetPasswordBackofficeUser(UserDTO)
-<-- SYS : 201 Reseted
+SYS -> SYS : resetPassword(ResetPasswordDto)
+<-- SYS : 201 Password reseted
 deactivate SYS
 
 

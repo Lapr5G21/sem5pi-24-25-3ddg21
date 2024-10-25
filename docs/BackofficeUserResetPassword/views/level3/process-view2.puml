@@ -1,42 +1,46 @@
-@startuml 
+@startuml
 autonumber
+participant Backoffice as "Backoffice User"
 participant CTRL as "UsersController"
 participant SERVICE as "UserService <<service>>"
-participant User as "User <<domain>>"
-participant USERREPO as "UserRepository"
-participant BackofficeRepository as "Backoffice User Repository"
+participant AUTH0 as "Auth0 API<<external>>"
+participant JWT as "JWT Decoder"
+participant CONFIG as "Configuration"
 
-?o-> CTRL : POST /api/users/backoffice
+activate Backoffice
+Backoffice -> CTRL : POST /api/users/reset-password
 activate CTRL
 
-CTRL -> SERVICE : resetPasswordBackofficeUser(UserDTO)
+CTRL -> SERVICE : ResetPasswordAsync(email)
 activate SERVICE
 
-SERVICE -> BackofficeRepository : GetByEmailAsync(UserDTO.email)
-activate BackofficeRepository
+SERVICE -> CONFIG : Get Auth0:Domain, Auth0:ClientId, Auth0:ClientSecret, Auth0:Audience
+activate CONFIG
+CONFIG --> SERVICE : return values
+deactivate CONFIG
 
+SERVICE -> AUTH0 : POST /dbconnections/change_password (email)
+activate AUTH0
 
-    BackofficeRepository -> SERVICE : send email
-    
-    deactivate BackofficeRepository
+alt email is valid
+    AUTH0 --> SERVICE : reset password email sent
+    deactivate AUTH0
 
-    SERVICE -> User : update(UserDTO)
-    activate User
+    SERVICE -> CTRL : reset password email sent
+    deactivate SERVICE
+    CTRL --> Backoffice : 201 Email sent
 
-    User -> SERVICE : userChanged
-    deactivate User
+else token is not valid
+    activate AUTH0
+    activate SERVICE
+    AUTH0 --> SERVICE : Exception("User not found")
+    deactivate AUTH0
 
-    SERVICE -> USERREPO : save(userChanged)
-    activate USERREPO
+    SERVICE -> CTRL : Exception("User not found")
+    deactivate SERVICE
+    CTRL <-- Backoffice : 500 Internal Server Error
+end
 
-    USERREPO -> SERVICE : userSaved
-    deactivate USERREPO
-
-    SERVICE -> CTRL : userDTO
-    
-    <-- CTRL : 201 Password reseted
-
-
-deactivate SERVICE
 deactivate CTRL
+deactivate Backoffice
 @enduml

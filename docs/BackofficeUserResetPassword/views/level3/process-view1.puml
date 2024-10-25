@@ -1,39 +1,21 @@
 @startuml
 
 autonumber
-participant BE as "Backend Management" <<system (C4)>>
-participant DB as "Database"
+participant Backoffice as "Backoffice User"
+participant BE as "Backend" <<system (C4)>>
+participant Auth0 as "Auth0" <<external service>>
 
-?o-> BE : POST /api/users
+activate Backoffice
+Backoffice -> BE : POST /api/users/reset-password
 activate BE
 
-BE -> DB : get user
+BE -> Auth0 : POST /dbconnections/change_password
+activate Auth0
 
-activate DB 
+Auth0 -> BE : reset password email sent
+deactivate Auth0
 
-DB -> BE : user
-
-deactivate DB 
-
-
-BE -> DB : reset password
-
-activate DB 
-
-DB -> BE : send email 
-
-deactivate DB
-
-BE -> DB : enter the link and reset password
-
-activate DB 
-
-DB -> BE : password updated
-
-deactivate DB 
-
-<- BE : 201 Reseted
-
+Backoffice <-- BE : 201 Email sent
 deactivate BE
-
+deactivate Backoffice
 @enduml
