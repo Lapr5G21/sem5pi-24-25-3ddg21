@@ -1,13 +1,15 @@
-@startuml
+@startuml PatientProfilesListing(level2)
 
 autonumber
-participant SYS as "Backend Management" <<system (C4)>>
+actor Admin as "Admin"
+participant SYS as "Backend Management" <<system>>
 
-?o-> SYS : POST /api/users/patients
+Admin -> SYS : GET /api/patients{searchVariable}
 activate SYS
 
-SYS -> SYS : registerPatientUser(creatingUserDTO)
-<-- SYS : 201 Created
+SYS -> SYS : searchBy(searchVariable)
+
+Admin <-- SYS : 200 Ok
 deactivate SYS
 
 

@@ -25,13 +25,18 @@ The global views are available in the views folder.
 
 ### LEVEL 1
 
-![level1_view](level1/process-view.png)
+![level1_view](views/level1/PatientProfileDelete(level1).png)
 
 ### LEVEL 2
 
-![level2_view](level2/process-view.png)
+![level2_view](views/level2/PatientProfileDelete(level2).png)
 
 ### LEVEL 3
+
+![level3_view1](views/level3/PatientProfileDelete(level3-1).png)
+
+![level3_view2](views/level3/PatientProfileDelete(level3-2).png)
+
 
 ## Observations
 

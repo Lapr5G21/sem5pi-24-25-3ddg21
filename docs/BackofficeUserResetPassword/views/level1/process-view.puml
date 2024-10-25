@@ -3,23 +3,13 @@
 actor BackofficeUser as "Backoffice User"
 participant SYS as "Backoffice System" <<system (C4)>>
 
-activate BackofficeUser 
+activate BackofficeUser
 
-BackofficeUser --> SYS : asks to reset my password 
+BackofficeUser --> SYS : request reset password
 
+activate SYS
 
-activate SYS 
-
-SYS --> BackofficeUser : asks to check the password reset link sent by email
-
-deactivate SYS
-
-
-BackofficeUser --> SYS : enter the link and reset the password
-
-activate SYS 
-
-SYS --> BackofficeUser : confirms the password
+SYS --> BackofficeUser : return reset password condirmation
 
 deactivate SYS
 deactivate BackofficeUser
