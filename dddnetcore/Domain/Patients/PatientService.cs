@@ -8,6 +8,7 @@ using DDDSample1.Infrastructure.Patients;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using DDDSample1.Domain.Emails;
+using DDDSample1.Domain.Logs;
 
 namespace DDDSample1.Domain.Patients
 {
@@ -17,13 +18,15 @@ namespace DDDSample1.Domain.Patients
         private readonly IPatientRepository _patientRepository;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly LogService _logService;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService,LogService logService)
         {
             _unitOfWork = unitOfWork;
             _patientRepository = patientRepository;
             _configuration = configuration;
             _emailService = emailService;
+            _logService = logService;
         }
 
         // Obtém todos os pacientes
@@ -108,52 +111,77 @@ namespace DDDSample1.Domain.Patients
 
 
         
-        public async Task<PatientDto> UpdateAsync(EditingPatientDto dto)
-        {
-            var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
+      public async Task<PatientDto> UpdateAsync(EditingPatientDto dto)
+    {
+        var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
 
-            if (patient == null) return null;
+        if (patient == null) return null;
 
-            var oldEmail = patient.Email.ToString();
-            var oldPhoneNumber = patient.PhoneNumber.ToString();
+        var oldEmail = patient.Email.ToString();
+        var oldPhoneNumber = patient.PhoneNumber.ToString();
+        var oldFirstName = patient.FirstName.ToString();
+        var oldLastName = patient.LastName.ToString();
+        var oldAddress = patient.Address.ToString();
+        var oldMedicalRecord  = patient.MedicalRecord?.ToString() ?? "N/A";
 
-            patient.ChangeFirstName(new PatientFirstName(dto.FirstName));
-            patient.ChangeLastName(new PatientLastName(dto.LastName));
-            patient.ChangeName(new PatientFullName(dto.FullName));
-            patient.ChangeMedicalRecord(new PatientMedicalRecord(dto.MedicalHistory));
-            patient.ChangeEmail(new PatientEmail(dto.Email));
-            patient.ChangePhoneNumber(new PatientPhoneNumber(dto.PhoneNumber));
-            patient.ChangeAddress(new PatientAddress(dto.Address));
+        patient.ChangeFirstName(new PatientFirstName(dto.FirstName));
+        patient.ChangeLastName(new PatientLastName(dto.LastName));
+        patient.ChangeName(new PatientFullName(dto.FullName));
+        patient.ChangeMedicalRecord(new PatientMedicalRecord(dto.MedicalHistory));
+        patient.ChangeEmail(new PatientEmail(dto.Email));
+        patient.ChangePhoneNumber(new PatientPhoneNumber(dto.PhoneNumber));
+        patient.ChangeAddress(new PatientAddress(dto.Address));
 
-            await this._unitOfWork.CommitAsync();
+    await this._unitOfWork.CommitAsync();
 
-            if (oldEmail != patient.Email.ToString() || oldPhoneNumber != patient.PhoneNumber.ToString())
-            {
-                List<string> toEmail = new List<string>();
-                toEmail.Add(patient.Email.ToString());
-                await _emailService.SendEmailAsync(toEmail, "Your contact information has been updated.", 
-                "Dear " + patient.FullName.ToString() + ",\n\n" +
-                "Your contact information has been successfully updated.\n\n" +
-                "Thank you,\n" +
-                "The HealthCare Team");
-            }
+    if (oldEmail != patient.Email.ToString() || oldPhoneNumber != patient.PhoneNumber.ToString())
+    {
+        List<string> toEmail = new List<string> { patient.Email.ToString() };
+        await _emailService.SendEmailAsync(toEmail, "Your contact information has been updated.",
+        "Dear " + patient.FullName.ToString() + ",\n\n" +
+        "Your contact information has been successfully updated.\n\n" +
+        "Thank you,\n" +
+        "The HealthCare Team");
+    }
 
-            return new PatientDto
-            {
-                MedicalRecordNumber = patient.Id.AsString(),
-                FirstName = patient.FirstName.ToString(),
-                LastName = patient.LastName.ToString(),
-                FullName = patient.FullName.ToString(),
-                BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.ToString(),
-                Email = patient.Email.ToString(),
-                PhoneNumber = patient.PhoneNumber.ToString(),
-                MedicalRecord = patient.MedicalRecord.ToString(),
-                Address = patient.Address.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString(),
-                Active = patient.Active
-            };
-        }
+    var changes = new List<string>();
+
+    if (oldFirstName != patient.FirstName.ToString())
+        changes.Add($"First Name: '{oldFirstName}' to '{patient.FirstName}'");
+    if (oldLastName != patient.LastName.ToString())
+        changes.Add($"Last Name: '{oldLastName}' to '{patient.LastName}'");
+    if (oldEmail != patient.Email.ToString())
+        changes.Add($"Email: '{oldEmail}' to '{patient.Email}'");
+    if (oldPhoneNumber != patient.PhoneNumber.ToString())
+        changes.Add($"Phone Number: '{oldPhoneNumber}' to '{patient.PhoneNumber}'");
+    if (oldAddress != patient.Address.ToString())
+        changes.Add($"Address: '{oldAddress}' to '{patient.Address}'");
+    if (oldMedicalRecord != patient.MedicalRecord.ToString())
+        changes.Add($"MedicalRecord: '{oldMedicalRecord}' to '{patient.MedicalRecord}'");
+
+    var details = string.Join(", ", changes);
+
+    await _logService.LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, $"Updated Patient {patient.FullName}: {details}");
+
+    return new PatientDto
+    {
+        MedicalRecordNumber = patient.Id.AsString(),
+        FirstName = patient.FirstName.ToString(),
+        LastName = patient.LastName.ToString(),
+        FullName = patient.FullName.ToString(),
+        BirthDate = patient.BirthDate.ToString(),
+        Gender = patient.Gender.ToString(),
+        Email = patient.Email.ToString(),
+        PhoneNumber = patient.PhoneNumber.ToString(),
+        MedicalRecord = patient.MedicalRecord.ToString(),
+        Address = patient.Address.ToString(),
+        EmergencyContact = patient.EmergencyContact.ToString(),
+        Active = patient.Active
+    };
+}
+
+
+
 
         internal async Task<PatientDto> InactivateAsync(PatientMedicalRecordNumber mrn)
         {

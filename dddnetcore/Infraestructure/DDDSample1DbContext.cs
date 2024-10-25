@@ -18,6 +18,8 @@ using DDDSample1.Domain.Staffs;
 using DDDSample1.Infrastructure.Staffs;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
+using DDDSample1.Domain.Logs;
+using DDDSample1.Infrastructure.Logs;
 
 namespace DDDSample1.Infrastructure
 {
@@ -42,6 +44,8 @@ namespace DDDSample1.Infrastructure
         public DbSet<Staff> Staffs { get; internal set; }
 
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<Log> Logs { get; set; }
+
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
 
@@ -59,6 +63,7 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new LogsEntityTypeConfiguration());
         }
     }
 }

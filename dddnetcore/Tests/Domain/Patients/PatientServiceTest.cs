@@ -7,6 +7,7 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
 using Microsoft.Extensions.Configuration;
 using DDDSample1.Domain.Emails;
+using DDDSample1.Domain.Logs;
 
 namespace DDDSample1.Tests.Domain.Patients
 {
@@ -16,6 +17,7 @@ namespace DDDSample1.Tests.Domain.Patients
         private readonly Mock<IPatientRepository> _patientRepositoryMock;
         private readonly IConfiguration _configuration;
         private readonly PatientService _patientService;
+        private readonly LogService _logService;
         private readonly IEmailService _emailService;
 
         public PatientServiceTests()
@@ -23,7 +25,7 @@ namespace DDDSample1.Tests.Domain.Patients
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _patientRepositoryMock = new Mock<IPatientRepository>();
             _emailService =null;
-            _patientService = new PatientService(_unitOfWorkMock.Object, _patientRepositoryMock.Object, _configuration,_emailService);
+            _patientService = new PatientService(_unitOfWorkMock.Object, _patientRepositoryMock.Object, _configuration,_emailService,_logService);
         }
 
         /*
