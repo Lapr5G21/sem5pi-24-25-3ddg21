@@ -52,6 +52,28 @@ namespace DDDSample1.Controllers
             return Ok(operationRequest);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchOperationRequest([FromQuery] string pacientMedicalRecordNumber, [FromQuery] Guid operationTypeId, [FromQuery] string priority, string status){
+
+            try 
+            {
+                var searchDTo = new SearchOperationRequestDto{
+                    PatientMedicalRecordNumber = pacientMedicalRecordNumber,
+                    OperationTypeId = operationTypeId,
+                    Priority = priority,
+                    Status = status
+                };
+
+                var operationRequests = await _service.SearchOperationRequestAsync(searchDTo);
+                return Ok(operationRequests); 
+            }
+            catch (Exception ex)
+            {
+                   return BadRequest($"An error occurred while searching: {ex.Message}");
+            }
+        }
+
+
 
         //POST: api/operationRequests
         [HttpPost]

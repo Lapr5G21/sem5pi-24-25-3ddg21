@@ -10,6 +10,9 @@ using System.Diagnostics.CodeAnalysis;
 using DDDSample1.Domain.Staffs;
 using DDDSample1.Domain.Patients;
 using Microsoft.AspNetCore.Routing;
+using System.Linq;
+using FluentAssertions;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace DDDSample1.Domain.OperationRequest
@@ -79,51 +82,47 @@ private readonly IPatientRepository _PatientRepository;
                  };
         }
 
-    /*public async Task<OperationRequestDto> FindByPatientNameAsync(string patientName)
+        public async Task<IEnumerable<OperationRequestDto>> SearchOperationRequestAsync(SearchOperationRequestDto searchDto)
         {
-            var operationRequest = _repo.FindByEmailAsync(new Email(email));
-            if (operationRequest == null){
-                    return null;
-            } 
+            
+            var operationRequests = await _repo.GetAllAsync();
 
-            return new SearchOperationRequestDto
+            var allOperationTypes = await _OperationTypeRepo.GetAllAsync();
+
+            IEnumerable<OperationRequest> filteredOperationRequests = operationRequests;
+
+            if (!string.IsNullOrEmpty(searchDto.PatientMedicalRecordNumber))
             {
-                PatientName = operationRequest. ,
-                OperationType = operationRequest. ,
-                Priority = operationRequest. ,
-                Status = operationRequest. 
+                filteredOperationRequests = filteredOperationRequests.Where( o => o.PatientMedicalRecordNumber.ToString().IndexOf(searchDto.PatientMedicalRecordNumber, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+           if (searchDto.OperationTypeId != Guid.Empty)
+            {
+                filteredOperationRequests = filteredOperationRequests.Where( o => allOperationTypes.Any(ots => ots.Id == o.Id));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Status))
+            {
+                filteredOperationRequests = filteredOperationRequests.Where( o => o.Status.ToString().IndexOf(searchDto.Status, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Priority))
+            {
+                filteredOperationRequests = filteredOperationRequests.Where( o => o.PriorityLevel.ToString().IndexOf(searchDto.Priority, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            return filteredOperationRequests.Select(o => new OperationRequestDto{
                 
-            };
+                Id = o.Id.AsGuid(),
+                PriorityLevel  = o.PriorityLevel.ToString(), 
+                OperationTypeId = o.OperationTypeId.AsString(),
+                DeadlineDate =  o.DeadlineDate.Value,
+                Status = o.Status.ToString(),
+                DoctorId = o.StaffId.AsString(),
+                PacientMedicalRecordNumber = o.PatientMedicalRecordNumber.AsString()
+            }).ToList();
+
         }
-
-         public async Task<OperationRequestDto> FindByEmailAsync(string email)
-        {
-            var operationRequest = await this.IOperationRequestRepository.FindByEmailAsync(new Email(email));
-            if (user == null) return null;
-
-            return new SearchOperationRequestDto
-            {
-                Role = user.Role.ToString(),
-                Username = user.Id.ToString(),
-                Email = user.Email.ToString()
-            };
-        }
-
-         public async Task<OperationRequestDto> FindByEmailAsync(string email)
-        {
-            var operationRequest = await this.IOperationRequestRepository.FindByEmailAsync(new Email(email));
-            if (user == null) return null;
-
-            return new SearchOperationRequestDto
-            {
-                Role = user.Role.ToString(),
-                Username = user.Id.ToString(),
-                Email = user.Email.ToString()
-            };
-        }
-
-        */
-
 
         public async Task<OperationRequestDto> AddAsync(CreatingOperationRequestDto dto)
         {
