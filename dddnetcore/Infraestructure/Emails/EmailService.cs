@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -20,39 +21,32 @@ namespace DDDSample1.Infrastructure.Emails
             _configuration=configuration;
             _smtpServer = _configuration["EmailService:SmtpServer"];
             _smtpPort = int.Parse(_configuration["EmailService:SmtpPort"]); 
-            _smtpUsername = _configuration["EmailService:SmtpUsername"];
+            _smtpUsername = _configuration["EmailService:SmtpEmail"];
             _smtpPassword = _configuration["EmailService:SmtpPassword"];
         }
 
-        public async Task SendEmailAsync(string toEmail, string subject, string body)
-    {
-        using (var client = new SmtpClient(_smtpServer, _smtpPort))
+       public async Task SendEmailAsync(List<string> to, string subject, string body)
         {
-            client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
-            client.EnableSsl = true;
-
-            var mailMessage = new MailMessage
+            using (var client = new SmtpClient(_smtpServer, _smtpPort))
             {
-                From = new MailAddress(_smtpUsername),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = true
-            };
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
+                client.EnableSsl = true;
 
-            mailMessage.To.Add(toEmail);
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_smtpUsername),
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true,
+                };
 
-            try
-            {
+                foreach (var recipient in to){
+                    mailMessage.To.Add(recipient);
+                }
+
                 await client.SendMailAsync(mailMessage);
-                Console.WriteLine("Email sent successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error sending email: {ex.Message}");
-                throw; 
             }
         }
-    }
     }
 }

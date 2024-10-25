@@ -29,9 +29,11 @@ namespace DDDSample1.Infrastructure.Patients
 
             builder.Property(p => p.Gender)
             .HasConversion(
-            g => g.ToString(),
-            g => (PatientGender)Enum.Parse(typeof(PatientGender), g))
+            g => g.ToString(),   // Convert enum to string for storage
+            g => Enum.Parse<PatientGender>(g) // Parse string back to enum
+            )
             .IsRequired();
+
 
 
             builder.Property(p => p.Email)

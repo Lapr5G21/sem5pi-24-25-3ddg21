@@ -220,7 +220,7 @@ namespace DDDSample1.Users
                 throw new BusinessRuleValidationException("Email is already taken");
             }
 
-            var username = new Username(dto.Username);
+            var username = new Username(dto.Email);
 
             var user = new User(new Role(RoleType.Patient), new Email(dto.Email), username);
             patient.SetUser(user);
@@ -233,7 +233,6 @@ namespace DDDSample1.Users
             var auth0User = new
             {       
             email = dto.Email,
-            username = username.ToString(),
             password = dto.Password,
             connection="Username-Password-Authentication",
             app_metadata = new Dictionary<string, object>

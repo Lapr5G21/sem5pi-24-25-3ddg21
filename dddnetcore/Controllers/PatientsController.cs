@@ -65,6 +65,8 @@ namespace DDDSample1.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<PatientDto>> Update(string id, [FromBody] EditingPatientDto dto)
         {
+            Console.WriteLine(id);
+            Console.WriteLine(dto.MedicalRecordNumber);
             if (id != dto.MedicalRecordNumber)
             {
                 return BadRequest("ID mismatch.");
@@ -88,23 +90,8 @@ namespace DDDSample1.Controllers
         }
 
 
-        // DELETE: api/patients/{id}
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<PatientDto>> SoftDelete(string id)
-        {
-            var patient = await _service.InactivateAsync(new PatientMedicalRecordNumber(id));
-
-            if (patient == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(patient);
-        }
-
-
         // DELETE: api/patients/{id}/hard
-        [HttpDelete("{id}/hard")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {
             try
@@ -124,7 +111,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-
+            
 
             public async Task<IActionResult> SearchPatients([FromQuery] string fullName, [FromQuery] string birthDate, [FromQuery] string gender, [FromQuery] string email, [FromQuery] string phoneNumber, [FromQuery] string mrn, [FromQuery] bool? isActive)
             {      

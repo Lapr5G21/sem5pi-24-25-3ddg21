@@ -27,37 +27,10 @@ namespace DDDSample1.Domain.OperationTypes
 
         public async Task<List<OperationTypeDto>> GetAllAsync()
         {
-            var list = await this._repo.GetAllAsync();
-            
-            List<OperationTypeDto> listDto = list.ConvertAll<OperationTypeDto>(op => 
-                new OperationTypeDto
-                {
-                    Id = op.Id.AsGuid(),
-                    Name = op.Name.ToString(),
-                    EstimatedTimeDuration = op.EstimatedTimeDuration.Minutes,
-                    AnesthesiaTime = op.AnesthesiaTime.Minutes,
-                    CleaningTime = op.CleaningTime.Minutes,
-                    SurgeryTime = op.SurgeryTime.Minutes,
-                    IsActive = op.IsActive,
-                    Specializations = op.Specializations
-                    .Select(s => new OperationTypeSpecializationDto
-                    {
-                        Id = s.Specialization.Id.AsString(),
-                        NumberOfStaff = s.NumberOfStaff.Number
-                    }).ToList()
-                });
-
-            return listDto;
-        }
-
-        public async Task<OperationTypeDto> GetByIdAsync(OperationTypeId id)
-        {
-            var op = await this._repo.GetByIdAsync(id);
-            
-            if(op == null)
-                return null;
-
-            return new OperationTypeDto
+            var opTypesList = await this._repo.GetAllAsync();
+            var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
+            var allSpecializations = await _specializationRepository.GetAllAsync(); 
+            var listDto = opTypesList.Select(op => new OperationTypeDto
             {
                 Id = op.Id.AsGuid(),
                 Name = op.Name.ToString(),
@@ -66,14 +39,55 @@ namespace DDDSample1.Domain.OperationTypes
                 CleaningTime = op.CleaningTime.Minutes,
                 SurgeryTime = op.SurgeryTime.Minutes,
                 IsActive = op.IsActive,
-                Specializations = op.Specializations
-                .Select(s => new OperationTypeSpecializationDto
+                Specializations = allOperationTypeSpecializations
+            .Where(ots => ots.OperationType != null && ots.OperationType.Id == op.Id)
+            .Select(s =>
+            {
+                var specialization = allSpecializations.FirstOrDefault(sp => sp.Id == s.Specialization.Id); 
+                return new OperationTypeSpecializationDto
                 {
-                    Id = s.Specialization.Id.AsString(),
+                    Id = specialization != null ? specialization.Id.AsString() : "N/A", 
                     NumberOfStaff = s.NumberOfStaff.Number
-                }).ToList()
-            };
+                };
+            }).ToList()
+        }).ToList();
+                return listDto;
         }
+
+        public async Task<OperationTypeDto> GetByIdAsync(OperationTypeId id)
+{
+    var op = await this._repo.GetByIdAsync(id);
+    
+    if (op == null)
+        return null;
+
+    var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
+    var allSpecializations = await _specializationRepository.GetAllAsync(); 
+
+    var operationTypeDto = new OperationTypeDto
+    {
+        Id = op.Id.AsGuid(),
+        Name = op.Name.ToString(),
+        EstimatedTimeDuration = op.EstimatedTimeDuration.Minutes,
+        AnesthesiaTime = op.AnesthesiaTime.Minutes,
+        CleaningTime = op.CleaningTime.Minutes,
+        SurgeryTime = op.SurgeryTime.Minutes,
+        IsActive = op.IsActive,
+        Specializations = allOperationTypeSpecializations
+            .Where(ots => ots.OperationType != null && ots.OperationType.Id == op.Id)
+            .Select(s =>
+            {
+                var specialization = allSpecializations.FirstOrDefault(sp => sp.Id == s.Specialization.Id);
+                return new OperationTypeSpecializationDto
+                {
+                    Id = specialization != null ? specialization.Id.AsString() : "N/A",
+                    NumberOfStaff = s.NumberOfStaff.Number
+                };
+            }).ToList()
+    };
+
+    return operationTypeDto;
+}
 
        public async Task<OperationTypeDto> AddAsync(CreatingOperationTypeDto dto)
         {       
@@ -83,6 +97,8 @@ namespace DDDSample1.Domain.OperationTypes
             new AnesthesiaTime(dto.AnesthesiaTime),
             new CleaningTime(dto.CleaningTime),
             new SurgeryTime(dto.SurgeryTime));
+
+            var specializations = new List<OperationTypeSpecialization>();
 
             await this._repo.AddAsync(operationType);
 
@@ -102,6 +118,7 @@ namespace DDDSample1.Domain.OperationTypes
                 );
 
                 await _operationTypeSpecializationRepo.AddAsync(operationTypeSpecialization);
+                specializations.Add(operationTypeSpecialization);
             }
 
             await this._unitOfWork.CommitAsync();
@@ -115,10 +132,9 @@ namespace DDDSample1.Domain.OperationTypes
             CleaningTime = operationType.CleaningTime.Minutes,
             IsActive = operationType.IsActive,
             SurgeryTime = operationType.SurgeryTime.Minutes,
-            Specializations = operationType.Specializations
-            .Select(s => new OperationTypeSpecializationDto
+            Specializations = specializations.Select(s => new OperationTypeSpecializationDto
             {
-            Id = s.Specialization.Id.AsString(),
+            Id = s.Id.AsString(),
             NumberOfStaff = s.NumberOfStaff.Number
             }).ToList()
             };
@@ -166,42 +182,56 @@ public async Task<EditOperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
 
 
         public async Task<IEnumerable<OperationTypeDto>> SearchOperationTypesAsync(SearchOperationTypeDto searchDto)
-    {
-        var operationTypes = await _repo.GetAllAsync();
+        {
+            var operationTypes = await _repo.GetAllAsync();
 
-        IEnumerable<OperationType> filteredOperationTypes = operationTypes.AsEnumerable();
+            var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
+            var allSpecializations = await _specializationRepository.GetAllAsync();
 
-        if (!string.IsNullOrEmpty(searchDto.Name))
-        {
-            filteredOperationTypes = filteredOperationTypes.Where(o => o.Name.ToString().Contains(searchDto.Name));
-        }
-        if (searchDto.SpecializationId != Guid.Empty)
-        {
-            filteredOperationTypes = filteredOperationTypes.Where(o => o.Specializations.Any(s => s.Specialization.Id.AsGuid() == searchDto.SpecializationId));
-        }
-        
-        if (searchDto.IsActive != null)
-        {
-            filteredOperationTypes = filteredOperationTypes.Where(o => o.IsActive == searchDto.IsActive);
-        }
+            IEnumerable<OperationType> filteredOperationTypes = operationTypes;
 
-        return operationTypes.Select(o => new OperationTypeDto
-        {
-            Id = o.Id.AsGuid(),
-            Name = o.Name.ToString(),
-            EstimatedTimeDuration = o.EstimatedTimeDuration.Minutes,
-            AnesthesiaTime = o.AnesthesiaTime.Minutes,
-            SurgeryTime = o.SurgeryTime.Minutes,
-            CleaningTime = o.CleaningTime.Minutes,
-            IsActive = o.IsActive,
-             Specializations = o.Specializations
-            .Select(s => new OperationTypeSpecializationDto
+            if (!string.IsNullOrEmpty(searchDto.Name))
             {
-            Id = s.Specialization.Id.ToString(),
-            NumberOfStaff = s.NumberOfStaff.Number
+                filteredOperationTypes = filteredOperationTypes
+                    .Where(o => o.Name.ToString().IndexOf(searchDto.Name, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            if (searchDto.SpecializationId != Guid.Empty)
+            {
+                filteredOperationTypes = filteredOperationTypes
+                    .Where(o => allOperationTypeSpecializations
+                        .Any(ots => ots.OperationType.Id == o.Id && ots.Specialization.Id.AsGuid() == searchDto.SpecializationId));
+            }
+
+            if (searchDto.IsActive.HasValue)
+            {
+                filteredOperationTypes = filteredOperationTypes
+                    .Where(o => o.IsActive == searchDto.IsActive.Value);
+            }
+
+            return filteredOperationTypes.Select(o => new OperationTypeDto
+            {
+                Id = o.Id.AsGuid(),
+                Name = o.Name.ToString(),
+                EstimatedTimeDuration = o.EstimatedTimeDuration.Minutes,
+                AnesthesiaTime = o.AnesthesiaTime.Minutes,
+                SurgeryTime = o.SurgeryTime.Minutes,
+                CleaningTime = o.CleaningTime.Minutes,
+                IsActive = o.IsActive,
+                Specializations = allOperationTypeSpecializations
+                    .Where(ots => ots.OperationType.Id == o.Id) 
+                    .Select(s =>
+            {
+                var specialization = allSpecializations.FirstOrDefault(sp => sp.Id == s.Specialization.Id);
+                return new OperationTypeSpecializationDto
+                {
+                    Id = specialization != null ? specialization.Id.AsString() : "N/A",
+                    NumberOfStaff = s.NumberOfStaff.Number
+                };
             }).ToList()
-        }).ToList();
+    }).ToList();
 }
+
 
         public async Task<OperationTypeDto> InactivateAsync(OperationTypeId id)
         {

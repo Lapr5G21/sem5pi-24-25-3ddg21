@@ -37,7 +37,7 @@ namespace DDDSample1.Domain.Patients
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue.ToString(),
+                Gender = patient.Gender.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 Address = patient.Address.ToString(),
@@ -59,7 +59,7 @@ namespace DDDSample1.Domain.Patients
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue.ToString(),
+                Gender = patient.Gender.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 Address = patient.Address.ToString(),
@@ -72,14 +72,13 @@ namespace DDDSample1.Domain.Patients
         {            
             var mrn = await GenerateMedicalRecordNumberAsync();
             Console.WriteLine(mrn);
-            var genderValue = (Gender)Enum.Parse(typeof(Gender), dto.Gender, true);
             var patient = new Patient(
                 mrn, 
                 new PatientFirstName(dto.FirstName), 
                 new PatientLastName(dto.LastName), 
                 new PatientFullName(dto.FullName), 
                 new PatientBirthDate(dto.BirthDate), 
-                new PatientGender(genderValue), 
+                dto.Gender,
                 new PatientEmail(dto.Email), 
                 new PatientPhoneNumber(dto.PhoneNumber),
                 new PatientAddress(dto.Address), 
@@ -98,7 +97,7 @@ namespace DDDSample1.Domain.Patients
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue.ToString(),
+                Gender = patient.Gender.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 Address = patient.Address.ToString(),
@@ -111,9 +110,7 @@ namespace DDDSample1.Domain.Patients
         
         public async Task<PatientDto> UpdateAsync(EditingPatientDto dto)
         {
-            var allPatients = await this._patientRepository.GetAllAsync();
-
-            var patient = allPatients.FirstOrDefault(p => p.Id.ToString() == dto.MedicalRecordNumber);
+            var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
 
             if (patient == null) return null;
 
@@ -132,7 +129,9 @@ namespace DDDSample1.Domain.Patients
 
             if (oldEmail != patient.Email.ToString() || oldPhoneNumber != patient.PhoneNumber.ToString())
             {
-                await _emailService.SendEmailAsync(patient.Email.ToString(), "Your contact information has been updated.", 
+                List<string> toEmail = new List<string>();
+                toEmail.Add(patient.Email.ToString());
+                await _emailService.SendEmailAsync(toEmail, "Your contact information has been updated.", 
                 "Dear " + patient.FullName.ToString() + ",\n\n" +
                 "Your contact information has been successfully updated.\n\n" +
                 "Thank you,\n" +
@@ -141,13 +140,15 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
+                MedicalRecordNumber = patient.Id.AsString(),
                 FirstName = patient.FirstName.ToString(),
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue.ToString(),
+                Gender = patient.Gender.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
+                MedicalRecord = patient.MedicalRecord.ToString(),
                 Address = patient.Address.ToString(),
                 EmergencyContact = patient.EmergencyContact.ToString(),
                 Active = patient.Active
@@ -170,7 +171,7 @@ namespace DDDSample1.Domain.Patients
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue.ToString(),
+                Gender = patient.Gender.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 Address = patient.Address.ToString(),
@@ -185,22 +186,21 @@ namespace DDDSample1.Domain.Patients
             var patient = await this._patientRepository.GetByIdAsync(mrn);
             if (patient == null) return null;
 
-            if (patient.Active)
-                throw new BusinessRuleValidationException("It is not possible to delete an active patient.");
-
             this._patientRepository.Remove(patient);
             await this._unitOfWork.CommitAsync();
 
             return new PatientDto
             {
+                MedicalRecordNumber = patient.Id.AsString(),
                 FirstName = patient.FirstName.ToString(),
                 LastName = patient.LastName.ToString(),
                 FullName = patient.FullName.ToString(),
                 BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.GenderValue.ToString(),
+                Gender = patient.Gender.ToString(),
                 Email = patient.Email.ToString(),
                 PhoneNumber = patient.PhoneNumber.ToString(),
                 Address = patient.Address.ToString(),
+                MedicalRecord = patient.MedicalRecord.ToString(),
                 EmergencyContact = patient.EmergencyContact.ToString(),
                 Active = patient.Active
             };
@@ -223,9 +223,9 @@ namespace DDDSample1.Domain.Patients
                 filteredPatients = filteredPatients.Where(o => o.BirthDate.ToString().Contains(searchDto.BirthDate));
             }
 
-            if (!string.IsNullOrEmpty(searchDto.Gender))
+            if (!string.IsNullOrEmpty(searchDto.Gender.ToString()))
             {
-                filteredPatients = filteredPatients.Where(o => o.Gender.ToString().Contains(searchDto.Gender));
+                filteredPatients = filteredPatients.Where(o => o.Gender.ToString().Contains(searchDto.Gender.ToString()));
             }
 
             if (!string.IsNullOrEmpty(searchDto.Email))

@@ -8,11 +8,15 @@ namespace DDDSample1.Infrastructure.Specializations
     {
         public void Configure(EntityTypeBuilder<Specialization> builder)
         {
-            builder.HasKey(b => b.Id);
-
+             builder.HasKey(b => b.Id);
             builder.Property(b => b.SpecializationName)
                    .HasConversion(b => b.Name, b => new SpecializationName(b))
                    .IsRequired();
+            
+            builder.HasMany(b => b.OperationTypes)
+                   .WithOne(b => b.Specialization)
+                   .HasForeignKey("SpecializationId")
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

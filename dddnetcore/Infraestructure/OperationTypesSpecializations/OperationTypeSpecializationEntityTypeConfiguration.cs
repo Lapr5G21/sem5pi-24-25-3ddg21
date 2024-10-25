@@ -9,18 +9,21 @@ namespace DDDSample1.Infrastructure.OperationTypesSpecializations
 
          public void Configure(EntityTypeBuilder<OperationTypeSpecialization> builder)
         {
-            // cf. https://www.entityframeworktutorial.net/efcore/fluent-api-in-entity-framework-core.aspx
-            
-            //builder.ToTable("Categories", SchemaNames.DDDSample1);
             builder.HasKey(b => b.Id);
-            //builder.Property<bool>("_active").HasColumnName("Active");
 
-            builder.HasOne<OperationType>(b => b.OperationType).WithMany(b => b.Specializations).HasForeignKey("OperationTypeId")
-                .OnDelete(DeleteBehavior.Cascade); 
+            builder.HasOne(b => b.OperationType)
+                   .WithMany(b => b.Specializations)
+                   .HasForeignKey("OperationTypeId")
+                   .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne<Specialization>(b => b.Specialization).WithMany(b => b.OperationTypes).HasForeignKey("SpecializationId").OnDelete(DeleteBehavior.Cascade); 
+            builder.HasOne(b => b.Specialization)
+                   .WithMany(b => b.OperationTypes)
+                   .HasForeignKey("SpecializationId")
+                   .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(b => b.NumberOfStaff).HasConversion(b => b.Number, b=> new NumberOfStaff(b)).IsRequired();
+            builder.Property(b => b.NumberOfStaff)
+                   .HasConversion(b => b.Number, b => new NumberOfStaff(b))
+                   .IsRequired();
 
         }
     }
