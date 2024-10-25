@@ -1,37 +1,51 @@
-@startuml 
+@startuml
 autonumber
+participant Backoffice as "Backoffice User"
 participant CTRL as "UsersController"
 participant SERVICE as "UserService <<service>>"
-participant User as "User <<domain>>"
-participant USERREPO as "UserRepository"
-participant BackofficeRepository as "Backoffice User Repository"
+participant AUTH0 as "Auth0 API<<external>>"
+participant JWT as "JWT Decoder"
+participant CONFIG as "Configuration"
 
-?o-> CTRL : POST /api/users/backoffice
+activate Backoffice
+Backoffice -> CTRL : POST /api/users/login
 activate CTRL
 
-CTRL -> SERVICE : logInBackofficeUser(UserDTO)
+CTRL -> SERVICE : LoginAsync(RequestLoginDto)
 activate SERVICE
 
-SERVICE -> BackofficeRepository : GetByEmailAsync(UserDTO.email)
-activate BackofficeRepository
+SERVICE -> CONFIG : Get Auth0:Domain, Auth0:ClientId, Auth0:ClientSecret, Auth0:Audience
+activate CONFIG
+CONFIG --> SERVICE : return values
+deactivate CONFIG
 
-BackofficeRepository -> SERVICE : return user data
-deactivate BackofficeRepository
+SERVICE -> AUTH0 : POST /oauth/token (RequestLoginDto.Email, RequestLoginDto.Password)
+activate AUTH0
 
-alt valid credentials
-    SERVICE -> User : validate password(UserDTO.password)
-    activate User
+alt token is valid
+    AUTH0 --> SERVICE : tokenResponse
+    deactivate AUTH0
 
-    User -> SERVICE : password is valid
-    deactivate User
+    SERVICE -> JWT : ReadJwtToken(tokenResponse)
+    activate JWT
+    JWT --> SERVICE : JwtSecurityToken
+    deactivate JWT
 
-    SERVICE -> CTRL : return UserDTO with session info
-    <-- CTRL : 201 Logged in
-else invalid credentials
-    SERVICE -> CTRL : return error
-    <-- CTRL : 401 Unauthorized
+    SERVICE -> CTRL : return new LoginUserDto { tokenResponse, Roles }
+    deactivate SERVICE
+    CTRL --> Backoffice : 201 Login confirmed
+
+else token is not valid
+    activate AUTH0
+    activate SERVICE
+    AUTH0 --> SERVICE : tokenResponse
+    deactivate AUTH0
+
+    SERVICE -> CTRL : Exception("Error to obtain token")
+    deactivate SERVICE
+    CTRL <-- Backoffice : 500 Internal Server Error
 end
 
-deactivate SERVICE
 deactivate CTRL
+deactivate Backoffice
 @enduml

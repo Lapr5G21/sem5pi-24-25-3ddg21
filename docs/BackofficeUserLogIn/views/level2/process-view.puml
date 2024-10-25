@@ -3,10 +3,10 @@
 autonumber
 participant SYS as "Backend Management" <<system (C4)>>
 
-?o-> SYS : POST /api/users/backoffice
+?o-> SYS : POST /api/users/login
 activate SYS
 
-SYS -> SYS : logIn(UserDTO)
+SYS -> SYS : login(RequestLoginDto)
 <-- SYS : 201 Logged in
 deactivate SYS
 

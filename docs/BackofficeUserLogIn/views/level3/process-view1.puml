@@ -1,27 +1,24 @@
 @startuml
 
 autonumber
-participant BE as "Backend Management" <<system (C4)>>
+participant Backoffice as "Backoffice User"
+participant BE as "Backend" <<system (C4)>>
+participant Auth0 as "Auth0" <<external service>>
 participant DB as "Database"
 
-?o-> BE : POST /api/users/backoffice
+activate Backoffice
+Backoffice -> BE : POST /api/users/login
 activate BE
 
-BE -> DB : get user by email
+BE -> Auth0 : POST /oauth/token
+activate Auth0
 
-activate DB 
+Auth0 -> BE : return access_token
+deactivate Auth0
 
-DB -> BE : return user data and password hash
-
-deactivate DB 
-
-alt valid credentials
-    BE -> BE : validate password
-    <-- BE : 201 Logged in
-else invalid credentials
-    <-- BE : 401 Unauthorized
-end
-
+BE -> DB : store user session data
+deactivate DB
+Backoffice <-- BE : 201 Logged in
 deactivate BE
-
+deactivate Backoffice
 @enduml

@@ -5,15 +5,11 @@ participant SYS as "Backoffice System" <<system (C4)>>
 
 activate BackofficeUser
 
-BackofficeUser --> SYS : request login
+BackofficeUser --> SYS : request login with the credentials
 
 activate SYS
 
-SYS --> BackofficeUser : prompt for email and password
-
-BackofficeUser --> SYS : submit credentials
-
-SYS --> BackofficeUser : validate credentials
+SYS --> BackofficeUser : return login condirmation
 
 deactivate SYS
 deactivate BackofficeUser
