@@ -1,0 +1,32 @@
+@startuml logical-view
+top to bottom direction
+ 
+interface "API" as API
+interface "Auth0" as AUTH0
+interface "SMTP Microsoft 365" as SMTP
+ 
+component "Backend Data Management" <<component>> {
+ 
+  portin " " as PIAPI
+  portout " " as POAUTH0
+  portout " " as POSMTP
+ 
+  component "Backend" <<component>> {
+    portin " " as BEPI
+    portout " " as BEPOAUTH0
+    portout " " as BEPOSMTP
+  }
+ 
+
+ 
+}
+ 
+API -- PIAPI
+POAUTH0 -l-( AUTH0
+BEPOAUTH0 -- POAUTH0
+BEPI -- PIAPI
+POSMTP --( SMTP
+BEPOSMTP -- POSMTP
+
+ 
+@enduml
