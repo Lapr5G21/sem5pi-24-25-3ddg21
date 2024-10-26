@@ -28,8 +28,6 @@ namespace DDDSample1.Controllers
         }
 
 
-
-
         // GET: api/operationRequests List Of Operation Requests
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperationRequest>>> GetAll(){
