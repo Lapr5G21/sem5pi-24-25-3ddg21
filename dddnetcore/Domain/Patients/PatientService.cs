@@ -8,7 +8,7 @@ using DDDSample1.Infrastructure.Patients;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using DDDSample1.Domain.Emails;
-using DDDSample1.Domain.Logs;
+using DDDSample1.Domain.AuditLogs;
 
 namespace DDDSample1.Domain.Patients
 {
