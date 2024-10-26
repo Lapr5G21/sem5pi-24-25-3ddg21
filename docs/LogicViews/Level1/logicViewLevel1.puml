@@ -5,7 +5,7 @@ interface "API" as API
 interface "Auth0" as AUTH0
 interface "SMTP Microsoft 365" as SMTP
  
-component "Backend Data Management" <<component>> {
+component "Heallthcare System" <<component>> {
   
     portin " " as BEPI
     portout " " as BEPOAUTH0

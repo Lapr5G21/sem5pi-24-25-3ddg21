@@ -1,22 +1,22 @@
-# US 5.1.19
+# US 5.1.18
 
-As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions 
+As a Doctor, I want to remove an operation requisition, so that the healthcare activities are provided as necessary. 
 
 ## 2. Requirements
 
 
-**US 5.1.19** As a Doctor, I want to list/search operation requisitions, so that I see the details, edit, and remove operation requisitions  
+**US 5.1.18** As a Doctor, I want to remove an operation requisition, so that the healthcare activities are provided as necessary. 
 
 
 **Acceptance Criteria:**
 
-- 5.1.19.1 - Doctors can search operation requests by patient name, operation type, priority, and status. 
+- 5.1.18.1 - Doctors can delete operation requests they created if the operation has not yet been scheduled. 
 
-- 5.1.19.2 -  The system displays a list of operation requests in a searchable and filterable view. 
+- 5.1.18.2 -  A confirmation prompt is displayed before deletion. 
 
-- 5.1.19.3 - Each entry in the list includes operation request details (e.g., patient name, operation type, status). 
+- 5.1.18.3 - Once deleted, the operation request is removed from the patient’s medical record and cannot be recovered. 
 
-- 5.1.19.4 - Doctors can select an operation request to view, update, or delete it.
+- 5.1.18.4 - The system notifies the Planning Module and updates any schedules that were relying on this request. 
 
 ## 3. Views
 
@@ -31,9 +31,10 @@ The global views are available in the views folder.
 ![level2_view](views/level2/process-view.png)
 
 ### LEVEL 3
-
 ![level3_view](views/level3/process-view1.png)
+
 ![level3_view2](views/level3/process-view2.png)
+
 
 
 

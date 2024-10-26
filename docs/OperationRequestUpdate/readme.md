@@ -1,22 +1,22 @@
-# US 5.1.18
+# US 5.1.17
 
-As a Doctor, I want to remove an operation requisition, so that the healthcare activities are provided as necessary. 
+As a Doctor, I want to update an operation requisition, so that the Patient has access to the necessary healthcare
 
 ## 2. Requirements
 
 
-**US 5.1.18** As a Doctor, I want to remove an operation requisition, so that the healthcare activities are provided as necessary. 
+**US 5.1.17** As a Doctor, I want to update an operation requisition, so that the Patient has access to the necessary healthcare
 
 
 **Acceptance Criteria:**
 
-- 5.1.18.1 - Doctors can delete operation requests they created if the operation has not yet been scheduled. 
+- 5.1.17.1 - Doctors can update operation requests they created (e.g., change the deadline or priority). 
 
-- 5.1.18.2 -  A confirmation prompt is displayed before deletion. 
+- 5.1.17.2 -  The system checks that only the requesting doctor can update the operation request.
 
-- 5.1.18.3 - Once deleted, the operation request is removed from the patient’s medical record and cannot be recovered. 
+- 5.1.17.3 - The system logs all updates to the operation request (e.g., changes to priority or deadline).
 
-- 5.1.18.4 - The system notifies the Planning Module and updates any schedules that were relying on this request. 
+- 5.1.17.4 - Updated requests are reflected immediately in the system and notify the Planning Module of any changes. 
 
 ## 3. Views
 
@@ -31,10 +31,10 @@ The global views are available in the views folder.
 ![level2_view](views/level2/process-view.png)
 
 ### LEVEL 3
-![level3_view](views/level3/process-view1.png)
-![level3_view2](views/level3/process-view2.png)
 
-
+ ![level3_view1](views/level3/process-view1.png)
+ 
+ ![level3_view2](views/level3/process-view2.png)
 
 
 ### 4.4. Tests
