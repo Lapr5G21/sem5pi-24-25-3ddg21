@@ -10,6 +10,7 @@ namespace DDDSample1.Tests.Domain.OperationRequest
 {
     public class OperationRequestTests
     {
+       
         [Fact]
         public void CreateOperationRequest_Success()
         {
@@ -19,7 +20,9 @@ namespace DDDSample1.Tests.Domain.OperationRequest
             var deadlineDate = new DeadlineDate(DateTime.UtcNow.AddDays(30));
             var status = Status.onSchedule;
             var staffId = new StaffId(Guid.NewGuid());
-            var patientMedicalRecordNumber = new PatientMedicalRecordNumber("MRN001");
+            var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
+            var patientMedicalRecordNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
+           
 
             // Act
             var operationRequest = new DDDSample1.Domain.OperationRequest.OperationRequest(priority, operationTypeId, deadlineDate, status, staffId, patientMedicalRecordNumber);
@@ -36,16 +39,19 @@ namespace DDDSample1.Tests.Domain.OperationRequest
         }
 
         private DDDSample1.Domain.OperationRequest.OperationRequest CreateOperationRequest()
-        {
-            var priority = Priority.Elective;
-            var operationTypeId = new OperationTypeId(Guid.NewGuid());
-            var deadlineDate = new DeadlineDate(DateTime.UtcNow.AddDays(30));
-            var status = Status.onSchedule;
-            var staffId = new StaffId(Guid.NewGuid());
-            var patientMedicalRecordNumber = new PatientMedicalRecordNumber("MRN001");
+            {
+                var priority = Priority.Elective;
+                var operationTypeId = new OperationTypeId(Guid.NewGuid());
+                var deadlineDate = new DeadlineDate(DateTime.UtcNow.AddDays(30));
+                var status = Status.onSchedule;
+                var staffId = new StaffId(Guid.NewGuid());
 
-            return new DDDSample1.Domain.OperationRequest.OperationRequest(priority, operationTypeId, deadlineDate, status, staffId, patientMedicalRecordNumber);
-        }
+                
+                var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
+                var patientMedicalRecordNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
+
+                return new DDDSample1.Domain.OperationRequest.OperationRequest(priority, operationTypeId, deadlineDate, status, staffId, patientMedicalRecordNumber);
+            }
 
         [Fact]
         public void ChangeOperationRequestPriority_Success()
@@ -122,14 +128,16 @@ namespace DDDSample1.Tests.Domain.OperationRequest
         {
             // Arrange
             var operationRequest = CreateOperationRequest();
-            var newPatientMedicalRecordNumber = new PatientMedicalRecordNumber("MRN002");
+            var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
+            var switchpatientMedicalRecordoNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
 
             // Act
-            operationRequest.ChangeOperationRequestPatientMedicalRecordNumber(newPatientMedicalRecordNumber);
+            operationRequest.ChangeOperationRequestPatientMedicalRecordNumber(switchpatientMedicalRecordoNumber);
 
             // Assert
-            Assert.Equal(newPatientMedicalRecordNumber, operationRequest.PatientMedicalRecordNumber);
+            Assert.Equal(switchpatientMedicalRecordoNumber, operationRequest.PatientMedicalRecordNumber);
         }
         
     }
+    
 }

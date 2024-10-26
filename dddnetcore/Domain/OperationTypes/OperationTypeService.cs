@@ -26,33 +26,40 @@ namespace DDDSample1.Domain.OperationTypes
         }
 
         public async Task<List<OperationTypeDto>> GetAllAsync()
-        {
-            var opTypesList = await this._repo.GetAllAsync();
-            var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
-            var allSpecializations = await _specializationRepository.GetAllAsync(); 
-            var listDto = opTypesList.Select(op => new OperationTypeDto
-            {
-                Id = op.Id.AsGuid(),
-                Name = op.Name.ToString(),
-                EstimatedTimeDuration = op.EstimatedTimeDuration.Minutes,
-                AnesthesiaTime = op.AnesthesiaTime.Minutes,
-                CleaningTime = op.CleaningTime.Minutes,
-                SurgeryTime = op.SurgeryTime.Minutes,
-                IsActive = op.IsActive,
-                Specializations = allOperationTypeSpecializations
+{
+  
+    var opTypesList = await this._repo.GetAllAsync() ?? new List<OperationType>();
+    var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync() ?? new List<OperationTypeSpecialization>();
+    var allSpecializations = await _specializationRepository.GetAllAsync() ?? new List<Specialization>();
+
+   
+    var listDto = opTypesList.Select(op => new OperationTypeDto
+    {
+        Id = op.Id.AsGuid(),
+        Name = op.Name.ToString(),
+        EstimatedTimeDuration = op.EstimatedTimeDuration.Minutes,
+        AnesthesiaTime = op.AnesthesiaTime.Minutes,
+        CleaningTime = op.CleaningTime.Minutes,
+        SurgeryTime = op.SurgeryTime.Minutes,
+        IsActive = op.IsActive,
+        
+        Specializations = allOperationTypeSpecializations
             .Where(ots => ots.OperationType != null && ots.OperationType.Id == op.Id)
             .Select(s =>
             {
-                var specialization = allSpecializations.FirstOrDefault(sp => sp.Id == s.Specialization.Id); 
+                var specialization = allSpecializations.FirstOrDefault(sp => sp.Id == s.Specialization?.Id);
+
                 return new OperationTypeSpecializationDto
                 {
-                    Id = specialization != null ? specialization.Id.AsString() : "N/A", 
+                    Id = specialization?.Id.AsString() ?? "N/A", 
                     NumberOfStaff = s.NumberOfStaff.Number
                 };
-            }).ToList()
-        }).ToList();
-                return listDto;
-        }
+            })
+            .ToList()
+    }).ToList();
+
+    return listDto;
+}
 
         public async Task<OperationTypeDto> GetByIdAsync(OperationTypeId id)
 {

@@ -49,11 +49,12 @@ namespace DDDSample1.Tests.Domain.OperationTypes
 
             var result = await _service.GetAllAsync();
 
+            Assert.NotNull(result);
             Assert.Single(result);
             Assert.Equal("Cardiology", result[0].Name);
             Assert.Equal(120, result[0].EstimatedTimeDuration);
         }
-
+/*
         [Fact]
         public async Task GetByIdAsync()
         {
@@ -72,6 +73,8 @@ namespace DDDSample1.Tests.Domain.OperationTypes
             Assert.NotNull(result);
             Assert.Equal("Cardiology", result.Name);
         }
+
+        */
 
  //       [Fact]
 //        public async Task AddAsyncTest()

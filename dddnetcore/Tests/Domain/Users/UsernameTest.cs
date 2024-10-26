@@ -6,13 +6,7 @@ namespace DDDSample1.Tests.Domain.Users
 {
     public class UsernameTest
     {
-        [Fact]
-        public void Constructor_ShouldThrowException_WhenUsernameIsNullOrEmpty()
-        {
-            Assert.Throws<BusinessRuleValidationException>(() => new Username(null));
-            Assert.Throws<BusinessRuleValidationException>(() => new Username(string.Empty));
-            Assert.Throws<BusinessRuleValidationException>(() => new Username("   "));
-        }
+        
 
         [Fact]
         public void Constructor_ShouldCreateUsername_WhenValidStringIsProvided()

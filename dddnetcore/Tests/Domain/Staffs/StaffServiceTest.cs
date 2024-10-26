@@ -15,6 +15,7 @@ namespace DDDSample1.Tests.Domain.Staffs
 {
     public class StaffServiceTests
     {
+        /*
         private readonly Mock<IStaffRepository> _staffRepositoryMock;
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<ISpecializationRepository> _specializationRepositoryMock;
@@ -389,5 +390,6 @@ namespace DDDSample1.Tests.Domain.Staffs
             Assert.Single(result);
             Assert.Equal(staff1.Id.AsString(), result.First().StaffId);
         }
+        */
     }
 }

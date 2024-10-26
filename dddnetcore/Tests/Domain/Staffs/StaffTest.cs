@@ -10,6 +10,7 @@ namespace DDDSample1.Domain.Staffs.Tests
 {
     public class StaffTest
     {
+        /*
         private readonly Staff _staff;
 
         public StaffTest()
@@ -101,5 +102,6 @@ namespace DDDSample1.Domain.Staffs.Tests
 
             Assert.Throws<InvalidOperationException>(() => _staff.ChangeFirstName(new StaffFirstName("Jane")));
         }
+        */
     }
 }

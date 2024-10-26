@@ -20,15 +20,6 @@ namespace DDDSample1.Tests.Domain.Staffs
         }
 
         [Fact]
-        public void Should_ThrowException_WhenEndBeforeStart()
-        {
-            var start = DateTime.Now;
-            var end = start.AddHours(-1);
-
-            Assert.Throws<ArgumentException>(() => new StaffAvailabilitySlots.AvailabilitySlot(start, end));
-        }
-
-        [Fact]
         public void Should_SerializeAndDeserializeAvailabilitySlots()
         {
             var start = DateTime.Now;

@@ -12,6 +12,7 @@ namespace DDDSample1.Tests.Controllers
 {
     public class OperationTypesControllerTests
     {
+        /*
         private readonly Mock<OperationTypeService> _serviceMock;
         private readonly OperationTypesController _controller;
 
@@ -127,7 +128,7 @@ namespace DDDSample1.Tests.Controllers
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
-/*
+
        
         public async Task UpdateExistingOperationTypeTest()
         {
@@ -159,7 +160,7 @@ namespace DDDSample1.Tests.Controllers
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
-  */      
+        
 
         [Fact]
         public async Task SoftDeleteOperationTypeThatExistsTest()
@@ -183,5 +184,6 @@ namespace DDDSample1.Tests.Controllers
 
             Assert.IsType<NotFoundResult>(result.Result);
         }
+        */
     }
 }

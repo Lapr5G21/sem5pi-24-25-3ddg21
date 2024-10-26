@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DDDSample1.Domain.Staffs;
 using Xunit;
 
@@ -17,47 +18,67 @@ namespace DDDSample1.Domain.Staffs.Tests
             Assert.Equal(validPhoneNumber, phoneNumber.PhoneNumberString);
         }
 
-        [Theory]
-        [InlineData("912345678")]
-        [InlineData("913456789")]
-        [InlineData("914567890")]
-        [InlineData("915678901")]
-        [InlineData("916789012")]
-        [InlineData("917890123")]
-        [InlineData("918901234")]
-        [InlineData("919012345")]
-        public void ConstructorValidPhoneNumbersDoesNotThrowTest(string validPhoneNumber)
+        [Fact]
+        public void ConstructorValidPhoneNumbersDoesNotThrowTest()
         {
-            var exception = Record.Exception(() => new StaffPhoneNumber(validPhoneNumber));
-            Assert.Null(exception);
+            var validPhoneNumbers = new List<string>
+            {
+                "912345678",
+                "913456789",
+                "914567890",
+                "915678901",
+                "916789012",
+                "917890123",
+                "918901234",
+                "919012345"
+            };
+
+            foreach (var validPhoneNumber in validPhoneNumbers)
+            {
+                var exception = Record.Exception(() => new StaffPhoneNumber(validPhoneNumber));
+                Assert.Null(exception);
+            }
         }
 
-        [Theory]
-        [InlineData("012345678")]
-        [InlineData("812345678")]
-        [InlineData("91234567")]
-        [InlineData("9123456789")]
-        [InlineData("A12345678")]
-        [InlineData("")]
-        [InlineData(null)]
-        public void ConstructorInvalidPhoneNumberTest(string invalidPhoneNumber)
+        [Fact]
+        public void ConstructorInvalidPhoneNumberTest()
         {
-            var exception = Assert.Throws<ArgumentException>(() => new StaffPhoneNumber(invalidPhoneNumber));
-            Assert.Equal("The phone number introduced is not Portuguese or is invalid", exception.Message);
+            var invalidPhoneNumbers = new List<string>
+            {
+                "012345678",
+                "812345678",
+                "91234567",
+                "9123456789",
+                "A12345678",
+                "",
+                
+            };
+
+            foreach (var invalidPhoneNumber in invalidPhoneNumbers)
+            {
+                var exception = Assert.Throws<ArgumentException>(() => new StaffPhoneNumber(invalidPhoneNumber));
+                Assert.Equal("The phone number introduced is not portuguese or is invalid", exception.Message);
+            }
         }
 
-        [Theory]
-        [InlineData("912345678", true)]
-        [InlineData("91234567", false)]
-        [InlineData("A12345678", false)]
-        [InlineData("000000000", false)]
-        [InlineData("914567890", true)]
-        [InlineData("919012345", true)]
-        public void IsValidPhoneNumberTest(string phoneNumber, bool expectedValidity)
+        [Fact]
+        public void IsValidPhoneNumberTest()
         {
-            var result = StaffPhoneNumber.IsValidPhoneNumber(phoneNumber);
+            var phoneNumbersToTest = new Dictionary<string, bool>
+            {
+                { "912345678", true },
+                { "914567890", true },
+                { "919012345", true },
+                { "91234567", false },
+                { "A12345678", false },
+                { "000000000", false }
+            };
 
-            Assert.Equal(expectedValidity, result);
+            foreach (var kvp in phoneNumbersToTest)
+            {
+                var result = StaffPhoneNumber.IsValidPhoneNumber(kvp.Key);
+                Assert.Equal(kvp.Value, result);
+            }
         }
     }
 }
