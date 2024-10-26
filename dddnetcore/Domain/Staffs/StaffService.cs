@@ -9,6 +9,7 @@ using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Specializations;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using DDDSample1.Domain.Emails;
 
 namespace DDDSample1.Domain.Staffs
 {
@@ -19,16 +20,17 @@ namespace DDDSample1.Domain.Staffs
         private readonly IConfiguration _configuration;
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
 
 
-
-        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository)
+        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _staffRepository = staffRepository;
             _configuration = configuration;
             _specializationRepository = specializationRepository;
             _userRepository = userRepository;
+            _emailService=emailService;
         }
 
         public async Task<List<StaffDto>> GetAllAsync()
@@ -65,7 +67,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
                 UserId = staff.UserId.ToString()
             };
         }
@@ -111,7 +113,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = specialization.Id.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
                 UserId = staff.UserId.ToString()
             };
         }
@@ -124,29 +126,64 @@ namespace DDDSample1.Domain.Staffs
                 throw new ArgumentException("Staff not found.");
             }
 
+            var oldEmail = staff.StaffEmail.ToString();
+            var oldPhoneNumber = staff.StaffPhoneNumber.ToString();
+            var oldFirstName = staff.StaffFirstName.ToString();
+            var oldLastName = staff.StaffLastName.ToString();
+            var oldSpecialization = staff.SpecializationId?.ToString() ?? "N/A";
+
             staff.ChangeFirstName(new StaffFirstName(dto.FirstName));
             staff.ChangeLastName(new StaffLastName(dto.LastName));
             staff.ChangeFullName(new StaffFullName(dto.FullName));
             staff.ChangeEmail(new StaffEmail(dto.Email));
             staff.ChangePhoneNumber(new StaffPhoneNumber(dto.PhoneNumber));
             staff.ChangeSpecialization(new SpecializationId(dto.SpecializationId));
+            staff.ChangeAvailabilitySlots(new StaffAvailabilitySlots(dto.AvailabilitySlots));
 
             await this._unitOfWork.CommitAsync();
 
+            if (oldEmail != staff.StaffEmail.ToString() || oldPhoneNumber != staff.StaffPhoneNumber.ToString())
+            {
+                List<string> toEmail = new List<string> { staff.StaffEmail.ToString() };
+        await _emailService.SendEmailAsync(toEmail, "Your contact information has been updated.",
+        "Dear " + staff.StaffFullName.ToString() + ",\n\n" +
+        "Your contact information has been successfully updated.\n\n" +
+        "Thank you,\n" +
+        "The HealthCare Team");
+            }
+
+            var changes = new List<string>();
+
+            if (oldFirstName != staff.StaffFirstName.ToString())
+                changes.Add($"First Name: '{oldFirstName}' to '{staff.StaffFirstName}'");
+            if (oldLastName != staff.StaffLastName.ToString())
+                changes.Add($"Last Name: '{oldLastName}' to '{staff.StaffLastName}'");
+            if (oldEmail != staff.StaffEmail.ToString())
+                changes.Add($"Email: '{oldEmail}' to '{staff.StaffEmail}'");
+            if (oldPhoneNumber != staff.StaffPhoneNumber.ToString())
+                changes.Add($"Phone Number: '{oldPhoneNumber}' to '{staff.StaffPhoneNumber}'");
+            if (oldSpecialization != staff.SpecializationId.ToString())
+                changes.Add($"Specialization: '{oldSpecialization}' to '{staff.SpecializationId}'");
+
+            var details = string.Join(", ", changes);
+
+            //await _logService.LogUpdateOperation(LogCategoryType.STAFF_PROFILE, $"Updated Staff {staff.StaffFullName}: {details}");
+
             return new StaffDto
             {
-                StaffId = staff.Id.ToString(),
-                StaffFirstName = staff.StaffFirstName.ToString(),
-                StaffLastName = staff.StaffLastName.ToString(),
-                StaffFullName = staff.StaffFullName.ToString(),
-                StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
-                SpecializationId = staff.SpecializationId.ToString(),
-                StaffEmail = staff.StaffEmail.ToString(),
-                StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
-                UserId = staff.UserId.ToString()
+                StaffId = staff.Id.AsString() ?? "N/A",
+                StaffFirstName = staff.StaffFirstName?.ToString() ?? "N/A",
+                StaffLastName = staff.StaffLastName?.ToString() ?? "N/A",
+                StaffFullName = staff.StaffFullName?.ToString() ?? "N/A",
+                StaffLicenseNumber = staff.StaffLicenseNumber?.ToString() ?? "N/A",
+                SpecializationId = staff.SpecializationId.AsString(),
+                StaffEmail = staff.StaffEmail?.ToString() ?? "N/A",
+                StaffPhoneNumber = staff.StaffPhoneNumber?.ToString() ?? "N/A",
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
+                UserId = staff.UserId?.ToString() ?? "N/A"
             };
-        }
+}
+
 
         internal async Task<StaffDto> InactivateAsync(StaffId id)
         {
@@ -160,15 +197,15 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.Id.ToString(),
+                StaffId = staff.Id.AsString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
                 StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
-                SpecializationId = staff.SpecializationId.ToString(),
+                SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
                 UserId = staff.UserId.ToString()
             };
         }
@@ -183,15 +220,15 @@ namespace DDDSample1.Domain.Staffs
 
             return new StaffDto
             {
-                StaffId = staff.Id.ToString(),
+                StaffId = staff.Id.AsString(),
                 StaffFirstName = staff.StaffFirstName.ToString(),
                 StaffLastName = staff.StaffLastName.ToString(),
                 StaffFullName = staff.StaffFullName.ToString(),
                 StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
-                SpecializationId = staff.SpecializationId.ToString(),
+                SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
                 UserId = staff.UserId.ToString()
             };
         }
@@ -229,15 +266,16 @@ namespace DDDSample1.Domain.Staffs
 
             return filteredStaffs.Select(s => new StaffDto
             {
-                StaffId = s.Id.ToString(),
+                StaffId = s.Id.AsString(),
                 StaffFirstName = s.StaffFirstName.ToString(),
                 StaffLastName = s.StaffLastName.ToString(),
                 StaffFullName = s.StaffFullName.ToString(),
                 StaffLicenseNumber = s.StaffLicenseNumber.ToString(),
-                SpecializationId = s.SpecializationId.ToString(),
+                SpecializationId = s.SpecializationId.AsString(),
                 StaffEmail = s.StaffEmail.ToString(),
                 StaffPhoneNumber = s.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = s.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = s.StaffAvailabilitySlots.Slots,
+                UserId = s.UserId.ToString()
             }).ToList();
         }
     }

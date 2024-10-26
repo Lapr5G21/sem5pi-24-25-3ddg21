@@ -98,6 +98,7 @@ namespace DDDSample1.Controllers
             return Ok(deletedStaff);
         }
 
+            [HttpGet("search")]
             public async Task<IActionResult> SearchStaffs([FromQuery] string fullName, [FromQuery] string phoneNumber, string email, [FromQuery] Guid specializationId, [FromQuery] bool? isActive)
             {      
                 try

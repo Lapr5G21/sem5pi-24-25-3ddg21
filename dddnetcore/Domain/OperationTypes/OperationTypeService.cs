@@ -141,10 +141,11 @@ namespace DDDSample1.Domain.OperationTypes
         }
 
 
-public async Task<EditOperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
+public async Task<OperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
 {
     var operationType = await this._repo.GetByIdAsync(new OperationTypeId(dto.OperationTypeId));
-
+    var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
+    var allSpecializations = await _specializationRepository.GetAllAsync(); 
     if (operationType == null)
         return null;
 
@@ -159,25 +160,60 @@ public async Task<EditOperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
     }
 
     if (dto.Specializations != null && dto.Specializations.Count > 0)
+{
+    foreach (var specializationDto in dto.Specializations)
     {
-        foreach (var specializationDto in dto.Specializations)
+        var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(specializationDto.SpecializationId));
+
+        if (specialization == null)
         {
-          
-            operationType.Specializations.Add(specializationDto);
+            throw new BusinessRuleValidationException($"Specialization with ID {specializationDto.SpecializationId} not found");
         }
+
+        var existingSpecialization = operationType.Specializations
+            .FirstOrDefault(os => os.Specialization.Id.Equals(specialization.Id));
+
+        if (existingSpecialization != null)
+        {
+            continue; 
+        }
+
+        var operationTypeSpecialization = new OperationTypeSpecialization(
+            operationType, 
+            specialization, 
+            new NumberOfStaff(specializationDto.NumberOfStaff)
+        );
+
+        await _operationTypeSpecializationRepo.AddAsync(operationTypeSpecialization);
+        
+        operationType.Specializations.Add(operationTypeSpecialization);
     }
-
-    await this._unitOfWork.CommitAsync();
-
-    return new EditOperationTypeDto
-    {
-        Name = operationType.Name.ToString(),
-        EstimatedTimeDuration = operationType.EstimatedTimeDuration.Minutes,
-        Specializations = dto.Specializations 
-    };
 }
 
+        await this._unitOfWork.CommitAsync();
 
+   return new OperationTypeDto
+            {
+            Id = operationType.Id.AsGuid(),
+            Name = operationType.Name.ToString(),
+            EstimatedTimeDuration = operationType.EstimatedTimeDuration.Minutes,
+            AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
+            CleaningTime = operationType.CleaningTime.Minutes,
+            IsActive = operationType.IsActive,
+            SurgeryTime = operationType.SurgeryTime.Minutes,
+            Specializations = allOperationTypeSpecializations
+            .Where(ots => ots.OperationType != null && ots.OperationType.Id == operationType.Id)
+            .Select(s =>
+            {
+                var specialization = allSpecializations.FirstOrDefault(sp => sp.Id == s.Specialization.Id); 
+                return new OperationTypeSpecializationDto
+                {
+                    Id = specialization != null ? specialization.Id.AsString() : "N/A", 
+                    NumberOfStaff = s.NumberOfStaff.Number
+                };
+            }).ToList()
+            };
+        }
 
 
 
@@ -236,7 +272,8 @@ public async Task<EditOperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
         public async Task<OperationTypeDto> InactivateAsync(OperationTypeId id)
         {
             var operationType = await this._repo.GetByIdAsync(id);
-
+            var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
+            var allSpecializations = await _specializationRepository.GetAllAsync(); 
             if (operationType == null)
                 return null;
 
@@ -245,13 +282,14 @@ public async Task<EditOperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
             await this._unitOfWork.CommitAsync();
 
             return new OperationTypeDto
-            {
+            { 
                 Id = operationType.Id.AsGuid(),
                 Name = operationType.Name.ToString(),
                 EstimatedTimeDuration = operationType.EstimatedTimeDuration.Minutes,
                 AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
+                SurgeryTime = operationType.SurgeryTime.Minutes,
                 CleaningTime = operationType.CleaningTime.Minutes,
-                SurgeryTime = operationType.SurgeryTime.Minutes
+                IsActive = operationType.IsActive
             };
         }
 

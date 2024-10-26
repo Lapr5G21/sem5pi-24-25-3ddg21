@@ -34,8 +34,6 @@ using DDDSample1.Infrastructure.Patients;
 using System;
 using DDDSample1.Domain.Emails;
 using DDDSample1.Infrastructure.Emails;
-using DDDSample1.Domain.Logs;
-using DDDSample1.Infrastructure.Logs;
 
 
 
@@ -166,8 +164,8 @@ public void ConfigureServices(IServiceCollection services)
 
             services.AddScoped<IEmailService,EmailService>();
             
-            services.AddScoped<ILogRepository, LogsRepository>();
-            services.AddScoped<LogService>();            
+            //services.AddScoped<ILogRepository, LogsRepository>();
+            //services.AddScoped<LogService>();            
 
         }
     }
