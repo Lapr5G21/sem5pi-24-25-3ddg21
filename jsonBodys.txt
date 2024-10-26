@@ -3,8 +3,6 @@
     "specializationName" : "Cardiology"
 }
 
-
-
 //Insert operation type
 {
     "name": "Ortopedista",
@@ -19,6 +17,38 @@
         }
         ]
     }
+//Put operationType
+
+{
+  "OperationTypeId": "8e1ad466-1458-4ddb-b5f6-76675ace6249",
+  "Name": "Neurologist",
+  "EstimatedTimeDuration": 120
+}
+
+// Insert OperationRequests
+
+{
+    "priority": "Urgent",
+    "operationTypeId": "3e850503-3696-42d0-88ac-27e894e4cad5",
+    "deadlineDate": "2024-10-29",
+    "status": "Scheduled",
+    "DoctorId": "D20240001",
+    "PatientId": "202410000001" 
+}
+
+//Put OperationRequests
+
+{
+  "Id" : "3a81cdf9-b757-4fdf-bfdb-0e419487d162",
+  "PriorityLevel": "High",
+  "OperationTypeId": "5e57b3f7-3b42-4eae-9a3a-b54b9e3e56f3",
+  "DeadlineDate": "2024-10-29",
+  "Status": "Pending",
+  "DoctorId": "D20240002",
+  "PacientMedicalRecordNumber": "202410000001"
+}
+
+
 // Insert the patient
 {
     "firstName": "Goncalo",
@@ -30,6 +60,19 @@
     "phoneNumber": "913456789",
     "address": "Rua da Ribeira",
     "emergencyContact": "916754321"
+}
+
+// Put Pacient 
+
+{
+    "MedicalRecordNumber": "202410000001",
+    "FirstName": "Vasco",
+    "LastName": "Teixeira",
+    "FullName": "Vasco Teixeira",
+    "MedicalHistory": "No known allergies.",
+    "Email": "1220839@isep.ipp.pt",
+    "PhoneNumber": "927654309",
+    "Address": "Rua da Ribeira"
 }
 
 //Insert backofficeUser
@@ -58,4 +101,6 @@
   "StaffAvailabilitySlots": "09:00-17:00",
   "UserId": "userId"
 }
+
+//PutStaff
 
