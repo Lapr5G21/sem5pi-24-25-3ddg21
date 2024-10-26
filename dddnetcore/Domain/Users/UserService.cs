@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DDDSample1.Domain;
+using DDDSample1.Domain.AuditLogs;
 using DDDSample1.Domain.Authentication;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
@@ -28,14 +29,18 @@ namespace DDDSample1.Users
         private readonly IConfiguration _configuration;
         private readonly AuthenticationService _authenticationService;
         private readonly IPatientRepository _patientRepository;
+        private readonly ILogRepository _logRepository;
+        private readonly IAnonimyzedPatientRepository _anonimyzedPatientRepository;
 
-        public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IConfiguration configuration,AuthenticationService authenticationService,IPatientRepository patientRepository)
+        public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IConfiguration configuration,AuthenticationService authenticationService,IPatientRepository patientRepository, ILogRepository logRepository, IAnonimyzedPatientRepository anonimyzedPatientRepository)
         {
             _unitOfWork = unitOfWork;
             _userRepository = userRepository;
             _configuration = configuration;
             _authenticationService=authenticationService;
             _patientRepository = patientRepository;
+            _logRepository = logRepository;
+            _anonimyzedPatientRepository = anonimyzedPatientRepository;
         }
 
         // Obtém todos os usuários
@@ -99,24 +104,45 @@ namespace DDDSample1.Users
             };
         }
 
-
+       
+        
         public async Task<UserDto> DeleteAsync(Username username)
         {
-            var user = await this._userRepository.GetByIdAsync(username);
+            var user = await _userRepository.GetByIdAsync(username);
             if (user == null) return null;
 
-            if (user.Active)
-                throw new BusinessRuleValidationException("It is not possible to delete an active user.");
+            var patient = await _patientRepository.FindByEmailAsync(new PatientEmail(user.Email.EmailString));
+            if (patient == null) return null;
 
-            this._userRepository.Remove(user);
-            await this._unitOfWork.CommitAsync();
+            using (var httpClient = new HttpClient())
+            {
+                string auth0Domain = _configuration["Auth0:Domain"];
 
-            return new UserDto
+                var auth0UserId = username;
+
+                var deleteResponse = await httpClient.DeleteAsync($"{auth0Domain}/api/v2/users/{auth0UserId}");
+                if (!deleteResponse.IsSuccessStatusCode)
+                {
+                    throw new Exception("Failed to delete user from Auth0.");
+                }
+
+                this._userRepository.Remove(user);
+                this._patientRepository.Remove(patient);
+                await this._unitOfWork.CommitAsync();
+
+                var log = _logRepository.LogDeleteOperation(LogCategoryType.USER, $"User with email {user.Email} was deleted");
+                await _logRepository.AddAsync(log);
+
+                var AnonimyzedPatient = _anonimyzedPatientRepository.CreateAnonimyzedPatient(patient.AppointmentHistory.ToString(),patient.MedicalRecord.ToString());
+                await _anonimyzedPatientRepository.AddAsync(AnonimyzedPatient);
+
+                return new UserDto
             {
                 Username = user.Id.ToString(),
                 Role = user.Role.ToString(),
                 Email = user.Email.ToString()
             };
+            }
         }
 
         public async Task<UserDto> FindByEmailAsync(string email)

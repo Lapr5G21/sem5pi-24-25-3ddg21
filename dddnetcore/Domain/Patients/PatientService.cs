@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using DDDSample1.Domain.Emails;
 using DDDSample1.Domain.AuditLogs;
+using DDDSample1.Infrastructure.AuditLogs;
 
 namespace DDDSample1.Domain.Patients
 {
@@ -18,15 +19,15 @@ namespace DDDSample1.Domain.Patients
         private readonly IPatientRepository _patientRepository;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-        private readonly LogService _logService;
+        private readonly ILogRepository _logRepository;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService,LogService logService)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService,ILogRepository logRepository)
         {
             _unitOfWork = unitOfWork;
             _patientRepository = patientRepository;
             _configuration = configuration;
             _emailService = emailService;
-            _logService = logService;
+            _logRepository = logRepository;
         }
 
         // Obtém todos os pacientes
@@ -172,7 +173,9 @@ namespace DDDSample1.Domain.Patients
 
     var details = string.Join(", ", changes);
 
-    await _logService.LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, $"Updated Patient {patient.FullName}: {details}");
+    var log = _logRepository.LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, $"Updated Patient {patient.FullName}: {details}");
+    await _logRepository.AddAsync(log);
+    await _unitOfWork.CommitAsync();
 
     return new PatientDto
     {

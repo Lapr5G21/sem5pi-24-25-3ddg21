@@ -18,7 +18,7 @@ namespace DDDSample1.Tests.Domain.Patients
         private readonly IConfiguration _configuration;
         private readonly PatientService _patientService;
         private readonly IEmailService _emailService;
-        private readonly LogService _logService;
+        private readonly ILogRepository _logService;
 
         public PatientServiceTests()
         {
