@@ -1,0 +1,102 @@
+@startuml logical-view
+
+left to right direction 
+ 
+ skinparam nodesep 90
+skinparam ranksep 220
+
+interface "API" as API
+interface "Database API" as DBAPI
+interface "Auth0 API" as A0API
+ 
+component "\nBackend" <<component>> {
+  
+portin " " as PIAPI
+
+portout " " as PODBAPI
+
+portout " " as POA0
+ 
+interface "Data Model API" as DMAPI
+interface "Persistence API" as PAPI
+interface "Controller API" as CAPI
+interface "Repo API" as RAPI
+interface "App Services API" as ASAPI
+interface "DTO API" as DTOAPI
+interface "Model API" as MAPI
+interface "VO API" as VOAPI
+ 
+  component "Data Model" as DataModel <<component>> {
+  }
+ 
+  component "DTO" as Dto <<component>> {
+  }
+
+  folder "Frameworks & Drivers Layer"{
+    component "Persistence" as Persistence <<component>> {
+  }
+ 
+    component "Routing" as Routing <<component>> {
+  }
+  }
+
+  folder "Interface Adapters Layer"{
+    component "Repository" as Repository <<component>> {
+  }
+ 
+    component "Controller" as Controller <<component>> {
+  }
+  }
+
+  folder "Application Bussiness Rules"{
+    component "Application Service" as ApplicationService <<component>> {
+  }
+
+   folder "Enterprise Bussiness Rules"{
+    component "Domain Model DDD" as DomainModel <<component>> {
+  }
+
+  }
+
+
+DomainModel -up- VOAPI
+DomainModel -down- MAPI
+
+ApplicationService -u-( VOAPI
+ApplicationService -r-( MAPI
+ApplicationService -u- POA0
+ApplicationService -r- ASAPI
+ApplicationService -l-( RAPI
+
+Controller -u-( VOAPI 
+Controller -d-( DTOAPI 
+Controller -u-( ASAPI 
+Controller -l-( CAPI
+
+Routing -u- PIAPI
+Routing -r-( CAPI
+Routing -l-( DTOAPI
+
+Repository -l-( VOAPI
+Repository -u-( PAPI
+Repository -d-( DMAPI
+Repository -r- RAPI
+
+Dto -l- DTOAPI
+
+DataModel -u- DMAPI
+
+Persistence -d- PAPI
+Persistence --( DMAPI
+Persistence -u- PODBAPI
+
+  }
+
+API -- PIAPI
+POA0 --( A0API
+PODBAPI -down-( DBAPI
+
+}
+ 
+ 
+@enduml
