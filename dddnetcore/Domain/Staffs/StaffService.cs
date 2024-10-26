@@ -145,11 +145,11 @@ namespace DDDSample1.Domain.Staffs
             if (oldEmail != staff.StaffEmail.ToString() || oldPhoneNumber != staff.StaffPhoneNumber.ToString())
             {
                 List<string> toEmail = new List<string> { staff.StaffEmail.ToString() };
-        await _emailService.SendEmailAsync(toEmail, "Your contact information has been updated.",
-        "Dear " + staff.StaffFullName.ToString() + ",\n\n" +
-        "Your contact information has been successfully updated.\n\n" +
-        "Thank you,\n" +
-        "The HealthCare Team");
+                await _emailService.SendEmailAsync(toEmail, "Your contact information has been updated.",
+                "Dear " + staff.StaffFullName.ToString() + ",\n\n" +
+                "Your contact information has been successfully updated.\n\n" +
+                "Thank you,\n" +
+                "The HealthCare Team");
             }
 
             var changes = new List<string>();
@@ -182,7 +182,7 @@ namespace DDDSample1.Domain.Staffs
                 StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
                 UserId = staff.UserId?.ToString() ?? "N/A"
             };
-}
+        }
 
 
         internal async Task<StaffDto> InactivateAsync(StaffId id)
