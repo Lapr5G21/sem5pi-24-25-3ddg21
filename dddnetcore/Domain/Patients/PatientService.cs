@@ -18,15 +18,15 @@ namespace DDDSample1.Domain.Patients
         private readonly IPatientRepository _patientRepository;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-      //  private readonly LogService _logService;
+        private readonly LogService _logService;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService,LogService logService)
         {
             _unitOfWork = unitOfWork;
             _patientRepository = patientRepository;
             _configuration = configuration;
             _emailService = emailService;
-    //        _logService = logService;
+            _logService = logService;
         }
 
         // Obtém todos os pacientes
@@ -172,7 +172,7 @@ namespace DDDSample1.Domain.Patients
 
     var details = string.Join(", ", changes);
 
-    //await _logService.LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, $"Updated Patient {patient.FullName}: {details}");
+    await _logService.LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, $"Updated Patient {patient.FullName}: {details}");
 
     return new PatientDto
     {

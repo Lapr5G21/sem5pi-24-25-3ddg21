@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using DDDSample1.Domain.Logs;
+using DDDSample1.Domain.AuditLogs;
 
-namespace DDDSample1.Infrastructure.Logs
+namespace DDDSample1.Infrastructure.AuditLogs
 {
     internal class LogsEntityTypeConfiguration : IEntityTypeConfiguration<Log>
     {
