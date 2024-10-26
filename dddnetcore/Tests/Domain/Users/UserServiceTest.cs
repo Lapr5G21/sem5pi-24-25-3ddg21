@@ -6,7 +6,6 @@ using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Users;
 using System.Collections.Generic;
-using DDDSample1.Infrastructure.Patients;
 using DDDSample1.Domain.Authentication;
 using DDDSample1.Domain.Patients;
 
@@ -19,6 +18,13 @@ namespace DDDSample1.Tests.Domain.Users
         private readonly UserService _userService;
         private readonly Mock<IPatientRepository> _patientRepositoryMock;
         private readonly AuthenticationService _authenticationServiceMock;
+
+        public UserServiceTest(Mock<IPatientRepository> patientRepositoryMock, AuthenticationService authenticationServiceMock)
+        {
+            _patientRepositoryMock = patientRepositoryMock;
+            _authenticationServiceMock = authenticationServiceMock;
+        }
+
         public UserServiceTest()
         {
             _userRepositoryMock = new Mock<IUserRepository>();

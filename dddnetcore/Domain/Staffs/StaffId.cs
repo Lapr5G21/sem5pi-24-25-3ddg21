@@ -27,9 +27,6 @@ namespace DDDSample1.Domain.Staffs
             return (string)base.ObjValue;
         }
 
-        public string Value()
-        {
-            return (string)base.ObjValue;
-        }
+        public new string Value() => (string)base.ObjValue;
     }
 }

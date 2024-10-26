@@ -14,11 +14,12 @@ namespace DDDSample1.Domain.Staffs
         public string SpecializationId { get; set; }
         public string AvailabilitySlots { get; set; }
 
-        public EditingStaffDto(string staffId, string firstName, string lastName, string email, string phoneNumber, string specializationId, string availabilitySlots)
+        public EditingStaffDto(string staffId, string firstName, string lastName, string fullName, string email, string phoneNumber, string specializationId, string availabilitySlots)
         {
             StaffId = staffId;
             FirstName = firstName;
             LastName = lastName;
+            FullName = fullName;
             Email = email;
             PhoneNumber = phoneNumber;
             SpecializationId = specializationId;
