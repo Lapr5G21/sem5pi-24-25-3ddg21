@@ -18,15 +18,15 @@ namespace DDDSample1.Domain.Patients
         private readonly IPatientRepository _patientRepository;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-        private readonly LogService _logService;
+      //  private readonly LogService _logService;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService,LogService logService)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _patientRepository = patientRepository;
             _configuration = configuration;
             _emailService = emailService;
-            _logService = logService;
+    //        _logService = logService;
         }
 
         // Obtém todos os pacientes
@@ -35,16 +35,20 @@ namespace DDDSample1.Domain.Patients
             var list = await this._patientRepository.GetAllAsync();
             List<PatientDto> listDto = list.ConvertAll(patient => new PatientDto
             {
-                MedicalRecordNumber = patient.Id.ToString(),
-                FirstName = patient.FirstName.ToString(),
-                LastName = patient.LastName.ToString(),
-                FullName = patient.FullName.ToString(),
-                BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.ToString(),
-                Email = patient.Email.ToString(),
-                PhoneNumber = patient.PhoneNumber.ToString(),
-                Address = patient.Address.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString()
+                MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",
+                FirstName = patient.FirstName?.ToString() ?? "N/A",
+                LastName = patient.LastName?.ToString() ?? "N/A",
+                FullName = patient.FullName?.ToString() ?? "N/A",
+                BirthDate = patient.BirthDate?.ToString() ?? "N/A",
+                Gender = patient.Gender.ToString() ?? "N/A",
+                Email = patient.Email?.ToString() ?? "N/A",
+                Address = patient.Address?.AddressString ?? "N/A",
+                MedicalRecord = patient.MedicalRecord?.ToString() ?? "N/A",
+                EmergencyContact = patient.EmergencyContact.ToString() ?? "N/A",
+                AppointmentHistory = patient.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+                User= patient.User?.Id.ToString() ?? "N/A",
+                PhoneNumber = patient.PhoneNumber?.ToString() ?? "N/A",
+                Active = patient.Active
             });
             return listDto;
         }
@@ -57,16 +61,20 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
-                MedicalRecordNumber = patient.Id.ToString(),
-                FirstName = patient.FirstName.ToString(),
-                LastName = patient.LastName.ToString(),
-                FullName = patient.FullName.ToString(),
-                BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.ToString(),
-                Email = patient.Email.ToString(),
-                PhoneNumber = patient.PhoneNumber.ToString(),
-                Address = patient.Address.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString()
+                MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",
+                FirstName = patient.FirstName?.ToString() ?? "N/A",
+                LastName = patient.LastName?.ToString() ?? "N/A",
+                FullName = patient.FullName?.ToString() ?? "N/A",
+                BirthDate = patient.BirthDate?.ToString() ?? "N/A",
+                Gender = patient.Gender.ToString() ?? "N/A",
+                Email = patient.Email?.ToString() ?? "N/A",
+                Address = patient.Address?.AddressString ?? "N/A",
+                MedicalRecord = patient.MedicalRecord?.ToString() ?? "N/A",
+                EmergencyContact = patient.EmergencyContact.ToString() ?? "N/A",
+                AppointmentHistory = patient.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+                User= patient.User?.Id.ToString() ?? "N/A",
+                PhoneNumber = patient.PhoneNumber?.ToString() ?? "N/A",
+                Active = patient.Active
             };
         }
 
@@ -95,16 +103,19 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
-                MedicalRecordNumber = patient.Id.AsString(),
-                FirstName = patient.FirstName.ToString(),
-                LastName = patient.LastName.ToString(),
-                FullName = patient.FullName.ToString(),
-                BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.ToString(),
-                Email = patient.Email.ToString(),
-                PhoneNumber = patient.PhoneNumber.ToString(),
-                Address = patient.Address.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString(),
+                MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",
+                FirstName = patient.FirstName?.ToString() ?? "N/A",
+                LastName = patient.LastName?.ToString() ?? "N/A",
+                FullName = patient.FullName?.ToString() ?? "N/A",
+                BirthDate = patient.BirthDate?.ToString() ?? "N/A",
+                Gender = patient.Gender.ToString() ?? "N/A",
+                Email = patient.Email?.ToString() ?? "N/A",
+                Address = patient.Address?.AddressString ?? "N/A",
+                MedicalRecord = patient.MedicalRecord?.ToString() ?? "N/A",
+                EmergencyContact = patient.EmergencyContact.ToString() ?? "N/A",
+                AppointmentHistory = patient.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+                User= patient.User?.Id.ToString() ?? "N/A",
+                PhoneNumber = patient.PhoneNumber?.ToString() ?? "N/A",
                 Active = patient.Active
             };
         }
@@ -161,22 +172,24 @@ namespace DDDSample1.Domain.Patients
 
     var details = string.Join(", ", changes);
 
-    await _logService.LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, $"Updated Patient {patient.FullName}: {details}");
+    //await _logService.LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, $"Updated Patient {patient.FullName}: {details}");
 
     return new PatientDto
     {
-        MedicalRecordNumber = patient.Id.AsString(),
-        FirstName = patient.FirstName.ToString(),
-        LastName = patient.LastName.ToString(),
-        FullName = patient.FullName.ToString(),
-        BirthDate = patient.BirthDate.ToString(),
-        Gender = patient.Gender.ToString(),
-        Email = patient.Email.ToString(),
-        PhoneNumber = patient.PhoneNumber.ToString(),
-        MedicalRecord = patient.MedicalRecord.ToString(),
-        Address = patient.Address.ToString(),
-        EmergencyContact = patient.EmergencyContact.ToString(),
-        Active = patient.Active
+       MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",
+                FirstName = patient.FirstName?.ToString() ?? "N/A",
+                LastName = patient.LastName?.ToString() ?? "N/A",
+                FullName = patient.FullName?.ToString() ?? "N/A",
+                BirthDate = patient.BirthDate?.ToString() ?? "N/A",
+                Gender = patient.Gender.ToString() ?? "N/A",
+                Email = patient.Email?.ToString() ?? "N/A",
+                Address = patient.Address?.AddressString ?? "N/A",
+                MedicalRecord = patient.MedicalRecord?.ToString() ?? "N/A",
+                EmergencyContact = patient.EmergencyContact.ToString() ?? "N/A",
+                AppointmentHistory = patient.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+                User= patient.User?.Id.ToString() ?? "N/A",
+                PhoneNumber = patient.PhoneNumber?.ToString() ?? "N/A",
+                Active = patient.Active
     };
 }
 
@@ -195,15 +208,19 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
-                FirstName = patient.FirstName.ToString(),
-                LastName = patient.LastName.ToString(),
-                FullName = patient.FullName.ToString(),
-                BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.ToString(),
-                Email = patient.Email.ToString(),
-                PhoneNumber = patient.PhoneNumber.ToString(),
-                Address = patient.Address.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString(),
+                MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",
+                FirstName = patient.FirstName?.ToString() ?? "N/A",
+                LastName = patient.LastName?.ToString() ?? "N/A",
+                FullName = patient.FullName?.ToString() ?? "N/A",
+                BirthDate = patient.BirthDate?.ToString() ?? "N/A",
+                Gender = patient.Gender.ToString() ?? "N/A",
+                Email = patient.Email?.ToString() ?? "N/A",
+                Address = patient.Address?.AddressString ?? "N/A",
+                MedicalRecord = patient.MedicalRecord?.ToString() ?? "N/A",
+                EmergencyContact = patient.EmergencyContact.ToString() ?? "N/A",
+                AppointmentHistory = patient.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+                User= patient.User?.Id.ToString() ?? "N/A",
+                PhoneNumber = patient.PhoneNumber?.ToString() ?? "N/A",
                 Active = patient.Active
             };
         }
@@ -219,17 +236,19 @@ namespace DDDSample1.Domain.Patients
 
             return new PatientDto
             {
-                MedicalRecordNumber = patient.Id.AsString(),
-                FirstName = patient.FirstName.ToString(),
-                LastName = patient.LastName.ToString(),
-                FullName = patient.FullName.ToString(),
-                BirthDate = patient.BirthDate.ToString(),
-                Gender = patient.Gender.ToString(),
-                Email = patient.Email.ToString(),
-                PhoneNumber = patient.PhoneNumber.ToString(),
-                Address = patient.Address.ToString(),
-                MedicalRecord = patient.MedicalRecord.ToString(),
-                EmergencyContact = patient.EmergencyContact.ToString(),
+                MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",
+                FirstName = patient.FirstName?.ToString() ?? "N/A",
+                LastName = patient.LastName?.ToString() ?? "N/A",
+                FullName = patient.FullName?.ToString() ?? "N/A",
+                BirthDate = patient.BirthDate?.ToString() ?? "N/A",
+                Gender = patient.Gender.ToString() ?? "N/A",
+                Email = patient.Email?.ToString() ?? "N/A",
+                Address = patient.Address?.AddressString ?? "N/A",
+                MedicalRecord = patient.MedicalRecord?.ToString() ?? "N/A",
+                EmergencyContact = patient.EmergencyContact.ToString() ?? "N/A",
+                AppointmentHistory = patient.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+                User= patient.User?.Id.ToString() ?? "N/A",
+                PhoneNumber = patient.PhoneNumber?.ToString() ?? "N/A",
                 Active = patient.Active
             };
         }
@@ -243,50 +262,58 @@ namespace DDDSample1.Domain.Patients
 
             if (!string.IsNullOrEmpty(searchDto.FullName))
             {
-                filteredPatients = filteredPatients.Where(o => o.FullName.ToString().Contains(searchDto.FullName));
-            }
-        
-            if (!string.IsNullOrEmpty(searchDto.BirthDate))
-            {
-                filteredPatients = filteredPatients.Where(o => o.BirthDate.ToString().Contains(searchDto.BirthDate));
+                filteredPatients = filteredPatients.Where(o => o.FullName != null && o.FullName.ToString().Contains(searchDto.FullName));
             }
 
-            if (!string.IsNullOrEmpty(searchDto.Gender.ToString()))
+            if (!string.IsNullOrEmpty(searchDto.BirthDate))
             {
-                filteredPatients = filteredPatients.Where(o => o.Gender.ToString().Contains(searchDto.Gender.ToString()));
+                filteredPatients = filteredPatients.Where(o => o.BirthDate != null && o.BirthDate.ToString().Contains(searchDto.BirthDate));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Gender?.ToString()))
+            {
+                filteredPatients = filteredPatients.Where(o=> o.Gender.ToString().Contains(searchDto.Gender.ToString()));
             }
 
             if (!string.IsNullOrEmpty(searchDto.Email))
             {
-                filteredPatients = filteredPatients.Where(o => o.Email.ToString().Contains(searchDto.Email));
+                filteredPatients = filteredPatients.Where(o => o.Email != null && o.Email.ToString().Contains(searchDto.Email));
             }
 
             if (!string.IsNullOrEmpty(searchDto.PhoneNumber))
             {
-                filteredPatients = filteredPatients.Where(o => o.PhoneNumber.ToString().Contains(searchDto.PhoneNumber));
+                filteredPatients = filteredPatients.Where(o => o.PhoneNumber != null && o.PhoneNumber.ToString().Contains(searchDto.PhoneNumber));
             }
 
             if (!string.IsNullOrEmpty(searchDto.MedicalRecordNumber))
             {
-                filteredPatients = filteredPatients.Where(o => o.Id.ToString().Contains(searchDto.MedicalRecordNumber));
+                filteredPatients = filteredPatients.Where(o => o.Id != null && o.Id.ToString().Contains(searchDto.MedicalRecordNumber));
             }
-        
+
             if (searchDto.Active != null)
             {
                 filteredPatients = filteredPatients.Where(o => o.Active == searchDto.Active);
             }
 
-            return patients.Select(o => new PatientDto
+            return filteredPatients.Select(o => new PatientDto
             {
-                MedicalRecordNumber = o.Id.AsString(),
-                FullName = o.FullName.ToString(),
-                BirthDate = o.BirthDate.ToString(),
-                Gender = o.Gender.ToString(),
-                Email = o.Email.ToString(),
-                PhoneNumber = o.PhoneNumber.ToString(),
-                Active = o.Active
+                MedicalRecordNumber = o.Id?.Value.ToString() ?? "N/A",
+                FirstName = o.FirstName?.ToString() ?? "N/A",
+                LastName = o.LastName?.ToString() ?? "N/A",
+                FullName = o.FullName?.ToString() ?? "N/A",
+                BirthDate = o.BirthDate?.ToString() ?? "N/A",
+                Gender = o.Gender.ToString() ?? "N/A",
+                Email = o.Email?.ToString() ?? "N/A",
+                Address = o.Address?.AddressString ?? "N/A",
+                MedicalRecord = o.MedicalRecord?.ToString() ?? "N/A",
+                EmergencyContact = o.EmergencyContact.ToString() ?? "N/A",
+                AppointmentHistory = o.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+                User= o.User?.Id.ToString() ?? "N/A",
+                PhoneNumber = o.PhoneNumber?.ToString() ?? "N/A",
+                Active = o.Active 
             }).ToList();
-            }    
+        }       
+
         
         
         public async Task<PatientMedicalRecordNumber> GenerateMedicalRecordNumberAsync()

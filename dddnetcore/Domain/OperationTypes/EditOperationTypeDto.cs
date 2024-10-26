@@ -10,7 +10,6 @@ namespace DDDSample1.Domain.OperationTypes
         public string Name { get; set; }
 
         public int EstimatedTimeDuration { get; set; }
-        
-        public List<OperationTypeSpecialization> Specializations { get; set; }
+        public List<CreatingOperationTypeSpecializationDto> Specializations { get; set; }
     }
 }

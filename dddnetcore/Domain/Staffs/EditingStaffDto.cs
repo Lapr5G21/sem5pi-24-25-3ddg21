@@ -12,9 +12,9 @@ namespace DDDSample1.Domain.Staffs
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string SpecializationId { get; set; }
-        public List<AvailabilitySlotDto> AvailabilitySlots { get; set; }
+        public string AvailabilitySlots { get; set; }
 
-        public EditingStaffDto(string staffId, string firstName, string lastName, string email, string phoneNumber, string specializationId, List<AvailabilitySlotDto> availabilitySlots)
+        public EditingStaffDto(string staffId, string firstName, string lastName, string email, string phoneNumber, string specializationId, string availabilitySlots)
         {
             StaffId = staffId;
             FirstName = firstName;
@@ -22,19 +22,7 @@ namespace DDDSample1.Domain.Staffs
             Email = email;
             PhoneNumber = phoneNumber;
             SpecializationId = specializationId;
-            AvailabilitySlots = availabilitySlots ?? new List<AvailabilitySlotDto>(); // Previne NullReferenceException
-        }
-    }
-
-    public class AvailabilitySlotDto
-    {
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
-
-        public AvailabilitySlotDto(DateTime start, DateTime end)
-        {
-            Start = start;
-            End = end;
+            AvailabilitySlots = availabilitySlots; 
         }
     }
 }

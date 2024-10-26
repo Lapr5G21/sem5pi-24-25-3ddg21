@@ -109,7 +109,7 @@ namespace DDDSample1.Domain.Patients
         public void ChangeMedicalRecord(PatientMedicalRecord newMedicalRecord)
         {
             if (newMedicalRecord == null) throw new ArgumentNullException(nameof(newMedicalRecord));
-            this.MedicalRecord = newMedicalRecord;
+            this.MedicalRecord = new PatientMedicalRecord(this.MedicalRecord.ToString() + "; " + newMedicalRecord.ToString());
         }
 
         public void ChangeEmergencyContact(PatientEmergencyContact newEmergencyContact)
@@ -121,7 +121,7 @@ namespace DDDSample1.Domain.Patients
         public void ChangeAppointmentHistory(PatientAppointmentHistory newAppointmentHistory)
         {
             if (newAppointmentHistory == null) throw new ArgumentNullException(nameof(newAppointmentHistory));
-            this.AppointmentHistory = newAppointmentHistory;
+            this.AppointmentHistory = new PatientAppointmentHistory(this.AppointmentHistory.ToString() + "; " + newAppointmentHistory.ToString());
         }
 
         public void SetUser(User user){

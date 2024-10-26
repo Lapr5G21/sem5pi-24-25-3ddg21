@@ -32,7 +32,6 @@ namespace DDDSample1.Controllers
 
         // GET: api/operationRequests List Of Operation Requests
         [HttpGet]
-
         public async Task<ActionResult<IEnumerable<OperationRequest>>> GetAll(){
 
             var operationRequests  = await _service.GetAllAsync();
@@ -77,7 +76,7 @@ namespace DDDSample1.Controllers
 
         //POST: api/operationRequests
         [HttpPost]
-        [Authorize(Policy="DoctorRole")]
+        //[Authorize(Policy="DoctorRole")]
         public async Task<ActionResult<OperationRequestDto>> Create([FromBody] CreatingOperationRequestDto dto){
 
             if (dto == null)

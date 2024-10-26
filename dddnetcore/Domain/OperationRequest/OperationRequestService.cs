@@ -168,6 +168,10 @@ private readonly IPatientRepository _PatientRepository;
             await this._repo.AddAsync(operationRequest);
             await this._unitOfWork.CommitAsync();
 
+            patient.ChangeMedicalRecord(new PatientMedicalRecord("Operation request with id "+operationRequest.Id));
+            await this._unitOfWork.CommitAsync();
+
+
             return new OperationRequestDto 
             { 
                 Id = operationRequest.Id.AsGuid(),

@@ -21,7 +21,7 @@ namespace DDDSample1.Domain.Patients
         public string MedicalRecord { get; set; }
         public string EmergencyContact { get; set; }
         public string AppointmentHistory { get; set; }
-        public User User { get; set; }
+        public string User { get; set; }
         public bool Active { get; set; }
     }
 }
