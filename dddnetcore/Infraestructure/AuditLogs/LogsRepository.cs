@@ -1,7 +1,7 @@
-using DDDSample1.Domain.Logs;
+using DDDSample1.Domain.AuditLogs;
 using DDDSample1.Infrastructure.Shared;
 
-namespace DDDSample1.Infrastructure.Logs
+namespace DDDSample1.Infrastructure.AuditLogs
 {
     public class LogsRepository : BaseRepository<Log, LogId>, ILogRepository
     {
