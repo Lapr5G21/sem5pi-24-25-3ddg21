@@ -7,6 +7,7 @@ participant SERVICE as "PatientService <<service>>"
 participant PATIENT as "Patient <<domain>>"
 participant REPO as "Patient Repository"
 participant EMAILSERVICE as "EmailService <<service>>"
+participant LOGREPO as "Log Repository"
 participant DTO as "editingPatientDTO : PatientDTO"
 
 Admin-> CTRL : PUT /api/patients/{id}
@@ -39,10 +40,19 @@ activate SERVICE
     EMAILSERVICE --> SERVICE : emailSent
     deactivate EMAILSERVICE
 
-    activate DTO
+    SERVICE -> LOGREPO : LogUpdateOperation(LogCategoryType.PATIENT_PROFILE, changes)
+    activate LOGREPO
+
+    LOGREPO --> SERVICE : log
+    deactivate LOGREPO
+
+
+    SERVICE -> LOGREPO : AddAsync(log)
+    deactivate LOGREPO
     
     SERVICE -> DTO : create(editingPatientDTO.FirstName, editingPatientDTO.LastName, editingPatientDTO.FullName, editingpatientDTO.BirthDate, editingPatientDTO.Gender, editingPatientDTO.Email, editingPatientDTO.PhoneNumber, editingPatientDTO.Address, editingPatientDTO.EmergencyContact)
-    
+    activate DTO
+
     DTO --> SERVICE : patientDto
     deactivate DTO
 

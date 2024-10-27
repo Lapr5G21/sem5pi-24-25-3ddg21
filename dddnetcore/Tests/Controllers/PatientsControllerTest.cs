@@ -241,7 +241,7 @@ namespace DDDSample1.Tests.Controllers
             {
                 new PatientDto
                 {
-                    MedicalRecordNumber = "123456",
+                    MedicalRecordNumber = "202410123456",
                     FirstName = "João",
                     LastName = "Silva",
                 }
