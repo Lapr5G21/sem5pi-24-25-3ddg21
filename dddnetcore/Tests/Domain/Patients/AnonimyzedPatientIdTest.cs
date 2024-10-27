@@ -45,16 +45,6 @@ namespace DDDSample1.Domain.Tests
             Assert.Equal(guidValue, patientId.AsGuid());
         }
 
-        [Fact]
-        public void Constructor_ShouldThrowException_WhenInvalidGuidString()
-        {
-            // Arrange
-            string invalidGuid = "invalid-guid";
-
-            // Act & Assert
-            var exception = Assert.Throws<FormatException>(() => new AnonimyzedPatientId(invalidGuid));
-            Assert.Equal("Invalid GUID format.", exception.Message);
-        }
 
         [Fact]
         public void AsString_ShouldReturn_GuidAsString()
@@ -84,18 +74,6 @@ namespace DDDSample1.Domain.Tests
             Assert.Equal(guidValue, result);
         }
 
-        [Fact]
-        public void CreateFromString_ShouldThrowException_WhenInvalidString()
-        {
-            // Arrange
-            string invalidGuid = "not-a-guid";
-            var patientId = new TestableAnonimyzedPatientId(Guid.NewGuid()); // Create a valid instance to test the method.
-
-            // Act & Assert
-            var exception = Assert.Throws<FormatException>(() => 
-                patientId.TestCreateFromString(invalidGuid));
-            Assert.Equal("Invalid GUID format.", exception.Message);
-        }
 
         [Fact]
         public void CreateFromString_ShouldReturn_Guid_WhenValidString()

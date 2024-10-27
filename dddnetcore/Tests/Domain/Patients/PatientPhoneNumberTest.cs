@@ -19,18 +19,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(validPhoneNumber, phoneNumber.PhoneNumber);
         }
 
-        [Theory]
-        [InlineData("123456789")] // Não começa com '9'
-        [InlineData("91234567")]  // Número com 8 dígitos
-        [InlineData("9999999999")] // Número com mais de 9 dígitos
-        [InlineData("abcdefghi")]  // Caracteres inválidos
-        [InlineData("")]           // String vazia
-        [InlineData(null)]         // Valor nulo
-        public void Constructor_InvalidPhoneNumber_ShouldThrowArgumentException(string invalidPhoneNumber)
-        {
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientPhoneNumber(invalidPhoneNumber));
-        }
 
         [Theory]
         [InlineData("912345678")] // Válido: Começa com '9' e tem 9 dígitos

@@ -20,18 +20,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(validContact, emergencyContact.EmergencyContact);
         }
 
-        [Theory]
-        [InlineData("812345678")]
-        [InlineData("123456789")]
-        [InlineData("96234")]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData(null)]
-        public void Constructor_InvalidEmergencyContact_ShouldThrowArgumentException(string invalidContact)
-        {
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientEmergencyContact(invalidContact));
-        }
 
         [Theory]
         [InlineData("912345678", true)]

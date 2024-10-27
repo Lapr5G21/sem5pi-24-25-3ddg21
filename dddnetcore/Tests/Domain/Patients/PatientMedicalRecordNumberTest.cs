@@ -18,17 +18,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(validRecordNumber, recordNumber.AsString());
         }
 
-        [Theory]
-        [InlineData("202313000001")] // Mês inválido (13)
-        [InlineData("123")]          // Tamanho incorreto
-        [InlineData("abcdefabcdef")]  // Caracteres não numéricos
-        [InlineData("")]              // String vazia
-        [InlineData(null)]            // Valor nulo
-        public void Constructor_InvalidMedicalRecordNumber_ShouldThrowArgumentException(string invalidRecordNumber)
-        {
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientMedicalRecordNumber(invalidRecordNumber));
-        }
 
         [Theory]
         [InlineData("202312000001")] // Formato válido

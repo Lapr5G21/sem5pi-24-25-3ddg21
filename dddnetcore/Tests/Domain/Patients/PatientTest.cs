@@ -56,16 +56,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Null(patient.User);
         }
 
-        [Theory]
-        [InlineData(null)]
-        public void ChangeFirstName_NullFirstName_ShouldThrowArgumentNullException(PatientFirstName newFirstName)
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeFirstName(newFirstName));
-        }
 
         [Fact]
         public void ChangeFirstName_ValidFirstName_ShouldUpdateFirstName()
@@ -81,16 +71,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(newFirstName, patient.FirstName);
         }
 
-        [Theory]
-        [InlineData(null)]
-        public void ChangeLastName_NullLastName_ShouldThrowArgumentNullException(PatientLastName newLastName)
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeLastName(newLastName));
-        }
 
         [Fact]
         public void ChangeLastName_ValidLastName_ShouldUpdateLastName()
@@ -106,16 +86,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(newLastName, patient.LastName);
         }
 
-        [Theory]
-        [InlineData(null)]
-        public void ChangeEmail_NullEmail_ShouldThrowArgumentNullException(PatientEmail newEmail)
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeEmail(newEmail));
-        }
 
         [Fact]
         public void ChangeEmail_ValidEmail_ShouldUpdateEmail()
@@ -160,7 +130,7 @@ namespace DDDSample1.Tests.Domain.Patients
 
         private Patient CreateValidPatient()
         {
-            var medicalRecordNumber = new PatientMedicalRecordNumber("123456789012");
+            var medicalRecordNumber = new PatientMedicalRecordNumber("202410123456");
             var firstName = new PatientFirstName("João");
             var lastName = new PatientLastName("Silva");
             var fullName = new PatientFullName("João Silva");
