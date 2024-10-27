@@ -1,0 +1,24 @@
+// POST https://localhost:5001/api/patients
+
+pm.test("Response status code is 201", function () {
+    pm.response.to.have.status(201);
+});
+
+
+pm.test("Response time is less than 200ms", function () {
+  pm.expect(pm.response.responseTime).to.be.below(200);
+});
+
+
+pm.test("Response has the required Content-Type header with value application/json", function () {
+    pm.expect(pm.response.headers.get("Content-Type")).to.include("application/json");
+});
+
+
+pm.test("Response schema is a valid JSON array", function () {
+    const responseData = pm.response.json();
+    
+    pm.expect(responseData).to.be.an('array');
+});
+
+

@@ -19,6 +19,7 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(validPhoneNumber, phoneNumber.PhoneNumber);
         }
 
+<<<<<<< HEAD
         [Fact]
         public void Constructor_InvalidPhoneNumber_ShouldThrowArgumentException_WhenTooShort()
         {
@@ -28,6 +29,8 @@ namespace DDDSample1.Tests.Domain.Patients
             // Act & Assert
             Assert.Throws<ArgumentException>(() => new PatientPhoneNumber(invalidPhoneNumber));
         }
+=======
+>>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
 
         [Fact]
         public void Constructor_InvalidPhoneNumber_ShouldThrowArgumentException_WhenTooLong()

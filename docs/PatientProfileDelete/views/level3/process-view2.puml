@@ -6,6 +6,8 @@ participant CTRL as "PatientsController"
 participant SERVICE as "PatientService <<service>>"
 participant PATIENT as "Patient <<domain>>"
 participant REPO as "PatientRepository"
+participant LOGREPO as "LogRepository"
+participant ANONREPO as "AnonimyzedPatientRepository" 
 participant DTO as "PatientDTO : PatientDTO"
 
 Admin-> CTRL : DELETE /api/patients/{id}/hard
@@ -31,6 +33,25 @@ activate SERVICE
 
     REPO --> SERVICE : patientRemoved
     deactivate REPO
+
+    SERVICE -> LOGREPO : LogDeleteOperation(LogCategoryType.PATIENT_PROFILE, patientRemoved)
+    activate LOGREPO
+
+    LOGREPO --> SERVICE : log
+    deactivate LOGREPO
+
+    SERVICE -> ANONREPO : CreateAnonimyzedPatient(patientRemoved.MedicalRecord.MedicalRecord,patientRemoved.AppointmentHistory.AppointmentHistoryString)
+    activate ANONREPO
+
+    ANONREPO --> SERVICE : anonimyzedPatient
+    deactivate ANONREPO
+
+
+    SERVICE -> LOGREPO : AddAsync(log)
+    deactivate LOGREPO
+
+    SERVICE -> ANONREPO : AddAsync(anonimyzedPatient)
+    deactivate ANONREPO
 
     activate DTO
     

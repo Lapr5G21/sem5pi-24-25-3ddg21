@@ -54,6 +54,10 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Null(patient.User);
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
         [Fact]
         public void ChangeFirstName_ValidFirstName_ShouldUpdateFirstName()
         {
@@ -65,6 +69,10 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(newFirstName, patient.FirstName);
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
         [Fact]
         public void ChangeLastName_ValidLastName_ShouldUpdateLastName()
         {
@@ -75,7 +83,11 @@ namespace DDDSample1.Tests.Domain.Patients
 
             Assert.Equal(newLastName, patient.LastName);
         }
+<<<<<<< HEAD
        
+=======
+
+>>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
 
         [Fact]
         public void ChangeEmail_ValidEmail_ShouldUpdateEmail()
@@ -110,7 +122,7 @@ namespace DDDSample1.Tests.Domain.Patients
 
         private Patient CreateValidPatient()
         {
-            var medicalRecordNumber = new PatientMedicalRecordNumber("123456789012");
+            var medicalRecordNumber = new PatientMedicalRecordNumber("202410123456");
             var firstName = new PatientFirstName("João");
             var lastName = new PatientLastName("Silva");
             var fullName = new PatientFullName("João Silva");

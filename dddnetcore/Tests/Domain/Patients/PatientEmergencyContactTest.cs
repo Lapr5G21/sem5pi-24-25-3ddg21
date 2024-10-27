@@ -22,6 +22,7 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(validContact3, emergencyContact3.EmergencyContact);
         }
 
+<<<<<<< HEAD
         [Fact]
         public void IsValidEmergencyContact_ValidContact_ShouldReturnTrue()
         {
@@ -37,6 +38,8 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.True(result2);
             Assert.True(result3);
         }
+=======
+>>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
 
         [Fact]
         public void IsValidEmergencyContact_InvalidContact_ShouldReturnFalse()
