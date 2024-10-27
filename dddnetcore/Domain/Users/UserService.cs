@@ -43,7 +43,6 @@ namespace DDDSample1.Users
             _anonimyzedPatientRepository = anonimyzedPatientRepository;
         }
 
-        // Obtém todos os usuários
         public async Task<List<UserDto>> GetAllAsync()
         {
             var list = await this._userRepository.GetAllAsync();
