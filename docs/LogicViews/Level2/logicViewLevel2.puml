@@ -1,6 +1,10 @@
 @startuml logical-view
 top to bottom direction
  
+
+skinparam nodesep 80
+skinparam ranksep 80
+
 interface "API" as API
 interface "Auth0" as AUTH0
 interface "SMTP Microsoft 365" as SMTP
