@@ -3,12 +3,11 @@
 autonumber
 participant SYS as "Backend Management" <<system (C4)>>
 
-?o-> SYS : POST /api/users/backoffice
+?o-> SYS : POST /api/users
 activate SYS
 
-SYS -> SYS : createBackofficeUser(creatingBackofficeUserDTO)
+SYS -> SYS : registerUser(creatingUserDto)
 <-- SYS : 201 Created
 deactivate SYS
-
 
 @enduml

@@ -4,35 +4,19 @@ autonumber
 participant BE as "Backend Management" <<system (C4)>>
 participant DB as "Database"
 
-?o-> BE : POST /api/users/backoffice
+?o-> BE : POST /api/users
+
 activate BE
 
-BE -> DB : get email
+BE -> DB : save user
 
 activate DB 
 
-DB -> BE : userEmail
-
-deactivate DB 
-
-
-BE -> DB : create user
-
-activate DB 
-
-DB -> BE : sends email to set password
+DB --> BE : user 
 
 deactivate DB
 
-BE -> DB : enter the link and set password
-
-activate DB 
-
-DB -> BE : sends a registration confirmation email
-
-deactivate DB 
-
-<- BE : 201 Created
+<-- BE : 201 Created
 
 deactivate BE
 

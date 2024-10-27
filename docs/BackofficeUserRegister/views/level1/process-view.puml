@@ -4,22 +4,9 @@ actor Admin as "Admin"
 participant SYS as "Backoffice System" <<system (C4)>>
 
 activate Admin 
-
-Admin --> SYS : asks to register backoffice user
-
-
+Admin -> SYS : asks to register for the healthcare system
 activate SYS 
-
-SYS --> Admin : sends a link by email to set the password
-
-deactivate SYS
-
-
-Admin --> SYS : enter the link and set the password
-
-activate SYS 
-
-SYS --> Admin : sends a registration confirmation by email
+SYS --> Admin : confirms the registration
 
 deactivate SYS
 deactivate Admin

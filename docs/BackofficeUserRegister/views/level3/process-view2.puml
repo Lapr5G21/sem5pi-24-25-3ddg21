@@ -1,46 +1,69 @@
 @startuml 
 autonumber
+actor Admin as Admin
 participant CTRL as "UsersController"
 participant SERVICE as "UserService <<service>>"
 participant User as "User <<domain>>"
-participant BackofficeUser as "Backoffice User <<domain>>"
 participant USERREPO as "UserRepository"
+participant DTO as "creatingUserDTO : UserDTO"
+participant CONFIG as "Configuration"
+participant AUTH0User as "Auth0User"
+participant AUTH0SERVICE as "Auth0Service"
 
-?o-> CTRL : POST /api/users/BackofficeUsers
+activate Admin
+Admin -> CTRL : POST /api/users
 activate CTRL
-
-CTRL -> SERVICE : createBackofficeUser(creatingBackofficeUserDTO)
+CTRL -> SERVICE : addBackofficeUserAsync(creatingUserDTO)
 activate SERVICE
 
-SERVICE -> USERREPO : GetByEmailAsync(creatingUserDTO.email)
-activate USERREPO
 
-    USERREPO -> SERVICE : sends email to set password
-    deactivate USERREPO
-
-    SERVICE -> User : create(creatingUserDTO.email, creatingUserDTO.username, creatingUserDTO.role)
+    SERVICE -> User : create(creatingUserDTO.role, creatingUserDTO.email, creatingUserDTO.password)
     activate User
 
-    User -> SERVICE : userCreated
+    User --> SERVICE : userCreated
     deactivate User
 
-    SERVICE -> BackofficeUser : setUser(userCreated)
+    SERVICE -> CONFIG : Get Auth0:Domain, Auth0:ClientId, Auth0:ClientSecret, Auth0:Audience
+    activate CONFIG
+    CONFIG --> SERVICE : return values
+    deactivate CONFIG
+
+    SERVICE -> AUTH0USER : create(dto.Email,dto.Password,auth0ClientId,auth0ClientSecret,role)
+
+    activate AUTH0USER
+
+    AUTH0USER --> SERVICE : auth0User
+
+    deactivate AUTH0USER
+
+    SERVICE -> AUTH0SERVICE : PostAsJsonAsync($"https://{auth0Domain}/api/v2/users", auth0User)
+
+    activate AUTH0SERVICE 
+
+    AUTH0SERVICE --> SERVICE : responseSucceed
+    deactivate AUTH0SERVICE
+
     SERVICE -> USERREPO : save(userCreated)
     activate USERREPO
 
-    USERREPO -> SERVICE : userSaved
+    USERREPO --> SERVICE : userSaved
     deactivate USERREPO
 
-    SERVICE -> USERREPO : save(backofficeUser)
-    activate USERREPO
 
-    USERREPO -> SERVICE : backofficeUserSaved
-    deactivate USERREPO
+    SERVICE -> DTO : create(creatingUserDTO.username, user.role, creatingUserDTO.email) 
 
-    SERVICE -> CTRL : userDTO
+    activate DTO
+
+    DTO --> SERVICE : userDTO
+
+    deactivate DTO 
+
+    SERVICE --> CTRL : userDTO
+
+    deactivate SERVICE
     
-    <-- CTRL : 201 User created
+    Admin <-- CTRL : 201 User created and user information
 
-deactivate SERVICE
 deactivate CTRL
+deactivate Admin
 @enduml
