@@ -106,17 +106,7 @@ namespace DDDSample1.Controllers
             try
             {
 
-                var userId = User.FindFirst("sub")?.Value;
-
-                if (userId == null)
-                        {
-                            return Unauthorized(new { Message = "User is not authenticated" });
-                        }
-
-                    
-                    var staffId = new StaffId(userId); 
-
-                var updatedOperationRequest = await _service.UpdateAsync(dto, staffId);
+                var updatedOperationRequest = await _service.UpdateAsync(dto);
 
                 if (updatedOperationRequest == null)
                 {
@@ -133,24 +123,14 @@ namespace DDDSample1.Controllers
 
 
 
-// DELETE: api/operationRequests/{id}/delete
+        // DELETE: api/operationRequests/{id}/delete
         [HttpDelete("{id}/delete")]
         public async Task<ActionResult<OperationRequestDto>> Delete(string id)
         {
             try
             {
-               
-                 var userId = User.FindFirst("sub")?.Value;
 
-                    if (userId == null)
-                        {
-                            return Unauthorized(new { Message = "User is not authenticated" });
-                        }
-
-                    
-                    var staffId = new StaffId(userId); 
-
-                var deletedOperationRequest = await _service.DeleteAsync(new OperationRequestId(id), staffId);
+                var deletedOperationRequest = await _service.DeleteAsync(new OperationRequestId(id));
 
                 if (!deletedOperationRequest)
                 {

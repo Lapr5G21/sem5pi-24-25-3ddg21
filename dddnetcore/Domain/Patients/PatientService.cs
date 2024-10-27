@@ -129,7 +129,7 @@ namespace DDDSample1.Domain.Patients
     {
         var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
 
-        if (patient == null) return null;
+        if (patient == null) throw new BusinessRuleValidationException("Pacient not found");
 
         var oldEmail = patient.Email.ToString();
         var oldPhoneNumber = patient.PhoneNumber.ToString();
@@ -198,9 +198,6 @@ namespace DDDSample1.Domain.Patients
     };
 }
 
-
-
-
         internal async Task<PatientDto> InactivateAsync(PatientMedicalRecordNumber mrn)
         {
             
@@ -234,7 +231,7 @@ namespace DDDSample1.Domain.Patients
         public async Task<PatientDto> DeleteAsync(PatientMedicalRecordNumber mrn)
         {
             var patient = await this._patientRepository.GetByIdAsync(mrn);
-            if (patient == null) return null;
+            if (patient == null) throw new BusinessRuleValidationException("Pacient not found");
 
             this._patientRepository.Remove(patient);
             await this._unitOfWork.CommitAsync();

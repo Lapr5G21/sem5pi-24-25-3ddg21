@@ -1,0 +1,123 @@
+//Test gets
+
+pm.test("Get all patients successfully", function () {
+    pm.response.to.have.status(200); 
+    const responseData = pm.response.json(); 
+    pm.expect(responseData).to.be.an("array");
+    pm.expect(responseData).to.not.be.empty; 
+    responseData.forEach(patient => {
+        pm.expect(patient).to.have.property("medicalRecordNumber"); 
+        pm.expect(patient).to.have.property("fullName"); 
+    });
+});
+
+pm.test("Get patient by ID successfully", function () {
+    pm.response.to.have.status(200); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("medicalRecordNumber", "202410000001"); 
+    pm.expect(responseData).to.have.property("fullName", "João Silva"); 
+    pm.expect(responseData).to.have.property("email", "joao.silva@example.com"); 
+});
+
+pm.test("Get patient by ID not found", function () {
+    pm.response.to.have.status(404); 
+});
+
+
+// Test Posts
+
+pm.test("Create patient successfully", function () {
+    pm.response.to.have.status(201); 
+    const responseData = pm.response.json(); 
+    pm.expect(responseData).to.have.property("medicalRecordNumber");
+    pm.expect(responseData.firstName).to.equal("Bruno"); 
+    pm.expect(responseData.lastName).to.equal("Ribeiro");
+    pm.expect(responseData.email).to.equal("emailtest12345@gmail.com");
+});
+
+pm.test("Create patient with empty FirstName", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: Name cannot be empty or null."); 
+});
+pm.test("Create patient with empty LastName", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: Name cannot be empty or null."); 
+});
+pm.test("Create patient with empty FullName", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: Name cannot be empty or null."); 
+});
+
+pm.test("Create patient with empty DateBirth", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: Date of Birth cannot be empty."); 
+});
+
+pm.test("Create patient with empty Email", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: Email cannot be empty."); 
+});
+
+pm.test("Create patient with empty or invalid PhoneNumber", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: The phone number introduced is not portuguese or is invalid"); 
+});
+
+pm.test("Create patient with empty Address", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: Address cannot be empty."); 
+});
+
+pm.test("Create patient with empty or invalid EmergencyPhoneNumber", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text(); 
+    pm.expect(responseData).to.include("DDDSample1.Domain.Shared.BusinessRuleValidationException: The emergency contact introduced is not portuguese or it´s invalid"); 
+});
+
+pm.test("Create patient with duplicate phone number", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Duplicate entry"); 
+});
+
+pm.test("Create patient with duplicate email", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Duplicate entry"); 
+});
+
+//Put Tests
+
+pm.test("Deve retornar 200", function () {
+    pm.response.to.have.status(200);
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.firstName).to.eql("Vasco");
+    pm.expect(responseJson.lastName).to.eql("Teixeira");
+    pm.expect(responseJson.email).to.eql("1220839@isep.ipp.pt");
+    pm.expect(responseJson.phoneNumber).to.eql("927654309");
+});
+
+pm.test("Deve retornar status 404 para paciente inexistente", function () {
+    pm.response.to.have.status(400);
+    pm.expect(pm.response.json().message).to.eql("Pacient not found"); 
+});
+
+//Delete Tests
+
+pm.test("Deve retornar status 200", function () {
+    pm.response.to.have.status(200);
+    const responseJson = pm.response.json();
+    pm.expect(responseJson.medicalRecordNumber).to.eql("202410000005");
+});
+
+pm.test("Deve retornar status 404 para paciente inexistente", function () {
+    pm.response.to.have.status(400);
+    pm.expect(pm.response.json().message).to.eql("Pacient not found"); // Ajuste conforme a mensagem retornada
+});

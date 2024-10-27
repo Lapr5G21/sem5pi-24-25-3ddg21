@@ -1,0 +1,82 @@
+pm.test("OperationRequest created successfully", function () {
+    pm.response.to.have.status(201);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("id");
+    pm.expect(responseData).to.have.property("priorityLevel");
+    pm.expect(responseData.priorityLevel).to.eql("Urgent"); 
+});
+
+pm.test("Error for invalid deadline date", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("A data limite deve ser no futuro.");
+});
+
+pm.test("Error for invalid priority level", function () {
+     pm.response.to.have.status(500);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("was not found");
+});
+
+pm.test("Error for invalid status", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("was not found");
+});
+
+pm.test("Error for non-existing doctor", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Doctor doesnt exist");
+});
+
+pm.test("Error for non-existing patient", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Patient doesnt exist");
+});
+
+pm.test("Error for invalid operation type ID", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Operation Type doesnt exist");
+});
+
+pm.test("Get all operation Requests returns 200", function () {
+    pm.response.to.have.status(200);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.be.an('array');
+});
+
+pm.test("Get operation type by ID returns 200", function () {
+    pm.response.to.have.status(200);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("id").that.equals("3e6834ac-8833-44ca-a820-833d7e0865bf");
+});
+
+pm.test("Get operation type by ID returns Not Found for invalid ID", function () {
+    pm.response.to.have.status(500);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("No operation request found with that ID.");
+});
+
+//Test Put 
+pm.test("Update operation Request successfully", function () {
+    pm.response.to.have.status(200);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("id", "3e6834ac-8833-44ca-a820-833d7e0865bf");
+    pm.expect(responseData).to.have.property("status", "onSchedule");
+    pm.expect(responseData).to.have.property("deadlineDate", "2024-10-29T00:00:00");
+});
+
+pm.test("Return 404 for invalid operation request ID", function () {
+    pm.response.to.have.status(400);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("ID mismatch.");
+});
+
+
+//Delete Tests
+pm.test(" delete operation request successfully", function () {
+    pm.response.to.have.status(200); 
+});

@@ -134,18 +134,29 @@ public async Task GetByIdAsync_ShouldReturnOperationRequestDto_WhenFound()
         }
 
         [Fact]
-        public async Task DeleteAsync()
+        public async Task DeleteAsyncTest()
         {
-            
             var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
             var patientMedicalRecordNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
             var operationRequestId = new OperationRequestId(Guid.NewGuid());
             var staffId = new StaffId(Guid.NewGuid());
-            var operationRequest = new DDDSample1.Domain.OperationRequest.OperationRequest(Priority.Elective, new OperationTypeId(Guid.NewGuid()), new DeadlineDate(DateTime.UtcNow.AddDays(10)), Status.Scheduled, staffId, patientMedicalRecordNumber);
+    
+            var operationRequest = new DDDSample1.Domain.OperationRequest.OperationRequest(
+            Priority.Elective,
+            new OperationTypeId(Guid.NewGuid()),
+            new DeadlineDate(DateTime.UtcNow.AddDays(10)),
+            Status.Scheduled,
+            staffId,
+            patientMedicalRecordNumber
+            );
 
-            _mockOperationRequestRepo.Setup(repo => repo.GetByIdAsync(operationRequestId)).ReturnsAsync(operationRequest);
+            _mockOperationRequestRepo.Setup(repo => repo.GetByIdAsync(operationRequestId))
+                             .ReturnsAsync(operationRequest);
+            
+            Console.WriteLine(operationRequestId);
+            Console.WriteLine(operationRequest.Id);
 
-            await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _service.DeleteAsync(operationRequestId, new StaffId(Guid.NewGuid())));
+           await Assert.ThrowsAsync<KeyNotFoundException>(() => _service.DeleteAsync(operationRequest.Id));
         }
         
     }

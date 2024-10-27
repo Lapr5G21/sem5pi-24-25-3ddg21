@@ -1,0 +1,54 @@
+pm.test("Get all users successfully", function () {
+    pm.response.to.have.status(200); 
+    const responseData = pm.response.json(); 
+    pm.expect(responseData).to.be.an("array");
+    pm.expect(responseData).to.not.be.empty; 
+    responseData.forEach(user => {
+        pm.expect(user).to.have.property("role"); 
+        pm.expect(user).to.have.property("email"); 
+    });
+});
+
+pm.test("Get user by Username successfully", function () {
+    pm.response.to.have.status(200); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("username", "D20240001@healthcare.com"); 
+    pm.expect(responseData).to.have.property("role", "Doctor"); 
+    pm.expect(responseData).to.have.property("email", "1221352@isep.ipp.pt"); 
+});
+
+pm.test("Get patient by ID not found", function () {
+    pm.response.to.have.status(404); 
+});
+
+//Post Tests
+
+pm.test("Create USER successfully", function () {
+    pm.response.to.have.status(201); 
+    const responseData = pm.response.json(); 
+    pm.expect(responseData).to.have.property("username");
+    pm.expect(responseData.email).to.equal("1221352teste2@isep.ipp.pt"); 
+    pm.expect(responseData.role).to.equal("Doctor");
+});
+
+pm.test("Test Login Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Test Login contains access token", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData).to.have.property("loginToken");
+});
+
+pm.test("Test Login contains roles array", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData).to.have.property("roles");
+});
+
+//Delete User 
+
+pm.test("Response indicates confirmation email sent", function () {
+    var jsonData = pm.response.json();
+    pm.expect(jsonData.success).to.eql(true);
+    pm.expect(jsonData.message).to.include("Confirmation email sent");
+});

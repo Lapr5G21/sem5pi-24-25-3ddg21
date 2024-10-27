@@ -11,7 +11,7 @@ public class PatientEmergencyContact : IValueObject
     {
         if (!IsValidEmergencyContact(emergencyContact) || string.IsNullOrWhiteSpace(emergencyContact))
         {
-            throw new ArgumentException("The emergency contact introduced is not portuguese or it´s invalid");
+            throw new BusinessRuleValidationException("The emergency contact introduced is not portuguese or it´s invalid");
         }
         EmergencyContact = emergencyContact;
     }

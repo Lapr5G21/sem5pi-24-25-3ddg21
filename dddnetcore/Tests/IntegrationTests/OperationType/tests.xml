@@ -102,6 +102,19 @@ pm.test("Return 404 for invalid operation type ID", function () {
     pm.expect(responseData).to.include("ID mismatch.");
 });
 
+//Tests Deactivate
+pm.test("Soft delete operation type successfully", function () {
+    pm.response.to.have.status(200); 
+const responseData = pm.response.json(); 
+    pm.expect(responseData).to.have.property("id", "22ae7c2d-8648-4171-ad8a-dcc127808171"); 
+    pm.expect(responseData).to.have.property("name", "Neurologist"); 
+    pm.expect(responseData).to.have.property("estimatedTimeDuration", 120); 
+    pm.expect(responseData).to.have.property("anesthesiaTime", 30); 
+    pm.expect(responseData).to.have.property("cleaningTime", 15); 
+    pm.expect(responseData).to.have.property("surgeryTime", 90);
+});
+
+
 
 
 

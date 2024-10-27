@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using DDDSample1.Domain.Patients;
+using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Tests.Domain.Patients
 {
@@ -26,7 +27,7 @@ namespace DDDSample1.Tests.Domain.Patients
             string invalidPhoneNumber = "91234567"; // Less than 9 digits
 
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientPhoneNumber(invalidPhoneNumber));
+            Assert.Throws<BusinessRuleValidationException>(() => new PatientPhoneNumber(invalidPhoneNumber));
         }
 
         [Fact]
@@ -36,7 +37,7 @@ namespace DDDSample1.Tests.Domain.Patients
             string invalidPhoneNumber = "9999999999"; // More than 9 digits
 
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientPhoneNumber(invalidPhoneNumber));
+            Assert.Throws<BusinessRuleValidationException>(() => new PatientPhoneNumber(invalidPhoneNumber));
         }
 
         [Fact]
@@ -46,7 +47,7 @@ namespace DDDSample1.Tests.Domain.Patients
             string invalidPhoneNumber = "abcdefghi"; // Contains letters
 
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientPhoneNumber(invalidPhoneNumber));
+            Assert.Throws<BusinessRuleValidationException>(() => new PatientPhoneNumber(invalidPhoneNumber));
         }
 
         [Fact]
@@ -56,7 +57,7 @@ namespace DDDSample1.Tests.Domain.Patients
             string invalidPhoneNumber = ""; // Empty string
 
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientPhoneNumber(invalidPhoneNumber));
+            Assert.Throws<BusinessRuleValidationException>(() => new PatientPhoneNumber(invalidPhoneNumber));
         }
 
         [Fact]

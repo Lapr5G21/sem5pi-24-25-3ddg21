@@ -11,7 +11,7 @@ public class PatientPhoneNumber : IValueObject
     {
         if (!IsValidPhoneNumber(phoneNumber) || string.IsNullOrWhiteSpace(phoneNumber))
         {
-            throw new ArgumentException("The phone number introduced is not portuguese or is invalid");
+            throw new BusinessRuleValidationException("The phone number introduced is not portuguese or is invalid");
         }
         PhoneNumber = phoneNumber;
     }
