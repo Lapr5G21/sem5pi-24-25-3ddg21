@@ -8,11 +8,6 @@ namespace DDDSample1.Domain.Patients
 
     public PatientAppointmentHistory(string history)
     {
-        if (string.IsNullOrWhiteSpace(history))
-        {
-            throw new BusinessRuleValidationException("Appointment history cannot be empty.");
-        }
-
         this.AppointmentHistoryString = history;
     }
 

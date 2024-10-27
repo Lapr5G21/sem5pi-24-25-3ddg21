@@ -29,22 +29,31 @@ namespace DDDSample1.Infrastructure.Staffs
                 .HasConversion(l => l.LicenseNumberString, l => new StaffLicenseNumber(l))
                 .IsRequired();
 
+            builder.HasIndex(b => b.StaffLicenseNumber)
+                .IsUnique();
+
             builder.Property(b => b.StaffEmail)
                 .HasConversion(e => e.EmailString, e => new StaffEmail(e))
                 .IsRequired();
+
+            builder.HasIndex(b => b.StaffEmail)
+                .IsUnique();
 
             builder.Property(b => b.StaffPhoneNumber)
                 .HasConversion(p => p.PhoneNumberString, p => new StaffPhoneNumber(p))
                 .IsRequired();
 
+            builder.HasIndex(b => b.StaffPhoneNumber)
+                .IsUnique();
+
             builder.Property(b => b.Active)
                 .HasColumnName("IsActive")
                 .IsRequired();
             
-            builder.Property(b=> b.StaffAvailabilitySlots )
-                    .HasConversion(p => p.Slots, p => new StaffAvailabilitySlots(p))
-                    .HasColumnName("Slots")
-                    .IsRequired();
+            builder.Property(b => b.StaffAvailabilitySlots)
+                .HasConversion(p => p.Slots, p => new StaffAvailabilitySlots(p))
+                .HasColumnName("Slots")
+                .IsRequired();
 
             builder.HasOne<Specialization>()
                 .WithMany()
@@ -57,8 +66,6 @@ namespace DDDSample1.Infrastructure.Staffs
                 .HasForeignKey<Staff>(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
-
-            
         }
     }
 }

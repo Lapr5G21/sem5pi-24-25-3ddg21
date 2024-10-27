@@ -18,14 +18,15 @@ namespace DDDSample1.Tests.Domain.Patients
         private readonly IConfiguration _configuration;
         private readonly PatientService _patientService;
         private readonly IEmailService _emailService;
-        private readonly ILogRepository _logService;
+        private readonly ILogRepository _logRepository;
+        private readonly IAnonimyzedPatientRepository _anonimyzedPatientRepository;
 
         public PatientServiceTests()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _patientRepositoryMock = new Mock<IPatientRepository>();
             _emailService =null;
-            _patientService = new PatientService(_unitOfWorkMock.Object, _patientRepositoryMock.Object, _configuration,_emailService,_logService);
+            _patientService = new PatientService(_unitOfWorkMock.Object, _patientRepositoryMock.Object, _configuration,_emailService,_logRepository,_anonimyzedPatientRepository);
         }
 
         /*

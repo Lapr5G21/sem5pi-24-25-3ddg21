@@ -20,14 +20,16 @@ namespace DDDSample1.Domain.Patients
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ILogRepository _logRepository;
+        private readonly IAnonimyzedPatientRepository _anonimyzedPatientRepository;
 
-        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService,ILogRepository logRepository)
+        public PatientService(IUnitOfWork unitOfWork, IPatientRepository patientRepository, IConfiguration configuration, IEmailService emailService,ILogRepository logRepository, IAnonimyzedPatientRepository anonimyzedPatientRepository)
         {
             _unitOfWork = unitOfWork;
             _patientRepository = patientRepository;
             _configuration = configuration;
             _emailService = emailService;
             _logRepository = logRepository;
+            _anonimyzedPatientRepository = anonimyzedPatientRepository;
         }
 
         // Obtém todos os pacientes
@@ -94,9 +96,9 @@ namespace DDDSample1.Domain.Patients
                 new PatientEmail(dto.Email), 
                 new PatientPhoneNumber(dto.PhoneNumber),
                 new PatientAddress(dto.Address), 
-                null, 
+                new PatientMedicalRecord(""), 
                 new PatientEmergencyContact(dto.EmergencyContact),
-                null);
+                new PatientAppointmentHistory(""));
             
             await this._patientRepository.AddAsync(patient);
             
@@ -237,6 +239,14 @@ namespace DDDSample1.Domain.Patients
             this._patientRepository.Remove(patient);
             await this._unitOfWork.CommitAsync();
 
+            var log = _logRepository.LogDeleteOperation(LogCategoryType.PATIENT_PROFILE, $"Deleted Patient {patient.FullName.FullName} with that email : {patient.Email.EmailString}");
+            var anonimyzedPatient = _anonimyzedPatientRepository.CreateAnonimyzedPatient(patient.MedicalRecord.MedicalRecord,patient.AppointmentHistory.AppointmentHistoryString);
+            
+            await this._logRepository.AddAsync(log);
+            await this._anonimyzedPatientRepository.AddAsync(anonimyzedPatient);
+            await this._unitOfWork.CommitAsync();
+
+            
             return new PatientDto
             {
                 MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",

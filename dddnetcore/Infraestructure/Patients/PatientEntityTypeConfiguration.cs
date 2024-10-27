@@ -28,21 +28,25 @@ namespace DDDSample1.Infrastructure.Patients
                 .IsRequired();
 
             builder.Property(p => p.Gender)
-            .HasConversion(
-            g => g.ToString(),   // Convert enum to string for storage
-            g => Enum.Parse<PatientGender>(g) // Parse string back to enum
-            )
-            .IsRequired();
-
-
+                .HasConversion(
+                    g => g.ToString(),   
+                    g => Enum.Parse<PatientGender>(g) 
+                )
+                .IsRequired();
 
             builder.Property(p => p.Email)
                 .HasConversion(b => b.EmailString, b => new PatientEmail(b))
                 .IsRequired();
 
+            builder.HasIndex(p => p.Email)
+                .IsUnique();
+
             builder.Property(p => p.PhoneNumber)
                 .HasConversion(b => b.PhoneNumber, b => new PatientPhoneNumber(b))
                 .IsRequired();
+
+            builder.HasIndex(p => p.PhoneNumber)
+                .IsUnique();
 
             builder.Property(p => p.Address)
                 .HasConversion(b => b.AddressString, b => new PatientAddress(b))

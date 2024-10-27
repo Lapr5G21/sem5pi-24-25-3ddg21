@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 using Microsoft.IdentityModel.Tokens;
 using Castle.Components.DictionaryAdapter.Xml;
+using DDDSample1.Domain.AuditLogs;
 
 namespace DDDSample1.Domain.OperationTypes
 {
@@ -16,13 +17,15 @@ namespace DDDSample1.Domain.OperationTypes
         private readonly IOperationTypeRepository _repo;
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IOperationTypeSpecializationRepository _operationTypeSpecializationRepo;
+        private readonly ILogRepository _logRepository;
 
-        public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository repo, ISpecializationRepository specializationRepository, IOperationTypeSpecializationRepository operationTypeSpecializationRepository)
+        public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository repo, ISpecializationRepository specializationRepository, IOperationTypeSpecializationRepository operationTypeSpecializationRepository,ILogRepository logRepository)
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
             this._specializationRepository = specializationRepository;
             this._operationTypeSpecializationRepo = operationTypeSpecializationRepository;
+            this._logRepository=logRepository;
         }
 
         public async Task<List<OperationTypeDto>> GetAllAsync()
@@ -189,8 +192,10 @@ public async Task<OperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
         operationType.Specializations.Add(operationTypeSpecialization);
     }
 }
-
+        
         await this._unitOfWork.CommitAsync();
+        var log = _logRepository.LogUpdateOperation(LogCategoryType.OPERATIONTYPE, $"Operation type updated with this name :{operationType.Name}");
+        await _logRepository.AddAsync(log);
 
    return new OperationTypeDto
             {

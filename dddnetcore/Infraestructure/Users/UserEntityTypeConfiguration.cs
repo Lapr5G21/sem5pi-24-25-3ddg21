@@ -9,12 +9,17 @@ namespace DDDSample1.Infrastructure.Users
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-
             builder.HasKey(b => b.Id);
 
             builder.Property(b => b.Id)
                 .HasConversion(u => u.UsernameString, u => new Username(u))
                 .IsRequired();
+
+            builder.Property(b => b.Email)
+                .HasConversion(e => e.EmailString, e => new Email(e))
+                .IsRequired();
+            builder.HasIndex(b => b.Email)
+                .IsUnique();
 
             builder.Property(b => b.Role)
                 .HasConversion(
@@ -23,9 +28,8 @@ namespace DDDSample1.Infrastructure.Users
                 )
                 .IsRequired();
 
-            builder.Property(b => b.Email)
-                .HasConversion(e => e.EmailString, e => new Email(e))
-                .IsRequired();
+            builder.HasIndex(b => b.Id) 
+                .IsUnique();
 
             builder.Property(b => b.Active)
                 .HasColumnName("IsActive")

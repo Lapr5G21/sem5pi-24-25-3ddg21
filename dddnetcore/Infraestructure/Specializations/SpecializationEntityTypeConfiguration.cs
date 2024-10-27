@@ -12,6 +12,8 @@ namespace DDDSample1.Infrastructure.Specializations
             builder.Property(b => b.SpecializationName)
                    .HasConversion(b => b.Name, b => new SpecializationName(b))
                    .IsRequired();
+            builder.HasIndex(p=> p.SpecializationName)
+                    .IsUnique();
             
             builder.HasMany(b => b.OperationTypes)
                    .WithOne(b => b.Specialization)

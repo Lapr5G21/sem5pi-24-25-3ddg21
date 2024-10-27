@@ -7,6 +7,7 @@ using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.OperationTypesSpecializations;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
+using DDDSample1.Domain.AuditLogs;
 
 namespace DDDSample1.Tests.Domain.OperationTypes
 {
@@ -16,6 +17,7 @@ namespace DDDSample1.Tests.Domain.OperationTypes
         private readonly Mock<IOperationTypeRepository> _mockOperationTypeRepo;
         private readonly Mock<ISpecializationRepository> _mockSpecializationRepo;
         private readonly Mock<IOperationTypeSpecializationRepository> _mockOperationTypeSpecializationRepo;
+        private readonly Mock<ILogRepository> _mockLogRepository;
         private readonly OperationTypeService _service;
 
         public OperationTypeServiceTests()
@@ -24,12 +26,14 @@ namespace DDDSample1.Tests.Domain.OperationTypes
             _mockOperationTypeRepo = new Mock<IOperationTypeRepository>();
             _mockSpecializationRepo = new Mock<ISpecializationRepository>();
             _mockOperationTypeSpecializationRepo = new Mock<IOperationTypeSpecializationRepository>();
+            _mockLogRepository= new Mock<ILogRepository>();
 
             _service = new OperationTypeService(
                 _mockUnitOfWork.Object,
                 _mockOperationTypeRepo.Object,
                 _mockSpecializationRepo.Object,
-                _mockOperationTypeSpecializationRepo.Object);
+                _mockOperationTypeSpecializationRepo.Object,
+                _mockLogRepository.Object);
         }
 
         [Fact]

@@ -9,9 +9,6 @@ public class PatientMedicalRecord : IValueObject
 
     public PatientMedicalRecord(string text)
     {
-        if (string.IsNullOrWhiteSpace(text))
-            throw new BusinessRuleValidationException("Medical Record cannot be empty or null.");
-
         MedicalRecord = text;
     }
 

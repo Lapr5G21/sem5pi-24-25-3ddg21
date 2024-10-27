@@ -10,6 +10,7 @@ using DDDSample1.Domain.Specializations;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using DDDSample1.Domain.Emails;
+using DDDSample1.Domain.AuditLogs;
 
 namespace DDDSample1.Domain.Staffs
 {
@@ -21,9 +22,10 @@ namespace DDDSample1.Domain.Staffs
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
+        private readonly ILogRepository _logRepository;
 
 
-        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository, IEmailService emailService)
+        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository, IEmailService emailService, ILogRepository logRepository)
         {
             _unitOfWork = unitOfWork;
             _staffRepository = staffRepository;
@@ -31,6 +33,7 @@ namespace DDDSample1.Domain.Staffs
             _specializationRepository = specializationRepository;
             _userRepository = userRepository;
             _emailService=emailService;
+            _logRepository = logRepository;
         }
 
         public async Task<List<StaffDto>> GetAllAsync()
@@ -167,8 +170,10 @@ namespace DDDSample1.Domain.Staffs
 
             var details = string.Join(", ", changes);
 
-            //await _logService.LogUpdateOperation(LogCategoryType.STAFF_PROFILE, $"Updated Staff {staff.StaffFullName}: {details}");
+            var log = _logRepository.LogUpdateOperation(LogCategoryType.STAFF_PROFILE, $"Updated Staff {staff.StaffFullName}: {details}");
+            await _logRepository.AddAsync(log);
 
+            await this._unitOfWork.CommitAsync();
             return new StaffDto
             {
                 StaffId = staff.Id.AsString() ?? "N/A",
@@ -192,9 +197,10 @@ namespace DDDSample1.Domain.Staffs
             if (staff == null) return null;
 
             staff.Deactivate();
-            
-            await this._unitOfWork.CommitAsync();
+            var log = _logRepository.LogDeactivationOperation(LogCategoryType.STAFF_PROFILE, $"Deactivated Staff {staff.StaffFullName} with this email {staff.StaffEmail}");
+            await _logRepository.AddAsync(log);
 
+            await this._unitOfWork.CommitAsync();
             return new StaffDto
             {
                 StaffId = staff.Id.AsString(),

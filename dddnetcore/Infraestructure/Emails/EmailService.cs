@@ -12,7 +12,7 @@ namespace DDDSample1.Infrastructure.Emails
     {
         private readonly string _smtpServer;
         private readonly int _smtpPort;
-        private readonly string _smtpUsername;
+        private readonly string _smtpEmail;
         private readonly string _smtpPassword;
         private readonly IConfiguration _configuration;
 
@@ -21,21 +21,22 @@ namespace DDDSample1.Infrastructure.Emails
             _configuration=configuration;
             _smtpServer = _configuration["EmailService:SmtpServer"];
             _smtpPort = int.Parse(_configuration["EmailService:SmtpPort"]); 
-            _smtpUsername = _configuration["EmailService:SmtpEmail"];
+            _smtpEmail = _configuration["EmailService:SmtpEmail"];
             _smtpPassword = _configuration["EmailService:SmtpPassword"];
         }
 
        public async Task SendEmailAsync(List<string> to, string subject, string body)
         {
+
             using (var client = new SmtpClient(_smtpServer, _smtpPort))
             {
                 client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
+                client.Credentials = new NetworkCredential(_smtpEmail, _smtpPassword);
                 client.EnableSsl = true;
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(_smtpUsername),
+                    From = new MailAddress(_smtpEmail),
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true,
@@ -44,8 +45,11 @@ namespace DDDSample1.Infrastructure.Emails
                 foreach (var recipient in to){
                     mailMessage.To.Add(recipient);
                 }
-
+                try{
                 await client.SendMailAsync(mailMessage);
+            }catch (Exception ex){
+                    Console.WriteLine(ex.Message);
+            }
             }
         }
     }
