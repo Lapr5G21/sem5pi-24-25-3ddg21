@@ -1,0 +1,146 @@
+CREATE POST
+
+{
+  "FirstName": "Medi",
+  "LastName": "Taremi",
+  "FullName": "Medi Taremi",
+  "LicenseNumber": "133277589",
+  "SpecializationId": "854eface-693e-4942-9fd5-7cb9b50f4290",
+  "Email": "medi.taremi92@test.com",
+  "PhoneNumber": "917595638",
+  "StaffAvailabilitySlots": "09:00-17:00",
+  "UserId": "N20240006@healthcare.com"
+}
+
+pm.test("Staff created successfully", function () {
+    pm.response.to.have.status(201);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("staffId");
+    pm.expect(responseData.staffId).to.eql("N20240006");
+});
+
+
+
+{
+  "FirstName": "Medi",
+  "LastName": "Taremi",
+  "FullName": "Medi Taremi",
+  "LicenseNumber": "13327589",
+  "SpecializationId": "854eface-693e-4942-9fd5-7cb9b50f4290",
+  "Email": "medi.taremi92@test.com",
+  "PhoneNumber": "917595638",
+  "StaffAvailabilitySlots": "09:00-17:00",
+  "UserId": "0"
+}
+
+pm.test("Error for invalid user ", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("User not found.");
+});
+
+
+{
+  "FirstName": "Medi",
+  "LastName": "Taremi",
+  "FullName": "Medi Taremi",
+  "LicenseNumber": "13427089",
+  "SpecializationId": "b0f238bf-e31a-47bf-98a5-5a2bbe845b39",
+  "Email": "medi.taremi91@test.com",
+  "PhoneNumber": "917595638",
+  "StaffAvailabilitySlots": "09:00-17:00",
+  "UserId": "N20240007@healthcare.com"
+}
+
+
+pm.test("Error for Specialization not found ", function () {
+     pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Specialization not found.");
+});
+
+
+{
+  "FirstName": "",
+  "LastName": "Taremi",
+  "FullName": "Medi Taremi",
+  "LicenseNumber": "13427089",
+  "SpecializationId": "854eface-693e-4942-9fd5-7cb9b50f4290",
+  "Email": "medi.taremi91@test.com",
+  "PhoneNumber": "917595638",
+  "StaffAvailabilitySlots": "09:00-17:00",
+  "UserId": "N20240007@healthcare.com"
+}
+
+pm.test("Error for Null First Name ", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Name cannot be empty or null.");
+});
+
+
+{
+  "FirstName": "Medi",
+  "LastName": "",
+  "FullName": "Medi Taremi",
+  "LicenseNumber": "13427089",
+  "SpecializationId": "854eface-693e-4942-9fd5-7cb9b50f4290",
+  "Email": "medi.taremi91@test.com",
+  "PhoneNumber": "917595638",
+  "StaffAvailabilitySlots": "09:00-17:00",
+  "UserId": "N20240007@healthcare.com"
+}
+
+
+pm.test("Error for Null Last Name ", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Name cannot be empty or null.");
+});
+
+
+
+pm.test("Error for Null License Number ", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("License number cannot be empty or null.");
+});
+
+
+pm.test("Error for Null StaffEmail ", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("Email cannot be empty.");
+});
+
+
+pm.test("Error for Null or invalid Portuguese StaffPhoneNumber ", function () {
+    pm.response.to.have.status(500); 
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("The phone number introduced is not portuguese or is invalid");
+});
+
+
+EDIT PUT
+
+
+
+GET ALL 
+
+pm.test("Get sucessfully", function () {
+    pm.response.to.have.status(200);
+});
+
+REMOVE 
+
+pm.test("Staff is successfully deactivated", function () {
+    pm.response.to.have.status(200); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("isActive", 0);
+});
+
+
+
+
+
+
