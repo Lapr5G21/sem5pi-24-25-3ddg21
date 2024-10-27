@@ -1,395 +1,246 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Xunit;
-using Moq;
 using DDDSample1.Domain.Staffs;
-using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Specializations;
-using Microsoft.Extensions.Configuration;
 using DDDSample1.Domain.Emails;
-using System.Linq;
+using DDDSample1.Domain.AuditLogs;
+using Microsoft.Extensions.Configuration;
+using Moq;
+using Xunit;
+using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Tests.Domain.Staffs
 {
-    public class StaffServiceTests
+    public class StaffServiceTest
     {
-        /*
-        private readonly Mock<IStaffRepository> _staffRepositoryMock;
-        private readonly Mock<IUserRepository> _userRepositoryMock;
-        private readonly Mock<ISpecializationRepository> _specializationRepositoryMock;
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IEmailService> _emailServiceMock;
         private readonly StaffService _staffService;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<IStaffRepository> _staffRepositoryMock;
+        private readonly Mock<IConfiguration> _configurationMock;
+        private readonly Mock<ISpecializationRepository> _specializationRepositoryMock;
+        private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IEmailService> _emailServiceMock;
+        private readonly Mock<ILogRepository> _logRepositoryMock;
 
-        public StaffServiceTests()
+        private readonly List<Staff> _staffs;
+        private readonly List<Specialization> _specializations;
+        private readonly List<User> _users;
+
+        public StaffServiceTest()
         {
-            _staffRepositoryMock = new Mock<IStaffRepository>();
-            _userRepositoryMock = new Mock<IUserRepository>();
-            _specializationRepositoryMock = new Mock<ISpecializationRepository>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _staffRepositoryMock = new Mock<IStaffRepository>();
+            _configurationMock = new Mock<IConfiguration>();
+            _specializationRepositoryMock = new Mock<ISpecializationRepository>();
+            _userRepositoryMock = new Mock<IUserRepository>();
             _emailServiceMock = new Mock<IEmailService>();
-            var configMock = new Mock<IConfiguration>();
+            _logRepositoryMock = new Mock<ILogRepository>();
 
-            _staffService = new StaffService(
-                _unitOfWorkMock.Object, 
-                _staffRepositoryMock.Object, 
-                configMock.Object, 
-                _specializationRepositoryMock.Object, 
-                _userRepositoryMock.Object, 
-                _emailServiceMock.Object);
+            _staffService = new StaffService(_unitOfWorkMock.Object, _staffRepositoryMock.Object,
+                                              _configurationMock.Object, _specializationRepositoryMock.Object,
+                                              _userRepositoryMock.Object, _emailServiceMock.Object, 
+                                              _logRepositoryMock.Object);
+
+            _specializations = new List<Specialization>
+            {
+                new Specialization(new SpecializationName("Cardiology")),
+                new Specialization(new SpecializationName("Neurology"))
+            };
+
+            _users = new List<User>
+            {
+                new User(new Role(RoleType.Doctor), new Email("joao.oliveira@test.com"),new Username("D20240001@healthcare.com")),
+                new User(new Role(RoleType.Doctor), new Email("bruno.silva@test.com"),new Username("D20240002@healthcare.com")),
+                new User(new Role(RoleType.Doctor), new Email("vasco.teixeira@test.com"),new Username("D20240003@healthcare.com"))
+            };
+
+            _staffs = new List<Staff>
+            {
+                new Staff(new StaffId("D20240001"), new StaffFirstName("Joao"), new StaffLastName("Oliveira"),
+                          new StaffFullName("Joao Oliveira"), new StaffLicenseNumber("ABC123"),
+                          _specializations[0].Id, new StaffEmail("joao.oliveira@test.com"),
+                          new StaffPhoneNumber("937357467"), _users[0].Id, new StaffAvailabilitySlots("[{\"Start\":\"2024-12-30T14:00:00\",\"End\":\"2024-12-30T18:00:00\"}]")),
+                new Staff(new StaffId("D20240002"), new StaffFirstName("Bruno"), new StaffLastName("Silva"),
+                          new StaffFullName("Bruno Silva"), new StaffLicenseNumber("DEF456"),
+                          _specializations[1].Id, new StaffEmail("bruno.silva@test.com"),
+                          new StaffPhoneNumber("927654321"), _users[1].Id, new StaffAvailabilitySlots("[{\"Start\":\"2024-12-31T14:00:00\",\"End\":\"2024-12-31T18:00:00\"}]"))
+            };
         }
 
         [Fact]
-        public async Task GetAllAsync_ShouldReturnListOfStaffDtos()
+        public async Task GetAllAsync_ReturnsAllStaff()
         {
-            var staffList = new List<Staff>
-            {
-                new Staff(
-                    new StaffId("D20240001"),
-                    new StaffFirstName("Joao"),
-                    new StaffLastName("Oliveira"),
-                    new StaffFullName("Joao Oliveira"),
-                    new StaffLicenseNumber("A12345"),
-                    new SpecializationId(Guid.NewGuid().ToString()),
-                    new StaffEmail("joao.test@example.com"),
-                    new StaffPhoneNumber("1234567890"),
-                    new Username("D20240001@healthcare.com"),
-                    new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-                ),
-                new Staff(
-                    new StaffId("D20240002"),
-                    new StaffFirstName("Maria"),
-                    new StaffLastName("Silva"),
-                    new StaffFullName("Maria Silva"),
-                    new StaffLicenseNumber("B67890"),
-                    new SpecializationId(Guid.NewGuid().ToString()),
-                    new StaffEmail("maria.test@example.com"),
-                    new StaffPhoneNumber("0987654321"),
-                    new Username("D20240002@healthcare.com"),
-                    new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T14:00:00\",\"End\":\"2024-10-30T18:00:00\"}]")
-                )
-            };
-
-            _staffRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(staffList);
+            _staffRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(_staffs);
 
             var result = await _staffService.GetAllAsync();
 
-            Assert.NotNull(result);
             Assert.Equal(2, result.Count);
-            Assert.Equal("D20240001", result[0].StaffId);
-            Assert.Equal("Joao", result[0].StaffFirstName);
-            Assert.Equal("Oliveira", result[0].StaffLastName);
             Assert.Equal("Joao Oliveira", result[0].StaffFullName);
-            Assert.Equal("A12345", result[0].StaffLicenseNumber);
-            Assert.Equal(staffList[0].SpecializationId.AsString(), result[0].SpecializationId);
-            Assert.Equal("joao.test@example.com", result[0].StaffEmail);
-            Assert.Equal("1234567890", result[0].StaffPhoneNumber);
-            Assert.Equal(staffList[0].StaffAvailabilitySlots.ToString(), result[0].StaffAvailabilitySlots);
-            Assert.Equal("D20240001@healthcare.com", result[0].UserId);
-
-            Assert.Equal("D20240002", result[1].StaffId);
-            Assert.Equal("Maria", result[1].StaffFirstName);
-            Assert.Equal("Silva", result[1].StaffLastName);
-            Assert.Equal("Maria Silva", result[1].StaffFullName);
-            Assert.Equal("B67890", result[1].StaffLicenseNumber);
-            Assert.Equal(staffList[1].SpecializationId.AsString(), result[1].SpecializationId);
-            Assert.Equal("maria.test@example.com", result[1].StaffEmail);
-            Assert.Equal("0987654321", result[1].StaffPhoneNumber);
-            Assert.Equal(staffList[1].StaffAvailabilitySlots.ToString(), result[1].StaffAvailabilitySlots);
-            Assert.Equal("D20240002@healthcare.com", result[1].UserId);
+            Assert.Equal("Bruno Silva", result[1].StaffFullName);
         }
 
         [Fact]
-        public async Task AddAsync_ValidData_ReturnsCreatedStaffDto()
-        {
-            var creatingStaffDto = new CreatingStaffDto
-            {
-                FirstName = "Joao",
-                LastName = "Oliveira",
-                FullName = "Joao Oliveira",
-                LicenseNumber = "A12345",
-                SpecializationId = Guid.NewGuid().ToString(),
-                Email = "joao.test@example.com",
-                PhoneNumber = "1234567890",
-                StaffAvailabilitySlots = "[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]",
-                UserId = "D20240001@healthcare.com"
-            };
-
-            var expectedStaffId = new StaffId(creatingStaffDto.UserId.Split('@')[0]);
-            var expectedStaff = new Staff(
-                expectedStaffId,
-                new StaffFirstName(creatingStaffDto.FirstName),
-                new StaffLastName(creatingStaffDto.LastName),
-                new StaffFullName(creatingStaffDto.FullName),
-                new StaffLicenseNumber(creatingStaffDto.LicenseNumber),
-                new SpecializationId(creatingStaffDto.SpecializationId),
-                new StaffEmail(creatingStaffDto.Email),
-                new StaffPhoneNumber(creatingStaffDto.PhoneNumber),
-                new Username(creatingStaffDto.UserId),
-                new StaffAvailabilitySlots(creatingStaffDto.StaffAvailabilitySlots)
-            );
-
-            _staffRepositoryMock.Setup(repo => repo.AddAsync(It.IsAny<Staff>()))
-                                .ReturnsAsync(expectedStaff);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).Returns(Task.FromResult(1));
-
-            var result = await _staffService.AddAsync(creatingStaffDto);
-
-            Assert.NotNull(result);
-            Assert.Equal(expectedStaffId.Value(), result.StaffId);
-            Assert.Equal(creatingStaffDto.FirstName, result.StaffFirstName);
-            Assert.Equal(creatingStaffDto.LastName, result.StaffLastName);
-            Assert.Equal(creatingStaffDto.FullName, result.StaffFullName);
-            Assert.Equal(creatingStaffDto.LicenseNumber, result.StaffLicenseNumber);
-            Assert.Equal(creatingStaffDto.SpecializationId, result.SpecializationId);
-            Assert.Equal(creatingStaffDto.Email, result.StaffEmail);
-            Assert.Equal(creatingStaffDto.PhoneNumber, result.StaffPhoneNumber);
-        }
-
-        [Fact]
-        public async Task GetByIdAsync_ShouldReturnStaff_WhenStaffExists()
+        public async Task GetByIdAsync_ValidId_ReturnsStaff()
         {
             var staffId = new StaffId("D20240001");
-            var staff = new Staff(
-                staffId,
-                new StaffFirstName("Joao"),
-                new StaffLastName("Oliveira"),
-                new StaffFullName("Joao Oliveira"),
-                new StaffLicenseNumber("A12345"),
-                new SpecializationId(Guid.NewGuid().ToString()),
-                new StaffEmail("joao.test@example.com"),
-                new StaffPhoneNumber("1234567890"),
-                new Username("D20240001@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-            );
-
-            _staffRepositoryMock.Setup(repo => repo.GetByIdAsync(staffId)).ReturnsAsync(staff);
+            _staffRepositoryMock.Setup(repo => repo.GetByIdAsync(staffId)).ReturnsAsync(_staffs[0]);
 
             var result = await _staffService.GetByIdAsync(staffId);
 
             Assert.NotNull(result);
-            Assert.Equal(staffId.Value(), result.StaffId);
-            Assert.Equal(staff.StaffFirstName.ToString(), result.StaffFirstName);
-            Assert.Equal(staff.StaffLastName.ToString(), result.StaffLastName);
-            Assert.Equal(staff.StaffFullName.ToString(), result.StaffFullName);
-            Assert.Equal(staff.StaffLicenseNumber.ToString(), result.StaffLicenseNumber);
-            Assert.Equal(staff.SpecializationId.ToString(), result.SpecializationId);
-            Assert.Equal(staff.StaffEmail.ToString(), result.StaffEmail);
-            Assert.Equal(staff.StaffPhoneNumber.ToString(), result.StaffPhoneNumber);
+            Assert.Equal("Joao Oliveira", result.StaffFullName);
         }
 
         [Fact]
-        public async Task UpdateAsync_ValidData_UpdatesStaffAndSendsEmail()
+        public async Task AddAsync_ValidDto_AddsStaff()
         {
-            var existingStaffId = new StaffId("D20240001");
-            var existingStaff = new Staff(
-                existingStaffId,
-                new StaffFirstName("Joao"),
-                new StaffLastName("Oliveira"),
-                new StaffFullName("Joao Oliveira"),
-                new StaffLicenseNumber("A12345"),
-                new SpecializationId(Guid.NewGuid().ToString()),
-                new StaffEmail("joao.old@example.com"),
-                new StaffPhoneNumber("1234567890"),
-                new Username("D20240001@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-            );
+            var creatingStaffDto = new CreatingStaffDto
+            {
+                UserId = _users[2].Id.ToString(),
+                FirstName = "Vasco",
+                LastName = "Teixeira",
+                FullName = "Vasco Teixeira",
+                LicenseNumber = "XYZ789",
+                Email = "vasco.teixeira@test.com",
+                PhoneNumber = "913876556",
+                SpecializationId = _specializations[1].Id.AsString(),
+                StaffAvailabilitySlots = "[{\"Start\":\"2024-12-31T22:00:00\",\"End\":\"2024-12-31T23:00:00\"}]",
+            };
 
-            var editingStaffDto = new EditingStaffDto(
-                    existingStaffId.AsString(),
-                    "Joao",
-                    "Oliveira",
-                    "Joao Oliveira",
-                    "joao.new@example.com",
-                    "0987654321",
-                    existingStaff.SpecializationId.AsString(),
-                    "[{\"Start\":\"2024-10-30T10:00:00\",\"End\":\"2024-10-30T14:00:00\"}]"
-                );
+            _userRepositoryMock.Setup(repo => repo.GetByIdAsync(new Username(_users[2].Id.Value))).ReturnsAsync(_users[2]);
+            _specializationRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<SpecializationId>())).ReturnsAsync(_specializations[1]);
 
-            _staffRepositoryMock.Setup(repo => repo.GetByIdAsync(existingStaffId)).ReturnsAsync(existingStaff);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-            _emailServiceMock.Setup(emailService => emailService.SendEmailAsync(
-                It.IsAny<List<string>>(), 
-                It.IsAny<string>(), 
-                It.IsAny<string>())
-            ).Returns(Task.CompletedTask);
-
-            var result = await _staffService.UpdateAsync(editingStaffDto);
+            var result = await _staffService.AddAsync(creatingStaffDto);
 
             Assert.NotNull(result);
-            Assert.Equal(existingStaffId.AsString(), result.StaffId);
-            Assert.Equal(editingStaffDto.FirstName, result.StaffFirstName);
-            Assert.Equal(editingStaffDto.LastName, result.StaffLastName);
-            Assert.Equal(editingStaffDto.FullName, result.StaffFullName);
-            Assert.Equal(editingStaffDto.Email, result.StaffEmail);
-            Assert.Equal(editingStaffDto.PhoneNumber, result.StaffPhoneNumber);
-            Assert.Equal(existingStaff.StaffLicenseNumber.ToString(), result.StaffLicenseNumber);
-            Assert.Equal(editingStaffDto.SpecializationId, result.SpecializationId);
-            Assert.Equal(editingStaffDto.AvailabilitySlots, result.StaffAvailabilitySlots);
+            Assert.Equal(creatingStaffDto.FirstName, result.StaffFirstName);
+            Assert.Equal(creatingStaffDto.LastName, result.StaffLastName);
+            Assert.Equal(creatingStaffDto.FullName, result.StaffFullName);
+            Assert.Equal(creatingStaffDto.LicenseNumber, result.StaffLicenseNumber);
+            Assert.Equal(creatingStaffDto.Email, result.StaffEmail);
+            Assert.Equal(creatingStaffDto.PhoneNumber, result.StaffPhoneNumber);
+            Assert.Equal(creatingStaffDto.SpecializationId, result.SpecializationId);
+            Assert.Equal(creatingStaffDto.StaffAvailabilitySlots, result.StaffAvailabilitySlots);
+            Assert.Equal(creatingStaffDto.UserId, result.UserId);
 
-            _emailServiceMock.Verify(emailService => emailService.SendEmailAsync(
-                It.Is<List<string>>(emails => emails.Contains("joao.new@example.com")), 
-                It.IsAny<string>(), 
-                It.IsAny<string>()),
-                Times.Once);
+            _userRepositoryMock.Verify(repo => repo.GetByIdAsync(new Username(_users[2].Id.Value)), Times.Once);
+            _specializationRepositoryMock.Verify(repo => repo.GetByIdAsync(It.IsAny<SpecializationId>()), Times.Once);
+            _staffRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<Staff>()), Times.Once);
+            _unitOfWorkMock.Verify(uow => uow.CommitAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task InactivateAsync_WhenStaffExists()
+        public async Task AddAsync_ShouldThrowException_WhenUserNotFound()
         {
-            var staffId = new StaffId("D20240001");
-            var staff = new Staff(
-                staffId,
-                new StaffFirstName("Joao"),
-                new StaffLastName("Oliveira"),
-                new StaffFullName("Joao Oliveira"),
-                new StaffLicenseNumber("A12345"),
-                new SpecializationId(Guid.NewGuid().ToString()),
-                new StaffEmail("joao.test@example.com"),
-                new StaffPhoneNumber("1234567890"),
-                new Username("D20240001@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
+            var creatingStaffDto = new CreatingStaffDto
+            {
+                UserId = "D20240004@healthcare.com",
+                FirstName = "Eduardo",
+                LastName = "Ferreira",
+                FullName = "Eduardo Ferreira",
+                LicenseNumber = "XYZ767",
+                Email = "eduardo.ferreira@test.com",
+                PhoneNumber = "917654543",
+                SpecializationId = _specializations[1].Id.AsString(),
+                StaffAvailabilitySlots = "[{\"Start\":\"2024-12-28T22:00:00\",\"End\":\"2024-12-28T23:00:00\"}]",
+            };
+
+            _userRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<Username>())).ReturnsAsync((User)null);
+            _specializationRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<SpecializationId>())).ReturnsAsync(_specializations[1]);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _staffService.AddAsync(creatingStaffDto));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ValidDto_UpdatesStaff()
+        {
+
+            var staffIdValue = "D20240004";
+            var dto = new EditingStaffDto(
+                staffId: staffIdValue,
+                firstName: "Vasco",
+                lastName: "Teixeira",
+                fullName: "Vasco Teixeira",
+                email: "vasco.teixeira@updated.com",
+                phoneNumber: "912345678",
+                specializationId: _specializations[1].Id.AsString(),
+                availabilitySlots: "[{\"Start\":\"2024-12-31T22:00:00\",\"End\":\"2024-12-31T23:00:00\"}]"
             );
 
-            _staffRepositoryMock.Setup(repo => repo.GetByIdAsync(staffId)).ReturnsAsync(staff);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+            var staffId = new StaffId(dto.StaffId);
+            var existingStaff = _staffs[1];
 
-            var result = await _staffService.InactivateAsync(staffId);
+            _staffRepositoryMock.Setup(repo => repo.GetByIdAsync(staffId)).ReturnsAsync(existingStaff);
+            
+            var result = await _staffService.UpdateAsync(dto);
 
             Assert.NotNull(result);
-            Assert.Equal(staffId.AsString(), result.StaffId);
-            Assert.Equal(staff.StaffFirstName.ToString(), result.StaffFirstName);
-            Assert.Equal(staff.StaffLastName.ToString(), result.StaffLastName);
-            Assert.Equal(staff.StaffFullName.ToString(), result.StaffFullName);
-            Assert.Equal(staff.StaffLicenseNumber.ToString(), result.StaffLicenseNumber);
-            Assert.Equal(staff.SpecializationId.AsString(), result.SpecializationId);
-            Assert.Equal(staff.StaffEmail.ToString(), result.StaffEmail);
-            Assert.Equal(staff.StaffPhoneNumber.ToString(), result.StaffPhoneNumber);
-            Assert.Equal(staff.StaffAvailabilitySlots.Slots, result.StaffAvailabilitySlots);
-            Assert.Equal(staff.UserId.ToString(), result.UserId);
+            Assert.Equal(dto.FirstName, result.StaffFirstName);
+            Assert.Equal(dto.LastName, result.StaffLastName);
+            Assert.Equal(dto.FullName, result.StaffFullName);
+            Assert.Equal(dto.Email, result.StaffEmail);
+            Assert.Equal(dto.PhoneNumber, result.StaffPhoneNumber);
+            Assert.Equal(dto.SpecializationId, result.SpecializationId);
+            Assert.Equal(dto.AvailabilitySlots, result.StaffAvailabilitySlots);
+            
+            _emailServiceMock.Verify(es => es.SendEmailAsync(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            
+            _logRepositoryMock.Verify(logRepo => logRepo.AddAsync(It.IsAny<Log>()), Times.Once);
 
-            _staffRepositoryMock.Verify(repo => repo.GetByIdAsync(staffId), Times.Once);
-            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
+            _unitOfWorkMock.Verify(uow => uow.CommitAsync(), Times.Exactly(2));
         }
 
         [Fact]
-        public async Task DeleteAsync_WhenStaffExists()
+        public async Task DeleteAsync_ValidId_DeletesStaff_ReturnsStaffDto()
         {
-            var staffId = new StaffId("D20240001");
-            var staff = new Staff(
-                staffId,
-                new StaffFirstName("Joao"),
-                new StaffLastName("Oliveira"),
-                new StaffFullName("Joao Oliveira"),
-                new StaffLicenseNumber("A12345"),
-                new SpecializationId(Guid.NewGuid().ToString()),
-                new StaffEmail("joao.test@example.com"),
-                new StaffPhoneNumber("1234567890"),
-                new Username("D20240001@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-            );
-
-            _staffRepositoryMock.Setup(repo => repo.GetByIdAsync(staffId)).ReturnsAsync(staff);
-            _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
-
+            var staffId = new StaffId("D20240002");
+            _staffRepositoryMock.Setup(repo => repo.GetByIdAsync(staffId)).ReturnsAsync(_staffs[1]);
+            
             var result = await _staffService.DeleteAsync(staffId);
 
             Assert.NotNull(result);
             Assert.Equal(staffId.AsString(), result.StaffId);
-            Assert.Equal(staff.StaffFirstName.ToString(), result.StaffFirstName);
-            Assert.Equal(staff.StaffLastName.ToString(), result.StaffLastName);
-            Assert.Equal(staff.StaffFullName.ToString(), result.StaffFullName);
-            Assert.Equal(staff.StaffLicenseNumber.ToString(), result.StaffLicenseNumber);
-            Assert.Equal(staff.SpecializationId.AsString(), result.SpecializationId);
-            Assert.Equal(staff.StaffEmail.ToString(), result.StaffEmail);
-            Assert.Equal(staff.StaffPhoneNumber.ToString(), result.StaffPhoneNumber);
-            Assert.Equal(staff.StaffAvailabilitySlots.Slots, result.StaffAvailabilitySlots);
-            Assert.Equal(staff.UserId.ToString(), result.UserId);
+            Assert.Equal(_staffs[1].StaffFirstName.ToString(), result.StaffFirstName);
+            Assert.Equal(_staffs[1].StaffLastName.ToString(), result.StaffLastName);
+            Assert.Equal(_staffs[1].StaffFullName.ToString(), result.StaffFullName);
+            Assert.Equal(_staffs[1].StaffLicenseNumber.ToString(), result.StaffLicenseNumber);
+            Assert.Equal(_staffs[1].SpecializationId.AsString(), result.SpecializationId);
+            Assert.Equal(_staffs[1].StaffEmail.ToString(), result.StaffEmail);
+            Assert.Equal(_staffs[1].StaffPhoneNumber.ToString(), result.StaffPhoneNumber);
+            Assert.Equal(_staffs[1].StaffAvailabilitySlots.Slots, result.StaffAvailabilitySlots);
+            Assert.Equal(_staffs[1].UserId.ToString(), result.UserId);
 
-            _staffRepositoryMock.Verify(repo => repo.Remove(staff), Times.Once);
-            _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
-        }
-
-
-        [Fact]
-        public async Task SearchStaffAsync_WithFullNameFilter()
-        {
-            var searchDto = new StaffSearchDto { FullName = "Joao Oliveira" };
-            var staff1 = new Staff(
-                new StaffId("D20240001"),
-                new StaffFirstName("Joao"),
-                new StaffLastName("Oliveira"),
-                new StaffFullName("Joao Oliveira"),
-                new StaffLicenseNumber("A12345"),
-                new SpecializationId(Guid.NewGuid().ToString()),
-                new StaffEmail("joao.test@example.com"),
-                new StaffPhoneNumber("1234567890"),
-                new Username("D20240001@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-            );
-
-            var staff2 = new Staff(
-                new StaffId("D20240002"),
-                new StaffFirstName("Maria"),
-                new StaffLastName("Silva"),
-                new StaffFullName("Maria Silva"),
-                new StaffLicenseNumber("B12345"),
-                new SpecializationId(Guid.NewGuid().ToString()),
-                new StaffEmail("maria.test@example.com"),
-                new StaffPhoneNumber("0987654321"),
-                new Username("D20240002@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-            );
-
-            _staffRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(new List<Staff> { staff1, staff2 });
-
-            var result = await _staffService.SearchStaffAsync(searchDto);
-
-            Assert.Single(result);
-            Assert.Equal(staff1.Id.AsString(), result.First().StaffId);
+            _staffRepositoryMock.Verify(repo => repo.Remove(_staffs[1]), Times.Once);
+            _unitOfWorkMock.Verify(uow => uow.CommitAsync(), Times.Once);
         }
 
         [Fact]
-        public async Task SearchStaffAsync_WithSpecializationFilter()
+        public async Task SearchStaffAsync_ValidSearchCriteria_ReturnsFilteredStaff()
         {
-            var specializationId = Guid.NewGuid();
-            var searchDto = new StaffSearchDto { SpecializationId = specializationId };
+            var searchDto = new StaffSearchDto
+            {
+                FullName = "Bruno",
+                SpecializationId = _specializations[1].Id.AsGuid(),
+                PhoneNumber = "927654321"
+            };
 
-            var staff1 = new Staff(
-                new StaffId("D20240001"),
-                new StaffFirstName("Joao"),
-                new StaffLastName("Oliveira"),
-                new StaffFullName("Joao Oliveira"),
-                new StaffLicenseNumber("A12345"),
-                new SpecializationId(specializationId.ToString()),
-                new StaffEmail("joao.test@example.com"),
-                new StaffPhoneNumber("1234567890"),
-                new Username("D20240001@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-            );
+            var filteredStaffs = _staffs.Where(staff => 
+                staff.StaffFullName.FullNameString.Contains(searchDto.FullName, StringComparison.OrdinalIgnoreCase) &&
+                staff.StaffPhoneNumber.PhoneNumberString == searchDto.PhoneNumber &&
+                staff.SpecializationId.Equals(searchDto.SpecializationId))
+                .ToList();
 
-            var staff2 = new Staff(
-                new StaffId("D20240002"),
-                new StaffFirstName("Maria"),
-                new StaffLastName("Silva"),
-                new StaffFullName("Maria Silva"),
-                new StaffLicenseNumber("B12345"),
-                new SpecializationId(Guid.NewGuid().ToString()),
-                new StaffEmail("maria.test@example.com"),
-                new StaffPhoneNumber("0987654321"),
-                new Username("D20240002@healthcare.com"),
-                new StaffAvailabilitySlots("[{\"Start\":\"2024-10-30T08:00:00\",\"End\":\"2024-10-30T12:00:00\"}]")
-            );
-
-            _staffRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(new List<Staff> { staff1, staff2 });
+            _staffRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(_staffs);
 
             var result = await _staffService.SearchStaffAsync(searchDto);
 
-            Assert.Single(result);
-            Assert.Equal(staff1.Id.AsString(), result.First().StaffId);
+            Assert.Equal(filteredStaffs.Count, result.Count());
+            Assert.All(result, r => Assert.Contains(searchDto.FullName, r.StaffFullName));
+            Assert.All(result, r => Assert.Equal(searchDto.PhoneNumber, r.StaffPhoneNumber));
+            Assert.All(result, r => Assert.Equal(searchDto.SpecializationId.ToString(), r.SpecializationId));
         }
-        */
     }
 }

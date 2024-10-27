@@ -9,8 +9,8 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffLastNameConstructorWithValidNameTest()
         {
-            var lastName = new StaffLastName("Doe");
-            Assert.Equal("Doe", lastName.LastNameString);
+            var lastName = new StaffLastName("Oliveira");
+            Assert.Equal("Oliveira", lastName.LastNameString);
         }
 
         [Fact]
@@ -28,9 +28,9 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffLastNameEqualsTest()
         {
-            var lastName1 = new StaffLastName("Doe");
-            var lastName2 = new StaffLastName("Doe");
-            var lastName3 = new StaffLastName("Smith");
+            var lastName1 = new StaffLastName("Oliveira");
+            var lastName2 = new StaffLastName("Oliveira");
+            var lastName3 = new StaffLastName("Silva");
 
             Assert.True(lastName1.Equals(lastName2));
             Assert.False(lastName1.Equals(lastName3));
@@ -41,9 +41,9 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffLastNameGetHashCodeTest()
         {
-            var lastName1 = new StaffLastName("Doe");
-            var lastName2 = new StaffLastName("Doe");
-            var lastName3 = new StaffLastName("Smith");
+            var lastName1 = new StaffLastName("Oliveira");
+            var lastName2 = new StaffLastName("Oliveira");
+            var lastName3 = new StaffLastName("Silva");
 
             Assert.Equal(lastName1.GetHashCode(), lastName2.GetHashCode());
             Assert.NotEqual(lastName1.GetHashCode(), lastName3.GetHashCode());
@@ -52,8 +52,8 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffLastNameToStringTest()
         {
-            var lastName = new StaffLastName("Doe");
-            Assert.Equal("Doe", lastName.ToString());
+            var lastName = new StaffLastName("Oliveira");
+            Assert.Equal("Oliveira", lastName.ToString());
         }
     }
 }

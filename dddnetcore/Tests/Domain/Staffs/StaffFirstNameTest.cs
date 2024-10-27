@@ -9,8 +9,8 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffFirstNameConstructorWithValidNameTest()
         {
-            var firstName = new StaffFirstName("John");
-            Assert.Equal("John", firstName.FirstNameString);
+            var firstName = new StaffFirstName("Joao");
+            Assert.Equal("Joao", firstName.FirstNameString);
         }
 
         [Fact]
@@ -28,9 +28,9 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffFirstNameEqualsTest()
         {
-            var firstName1 = new StaffFirstName("John");
-            var firstName2 = new StaffFirstName("John");
-            var firstName3 = new StaffFirstName("Doe");
+            var firstName1 = new StaffFirstName("Joao");
+            var firstName2 = new StaffFirstName("Joao");
+            var firstName3 = new StaffFirstName("Oliveira");
 
             Assert.True(firstName1.Equals(firstName2));
             Assert.False(firstName1.Equals(firstName3));
@@ -41,9 +41,9 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffFirstNameGetHashCodeTest()
         {
-            var firstName1 = new StaffFirstName("John");
-            var firstName2 = new StaffFirstName("John");
-            var firstName3 = new StaffFirstName("Doe");
+            var firstName1 = new StaffFirstName("Joao");
+            var firstName2 = new StaffFirstName("Joao");
+            var firstName3 = new StaffFirstName("Oliveira");
 
             Assert.Equal(firstName1.GetHashCode(), firstName2.GetHashCode());
             Assert.NotEqual(firstName1.GetHashCode(), firstName3.GetHashCode());
@@ -52,8 +52,8 @@ namespace DDDSample1.Domain.Staffs.Tests
         [Fact]
         public void StaffFirstNameToStringTest()
         {
-            var firstName = new StaffFirstName("John");
-            Assert.Equal("John", firstName.ToString());
+            var firstName = new StaffFirstName("Joao");
+            Assert.Equal("Joao", firstName.ToString());
         }
     }
 }
