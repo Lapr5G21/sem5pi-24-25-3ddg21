@@ -241,34 +241,7 @@ namespace DDDSample1.Domain.Staffs
 
        public async Task<IEnumerable<StaffDto>> SearchStaffAsync(StaffSearchDto searchDto)
         {
-            var staffs = await _staffRepository.GetAllAsync();
-
-            IEnumerable<Staff> filteredStaffs = staffs.AsEnumerable();
-
-            if (!string.IsNullOrEmpty(searchDto.FullName))
-            {
-                filteredStaffs = filteredStaffs.Where(s => s.StaffFullName.ToString().Contains(searchDto.FullName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (searchDto.SpecializationId != Guid.Empty)
-            {
-                filteredStaffs = filteredStaffs.Where(s => s.SpecializationId.Equals(searchDto.SpecializationId));
-            }
-            
-            if (!string.IsNullOrEmpty(searchDto.PhoneNumber))
-            {
-                filteredStaffs = filteredStaffs.Where(s => s.StaffPhoneNumber.ToString().Contains(searchDto.PhoneNumber));
-            }
-            
-            if (!string.IsNullOrEmpty(searchDto.Email))
-            {
-                filteredStaffs = filteredStaffs.Where(s => s.StaffEmail.ToString().Contains(searchDto.Email));
-            }
-
-            if (searchDto.Active != null)
-            {
-                filteredStaffs = filteredStaffs.Where(s => s.Active == searchDto.Active);
-            }
+            var filteredStaffs = await _staffRepository.SearchAsync(searchDto);
 
             return filteredStaffs.Select(s => new StaffDto
             {

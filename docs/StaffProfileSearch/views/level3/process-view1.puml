@@ -6,18 +6,18 @@ participant BE as "Backend Management" <<system>>
 participant DB as "Database"
 
 
-Admin -> BE : GET /api/operationTypes/search{filters}
+Admin -> BE : GET /api/staffs/search{filters}
 activate BE
 
-BE -> DB : getOperationTypeBy(name,specialization,status)
+BE -> DB : SearchAsync(name,specialization,status)
 
 activate DB 
 
-DB -> BE : operation types 
+DB -> BE : staffs 
 
 deactivate DB
 
-Admin <- BE : 200 OK (operationTypes)
+Admin <- BE : 200 OK (staffs)
 
 deactivate BE
 

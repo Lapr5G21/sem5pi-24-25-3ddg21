@@ -6,7 +6,7 @@ participant SYS as "Backend Management" <<system>>
 
 
 
-Admin -> SYS : GET /api/operationTypes/search{filters}
+Admin -> SYS : GET /api/staffs/search{filters}
 activate SYS
 
 SYS -> SYS : searchOperationTypes(name,specialization,status)
