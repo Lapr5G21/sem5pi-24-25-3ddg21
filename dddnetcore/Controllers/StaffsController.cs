@@ -99,7 +99,7 @@ namespace DDDSample1.Controllers
         }
 
             [HttpGet("search")]
-            public async Task<IActionResult> SearchStaffs([FromQuery] string fullName, [FromQuery] string phoneNumber, string email, [FromQuery] Guid specializationId, [FromQuery] bool? isActive)
+            public async Task<IActionResult> SearchStaffs([FromQuery] string fullName, [FromQuery] string phoneNumber, string email, [FromQuery] string specializationId, [FromQuery] bool? isActive)
             {      
                 try
                 {

@@ -17,5 +17,48 @@ namespace DDDSample1.Infrastructure.Staffs
         {
             _context = context;
         }
+
+        public async Task<IEnumerable<Staff>> SearchAsync(StaffSearchDto searchDto)
+        {
+        var staffs = await _context.Staffs.AsNoTracking().ToListAsync();
+
+        if (!string.IsNullOrEmpty(searchDto.FullName))
+        {
+            staffs = staffs
+                .Where(s => s.StaffFullName.FullNameString.Contains(searchDto.FullName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        if (searchDto.SpecializationId != null)
+        {
+            staffs = staffs
+                .Where(s =>  s.SpecializationId.Value == searchDto.SpecializationId)
+                .ToList();
+        }
+
+        if (searchDto.Active != null)
+        {
+            staffs = staffs
+                .Where(s => s.Active == searchDto.Active)
+                .ToList();
+        }
+
+        if (!string.IsNullOrEmpty(searchDto.PhoneNumber))
+        {
+            staffs = staffs
+                .Where(s => s.StaffPhoneNumber.PhoneNumberString.Contains(searchDto.PhoneNumber))
+                .ToList();
+        }
+
+        if (!string.IsNullOrEmpty(searchDto.Email))
+        {
+            staffs = staffs
+                .Where(s => s.StaffEmail.EmailString.Contains(searchDto.Email))
+                .ToList();
+        }
+
+        return staffs;
+    }
+
     }
 }
