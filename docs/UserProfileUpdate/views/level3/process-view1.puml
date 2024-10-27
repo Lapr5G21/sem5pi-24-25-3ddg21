@@ -1,0 +1,23 @@
+@startuml
+
+autonumber
+actor Patient as "Patient"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+Patient-> BE : PUT api/patients/{id}
+activate BE
+
+BE -> DB : updateAsync(editingPatientDto)
+
+activate DB 
+
+DB -> BE : patientDto
+
+deactivate DB 
+
+Patient <- BE : 200 OK
+
+deactivate BE
+
+@enduml

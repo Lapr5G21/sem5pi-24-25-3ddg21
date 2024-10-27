@@ -1,0 +1,17 @@
+@startuml
+
+autonumber
+actor Patient as "Patient"
+participant SYS as "Backend Management" <<system>>
+activate Patient
+Patient-> SYS : PUT /api/patients
+activate SYS
+
+SYS -> SYS : updatePatient(EditingPatientDto)
+Patient <-- SYS : 200 OK
+deactivate SYS
+
+deactivate Patient
+
+
+@enduml

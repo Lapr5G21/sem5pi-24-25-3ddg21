@@ -1,0 +1,73 @@
+@startuml 
+autonumber
+actor Patient as "Patient"
+participant CTRL as "PatientController"
+participant SERVICE as "PatientService <<service>>"
+participant PatientDomain as "Patient"
+participant EmailService as "EmailService"
+participant PatientDto as "PatientDto"
+database ILogRepository as "ILogRepository"
+database IPatientRepository as "IPatientRepository"
+
+activate Patient
+
+Patient -> CTRL : PUT /api/patients/{id}
+activate CTRL
+
+CTRL -> SERVICE : updateAsync(editingPatientDto)
+activate SERVICE
+
+SERVICE -> IPatientRepository : getByIdAsync(editingPatientDto.medicalRecordNumber)
+
+activate IPatientRepository
+
+IPatientRepository -> SERVICE : patient
+
+deactivate IPatientRepository
+
+SERVICE -> PatientDomain : changePatient(editingPatientDto)
+
+opt oldEmail != patient.email || oldPhoneNumber != patient.phoneNumber
+
+SERVICE -> EMAILSERVICE : sendEmailAsync(patient.Email,content)
+
+activate EMAILSERVICE
+
+EMAILSERVICE -> SERVICE : emailSent
+
+deactivate EMAILSERVICE
+
+end opt
+
+SERVICE -> ILogRepository : LogUpdateOperation(LogCategoryType.PATIENT_PROFILE,details)
+
+activate ILogRepository
+
+ILogRepository -> SERVICE : log 
+
+deactivate ILogRepository
+
+SERVICE -> ILogRepository : save(log)
+
+activate ILogRepository
+
+ILogRepository -> SERVICE : log 
+
+deactivate ILogRepository
+
+SERVICE -> PatientDto : create()
+
+activate PatientDto
+PatientDto -> SERVICE : patientDto
+deactivate PatientDto
+
+SERVICE -> CTRL : patientDto
+
+deactivate SERVICE 
+
+CTRL -> Patient : 200 OK
+
+deactivate CTRL 
+
+deactivate Patient
+@enduml

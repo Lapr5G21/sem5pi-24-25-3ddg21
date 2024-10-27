@@ -1,0 +1,15 @@
+@startuml
+
+actor Patient as "Patient"
+participant SYS as "HealthCare System" <<system>>
+
+activate Patient 
+
+Patient --> SYS : asks to edit his patient profile
+
+activate SYS 
+
+SYS --> Patient : confirms the patient edit was successfull
+
+
+@enduml
