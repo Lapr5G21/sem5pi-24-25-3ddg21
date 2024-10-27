@@ -1,210 +1,134 @@
- using Moq;
- using System;
 using Xunit;
- using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Patients;
+using DDDSample1.Domain.Shared;
+using System;
 
 namespace DDDSample1.Tests.Domain.Patients
 {
-    public class PatientTest
+    public class PatientTests
     {
-        /*
         [Fact]
-        public void CreatePatient_ValidData_ShouldCreatePatient()
-        {
-            // Arrange - cria mocks para cada parâmetro necessário para criar um paciente.
-            var firstName = new Mock<PatientFirstName>().Object;
-            var lastName = new Mock<PatientLastName>().Object;
-            var fullName = new Mock<PatientFullName>().Object;
-            var birthDate = new Mock<PatientBirthDate>().Object;
-            var gender = new Mock<PatientGender>().Object;
-            var medicalRecordNumber = new Mock<PatientMedicalRecordNumber>().Object;
-            var email = new Mock<PatientEmail>().Object;
-            var phoneNumber = new Mock<PatientPhoneNumber>().Object;
-            var emergencyContact = new Mock<PatientEmergencyContact>().Object;
-
-            // Act
-            // var patient = new Patient(firstName, lastName, fullName, birthDate, gender, medicalRecordNumber, email, phoneNumber, emergencyContact);
-
-            // Assert
-            // Assert.Equal(firstName, patient.FirstName);
-            // Assert.Equal(lastName, patient.LastName);
-            // Assert.Equal(fullName, patient.FullName);
-            // Assert.Equal(birthDate, patient.BirthDate);
-            // Assert.Equal(gender, patient.Gender);
-            // Assert.Equal(medicalRecordNumber, patient.MedicalRecordNumber);
-            // Assert.Equal(email, patient.Email);
-            // Assert.Equal(phoneNumber, patient.PhoneNumber);
-            // Assert.Equal(emergencyContact, patient.EmergencyContact);
-            // Assert.True(patient.Active);
-        }
-
-        [Fact]
-        public void ChangeName_ValidName_ShouldChangeFullName()
+        public void Constructor_ValidParameters_ShouldSetProperties()
         {
             // Arrange
-            var fullName = new Mock<PatientFullName>().Object;
-            var patient = CreateValidPatient();
+            var medicalRecordNumber = new PatientMedicalRecordNumber("202411000123");
+            var firstName = new PatientFirstName("João");
+            var lastName = new PatientLastName("Silva");
+            var fullName = new PatientFullName("João Silva");
+            var birthDate = new PatientBirthDate("1990-05-20");
+            var gender = PatientGender.Male;
+            var email = new PatientEmail("joao.silva@example.com");
+            var phoneNumber = new PatientPhoneNumber("912345678");
+            var address = new PatientAddress("Av. da Liberdade, 123, 5º A, 1250-001 Lisboa");
+            var medicalRecord = new PatientMedicalRecord("Sem histórico médico anterior.");
+            var emergencyContact = new PatientEmergencyContact("919876543");
+            var appointmentHistory = new PatientAppointmentHistory("Sem consultas anteriores.");
 
             // Act
-            patient.ChangeName(fullName);
+            var patient = new Patient(
+                medicalRecordNumber,
+                firstName,
+                lastName,
+                fullName,
+                birthDate,
+                gender,
+                email,
+                phoneNumber,
+                address,
+                medicalRecord,
+                emergencyContact,
+                appointmentHistory);
 
             // Assert
+            Assert.Equal(medicalRecordNumber, patient.Id);
+            Assert.Equal(firstName, patient.FirstName);
+            Assert.Equal(lastName, patient.LastName);
             Assert.Equal(fullName, patient.FullName);
+            Assert.Equal(birthDate, patient.BirthDate);
+            Assert.Equal(gender, patient.Gender);
+            Assert.Equal(email, patient.Email);
+            Assert.Equal(phoneNumber, patient.PhoneNumber);
+            Assert.Equal(address, patient.Address);
+            Assert.Equal(medicalRecord, patient.MedicalRecord);
+            Assert.Equal(emergencyContact, patient.EmergencyContact);
+            Assert.Equal(appointmentHistory, patient.AppointmentHistory);
+            Assert.True(patient.Active);
+            Assert.Null(patient.User);
         }
 
-        [Fact]
-        public void ChangeName_NullName_ShouldThrowArgumentNullException()
+        [Theory]
+        [InlineData(null)]
+        public void ChangeFirstName_NullFirstName_ShouldThrowArgumentNullException(PatientFirstName newFirstName)
         {
             // Arrange
             var patient = CreateValidPatient();
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeName(null));
+            Assert.Throws<ArgumentNullException>(() => patient.ChangeFirstName(newFirstName));
         }
 
         [Fact]
-        public void ChangeBirthDate_ValidBirthDate_ShouldChangeBirthDate()
+        public void ChangeFirstName_ValidFirstName_ShouldUpdateFirstName()
         {
             // Arrange
-            var newBirthDate = new Mock<PatientBirthDate>().Object;
             var patient = CreateValidPatient();
+            var newFirstName = new PatientFirstName("Maria");
 
             // Act
-            patient.ChangeBirthDate(newBirthDate);
+            patient.ChangeFirstName(newFirstName);
 
             // Assert
-            Assert.Equal(newBirthDate, patient.BirthDate);
+            Assert.Equal(newFirstName, patient.FirstName);
         }
 
-        [Fact]
-        public void ChangeBirthDate_NullBirthDate_ShouldThrowArgumentNullException()
+        [Theory]
+        [InlineData(null)]
+        public void ChangeLastName_NullLastName_ShouldThrowArgumentNullException(PatientLastName newLastName)
         {
             // Arrange
             var patient = CreateValidPatient();
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeBirthDate(null));
+            Assert.Throws<ArgumentNullException>(() => patient.ChangeLastName(newLastName));
         }
 
         [Fact]
-        public void ChangeGender_ValidGender_ShouldChangeGender()
+        public void ChangeLastName_ValidLastName_ShouldUpdateLastName()
         {
             // Arrange
-            var newGender = new Mock<PatientGender>().Object;
             var patient = CreateValidPatient();
+            var newLastName = new PatientLastName("Pereira");
 
             // Act
-            patient.ChangeGender(newGender);
+            patient.ChangeLastName(newLastName);
 
             // Assert
-            Assert.Equal(newGender, patient.Gender);
+            Assert.Equal(newLastName, patient.LastName);
         }
 
-        [Fact]
-        public void ChangeGender_NullGender_ShouldThrowArgumentNullException()
+        [Theory]
+        [InlineData(null)]
+        public void ChangeEmail_NullEmail_ShouldThrowArgumentNullException(PatientEmail newEmail)
         {
             // Arrange
             var patient = CreateValidPatient();
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeGender(null));
+            Assert.Throws<ArgumentNullException>(() => patient.ChangeEmail(newEmail));
         }
 
         [Fact]
-        public void ChangeMedicalRecordNumber_ValidRecordNumber_ShouldChangeMedicalRecordNumber()
-        {
-            // Arrange
-            var newMedicalRecordNumber = new Mock<PatientMedicalRecordNumber>().Object;
-            var patient = CreateValidPatient();
-
-            // Act
-            patient.ChangeMedicalRecordNumber(newMedicalRecordNumber);
-
-            // Assert
-            Assert.Equal(newMedicalRecordNumber, patient.MedicalRecordNumber);
-        }
-
-        [Fact]
-        public void ChangeMedicalRecordNumber_NullRecordNumber_ShouldThrowArgumentNullException()
+        public void ChangeEmail_ValidEmail_ShouldUpdateEmail()
         {
             // Arrange
             var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeMedicalRecordNumber(null));
-        }
-
-        [Fact]
-        public void ChangeEmail_ValidEmail_ShouldChangeEmail()
-        {
-            // Arrange
-            var newEmail = new Mock<PatientEmail>().Object;
-            var patient = CreateValidPatient();
+            var newEmail = new PatientEmail("maria.pereira@example.com");
 
             // Act
             patient.ChangeEmail(newEmail);
 
             // Assert
             Assert.Equal(newEmail, patient.Email);
-        }
-
-        [Fact]
-        public void ChangeEmail_NullEmail_ShouldThrowArgumentNullException()
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeEmail(null));
-        }
-
-        [Fact]
-        public void ChangePhoneNumber_ValidPhoneNumber_ShouldChangePhoneNumber()
-        {
-            // Arrange
-            var newPhoneNumber = new Mock<PatientPhoneNumber>().Object;
-            var patient = CreateValidPatient();
-
-            // Act
-            patient.ChangePhoneNumber(newPhoneNumber);
-
-            // Assert
-            Assert.Equal(newPhoneNumber, patient.PhoneNumber);
-        }
-
-        [Fact]
-        public void ChangePhoneNumber_NullPhoneNumber_ShouldThrowArgumentNullException()
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangePhoneNumber(null));
-        }
-
-        [Fact]
-        public void ChangeEmergencyContact_ValidEmergencyContact_ShouldChangeEmergencyContact()
-        {
-            // Arrange
-            var newEmergencyContact = new Mock<PatientEmergencyContact>().Object;
-            var patient = CreateValidPatient();
-
-            // Act
-            patient.ChangeEmergencyContact(newEmergencyContact);
-
-            // Assert
-            Assert.Equal(newEmergencyContact, patient.EmergencyContact);
-        }
-
-        [Fact]
-        public void ChangeEmergencyContact_NullEmergencyContact_ShouldThrowArgumentNullException()
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeEmergencyContact(null));
         }
 
         [Fact]
@@ -225,7 +149,7 @@ namespace DDDSample1.Tests.Domain.Patients
         {
             // Arrange
             var patient = CreateValidPatient();
-            patient.Deactivate(); // Garante que o paciente está inativo primeiro
+            patient.Deactivate(); // Ensure patient is inactive
 
             // Act
             patient.Activate();
@@ -234,21 +158,34 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.True(patient.Active);
         }
 
-        // private Patient CreateValidPatient()
-        //{
-        //   var firstName = new Mock<PatientFirstName>().Object;
-        //   var lastName = new Mock<PatientLastName>().Object;
-        //   var fullName = new Mock<PatientFullName>().Object;
-        //   var birthDate = new Mock<PatientBirthDate>().Object;
-        //   var gender = new Mock<PatientGender>().Object;
-        //   var medicalRecordNumber = new Mock<PatientMedicalRecordNumber>().Object;
-        //   var email = new Mock<PatientEmail>().Object;
-        //   var phoneNumber = new Mock<PatientPhoneNumber>().Object;
-        //   var emergencyContact = new Mock<PatientEmergencyContact>().Object;
+        private Patient CreateValidPatient()
+        {
+            var medicalRecordNumber = new PatientMedicalRecordNumber("123456789012");
+            var firstName = new PatientFirstName("João");
+            var lastName = new PatientLastName("Silva");
+            var fullName = new PatientFullName("João Silva");
+            var birthDate = new PatientBirthDate("1990-05-20");
+            var gender = PatientGender.Male;
+            var email = new PatientEmail("joao.silva@example.com");
+            var phoneNumber = new PatientPhoneNumber("912345678");
+            var address = new PatientAddress("Av. da Liberdade, 123, 5º A, 1250-001 Lisboa");
+            var medicalRecord = new PatientMedicalRecord("Sem histórico médico anterior.");
+            var emergencyContact = new PatientEmergencyContact("919876543");
+            var appointmentHistory = new PatientAppointmentHistory("Sem consultas anteriores.");
 
-        //   return new Patient(firstName, lastName, fullName, birthDate, gender, medicalRecordNumber, email, phoneNumber, emergencyContact);
-        //}
-        */
+            return new Patient(
+                medicalRecordNumber,
+                firstName,
+                lastName,
+                fullName,
+                birthDate,
+                gender,
+                email,
+                phoneNumber,
+                address,
+                medicalRecord,
+                emergencyContact,
+                appointmentHistory);
+        }
     }
 }
-

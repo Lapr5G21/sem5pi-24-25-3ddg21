@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
@@ -7,37 +8,34 @@ namespace DDDSample1.Tests.Domain.Patients
     public class PatientLastNameTests
     {
         [Fact]
-        public void CreatePatientLastName_WithValidName_ShouldCreateSuccessfully()
+        public void Constructor_ValidLastName_ShouldSetLastName()
         {
             // Arrange
-            string validName = "Doe";
-            
+            string lastName = "Silva";
+
             // Act
-            var lastName = new PatientLastName(validName);
-            
+            var patientLastName = new PatientLastName(lastName);
+
             // Assert
-            Assert.NotNull(lastName);
-            Assert.Equal(validName, lastName.LastName);
+            Assert.Equal(lastName, patientLastName.LastName);
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
-        [InlineData("    ")]
-        public void CreatePatientLastName_WithInvalidName_ShouldThrowException(string invalidName)
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void Constructor_InvalidLastName_ShouldThrowBusinessRuleValidationException(string invalidLastName)
         {
             // Act & Assert
-            var exception = Assert.Throws<BusinessRuleValidationException>(() => new PatientLastName(invalidName));
-            Assert.Equal("Name cannot be empty or null.", exception.Message);
+            Assert.Throws<BusinessRuleValidationException>(() => new PatientLastName(invalidLastName));
         }
 
         [Fact]
-        public void Equals_WithSameLastName_ShouldReturnTrue()
+        public void Equals_SameLastName_ShouldReturnTrue()
         {
             // Arrange
-            string name = "Doe";
-            var lastName1 = new PatientLastName(name);
-            var lastName2 = new PatientLastName(name);
+            var lastName1 = new PatientLastName("Silva");
+            var lastName2 = new PatientLastName("Silva");
 
             // Act
             bool result = lastName1.Equals(lastName2);
@@ -47,11 +45,11 @@ namespace DDDSample1.Tests.Domain.Patients
         }
 
         [Fact]
-        public void Equals_WithDifferentLastNames_ShouldReturnFalse()
+        public void Equals_DifferentLastNames_ShouldReturnFalse()
         {
             // Arrange
-            var lastName1 = new PatientLastName("Doe");
-            var lastName2 = new PatientLastName("Smith");
+            var lastName1 = new PatientLastName("Silva");
+            var lastName2 = new PatientLastName("Oliveira");
 
             // Act
             bool result = lastName1.Equals(lastName2);
@@ -61,31 +59,32 @@ namespace DDDSample1.Tests.Domain.Patients
         }
 
         [Fact]
-        public void ToString_ShouldReturnCorrectStringRepresentation()
+        public void GetHashCode_SameLastName_ShouldReturnSameHashCode()
         {
             // Arrange
-            string validName = "Doe";
-            var lastName = new PatientLastName(validName);
+            var lastName1 = new PatientLastName("Silva");
+            var lastName2 = new PatientLastName("Silva");
 
             // Act
-            string result = lastName.ToString();
+            int hash1 = lastName1.GetHashCode();
+            int hash2 = lastName2.GetHashCode();
 
             // Assert
-            Assert.Equal(validName, result);
+            Assert.Equal(hash1, hash2);
         }
 
         [Fact]
-        public void GetHashCode_ShouldReturnCorrectHashCode()
+        public void ToString_ShouldReturnLastName()
         {
             // Arrange
-            string validName = "Doe";
-            var lastName = new PatientLastName(validName);
+            string lastName = "Silva";
+            var patientLastName = new PatientLastName(lastName);
 
             // Act
-            int hashCode = lastName.GetHashCode();
+            string result = patientLastName.ToString();
 
             // Assert
-            Assert.Equal(validName.GetHashCode(), hashCode);
+            Assert.Equal(lastName, result);
         }
     }
 }

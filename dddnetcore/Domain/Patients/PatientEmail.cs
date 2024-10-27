@@ -22,7 +22,7 @@ namespace DDDSample1.Domain.Patients
         this.EmailString = value;
     }
 
-    private bool IsValidEmail(string email)
+    public bool IsValidEmail(string email)
     {
         var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
         return emailRegex.IsMatch(email);

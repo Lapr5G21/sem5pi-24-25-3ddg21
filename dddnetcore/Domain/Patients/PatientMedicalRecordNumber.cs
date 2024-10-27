@@ -37,7 +37,7 @@ namespace DDDSample1.Domain.Patients
             return (string)this.ObjValue;
         }
 
-        private static bool IsValid(string entityId)
+        public static bool IsValid(string entityId)
         {
             if (string.IsNullOrEmpty(entityId) || entityId.Length != 12)
                 return false;

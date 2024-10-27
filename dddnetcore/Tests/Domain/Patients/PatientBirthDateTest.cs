@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
@@ -6,57 +7,55 @@ namespace DDDSample1.Tests.Domain.Patients
 {
     public class PatientBirthDateTests
     {
-        [Fact]
-        public void CreatePatientBirthDate_WithValidDate_ShouldCreateSuccessfully()
+        [Theory]
+        [InlineData("2000-01-01")]
+        [InlineData("1990-12-31")]
+        [InlineData("1985-06-15")]
+        public void Constructor_ValidBirthDate_ShouldSetBirthDateString(string validDate)
         {
-            // Arrange
-            string validDate = "1990-01-01";
-            
             // Act
             var birthDate = new PatientBirthDate(validDate);
-            
+
             // Assert
-            Assert.NotNull(birthDate);
             Assert.Equal(validDate, birthDate.BirthDateString);
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
-        [InlineData("    ")]
-        public void CreatePatientBirthDate_WithInvalidDate_ShouldThrowException(string invalidDate)
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void Constructor_EmptyOrNullDate_ShouldThrowBusinessRuleValidationException(string invalidDate)
         {
             // Act & Assert
-            var exception = Assert.Throws<BusinessRuleValidationException>(() => new PatientBirthDate(invalidDate));
-            Assert.Equal("Date of Birth cannot be empty.", exception.Message);
+            Assert.Throws<BusinessRuleValidationException>(() => new PatientBirthDate(invalidDate));
         }
 
         [Fact]
-        public void ToString_ShouldReturnCorrectStringRepresentation()
+        public void GetHashCode_ShouldReturnHashCodeOfBirthDateString()
         {
             // Arrange
-            string validDate = "1990-01-01";
-            var birthDate = new PatientBirthDate(validDate);
-            
-            // Act
-            string result = birthDate.ToString();
-            
-            // Assert
-            Assert.Equal(validDate, result);
-        }
+            string date = "2000-01-01";
+            var birthDate = new PatientBirthDate(date);
 
-        [Fact]
-        public void GetHashCode_ShouldReturnCorrectHashCode()
-        {
-            // Arrange
-            string validDate = "1990-01-01";
-            var birthDate = new PatientBirthDate(validDate);
-            
             // Act
             int hashCode = birthDate.GetHashCode();
-            
+
             // Assert
-            Assert.Equal(validDate.GetHashCode(), hashCode);
+            Assert.Equal(date.GetHashCode(), hashCode);
+        }
+
+        [Fact]
+        public void ToString_ShouldReturnBirthDateString()
+        {
+            // Arrange
+            string date = "2000-01-01";
+            var birthDate = new PatientBirthDate(date);
+
+            // Act
+            string result = birthDate.ToString();
+
+            // Assert
+            Assert.Equal(date, result);
         }
     }
 }

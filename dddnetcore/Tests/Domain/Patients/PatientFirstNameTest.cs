@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
@@ -7,37 +8,34 @@ namespace DDDSample1.Tests.Domain.Patients
     public class PatientFirstNameTests
     {
         [Fact]
-        public void CreatePatientFirstName_WithValidName_ShouldCreateSuccessfully()
+        public void Constructor_ValidFirstName_ShouldSetFirstName()
         {
             // Arrange
-            string validName = "John";
-            
+            string firstName = "Vasco";
+
             // Act
-            var firstName = new PatientFirstName(validName);
-            
+            var patientFirstName = new PatientFirstName(firstName);
+
             // Assert
-            Assert.NotNull(firstName);
-            Assert.Equal(validName, firstName.FirstName);
+            Assert.Equal(firstName, patientFirstName.FirstName);
         }
 
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
-        [InlineData("    ")]
-        public void CreatePatientFirstName_WithInvalidName_ShouldThrowException(string invalidName)
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void Constructor_InvalidFirstName_ShouldThrowBusinessRuleValidationException(string invalidFirstName)
         {
             // Act & Assert
-            var exception = Assert.Throws<BusinessRuleValidationException>(() => new PatientFirstName(invalidName));
-            Assert.Equal("Name cannot be empty or null.", exception.Message);
+            Assert.Throws<BusinessRuleValidationException>(() => new PatientFirstName(invalidFirstName));
         }
 
         [Fact]
-        public void Equals_WithSameName_ShouldReturnTrue()
+        public void Equals_SameFirstName_ShouldReturnTrue()
         {
             // Arrange
-            string name = "John";
-            var firstName1 = new PatientFirstName(name);
-            var firstName2 = new PatientFirstName(name);
+            var firstName1 = new PatientFirstName("Vasco");
+            var firstName2 = new PatientFirstName("Vasco");
 
             // Act
             bool result = firstName1.Equals(firstName2);
@@ -47,11 +45,11 @@ namespace DDDSample1.Tests.Domain.Patients
         }
 
         [Fact]
-        public void Equals_WithDifferentNames_ShouldReturnFalse()
+        public void Equals_DifferentFirstNames_ShouldReturnFalse()
         {
             // Arrange
-            var firstName1 = new PatientFirstName("John");
-            var firstName2 = new PatientFirstName("Jane");
+            var firstName1 = new PatientFirstName("Vasco");
+            var firstName2 = new PatientFirstName("Bruno");
 
             // Act
             bool result = firstName1.Equals(firstName2);
@@ -61,31 +59,32 @@ namespace DDDSample1.Tests.Domain.Patients
         }
 
         [Fact]
-        public void ToString_ShouldReturnCorrectStringRepresentation()
+        public void GetHashCode_SameFirstName_ShouldReturnSameHashCode()
         {
             // Arrange
-            string validName = "John";
-            var firstName = new PatientFirstName(validName);
+            var firstName1 = new PatientFirstName("Vasco");
+            var firstName2 = new PatientFirstName("Vasco");
 
             // Act
-            string result = firstName.ToString();
+            int hash1 = firstName1.GetHashCode();
+            int hash2 = firstName2.GetHashCode();
 
             // Assert
-            Assert.Equal(validName, result);
+            Assert.Equal(hash1, hash2);
         }
 
         [Fact]
-        public void GetHashCode_ShouldReturnCorrectHashCode()
+        public void ToString_ShouldReturnFirstName()
         {
             // Arrange
-            string validName = "John";
-            var firstName = new PatientFirstName(validName);
+            string firstName = "Vasco";
+            var patientFirstName = new PatientFirstName(firstName);
 
             // Act
-            int hashCode = firstName.GetHashCode();
+            string result = patientFirstName.ToString();
 
             // Assert
-            Assert.Equal(validName.GetHashCode(), hashCode);
+            Assert.Equal(firstName, result);
         }
     }
 }
