@@ -8,12 +8,14 @@ participant Patient as "Patient <<domain>>"
 participant USERREPO as "UserRepository"
 participant PATIENTREPO as "Patient Repository"
 participant DTO as "creatingPatientUserDTO : PatientUserDTO"
-
+participant CONFIG as "Configuration"
+participant AUTH0User as "Auth0User"
+participant AUTH0SERVICE as "Auth0Service"
 activate PATIENT
 PATIENT-> CTRL : POST /api/users/patients
 activate CTRL
 
-CTRL -> SERVICE : createUserPacientAsync(creatingUserDTO)
+CTRL -> SERVICE : addPatientUserAsync(creatingUserDTO)
 activate SERVICE
 
 SERVICE -> PATIENTREPO : GetByEmailAsync(creatingUserDTO.email)
@@ -39,6 +41,27 @@ else Patient found (patient != null)
     deactivate User
 
     SERVICE -> Patient : setUser(userCreated)
+
+    SERVICE -> CONFIG : Get Auth0:Domain, Auth0:ClientId, Auth0:ClientSecret, Auth0:Audience
+    activate CONFIG
+    CONFIG --> SERVICE : return values
+    deactivate CONFIG
+
+    SERVICE -> AUTH0USER : create(dto.Email,dto.Password,auth0ClientId,auth0ClientSecret,role)
+
+    activate AUTH0USER
+
+    AUTH0USER -> SERVICE : auth0User
+
+    deactivate AUTH0USER
+
+    SERVICE -> AUTH0SERVICE : PostAsJsonAsync($"https://{auth0Domain}/api/v2/users", auth0User)
+
+    activate AUTH0SERVICE 
+
+    AUTH0SERVICE -> SERVICE : responseSucceed
+    deactivate AUTH0SERVICE
+
     SERVICE -> USERREPO : save(userCreated)
     activate USERREPO
 
@@ -51,7 +74,7 @@ else Patient found (patient != null)
     PATIENTREPO -> SERVICE : patientSaved
     deactivate PATIENTREPO
 
-    SERVICE -> DTO : create(creatingPatientUserDTO.email,creatingPatientUserDTO.username) 
+    SERVICE -> DTO : create(creatingPatientUserDTO.email,creatingPatientUserDTO.username,user.role) 
 
     activate DTO
 

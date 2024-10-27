@@ -124,40 +124,28 @@ namespace DDDSample1.Controllers
             }
         }
 
+
         // DELETE: api/users/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UserDto>> SoftDelete(string id)
+        public async Task<ActionResult<UserDto>> RequestDelete(string id)
         {
-            var user = await _service.InactivateAsync(new Username(id));
-
-            if (user == null)
+            var result = await _service.DeleteAsync(new Username(id));
+            if (result)
             {
-                return NotFound();
+                return Ok(new { message = "Confirmation email sent. Please check your inbox." });
             }
-
-            return Ok(user);
+            return NotFound(new { message = "User not found." });
         }
 
-
-        // DELETE: api/users/{id}/hard
-        [HttpDelete("{id}/hard")]
-        public async Task<ActionResult<UserDto>> HardDelete(string id)
+        [HttpPost("confirm-deletion/{id}")]
+         public async Task<IActionResult> ConfirmDeletion(string id)
         {
-            try
-            {
-                var deletedUser = await _service.DeleteAsync(new Username(id));
-
-                if (deletedUser == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(deletedUser);
-            }
-            catch (BusinessRuleValidationException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+            var deletedUser = await _service.ConfirmDeletionAsync(new Username(id));
+            if (deletedUser != null)
+        {
+            return Ok(new { message = "User successfully deleted.", user = deletedUser });
+        }
+        return NotFound(new { message = "User not found." });
         }
 
         [HttpPost("reset-password")]

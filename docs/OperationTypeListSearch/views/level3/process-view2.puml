@@ -7,7 +7,6 @@ participant OperationTypeDtoList as "OperationTypeDtoList"
 database IOperationTypeRepository as "IOperationTypeRepository"
 
 activate Admin
-
 Admin -> CTRL : GET /api/operationtypes/?name=...&specializationId=...&isActive=...
 activate CTRL
 

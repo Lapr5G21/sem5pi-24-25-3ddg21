@@ -106,7 +106,40 @@ namespace DDDSample1.Users
 
        
         
-        public async Task<UserDto> DeleteAsync(Username username)
+        public async Task<bool> DeleteAsync(Username username)
+        {
+            var user = await _userRepository.GetByIdAsync(username);
+            if (user == null) return false;
+
+            var patient = await _patientRepository.FindByEmailAsync(new PatientEmail(user.Email.EmailString));
+            if (patient == null) return false;
+
+            var auth0Domain = _configuration["Auth0:Domain"];
+            var auth0ClientId = _configuration["Auth0:ClientId"];
+            var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
+            var auth0UserId = $"auth0|{username.UsernameString}";
+
+            var token = await _authenticationService.GetToken(auth0Domain, _configuration["Auth0:APIAudience"], auth0ClientId, auth0ClientSecret);
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        
+                var actionResponse = await httpClient.PostAsync($"https://{auth0Domain}/api/v2/actions/send-confirmation?userId={auth0UserId}", null);
+        
+                if (!actionResponse.IsSuccessStatusCode)
+                {
+                    var errorMessage = await actionResponse.Content.ReadAsStringAsync();
+                    throw new Exception($"Failed to trigger confirmation email. Status Code: {actionResponse.StatusCode}. Error: {errorMessage}");
+                }
+
+                Console.WriteLine($"Confirmation email sent to {user.Email}");
+                return true; 
+            }
+        }
+
+
+        public async Task<UserDto> ConfirmDeletionAsync(Username username)
         {
             var user = await _userRepository.GetByIdAsync(username);
             if (user == null) return null;
@@ -114,34 +147,47 @@ namespace DDDSample1.Users
             var patient = await _patientRepository.FindByEmailAsync(new PatientEmail(user.Email.EmailString));
             if (patient == null) return null;
 
+            var auth0Domain = _configuration["Auth0:Domain"];
+            var auth0ClientId = _configuration["Auth0:ClientId"];
+            var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
+            var auth0UserId = $"auth0|{username.UsernameString}";
+
+            var token = await _authenticationService.GetToken(auth0Domain, _configuration["Auth0:APIAudience"], auth0ClientId, auth0ClientSecret);
+
             using (var httpClient = new HttpClient())
             {
-                string auth0Domain = _configuration["Auth0:Domain"];
-
-                var auth0UserId = username;
-
-                var deleteResponse = await httpClient.DeleteAsync($"{auth0Domain}/api/v2/users/{auth0UserId}");
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        
+                var deleteResponse = await httpClient.DeleteAsync($"https://{auth0Domain}/api/v2/users/{auth0UserId}");
                 if (!deleteResponse.IsSuccessStatusCode)
                 {
-                    throw new Exception("Failed to delete user from Auth0.");
+                    var errorMessage = await deleteResponse.Content.ReadAsStringAsync();
+                    throw new Exception($"Failed to delete user from Auth0. Status Code: {deleteResponse.StatusCode}. Error: {errorMessage}");
                 }
 
                 this._userRepository.Remove(user);
-                this._patientRepository.Remove(patient);
-                await this._unitOfWork.CommitAsync();
+                if (patient != null)
+                {
+                    this._patientRepository.Remove(patient);
+                }
+                    await this._unitOfWork.CommitAsync();
 
                 var log = _logRepository.LogDeleteOperation(LogCategoryType.USER, $"User with email {user.Email} was deleted");
                 await _logRepository.AddAsync(log);
 
-                var AnonimyzedPatient = _anonimyzedPatientRepository.CreateAnonimyzedPatient(patient.AppointmentHistory.ToString(),patient.MedicalRecord.ToString());
-                await _anonimyzedPatientRepository.AddAsync(AnonimyzedPatient);
+                var anonymizedPatient = _anonimyzedPatientRepository.CreateAnonimyzedPatient(
+                patient.AppointmentHistory?.ToString() ?? "N/A",
+                patient.MedicalRecord?.ToString() ?? "N/A");
+
+                await _anonimyzedPatientRepository.AddAsync(anonymizedPatient);
+                await this._unitOfWork.CommitAsync();
 
                 return new UserDto
-            {
-                Username = user.Id.ToString(),
-                Role = user.Role.ToString(),
-                Email = user.Email.ToString()
-            };
+                {
+                    Username = user.Id.ToString(),
+                    Role = user.Role.ToString(),
+                    Email = user.Email.ToString()
+                };
             }
         }
 
@@ -265,7 +311,8 @@ namespace DDDSample1.Users
                 {
                      {"roles", new string[] { RoleType.Patient.ToString() }}
                 },
-                email_verified = false 
+                email_verified = false,
+                user_id = dto.Email
             };
 
             var token = await _authenticationService.GetToken(auth0Domain, auth0Audience, auth0ClientId, auth0ClientSecret);

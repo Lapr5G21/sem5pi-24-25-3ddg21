@@ -12,7 +12,7 @@ namespace DDDSample1.Domain.Patients
         }
 
         public AnonimyzedPatient(string appointementString, string medicalString){
-            this.Id = new AnonimyzedPatientId(new Guid());
+            this.Id = new AnonimyzedPatientId(Guid.NewGuid());
             this.AppointmentHistoryString=appointementString;
             this.MedicalRecordString=medicalString;
         } 

@@ -90,7 +90,7 @@ namespace DDDSample1.Controllers
         }
 
 
-        // DELETE: api/patients/{id}/hard
+        // DELETE: api/patients/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {
