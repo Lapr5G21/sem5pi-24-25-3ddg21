@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DDDSample1.Controllers
 {
@@ -41,6 +42,7 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/patients
+        [Authorize(Policy="AdminRole")]
         [HttpPost]
         public async Task<ActionResult<PatientDto>> Create([FromBody] CreatingPatientDto dto)
         {
@@ -62,6 +64,8 @@ namespace DDDSample1.Controllers
 
 
         // PUT: api/patients/{id}
+        [Authorize(Policy="AdminRole")]
+        [Authorize(Policy="PatientRole")]
         [HttpPut("{id}")]
         public async Task<ActionResult<PatientDto>> Update(string id, [FromBody] EditingPatientDto dto)
         {
@@ -91,6 +95,7 @@ namespace DDDSample1.Controllers
 
 
         // DELETE: api/patients/{id}
+        [Authorize(Policy="AdminRole")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<PatientDto>> HardDelete(string id)
         {
@@ -111,7 +116,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-
+            [Authorize(Policy="AdminRole")]
             [HttpGet("search")]
             public async Task<IActionResult> SearchPatients([FromQuery] string fullName, [FromQuery] string birthDate, [FromQuery] string gender, [FromQuery] string email, [FromQuery] string phoneNumber, [FromQuery] string mrn, [FromQuery] bool? isActive)
             {      

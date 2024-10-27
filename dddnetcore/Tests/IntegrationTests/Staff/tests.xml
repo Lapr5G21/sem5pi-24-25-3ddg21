@@ -123,7 +123,19 @@ pm.test("Error for Null or invalid Portuguese StaffPhoneNumber ", function () {
 
 EDIT PUT
 
+pm.test("Update staff successfully", function () {
+    pm.response.to.have.status(200);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("staffId", "D20240002");
+    pm.expect(responseData).to.have.property("staffEmail", "122135234@isep.ipp.pt");
+    pm.expect(responseData).to.have.property("staffPhoneNumber", "924765987");
+});
 
+pm.test("Return 404 for invalid staffId ID", function () {
+    pm.response.to.have.status(400);
+    const responseData = pm.response.text();
+    pm.expect(responseData).to.include("ID mismatch.");
+});
 
 GET ALL 
 

@@ -49,6 +49,8 @@ namespace DDDSample1.Controllers
             return Ok(operationRequest);
         }
 
+        [Authorize(Policy="DoctorRole")]
+        [Authorize(Policy="AdminRole")]
         [HttpGet("search")]
         public async Task<IActionResult> SearchOperationRequest([FromQuery] string pacientMedicalRecordNumber, [FromQuery] Guid operationTypeId, [FromQuery] string priority, string status){
 
@@ -74,7 +76,7 @@ namespace DDDSample1.Controllers
 
         //POST: api/operationRequests
         [HttpPost]
-        //[Authorize(Policy="DoctorRole")]
+        [Authorize(Policy="DoctorRole")]
         public async Task<ActionResult<OperationRequestDto>> Create([FromBody] CreatingOperationRequestDto dto){
 
             if (dto == null)
@@ -94,7 +96,7 @@ namespace DDDSample1.Controllers
         
 
 
-         // PUT: api/operationRequests/{id}
+        [Authorize(Policy="DoctorRole")]
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationRequestDto>> Update(string id, [FromBody] OperationRequestDto dto)
         {
@@ -124,6 +126,7 @@ namespace DDDSample1.Controllers
 
 
         // DELETE: api/operationRequests/{id}/delete
+        [Authorize(Policy="DoctorRole")]
         [HttpDelete("{id}/delete")]
         public async Task<ActionResult<OperationRequestDto>> Delete(string id)
         {

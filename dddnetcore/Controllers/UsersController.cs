@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DDDSample1.Controllers
 {
@@ -60,7 +61,7 @@ namespace DDDSample1.Controllers
             return CreatedAtAction(nameof(GetById), new { id = userDto.Username }, userDto); 
         }
 
-        // POST: api/users
+        // POST: api/users/patients
         [HttpPost("patients")]
         public async Task<ActionResult<UserDto>> CreatePatientUser([FromBody] CreatingPatientUserDto dto)
         {
@@ -100,6 +101,8 @@ namespace DDDSample1.Controllers
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
+        [Authorize(Policy="PatientRole")]
+        [Authorize(Policy="AdminRole")]
         public async Task<ActionResult<UserDto>> Update(string id, [FromBody] UserDto dto)
         {
             if (id != dto.Username.ToString())
@@ -126,6 +129,7 @@ namespace DDDSample1.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Policy="PatientRole")]
         public async Task<ActionResult<UserDto>> RequestDelete(string id)
         {
             var result = await _service.DeleteAsync(new Username(id));
@@ -147,6 +151,8 @@ namespace DDDSample1.Controllers
         return NotFound(new { message = "User not found." });
         }
 
+
+        [Authorize(Policy="BackofficeRole")]
         [HttpPost("reset-password")]
         public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {

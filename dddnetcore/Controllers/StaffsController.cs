@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Staffs;
 using DDDSample1.Domain.Shared;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DDDSample1.Controllers
 {
@@ -39,6 +40,7 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/staff
+        [Authorize(Policy="AdminRole")]
         [HttpPost]
         public async Task<ActionResult<StaffDto>> Create(CreatingStaffDto dto)
         {
@@ -47,6 +49,7 @@ namespace DDDSample1.Controllers
         }
 
         // PUT: api/staffs/{id}
+        [Authorize(Policy="AdminRole")]
         [HttpPut("{id}")]
         public async Task<ActionResult<StaffDto>> Update(string id, [FromBody] EditingStaffDto dto)
         {
@@ -74,6 +77,7 @@ namespace DDDSample1.Controllers
 
         // DELETE: api/staffs/{id}
         [HttpDelete("{id}")]
+        [Authorize(Policy="AdminRole")]
         public async Task<ActionResult<StaffDto>> SoftDelete(string id)
         {
             var staff = await _staffService.InactivateAsync(new StaffId(id));
@@ -88,6 +92,7 @@ namespace DDDSample1.Controllers
 
         // DELETE: api/staff/{id}/hard
         [HttpDelete("{id}/hard")]
+        [Authorize(Policy="AdminRole")]
         public async Task<ActionResult<StaffDto>> Delete(string id)
         {
             var staffId = new StaffId(id);
@@ -99,6 +104,7 @@ namespace DDDSample1.Controllers
         }
 
             [HttpGet("search")]
+            [Authorize(Policy="AdminRole")]
             public async Task<IActionResult> SearchStaffs([FromQuery] string fullName, [FromQuery] string phoneNumber, string email, [FromQuery] string specializationId, [FromQuery] bool? isActive)
             {      
                 try

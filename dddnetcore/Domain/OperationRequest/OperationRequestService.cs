@@ -207,11 +207,11 @@ private readonly IPatientRepository _PatientRepository;
     { 
                 Id = operationRequest.Id.AsGuid(),
                 PriorityLevel  = operationRequest.PriorityLevel.ToString(), 
-                OperationTypeId = operationRequest.OperationTypeId.ToString(),
+                OperationTypeId = operationRequest.OperationTypeId.AsString(),
                 DeadlineDate =  operationRequest.DeadlineDate.Value,
                 Status = operationRequest.Status.ToString(),
-                DoctorId = operationRequest.StaffId.ToString(),
-                PacientMedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.ToString() };
+                DoctorId = operationRequest.StaffId.AsString(),
+                PacientMedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.AsString() };
     }
 
         
@@ -224,7 +224,7 @@ private readonly IPatientRepository _PatientRepository;
                 if (operationRequest == null)
                     throw new KeyNotFoundException($"OperationRequest with ID {id} not found.");
     
-                if(operationRequest.Status.Equals("Scheduled")){
+                if(operationRequest.Status.ToString().Equals("Scheduled")){
                     throw new BusinessRuleValidationException("Scheduled operation requests cannot be removed.");
                 }
 

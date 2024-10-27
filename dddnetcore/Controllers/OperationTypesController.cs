@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.OperationTypesSpecializations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DDDSample1.Controllers
 {
@@ -42,6 +43,7 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/operationTypes
+        [Authorize(Policy="AdminRole")]
         [HttpPost]
         public async Task<ActionResult<OperationTypeDto>> Create([FromBody] CreatingOperationTypeDto dto)
         {
@@ -62,6 +64,7 @@ namespace DDDSample1.Controllers
         }
 
         // PUT: api/operationTypes/{id}
+        [Authorize(Policy="AdminRole")]
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationTypeDto>> Update(string id, [FromBody] EditOperationTypeDto dto)
         {
@@ -87,6 +90,7 @@ namespace DDDSample1.Controllers
             }
         }
 
+            [Authorize(Policy="AdminRole")]
             [HttpGet("search")]
             public async Task<IActionResult> SearchOperationTypes([FromQuery] string name, [FromQuery] Guid specializationId, [FromQuery] bool? isActive)
             {      
@@ -110,6 +114,7 @@ namespace DDDSample1.Controllers
 
         // DELETE: api/operationTypes/{id}
         [HttpDelete("{id}")]
+        [Authorize(Policy="AdminRole")]
         public async Task<ActionResult<OperationTypeDto>> SoftDelete(string id)
         {
             var operationType = await _service.InactivateAsync(new OperationTypeId(id));
@@ -122,6 +127,7 @@ namespace DDDSample1.Controllers
             return Ok(operationType);
         }
 
+        [Authorize(Policy="AdminRole")]
         // DELETE: api/operationTypes/{id}/hard
         [HttpDelete("{id}/hard")]
         public async Task<ActionResult<OperationTypeDto>> HardDelete(string id)
