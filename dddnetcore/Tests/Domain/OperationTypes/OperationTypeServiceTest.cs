@@ -8,6 +8,7 @@ using DDDSample1.Domain.OperationTypesSpecializations;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.AuditLogs;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DDDSample1.Tests.Domain.OperationTypes
 {
@@ -49,79 +50,160 @@ namespace DDDSample1.Tests.Domain.OperationTypes
                     new SurgeryTime(90))
             };
 
+            var operationTypeSpecializations = new List<OperationTypeSpecialization>
+            {
+                new OperationTypeSpecialization
+                (
+                    operationTypes[0],
+                    new Specialization(new SpecializationName("Surgery")),
+                    new NumberOfStaff(5)
+                )
+            };
+
+            var specializations = new List<Specialization>
+            {
+                new Specialization(new SpecializationName("Surgery"))
+            };
+
             _mockOperationTypeRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypes);
+            _mockOperationTypeSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypeSpecializations);
+            _mockSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(specializations);
 
             var result = await _service.GetAllAsync();
 
             Assert.NotNull(result);
+
             Assert.Single(result);
-            Assert.Equal("Cardiology", result[0].Name);
-            Assert.Equal(120, result[0].EstimatedTimeDuration);
+            var operationTypeDto = result[0];
+            Assert.Equal("Cardiology", operationTypeDto.Name);
+            Assert.Equal(120, operationTypeDto.EstimatedTimeDuration);
+            Assert.Equal(30, operationTypeDto.AnesthesiaTime);
+            Assert.Equal(15, operationTypeDto.CleaningTime);
+            Assert.Equal(90, operationTypeDto.SurgeryTime);
+
+            Assert.Single(operationTypeDto.Specializations);
+            var specializationDto = operationTypeDto.Specializations[0];
+            Assert.Equal(5, specializationDto.NumberOfStaff);
         }
-/*
+
+
+
         [Fact]
         public async Task GetByIdAsync()
         {
-            var operationTypeId = new OperationTypeId(Guid.NewGuid());
+
             var operationType = new OperationType(
-                new OperationTypeName("Cardiology"),
-                new EstimatedTimeDuration(120),
-                new AnesthesiaTime(30),
-                new CleaningTime(15),
-                new SurgeryTime(90));
+            new OperationTypeName("Cardiology"),
+            new EstimatedTimeDuration(120),
+            new AnesthesiaTime(30),
+            new CleaningTime(15),
+            new SurgeryTime(90));
 
-            _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationTypeId)).ReturnsAsync(operationType);
+            var operationTypeSpecializations = new List<OperationTypeSpecialization>
+            {
+                new OperationTypeSpecialization(
+             operationType,
+            new Specialization(new SpecializationName("Surgery")),
+            new NumberOfStaff(5))
+            };
 
-            var result = await _service.GetByIdAsync(operationTypeId);
+            var specializations = new List<Specialization>
+            {
+                new Specialization(new SpecializationName("Surgery"))
+            };
+
+            _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationType.Id)).ReturnsAsync(operationType);
+            _mockOperationTypeSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypeSpecializations);
+            _mockSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(specializations);
+
+            var result = await _service.GetByIdAsync(operationType.Id);
 
             Assert.NotNull(result);
             Assert.Equal("Cardiology", result.Name);
+    
+            Assert.Single(result.Specializations);
+            var specializationDto = result.Specializations[0];
+            Assert.Equal(5, specializationDto.NumberOfStaff);
+        } 
+
+        [Fact]
+        public async Task GetByIdAsync_NotFound()
+        {
+            var operationTypeId = new OperationTypeId(Guid.NewGuid());
+
+            _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationTypeId)).ReturnsAsync((OperationType)null);
+
+            var result = await _service.GetByIdAsync(operationTypeId);
+
+            Assert.Null(result);
         }
 
-        */
+        [Fact]
+public async Task AddAsyncValidDto()
+{
+    var dto = new CreatingOperationTypeDto
+    {
+        Name = "Cardiology",
+        EstimatedTimeDuration = 120,
+        AnesthesiaTime = 30,
+        CleaningTime = 15,
+        SurgeryTime = 90,
+        Specializations = new List<CreatingOperationTypeSpecializationDto>
+        {
+            new CreatingOperationTypeSpecializationDto(Guid.NewGuid().ToString(), 2)
+        }
+    };
 
- //       [Fact]
-//        public async Task AddAsyncTest()
-//        {
-//
-//            var mockUnitOfWork = new Mock<IUnitOfWork>();
-//            var mockRepo = new Mock<IOperationTypeRepository>();
-//            var mockSpecializationRepo = new Mock<ISpecializationRepository>();
- //           var mockOpTypeSpecRepo = new Mock<IOperationTypeSpecializationRepository>();
+    var specialization = new Specialization(new SpecializationName("Cardiology Specialization"));
 
- //           var creatingDto = new CreatingOperationTypeDto
- //           {
-//                Name = "Neurology",
-//                EstimatedTimeDuration = 150,
-//                AnesthesiaTime = 40,
-//                CleaningTime = 20,
-//                SurgeryTime = 110,
- //               Specializations = new List<CreatingOperationTypeSpecializationDto>
- //               {
- //                   new CreatingOperationTypeSpecializationDto(Guid.NewGuid().ToString(), 3)
-  //              }
- //           };
+    _mockSpecializationRepo.Setup(repo => repo.GetByIdAsync(It.IsAny<SpecializationId>()))
+        .ReturnsAsync(specialization); 
 
- //           var service = new OperationTypeService(
- //               mockUnitOfWork.Object,
- //               mockRepo.Object,
- //               mockSpecializationRepo.Object,
-  //              mockOpTypeSpecRepo.Object);
-
- //           var result = await service.AddAsync(creatingDto);
-
- //           Assert.NotNull(result);
-//            Assert.Equal("Neurology", result.Name);
-//            Assert.Equal(150, result.EstimatedTimeDuration);
- //           Assert.Equal(40, result.AnesthesiaTime);
- //           Assert.Equal(20, result.CleaningTime);
- //           Assert.Equal(110, result.SurgeryTime);
-
- //           mockUnitOfWork.Verify(uow => uow.CommitAsync(), Times.Exactly(2));
- //       }
+    _mockOperationTypeRepo.Setup(repo => repo.AddAsync(It.IsAny<OperationType>()))
+        .ReturnsAsync((OperationType)null); 
 
 
-/*
+    _mockOperationTypeSpecializationRepo.Setup(repo => repo.AddAsync(It.IsAny<OperationTypeSpecialization>()))
+        .ReturnsAsync((OperationTypeSpecialization)null);
+
+    _mockUnitOfWork.Setup(uow => uow.CommitAsync())
+        .Returns(Task.FromResult(0));
+
+    var result = await _service.AddAsync(dto);
+
+    Assert.NotNull(result);
+    Assert.Equal("Cardiology", result.Name);
+    Assert.Single(result.Specializations);
+    Assert.Equal(2, result.Specializations[0].NumberOfStaff);
+}
+
+        [Fact]
+        public async Task AddAsyncInvalidSpecialization()
+        {
+    var dto = new CreatingOperationTypeDto
+    {
+        Name = "Cardiology",
+        EstimatedTimeDuration = 120,
+        AnesthesiaTime = 30,
+        CleaningTime = 15,
+        SurgeryTime = 90,
+        Specializations = new List<CreatingOperationTypeSpecializationDto>
+        {
+            new CreatingOperationTypeSpecializationDto (Guid.NewGuid().ToString(), 2)
+        }
+        };
+
+        var specializationId = new SpecializationId(dto.Specializations[0].SpecializationId);
+
+        _mockSpecializationRepo.Setup(repo => repo.GetByIdAsync(specializationId))
+            .ReturnsAsync((Specialization)null);
+
+        var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(async () =>
+        await _service.AddAsync(dto));
+
+        Assert.Equal($"Specialization with ID {specializationId.AsGuid()} not found", exception.Message);
+        }
+
         [Fact]
         public async Task UpdateAsyncTest()
         {
@@ -135,14 +217,8 @@ namespace DDDSample1.Tests.Domain.OperationTypes
 
             _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationTypeId)).ReturnsAsync(operationType);
 
-            var updateDto = new OperationTypeDto
+            var updateDto = new EditOperationTypeDto
             {
-                Id = operationTypeId.AsGuid(),
-                Name = "Neurology",
-                EstimatedTimeDuration = 150,
-                AnesthesiaTime = 40,
-                CleaningTime = 20,
-                SurgeryTime = 110
             };
 
             var result = await _service.UpdateAsync(updateDto);
@@ -151,8 +227,6 @@ namespace DDDSample1.Tests.Domain.OperationTypes
             Assert.Equal("Neurology", result.Name);
             Assert.Equal(150, result.EstimatedTimeDuration);
         }
-
-        */
 
         [Fact]
         public async Task InactiveAsyncTest()

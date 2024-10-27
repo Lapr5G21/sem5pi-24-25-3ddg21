@@ -223,7 +223,7 @@ namespace DDDSample1.Tests.Domain.Staffs
             var searchDto = new StaffSearchDto
             {
                 FullName = "Bruno",
-                SpecializationId = _specializations[1].Id.AsGuid(),
+                SpecializationId = _specializations[1].Id.AsString(),
                 PhoneNumber = "927654321"
             };
 

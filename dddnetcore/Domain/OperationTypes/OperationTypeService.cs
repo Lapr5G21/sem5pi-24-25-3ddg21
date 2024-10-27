@@ -111,7 +111,7 @@ namespace DDDSample1.Domain.OperationTypes
 
                 if (specialization == null)
                 {
-                    throw new BusinessRuleValidationException($"Specialization with ID {specialization.Id} not found");
+                    throw new BusinessRuleValidationException($"Specialization with ID {staffSpecialization.SpecializationId} not found");
                 }
 
                  var operationTypeSpecialization = new OperationTypeSpecialization(
