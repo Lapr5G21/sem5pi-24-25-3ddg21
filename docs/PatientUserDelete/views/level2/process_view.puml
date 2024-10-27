@@ -1,0 +1,16 @@
+@startuml 
+
+autonumber
+actor Patient as "Patient"
+participant SYS as "Healthcare System" <<system (C4)>>
+
+activate Patient
+
+Patient-> SYS : DELETE api/users/{id}
+activate SYS
+
+SYS -> SYS : deletePatientAccount(username)
+SYS--> Patient : 200 Deleted
+deactivate SYS
+
+@enduml

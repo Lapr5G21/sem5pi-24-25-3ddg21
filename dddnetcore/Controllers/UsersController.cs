@@ -125,7 +125,6 @@ namespace DDDSample1.Controllers
         }
 
 
-        // DELETE: api/users/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<UserDto>> RequestDelete(string id)
         {
@@ -137,7 +136,7 @@ namespace DDDSample1.Controllers
             return NotFound(new { message = "User not found." });
         }
 
-        [HttpPost("confirm-deletion/{id}")]
+        [HttpGet("confirm-delete/{id}")]
          public async Task<IActionResult> ConfirmDeletion(string id)
         {
             var deletedUser = await _service.ConfirmDeletionAsync(new Username(id));

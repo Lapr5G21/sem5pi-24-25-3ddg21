@@ -1,0 +1,146 @@
+@startuml
+
+autonumber
+actor Patient as "Patient"
+participant CTRL as "UsersController"
+participant SERVICE as "UserService <<service>>"
+participant USER as "User <<domain>>"
+participant PATIENT as "Patient <<domain>>"
+database USERREPO as "UserRepository"
+database PATIENTREPO as "PatientRepository"
+participant USERDTO as "USERDTO : USERDTO"
+participant EmailService as "IEmailService <<service>>"
+participant Configuration as "IConfiguration"
+participant Auth0Service as "Auth0Service <<service>>"
+database LogRepository as "ILogRepository"
+database AnonimyzedPatientRepository as "IAnonimyzedPatientRepository"
+
+Patient-> CTRL : DELETE /api/users/{username}
+activate CTRL
+
+CTRL -> SERVICE : DeleteAsync(username)
+activate SERVICE
+
+    SERVICE -> USERREPO : GetByIdAsync(username)
+    activate USERREPO
+
+    USERREPO --> SERVICE : user
+    deactivate USERREPO
+
+    SERVICE -> PATIENTREPO : FindByEmailAsync(user.Email)
+    activate PATIENTREPO
+
+    PATIENTREPO --> SERVICE : patient
+    deactivate PATIENTREPO
+
+    SERVICE -> EmailService : sendEmailAsync(user.Email,"Confirm deletion account",emailBody)
+
+    activate EmailService
+
+    EmailService --> SERVICE : emailSent
+
+    deactivate EmailService
+
+    SERVICE --> CTRL : emailSent
+    deactivate SERVICE
+
+    CTRL--> Patient : 200 Ok(Confirmation email sent)
+    deactivate CTRL 
+
+    opt Patient confirms to delete account 
+
+    Patient-> CTRL : GET /api/users/confirm-delete/{username}
+
+    activate CTRL 
+
+    CTRL -> SERVICE : ConfirmDeletionAsync(username)
+
+    activate SERVICE 
+
+    SERVICE -> USERREPO : GetByIdAsync(username)
+    activate USERREPO
+
+    USERREPO --> SERVICE : user
+    deactivate USERREPO
+
+    SERVICE -> PATIENTREPO : FindByEmailAsync(user.Email)
+    activate PATIENTREPO
+
+    PATIENTREPO --> SERVICE : patient
+    deactivate PATIENTREPO
+
+    SERVICE -> Configuration : Get Auth0:Domain, Auth0:ClientId, Auth0:ClientSecret, Auth0:Audience
+    
+    activate Configuration 
+
+    Configuration --> SERVICE : Values
+
+    deactivate Configuration
+
+    SERVICE -> Auth0Service : DeleteAsync($"https://{auth0Domain}/api/v2/users/{auth0UserId}")
+
+    activate Auth0Service
+    Auth0Service --> SERVICE : succeed response
+
+    deactivate Auth0Service
+
+    SERVICE -> USERREPO : Remove(user)
+    activate USERREPO
+
+    USERREPO --> SERVICE : userRemoved
+    deactivate USERREPO
+
+    SERVICE -> PATIENTREPO : Remove(patient)
+    activate PATIENTREPO
+
+    PATIENTREPO --> SERVICE : patientRemoved
+    deactivate PATIENTREPO
+
+    SERVICE -> LogRepository : LogDeleteOperation(LogCategoryType.USER,message)
+
+    activate LogRepository
+
+    LogRepository --> SERVICE : log
+
+    deactivate LogRepository
+
+    SERVICE -> LogRepository : addAsync(log)
+
+    activate LogRepository
+
+    LogRepository --> SERVICE : log
+
+    deactivate LogRepository
+
+    SERVICE --> AnonimyzedPatientRepository : createAnonimyzedPatient(patient.AppointmentHistory,patient.medicalRecord)
+
+    activate AnonimyzedPatientRepository
+
+    AnonimyzedPatientRepository --> SERVICE : anonimyzedPatient]
+
+    deactivate AnonimyzedPatientRepository
+
+    SERVICE --> AnonimyzedPatientRepository : addAsync(anonimyzedPatient)
+
+    activate AnonimyzedPatientRepository
+
+    AnonimyzedPatientRepository --> SERVICE : anonimyzedPatient
+    
+    deactivate AnonimyzedPatientRepository
+
+    SERVICE -> USERDTO : create(PatientDTO.FirstName, PatientDTO.LastName, PatientDTO.FullName, PatientDTO.BirthDate, PatientDTO.Gender, PatientDTO.Email, PatientDTO.PhoneNumber, PatientDTO.Address, PatientDTO.EmergencyContact)
+    
+    activate USERDTO
+
+    USERDTO --> SERVICE : userDto
+    deactivate USERDTO
+
+    SERVICE --> CTRL : userDto
+    
+    CTRL --> Patient : 200 User Patient Deleted
+
+    end opt
+
+deactivate SERVICE
+deactivate CTRL
+@enduml

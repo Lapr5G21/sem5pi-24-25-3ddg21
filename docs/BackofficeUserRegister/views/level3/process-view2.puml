@@ -48,8 +48,7 @@ activate SERVICE
 
     USERREPO --> SERVICE : userSaved
     deactivate USERREPO
-
-
+    
     SERVICE -> DTO : create(creatingUserDTO.username, user.role, creatingUserDTO.email) 
 
     activate DTO

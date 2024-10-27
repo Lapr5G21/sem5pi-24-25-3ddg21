@@ -9,6 +9,8 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Authentication;
 using DDDSample1.Users;
 using DDDSample1.Domain.Patients;
+using DDDSample1.Infrastructure.Emails;
+using System.Configuration;
 
 namespace DDDSample1.Tests.Users
 {
@@ -22,7 +24,7 @@ namespace DDDSample1.Tests.Users
         private readonly Mock<IPatientRepository> _patientRepositoryMock;
         private readonly Mock<ILogRepository> _logRepositoryMock;
         private readonly Mock<IAnonimyzedPatientRepository> _anonimyzedPatientRepositoryMock;
-
+        private readonly EmailService _emailService;
         private readonly List<User> _testUsers;
 
         public UserServiceTest()
@@ -42,7 +44,8 @@ namespace DDDSample1.Tests.Users
                 _authenticationServiceMock.Object,
                 _patientRepositoryMock.Object,
                 _logRepositoryMock.Object,
-                _anonimyzedPatientRepositoryMock.Object
+                _anonimyzedPatientRepositoryMock.Object,
+                _emailService
             );
 
             _testUsers = new List<User>

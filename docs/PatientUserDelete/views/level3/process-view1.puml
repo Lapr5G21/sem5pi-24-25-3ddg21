@@ -1,0 +1,31 @@
+@startuml
+
+autonumber
+actor Patient as "Patient"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+Patient -> BE : DELETE api/users/{id}
+activate BE
+
+BE -> DB : get patient by username
+
+activate DB 
+
+DB --> BE : patient account 
+
+deactivate DB 
+
+BE -> DB : delete patient account and all associated data
+
+activate DB 
+
+DB --> BE : patient account 
+
+deactivate DB 
+
+BE --> Patient : 200 Deleted
+
+deactivate BE
+
+@enduml

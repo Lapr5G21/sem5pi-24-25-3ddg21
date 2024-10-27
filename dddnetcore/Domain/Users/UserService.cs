@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using DDDSample1.Domain;
 using DDDSample1.Domain.AuditLogs;
 using DDDSample1.Domain.Authentication;
+using DDDSample1.Domain.Emails;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
@@ -31,8 +32,9 @@ namespace DDDSample1.Users
         private readonly IPatientRepository _patientRepository;
         private readonly ILogRepository _logRepository;
         private readonly IAnonimyzedPatientRepository _anonimyzedPatientRepository;
+        private readonly IEmailService _emailService;
 
-        public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IConfiguration configuration,AuthenticationService authenticationService,IPatientRepository patientRepository, ILogRepository logRepository, IAnonimyzedPatientRepository anonimyzedPatientRepository)
+        public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IConfiguration configuration,AuthenticationService authenticationService,IPatientRepository patientRepository, ILogRepository logRepository, IAnonimyzedPatientRepository anonimyzedPatientRepository,IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _userRepository = userRepository;
@@ -41,6 +43,7 @@ namespace DDDSample1.Users
             _patientRepository = patientRepository;
             _logRepository = logRepository;
             _anonimyzedPatientRepository = anonimyzedPatientRepository;
+            _emailService = emailService;
         }
 
         public async Task<List<UserDto>> GetAllAsync()
@@ -113,29 +116,21 @@ namespace DDDSample1.Users
             var patient = await _patientRepository.FindByEmailAsync(new PatientEmail(user.Email.EmailString));
             if (patient == null) return false;
 
-            var auth0Domain = _configuration["Auth0:Domain"];
-            var auth0ClientId = _configuration["Auth0:ClientId"];
-            var auth0ClientSecret = _configuration["Auth0:ClientSecret"];
-            var auth0UserId = $"auth0|{username.UsernameString}";
+            var confirmationEndpoint = $"http://localhost:5000/api/users/confirm-delete/{username.UsernameString}";
 
-            var token = await _authenticationService.GetToken(auth0Domain, _configuration["Auth0:APIAudience"], auth0ClientId, auth0ClientSecret);
+            var emailBody = $@"
+            <h2>Account Deletion Confirmation</h2>
+            <p>Hi {user.Email.EmailString},</p>
+            <p>Please click the button below to confirm the deletion of your account:</p>
+            <a href='{confirmationEndpoint}' style='display:inline-block; padding:10px 20px; color:white; background-color:red; text-decoration:none; border-radius:5px;'>Confirm Delete</a>
+            <p>If you did not request this, please ignore this email.</p>";
 
-            using (var httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        
-                var actionResponse = await httpClient.PostAsync($"https://{auth0Domain}/api/v2/actions/send-confirmation?userId={auth0UserId}", null);
-        
-                if (!actionResponse.IsSuccessStatusCode)
-                {
-                    var errorMessage = await actionResponse.Content.ReadAsStringAsync();
-                    throw new Exception($"Failed to trigger confirmation email. Status Code: {actionResponse.StatusCode}. Error: {errorMessage}");
-                }
+            await _emailService.SendEmailAsync(new List<string> { user.Email.EmailString }, "Confirm Account Deletion", emailBody);
 
-                Console.WriteLine($"Confirmation email sent to {user.Email}");
-                return true; 
-            }
-        }
+            Console.WriteLine($"Confirmation email sent to {user.Email.EmailString}");
+            return true;
+}
+
 
 
         public async Task<UserDto> ConfirmDeletionAsync(Username username)
