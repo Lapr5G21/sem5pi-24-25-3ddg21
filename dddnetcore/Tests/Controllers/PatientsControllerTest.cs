@@ -246,9 +246,5 @@ namespace DDDSample1.Tests.Controllers
             Assert.Single(returnedPatients);
         }
     }
-<<<<<<< HEAD
 }
 */
-=======
-}*/
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24

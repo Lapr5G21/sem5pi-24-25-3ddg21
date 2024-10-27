@@ -22,24 +22,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(validContact3, emergencyContact3.EmergencyContact);
         }
 
-<<<<<<< HEAD
-        [Fact]
-        public void IsValidEmergencyContact_ValidContact_ShouldReturnTrue()
-        {
-            string validContact1 = "912345678";
-            string validContact2 = "932345678";
-            string validContact3 = "962345678";
-
-            bool result1 = PatientEmergencyContact.IsValidEmergencyContact(validContact1);
-            bool result2 = PatientEmergencyContact.IsValidEmergencyContact(validContact2);
-            bool result3 = PatientEmergencyContact.IsValidEmergencyContact(validContact3);
-
-            Assert.True(result1);
-            Assert.True(result2);
-            Assert.True(result3);
-        }
-=======
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
 
         [Fact]
         public void IsValidEmergencyContact_InvalidContact_ShouldReturnFalse()

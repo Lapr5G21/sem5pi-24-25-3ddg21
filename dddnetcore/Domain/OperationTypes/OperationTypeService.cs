@@ -199,7 +199,7 @@ public async Task<OperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
         var log = _logRepository.LogUpdateOperation(LogCategoryType.OPERATIONTYPE, $"Operation type updated with this name :{operationType.Name}");
         await _logRepository.AddAsync(log);
 
-   return new OperationTypeDto
+        return new OperationTypeDto
             {
             Id = operationType.Id.AsGuid(),
             Name = operationType.Name.ToString(),

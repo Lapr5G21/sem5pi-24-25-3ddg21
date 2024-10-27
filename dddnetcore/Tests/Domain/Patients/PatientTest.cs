@@ -54,10 +54,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Null(patient.User);
         }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
         [Fact]
         public void ChangeFirstName_ValidFirstName_ShouldUpdateFirstName()
         {
@@ -69,10 +65,6 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Equal(newFirstName, patient.FirstName);
         }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
         [Fact]
         public void ChangeLastName_ValidLastName_ShouldUpdateLastName()
         {
@@ -83,11 +75,7 @@ namespace DDDSample1.Tests.Domain.Patients
 
             Assert.Equal(newLastName, patient.LastName);
         }
-<<<<<<< HEAD
        
-=======
-
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
 
         [Fact]
         public void ChangeEmail_ValidEmail_ShouldUpdateEmail()

@@ -45,11 +45,7 @@ public class PatientServiceTests
             birthDate: "1994-10-15", 
             gender: PatientGender.Male,
             email: "joao.silva@example.com",
-<<<<<<< HEAD
             phoneNumber: "927654321",
-=======
-            phoneNumber: "917654321",
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
             address: "Rua das Flores, 123",
             emergencyContact: "918888888"
         );
@@ -81,11 +77,7 @@ public class PatientServiceTests
                 new PatientBirthDate("1994-10-15"),
                 PatientGender.Male,
                 new PatientEmail("joao.silva@example.com"),
-<<<<<<< HEAD
                 new PatientPhoneNumber("926754321"),
-=======
-                new PatientPhoneNumber("917654321"),
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
                 new PatientAddress("Rua das Flores, 123"),
                 new PatientMedicalRecord("Registro Médico"),
                 new PatientEmergencyContact("918888888"),
@@ -115,11 +107,7 @@ public class PatientServiceTests
             new PatientBirthDate("1994-10-15"),
             PatientGender.Male,
             new PatientEmail("joao.silva@example.com"),
-<<<<<<< HEAD
             new PatientPhoneNumber("927865432"),
-=======
-            new PatientPhoneNumber("917654321"),
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
             new PatientAddress("Rua das Flores, 123"),
             new PatientMedicalRecord("Registro Médico"),
             new PatientEmergencyContact("918888888"),
@@ -147,11 +135,7 @@ public class PatientServiceTests
             new PatientBirthDate("1994-10-15"),
             PatientGender.Male,
             new PatientEmail("joao.silva@example.com"),
-<<<<<<< HEAD
             new PatientPhoneNumber("927865432"),
-=======
-            new PatientPhoneNumber("917654321"),
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
             new PatientAddress("Rua das Flores, 123"),
             new PatientMedicalRecord("Registro Médico"),
             new PatientEmergencyContact("918888888"),
@@ -180,40 +164,6 @@ public class PatientServiceTests
         Assert.Equal("João Pedro", result.FirstName);
         Assert.Equal("Silva", result.LastName);
     }
-<<<<<<< HEAD
-=======
-/*
-    [Fact]
-    public async Task DeleteAsync_ShouldReturnPatientDto_WhenPatientIsDeleted()
-    {
-        // Arrange
-        var existingPatient = new Patient(
-            new PatientMedicalRecordNumber("202410123456"),
-            new PatientFirstName("João"),
-            new PatientLastName("Silva"),
-            new PatientFullName("João Silva"),
-            new PatientBirthDate("1994-10-15"),
-            PatientGender.Male,
-            new PatientEmail("joao.silva@example.com"),
-            new PatientPhoneNumber("917654321"),
-            new PatientAddress("Rua das Flores, 123"),
-            new PatientMedicalRecord("Registro Médico"),
-            new PatientEmergencyContact("918888888"),
-            new PatientAppointmentHistory("Histórico de consultas"));
-
-        _patientRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<PatientMedicalRecordNumber>())).ReturnsAsync(existingPatient);
-        _patientRepositoryMock.Setup(repo => repo.Remove(It.IsAny<Patient>()));
-        //_unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.CompletedTask);
-
-        // Act
-        var result = await _patientService.DeleteAsync(new PatientMedicalRecordNumber("202410123456"));
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal("João", result.FirstName);
-        Assert.Equal("Silva", result.LastName);
-    }*/
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
 
 
     public class PatientFactory
@@ -228,11 +178,7 @@ public class PatientServiceTests
             new PatientBirthDate("1994-10-15"),
             PatientGender.Male,
             new PatientEmail("joao.silva@example.com"),
-<<<<<<< HEAD
             new PatientPhoneNumber("927654321"),
-=======
-            new PatientPhoneNumber("917654321"),
->>>>>>> 3cc4922d05178fabfdd32f3037ed0efbcc05ca24
             new PatientAddress("Rua das Flores, 123"),
             new PatientMedicalRecord("Registro Médico"),
             new PatientEmergencyContact("918888888"),
