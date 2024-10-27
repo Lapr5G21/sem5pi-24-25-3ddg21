@@ -4,12 +4,19 @@ autonumber
 actor Admin as "Admin"
 participant SYS as "Backend Management" <<system>>
 
-Admin-> SYS : PUT /api/staffs
+opt want to filter
+    Admin -> SYS : GET /api/staffs{searchVariable}
+    activate SYS
+
+    SYS -> SYS : searchBy(searchVariable)
+    Admin <-- SYS : 200 OK
+    deactivate SYS
+end
+Admin-> SYS : PUT /api/staffs/{id}
 activate SYS
 
-SYS -> SYS : updateStaff(EditingStaffDTO)
+SYS -> SYS : updateStaffProfile(editingStaffDTO)
 Admin <-- SYS : 200 OK
 deactivate SYS
-
 
 @enduml

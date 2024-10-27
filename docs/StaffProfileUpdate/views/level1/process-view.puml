@@ -5,11 +5,16 @@ participant SYS as "HealthCare System" <<system>>
 
 activate Admin 
 
-Admin --> SYS : asks to edit an staff
+opt want to filter
+    Admin -> SYS : asks to search staffs by (fullName / specializationId /\n phoneNumber / Email)
+    activate SYS
+    SYS --> Admin : return staff profile
+    deactivate SYS
+end
 
+Admin -> SYS : asks to edit a staff profile
 activate SYS 
 
-SYS --> Admin : confirms the staff edit was successfull
-
+SYS --> Admin : confirms the staff profile editing was successfull
 
 @enduml

@@ -5,18 +5,30 @@ actor Admin as "Admin"
 participant BE as "Backend Management" <<system>>
 participant DB as "Database"
 
+
+opt want to filter
+    Admin -> BE : GET /api/staffs{searchVariable}
+    activate BE
+            BE -> DB : get staff
+        activate DB 
+            DB --> BE : staffProfile
+        deactivate DB 
+    BE --> Admin : 200 Ok
+    deactivate BE
+end
+
 Admin-> BE : PUT api/staffs/{id}
 activate BE
 
-BE -> DB : updateAsync(editingStaffDto)
+BE -> DB : update staff
 
 activate DB 
 
-DB -> BE : staffDto
+DB --> BE : staffProfileUpdated
 
 deactivate DB 
 
-Admin <- BE : 200 OK
+Admin <-- BE : 200 Ok
 
 deactivate BE
 
