@@ -1,5 +1,6 @@
 using System;
 using DDDSample1.Domain.OperationTypesSpecializations;
+using DDDSample1.Domain.Shared;
 using Xunit;
 
 namespace DDDSample1.Tests.Domain.OperationTypesSpecializations
@@ -11,7 +12,7 @@ namespace DDDSample1.Tests.Domain.OperationTypesSpecializations
         {
             int negativeNumber = -1;
 
-            var exception = Assert.Throws<ArgumentException>(() => new NumberOfStaff(negativeNumber));
+            var exception = Assert.Throws<BusinessRuleValidationException>(() => new NumberOfStaff(negativeNumber));
             Assert.Equal("Number of staff cannot be negative.", exception.Message);
         }
         [Fact]

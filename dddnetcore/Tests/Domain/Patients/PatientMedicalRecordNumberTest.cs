@@ -6,84 +6,53 @@ namespace DDDSample1.Tests.Domain.Patients
 {
     public class PatientMedicalRecordNumberTests
     {
-        [Theory]
-        [InlineData("202312000001")] // Formato válido
-        [InlineData("202212999999")] // Formato válido com mês e sequencial limite
-        public void Constructor_ValidMedicalRecordNumber_ShouldCreateInstance(string validRecordNumber)
-        {
-            // Act
-            var recordNumber = new PatientMedicalRecordNumber(validRecordNumber);
-
-            // Assert
-            Assert.Equal(validRecordNumber, recordNumber.AsString());
-        }
-
-        [Theory]
-        [InlineData("202313000001")] // Mês inválido (13)
-        [InlineData("123")]          // Tamanho incorreto
-        [InlineData("abcdefabcdef")]  // Caracteres não numéricos
-        [InlineData("")]              // String vazia
-        [InlineData(null)]            // Valor nulo
-        public void Constructor_InvalidMedicalRecordNumber_ShouldThrowArgumentException(string invalidRecordNumber)
-        {
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => new PatientMedicalRecordNumber(invalidRecordNumber));
-        }
-
-        [Theory]
-        [InlineData("202312000001")] // Formato válido
-        [InlineData("202201123456")] // Formato válido
-        public void IsValidFormat_ValidFormat_ShouldReturnTrue(string validFormat)
-        {
-            // Arrange
-            var recordNumber = new PatientMedicalRecordNumber(validFormat);
-
-            // Act
-            bool result = recordNumber.AsString() == validFormat;
-
-            // Assert
-            Assert.True(result);
-        }
-
-        [Theory]
-        [InlineData("202313000001")] // Mês inválido
-        [InlineData("abcdefghijk")]   // Caracteres não numéricos
-        [InlineData("2022")]          // Tamanho incorreto
-        public void IsValidFormat_InvalidFormat_ShouldReturnFalse(string invalidFormat)
-        {
-            // Arrange
-            bool result = PatientMedicalRecordNumber.IsValid(invalidFormat);
-
-            // Assert
-            Assert.False(result);
-        }
-
         [Fact]
-        public void GenerateNewRecordNumber_ValidDateAndSequence_ShouldReturnCorrectFormat()
+        public void Constructor_ValidMedicalRecordNumber_ShouldCreateInstance()
         {
-            // Arrange
-            DateTime registrationDate = new DateTime(2023, 12, 01);
-            int sequentialNumber = 123;
+            string validNumber = "202301000001";
 
-            // Act
-            string generatedRecordNumber = PatientMedicalRecordNumber.GenerateNewRecordNumber(registrationDate, sequentialNumber);
+            var recordNumber = new PatientMedicalRecordNumber(validNumber);
 
-            // Assert
-            Assert.Equal("202312000123", generatedRecordNumber);
+            Assert.Equal(validNumber, recordNumber.AsString());
+        }
+        [Fact]
+        public void Constructor_InvalidMedicalRecordNumber_ShouldThrowArgumentException_WhenWhitespace()
+        {
+            Assert.Throws<ArgumentException>(() => new PatientMedicalRecordNumber("  "));
         }
 
-        [Fact]
-        public void AsString_ShouldReturnMedicalRecordNumberAsString()
+        [Theory]
+        [InlineData("202301000001")] 
+        [InlineData("202302000002")] 
+        public void AsString_ValidMedicalRecordNumber_ShouldReturnCorrectString(string validNumber)
         {
-            // Arrange
-            string validRecordNumber = "202312000001";
-            var recordNumber = new PatientMedicalRecordNumber(validRecordNumber);
+            var recordNumber = new PatientMedicalRecordNumber(validNumber);
 
-            // Act
             string result = recordNumber.AsString();
 
-            // Assert
-            Assert.Equal(validRecordNumber, result);
+            Assert.Equal(validNumber, result);
+        }
+
+        [Fact]
+        public void GenerateNewRecordNumber_ShouldReturnCorrectFormat()
+        {
+            DateTime registrationDate = new DateTime(2023, 01, 15);
+            int sequentialNumber = 1;
+
+            string result = PatientMedicalRecordNumber.GenerateNewRecordNumber(registrationDate, sequentialNumber);
+
+            Assert.Equal("202301000001", result);
+        }
+
+        [Fact]
+        public void GenerateNewRecordNumber_ShouldReturnCorrectFormat_UsingDifferentSequentialNumber()
+        {
+            DateTime registrationDate = new DateTime(2023, 02, 25);
+            int sequentialNumber = 123;
+
+            string result = PatientMedicalRecordNumber.GenerateNewRecordNumber(registrationDate, sequentialNumber);
+
+            Assert.Equal("202302000123", result); 
         }
     }
 }

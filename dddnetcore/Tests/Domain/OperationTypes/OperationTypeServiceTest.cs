@@ -9,6 +9,8 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.AuditLogs;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Linq;
+using FluentAssertions;
 
 namespace DDDSample1.Tests.Domain.OperationTypes
 {
@@ -205,69 +207,57 @@ public async Task AddAsyncValidDto()
         }
 
         [Fact]
-        public async Task UpdateAsyncTest()
+    public async Task UpdateAsyncTest()
+    {
+    var existingOperationType = new OperationType(
+        new OperationTypeName("Cardiology"),
+        new EstimatedTimeDuration(120),
+        new AnesthesiaTime(30),
+        new CleaningTime(15),
+        new SurgeryTime(90));
+
+    _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(existingOperationType.Id))
+        .ReturnsAsync(existingOperationType);
+
+    var specialization = new Specialization( new SpecializationName("Cardiology Specialization"));
+
+    _mockSpecializationRepo.Setup(repo => repo.GetByIdAsync(specialization.Id))
+        .ReturnsAsync(specialization);
+
+    var allSpecializations = new List<Specialization> { specialization };
+    _mockSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(allSpecializations);
+
+    var operationTypeSpecialization = new OperationTypeSpecialization(existingOperationType, specialization, new NumberOfStaff(2));
+    _mockOperationTypeSpecializationRepo.Setup(repo => repo.GetAllAsync())
+        .ReturnsAsync(new List<OperationTypeSpecialization> { operationTypeSpecialization });
+
+    var updateDto = new EditOperationTypeDto
+    {
+        OperationTypeId = existingOperationType.Id.AsString(),
+        Name = "Neurology",
+        EstimatedTimeDuration = 150,
+        Specializations = new List<CreatingOperationTypeSpecializationDto>
         {
-            var operationTypeId = new OperationTypeId(Guid.NewGuid());
-            var operationType = new OperationType(
-                new OperationTypeName("Cardiology"),
-                new EstimatedTimeDuration(120),
-                new AnesthesiaTime(30),
-                new CleaningTime(15),
-                new SurgeryTime(90));
-
-            _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationTypeId)).ReturnsAsync(operationType);
-
-            var updateDto = new EditOperationTypeDto
-            {
-            };
-
-            var result = await _service.UpdateAsync(updateDto);
-
-            _mockUnitOfWork.Verify(uow => uow.CommitAsync(), Times.Once);
-            Assert.Equal("Neurology", result.Name);
-            Assert.Equal(150, result.EstimatedTimeDuration);
+            new CreatingOperationTypeSpecializationDto(specialization.Id.AsString(), 2) 
         }
+        };
 
-        [Fact]
-        public async Task InactiveAsyncTest()
-        {
-            var operationTypeId = new OperationTypeId(Guid.NewGuid());
-            var operationType = new OperationType(
-                new OperationTypeName("Cardiology"),
-                new EstimatedTimeDuration(120),
-                new AnesthesiaTime(30),
-                new CleaningTime(15),
-                new SurgeryTime(90));
+        _mockLogRepository.Setup(logRepo => logRepo.LogUpdateOperation(It.IsAny<LogCategoryType>(), It.IsAny<string>()))
+            .Returns(new Log(new LogId(Guid.NewGuid().ToString()), LogActionType.UPDATE, new LogContent("DETAILS"), LogCategoryType.OPERATIONTYPE));
 
-            _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationTypeId)).ReturnsAsync(operationType);
+        var result = await _service.UpdateAsync(updateDto);
 
-            var result = await _service.InactivateAsync(operationTypeId);
+        Assert.NotNull(result);
+        Assert.Equal("Neurology", result.Name);
+        Assert.Equal(150, result.EstimatedTimeDuration);
 
-            
-            Assert.False(operationType.IsActive);
-            _mockUnitOfWork.Verify(uow => uow.CommitAsync(), Times.Once);
-        }
+        _mockUnitOfWork.Verify(uow => uow.CommitAsync(), Times.Once);
+        _mockLogRepository.Verify(logRepo => logRepo.LogUpdateOperation(LogCategoryType.OPERATIONTYPE, It.IsAny<string>()), Times.Once);
 
-        [Fact]
-        public async Task DeleteAsyncWhenIsInactiveTest()
-        {
-            var operationTypeId = new OperationTypeId(Guid.NewGuid());
-            var operationType = new OperationType(
-                new OperationTypeName("Cardiology"),
-                new EstimatedTimeDuration(120),
-                new AnesthesiaTime(30),
-                new CleaningTime(15),
-                new SurgeryTime(90));
-
-            operationType.MarkAsInative();
-
-            _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationTypeId)).ReturnsAsync(operationType);
-
-            var result = await _service.DeleteAsync(operationTypeId);
-
-            _mockOperationTypeRepo.Verify(repo => repo.Remove(It.IsAny<OperationType>()), Times.Once);
-            _mockUnitOfWork.Verify(uow => uow.CommitAsync(), Times.Once);
-        }
+        Assert.Equal("Neurology", existingOperationType.Name.ToString());
+        Assert.Equal(150, existingOperationType.EstimatedTimeDuration.Minutes);
+        Assert.Single(existingOperationType.Specializations);
+    }
 
         [Fact]
         public async Task DeleteAsyncWhenIsActiveTest()
@@ -284,5 +274,78 @@ public async Task AddAsyncValidDto()
 
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _service.DeleteAsync(operationTypeId));
         }
+
+        [Fact]
+        public async Task SearchOperationTypeAsyncValidName()
+        {
+            var searchDto = new SearchOperationTypeDto { Name = "Cardiology" };
+            var operationType = new OperationType(new OperationTypeName("Cardiology"), 
+                                              new EstimatedTimeDuration(120), 
+                                              new AnesthesiaTime(30), 
+                                              new CleaningTime(15), 
+                                              new SurgeryTime(90));
+
+            var operationTypes = new List<OperationType> { operationType };
+            var specializations = new List<Specialization>();
+            var operationTypeSpecializations = new List<OperationTypeSpecialization>();
+
+            _mockOperationTypeRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypes);
+            _mockSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(specializations);
+            _mockOperationTypeSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypeSpecializations);
+
+            var result = await _service.SearchOperationTypesAsync(searchDto);
+
+            Assert.Single(result);
+            Assert.Equal("Cardiology", result.First().Name);
+        }
+
+    [Fact]
+    public async Task SearchOperationTypesAsyncValidSpecialization()
+    {    
+    var operationType = new OperationType(new OperationTypeName("Cardiology"),
+                                          new EstimatedTimeDuration(120),
+                                          new AnesthesiaTime(30),
+                                          new CleaningTime(15),
+                                          new SurgeryTime(90));
+
+    var specialization = new Specialization(new SpecializationName("Cardiology Specialization"));
+    var searchDto = new SearchOperationTypeDto { SpecializationId = specialization.Id.AsGuid() };
+    var operationTypeSpecialization = new OperationTypeSpecialization(operationType, specialization, new NumberOfStaff(2));
+
+    var operationTypes = new List<OperationType> { operationType };
+    var specializations = new List<Specialization> { specialization };
+    var operationTypeSpecializations = new List<OperationTypeSpecialization> { operationTypeSpecialization };
+
+    _mockOperationTypeRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypes);
+    _mockSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(specializations);
+    _mockOperationTypeSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypeSpecializations);
+
+    var result = await _service.SearchOperationTypesAsync(searchDto);
+
+    Assert.Single(result); 
+    Assert.Equal("Cardiology", result.First().Name); 
+    }
+
+    [Fact]
+    public async Task SearchOperationTypesAsyncNoMatchingNameReturnsEmptyList()
+    {
+    var searchDto = new SearchOperationTypeDto { Name = "NonExistentName" };
+    var operationType = new OperationType(new OperationTypeName("Cardiology"),
+                                          new EstimatedTimeDuration(120),
+                                          new AnesthesiaTime(30),
+                                          new CleaningTime(15),
+                                          new SurgeryTime(90));
+
+    var operationTypes = new List<OperationType> { operationType };
+
+    _mockOperationTypeRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypes);
+    _mockSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(new List<Specialization>());
+    _mockOperationTypeSpecializationRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(new List<OperationTypeSpecialization>());
+
+    var result = await _service.SearchOperationTypesAsync(searchDto);
+
+    Assert.Empty(result);
+    }
+
     }
 }

@@ -1,0 +1,91 @@
+//Test Get
+pm.test("Get all operation types returns 200", function () {
+    pm.response.to.have.status(200);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.be.an('array');
+});
+
+pm.test("Get operation type by ID returns 200", function () {
+    pm.response.to.have.status(200);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("id").that.equals("1b496dfe-3e56-473b-8003-893e31d6d250");
+});
+
+pm.test("Get operation type by ID returns Not Found for invalid ID", function () {
+    pm.response.to.have.status(404);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("No operation type found with that ID.");
+});
+
+
+//Test Post
+
+pm.test("OperationType created successfully", function () {
+    pm.response.to.have.status(201);
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("name");
+    pm.expect(responseData.name).to.eql("Cardiology1234567");
+});
+
+pm.test("Error for invalid estimated duration", function () {
+    pm.response.to.have.status(400); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("Estimated time must be greater than zero.");
+});
+
+pm.test("Error for null or empty name", function () {
+    pm.response.to.have.status(400); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("Operation type name cannot be empty or null.");
+});
+
+pm.test("Error for duplicate name", function () {
+    pm.response.to.have.status(500);
+});
+
+pm.test("Error for invalid number of staff", function () {
+    pm.response.to.have.status(400); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("Number of staff cannot be negative.");
+});
+
+pm.test("Error for invalid anesthesia time", function () {
+    pm.response.to.have.status(400); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("Anesthesia time must be greater than zero.");
+});
+
+pm.test("Error for invalid cleaning time", function () {
+    pm.response.to.have.status(400); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("Cleaning time must be greater than zero.");
+});
+
+pm.test("Error for invalid surgery time", function () {
+    pm.response.to.have.status(400); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("Surgery time must be greater than zero.");
+});
+
+pm.test("Error for invalid specialization ID", function () {
+    pm.response.to.have.status(400); 
+    const responseData = pm.response.json();
+    pm.expect(responseData).to.have.property("message");
+    pm.expect(responseData.message).to.include("Specialization with ID");
+});
+
+pm.test("Error for unauthorized access", function () {
+    pm.response.to.have.status(401);
+});
+
+//Test Put
+
+
+

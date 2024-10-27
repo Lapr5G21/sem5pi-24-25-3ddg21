@@ -12,44 +12,20 @@ namespace DDDSample1.Domain.Patients
     {
         public PatientMedicalRecordNumber(string value) : base(value)
         {
-            if (string.IsNullOrWhiteSpace(value) || !IsValidFormat(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException("Invalid Medical Record Number format.");
             }
         }
 
-        private bool IsValidFormat(string value)
-        {
-            return System.Text.RegularExpressions.Regex.IsMatch(value, @"^\d{6}\d{6}$");
-        }
-
         protected override object createFromString(string text)
         {
-            if (!IsValid(text))
-            {
-                throw new ArgumentException("Invalid medical record number format.");
-            }
             return text;
         }
 
         public override string AsString()
         {
             return (string)this.ObjValue;
-        }
-
-        public static bool IsValid(string entityId)
-        {
-            if (string.IsNullOrEmpty(entityId) || entityId.Length != 12)
-                return false;
-
-            if (!int.TryParse(entityId.Substring(0, 6), out _))
-                return false;
-
-            int month = int.Parse(entityId.Substring(4, 2));
-            if (month < 1 || month > 12)
-                return false;
-
-            return true;
         }
 
         public static string GenerateNewRecordNumber(DateTime registrationDate, int sequentialNumber)

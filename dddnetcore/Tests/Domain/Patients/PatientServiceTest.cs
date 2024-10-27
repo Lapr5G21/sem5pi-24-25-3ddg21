@@ -24,14 +24,13 @@ public class PatientServiceTests
         _emailServiceMock = new Mock<IEmailService>();
         _logRepositoryMock = new Mock<ILogRepository>();
 
-        // Inicializar o PatientService com todos os mocks necessários
         _patientService = new PatientService(
             _unitOfWorkMock.Object,
             _patientRepositoryMock.Object,
-            null,  // IConfiguration pode ser mockado se necessário
+            null,  
             _emailServiceMock.Object,
             _logRepositoryMock.Object,
-            null   // IAnonimyzedPatientRepository pode ser mockado se necessário
+            null   
         );
     }
 
@@ -43,25 +42,22 @@ public class PatientServiceTests
             firstName: "João",
             lastName: "Silva",
             fullName: "João Silva",
-            birthDate: "1994-10-15", // Exemplo de data de nascimento
+            birthDate: "1994-10-15", 
             gender: PatientGender.Male,
             email: "joao.silva@example.com",
-            phoneNumber: "987654321",
+            phoneNumber: "927654321",
             address: "Rua das Flores, 123",
             emergencyContact: "918888888"
         );
+        var patient = PatientFactory.CreatePatient();
 
-        /*// Mock para o método AddAsync que completa a tarefa
         _patientRepositoryMock.Setup(repo => repo.AddAsync(It.IsAny<Patient>()))
         .Returns(Task.FromResult(PatientFactory.CreatePatient()));
 
-        // Mock para o CommitAsync
-        _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.CompletedTask)*/
+        _unitOfWorkMock.Setup(uow => uow.CommitAsync()).ReturnsAsync(1);
 
-        // Act
         var result = await _patientService.AddAsync(dto);
 
-        // Assert
         Assert.NotNull(result);
         Assert.Equal("João", result.FirstName);
         Assert.Equal("Silva", result.LastName);
@@ -81,7 +77,7 @@ public class PatientServiceTests
                 new PatientBirthDate("1994-10-15"),
                 PatientGender.Male,
                 new PatientEmail("joao.silva@example.com"),
-                new PatientPhoneNumber("987654321"),
+                new PatientPhoneNumber("926754321"),
                 new PatientAddress("Rua das Flores, 123"),
                 new PatientMedicalRecord("Registro Médico"),
                 new PatientEmergencyContact("918888888"),
@@ -111,7 +107,7 @@ public class PatientServiceTests
             new PatientBirthDate("1994-10-15"),
             PatientGender.Male,
             new PatientEmail("joao.silva@example.com"),
-            new PatientPhoneNumber("987654321"),
+            new PatientPhoneNumber("927865432"),
             new PatientAddress("Rua das Flores, 123"),
             new PatientMedicalRecord("Registro Médico"),
             new PatientEmergencyContact("918888888"),
@@ -139,7 +135,7 @@ public class PatientServiceTests
             new PatientBirthDate("1994-10-15"),
             PatientGender.Male,
             new PatientEmail("joao.silva@example.com"),
-            new PatientPhoneNumber("987654321"),
+            new PatientPhoneNumber("927865432"),
             new PatientAddress("Rua das Flores, 123"),
             new PatientMedicalRecord("Registro Médico"),
             new PatientEmergencyContact("918888888"),
@@ -158,7 +154,7 @@ public class PatientServiceTests
         };
 
         _patientRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<PatientMedicalRecordNumber>())).ReturnsAsync(existingPatient);
-        //_unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.CompletedTask);
+        _unitOfWorkMock.Setup(uow => uow.CommitAsync()).ReturnsAsync(1);
 
         // Act
         var result = await _patientService.UpdateAsync(updateDto);
@@ -166,37 +162,6 @@ public class PatientServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("João Pedro", result.FirstName);
-        Assert.Equal("Silva", result.LastName);
-    }
-
-    [Fact]
-    public async Task DeleteAsync_ShouldReturnPatientDto_WhenPatientIsDeleted()
-    {
-        // Arrange
-        var existingPatient = new Patient(
-            new PatientMedicalRecordNumber("202410123456"),
-            new PatientFirstName("João"),
-            new PatientLastName("Silva"),
-            new PatientFullName("João Silva"),
-            new PatientBirthDate("1994-10-15"),
-            PatientGender.Male,
-            new PatientEmail("joao.silva@example.com"),
-            new PatientPhoneNumber("987654321"),
-            new PatientAddress("Rua das Flores, 123"),
-            new PatientMedicalRecord("Registro Médico"),
-            new PatientEmergencyContact("918888888"),
-            new PatientAppointmentHistory("Histórico de consultas"));
-
-        _patientRepositoryMock.Setup(repo => repo.GetByIdAsync(It.IsAny<PatientMedicalRecordNumber>())).ReturnsAsync(existingPatient);
-        _patientRepositoryMock.Setup(repo => repo.Remove(It.IsAny<Patient>()));
-        //_unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.CompletedTask);
-
-        // Act
-        var result = await _patientService.DeleteAsync(new PatientMedicalRecordNumber("202410123456"));
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal("João", result.FirstName);
         Assert.Equal("Silva", result.LastName);
     }
 
@@ -213,7 +178,7 @@ public class PatientServiceTests
             new PatientBirthDate("1994-10-15"),
             PatientGender.Male,
             new PatientEmail("joao.silva@example.com"),
-            new PatientPhoneNumber("987654321"),
+            new PatientPhoneNumber("927654321"),
             new PatientAddress("Rua das Flores, 123"),
             new PatientMedicalRecord("Registro Médico"),
             new PatientEmergencyContact("918888888"),

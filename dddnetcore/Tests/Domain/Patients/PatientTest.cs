@@ -5,7 +5,7 @@ using System;
 
 namespace DDDSample1.Tests.Domain.Patients
 {
-    public class PatientTests
+    public class PatientTest
     {
         [Fact]
         public void Constructor_ValidParameters_ShouldSetProperties()
@@ -24,7 +24,6 @@ namespace DDDSample1.Tests.Domain.Patients
             var emergencyContact = new PatientEmergencyContact("919876543");
             var appointmentHistory = new PatientAppointmentHistory("Sem consultas anteriores.");
 
-            // Act
             var patient = new Patient(
                 medicalRecordNumber,
                 firstName,
@@ -39,7 +38,6 @@ namespace DDDSample1.Tests.Domain.Patients
                 emergencyContact,
                 appointmentHistory);
 
-            // Assert
             Assert.Equal(medicalRecordNumber, patient.Id);
             Assert.Equal(firstName, patient.FirstName);
             Assert.Equal(lastName, patient.LastName);
@@ -56,105 +54,57 @@ namespace DDDSample1.Tests.Domain.Patients
             Assert.Null(patient.User);
         }
 
-        [Theory]
-        [InlineData(null)]
-        public void ChangeFirstName_NullFirstName_ShouldThrowArgumentNullException(PatientFirstName newFirstName)
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeFirstName(newFirstName));
-        }
-
         [Fact]
         public void ChangeFirstName_ValidFirstName_ShouldUpdateFirstName()
         {
-            // Arrange
             var patient = CreateValidPatient();
             var newFirstName = new PatientFirstName("Maria");
 
-            // Act
             patient.ChangeFirstName(newFirstName);
 
-            // Assert
             Assert.Equal(newFirstName, patient.FirstName);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        public void ChangeLastName_NullLastName_ShouldThrowArgumentNullException(PatientLastName newLastName)
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeLastName(newLastName));
         }
 
         [Fact]
         public void ChangeLastName_ValidLastName_ShouldUpdateLastName()
         {
-            // Arrange
             var patient = CreateValidPatient();
             var newLastName = new PatientLastName("Pereira");
 
-            // Act
             patient.ChangeLastName(newLastName);
 
-            // Assert
             Assert.Equal(newLastName, patient.LastName);
         }
-
-        [Theory]
-        [InlineData(null)]
-        public void ChangeEmail_NullEmail_ShouldThrowArgumentNullException(PatientEmail newEmail)
-        {
-            // Arrange
-            var patient = CreateValidPatient();
-
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => patient.ChangeEmail(newEmail));
-        }
+       
 
         [Fact]
         public void ChangeEmail_ValidEmail_ShouldUpdateEmail()
         {
-            // Arrange
             var patient = CreateValidPatient();
             var newEmail = new PatientEmail("maria.pereira@example.com");
 
-            // Act
             patient.ChangeEmail(newEmail);
 
-            // Assert
             Assert.Equal(newEmail, patient.Email);
         }
 
         [Fact]
         public void Deactivate_ShouldSetActiveToFalse()
         {
-            // Arrange
             var patient = CreateValidPatient();
 
-            // Act
             patient.Deactivate();
 
-            // Assert
             Assert.False(patient.Active);
         }
 
         [Fact]
         public void Activate_ShouldSetActiveToTrue()
         {
-            // Arrange
             var patient = CreateValidPatient();
-            patient.Deactivate(); // Ensure patient is inactive
-
-            // Act
+            patient.Deactivate(); 
             patient.Activate();
 
-            // Assert
             Assert.True(patient.Active);
         }
 

@@ -31,14 +31,14 @@ namespace DDDSample1.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<OperationTypeDto>> GetById(string id)
         {
-            var operationType = await _service.GetByIdAsync(new OperationTypeId(id));
+                var operationType = await _service.GetByIdAsync(new OperationTypeId(id));
 
-            if (operationType == null)
-            {
-                return NotFound();
-            }
+                if (operationType == null)
+                {
+                    return NotFound(new { message = "No operation type found with that ID." });
+                }
 
-            return Ok(operationType);
+                return Ok(operationType);
         }
 
         // POST: api/operationTypes
@@ -50,8 +50,15 @@ namespace DDDSample1.Controllers
                 return BadRequest("Invalid data.");
             }
 
-            var operationType = await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = operationType.Id }, operationType);
+            try
+            {
+                var result = await _service.AddAsync(dto);
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            }
+                catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // PUT: api/operationTypes/{id}

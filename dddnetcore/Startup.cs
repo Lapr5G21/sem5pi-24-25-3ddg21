@@ -167,7 +167,6 @@ public void ConfigureServices(IServiceCollection services)
             services.AddScoped<IEmailService,EmailService>();
             
             services.AddScoped<ILogRepository, LogsRepository>();
-            services.AddScoped<LogService>();
 
             services.AddScoped<IAnonimyzedPatientRepository, AnonimyzedPatientRepository>();
 

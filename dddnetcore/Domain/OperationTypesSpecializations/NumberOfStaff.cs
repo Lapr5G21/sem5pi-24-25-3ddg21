@@ -9,8 +9,8 @@ namespace DDDSample1.Domain.OperationTypesSpecializations
 
         public NumberOfStaff(int number)
         {
-            if (number < 0)
-                throw new ArgumentException("Number of staff cannot be negative.");
+            if (number <= 0)
+                throw new BusinessRuleValidationException("Number of staff cannot be negative.");
 
             Number = number;
         }

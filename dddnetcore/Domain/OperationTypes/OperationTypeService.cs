@@ -8,6 +8,7 @@ using System;
 using Microsoft.IdentityModel.Tokens;
 using Castle.Components.DictionaryAdapter.Xml;
 using DDDSample1.Domain.AuditLogs;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DDDSample1.Domain.OperationTypes
 {
@@ -58,14 +59,15 @@ namespace DDDSample1.Domain.OperationTypes
         }
 
         public async Task<OperationTypeDto> GetByIdAsync(OperationTypeId id)
-{
-    var op = await this._repo.GetByIdAsync(id);
+        {
+        var op = await this._repo.GetByIdAsync(id);
     
-    if (op == null)
-        return null;
+        if (op == null)
+            return null;
+        
 
-    var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
-    var allSpecializations = await _specializationRepository.GetAllAsync(); 
+        var allOperationTypeSpecializations = await _operationTypeSpecializationRepo.GetAllAsync();
+        var allSpecializations = await _specializationRepository.GetAllAsync(); 
 
     var operationTypeDto = new OperationTypeDto
     {

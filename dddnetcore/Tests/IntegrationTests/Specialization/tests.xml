@@ -1,16 +1,3 @@
-// POST https://localhost:5001/api/specializations
-
-// Body:
-/*
-{
-    "specializationName" : "{{$guid}}"
-}
-*/
-
-
-// Test:
-
-/*
 pm.test("Specialization created sucessfully", function () {
     pm.response.to.have.status(201);
     const responseData = pm.response.json();
@@ -29,3 +16,4 @@ pm.test("Specializations Found", function () {
     pm.response.to.have.status(200);
 });
 */
+
