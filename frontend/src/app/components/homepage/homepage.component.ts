@@ -11,7 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss']
 })
-export class HomePageComponent {
+export class HomepageComponent {
   constructor(public auth: AuthService) {}
 
   login() {

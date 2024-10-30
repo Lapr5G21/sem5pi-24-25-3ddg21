@@ -1,13 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HomePageComponent } from './pages/homepage/homepage.component';
+// src/app/app.routes.ts
+import { Routes } from '@angular/router';
+import { HomepageComponent } from './components/homepage/homepage.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 export const routes: Routes = [
-  { path: '', component: HomePageComponent },
+  { path: '', component: HomepageComponent },
+  { path: 'sidebar', component : SidebarComponent}
+  //{ path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}
