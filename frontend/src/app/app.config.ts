@@ -16,6 +16,6 @@ export const appConfig: ApplicationConfig = {
       authorizationParams: {
         redirect_uri: window.location.origin,
       },
-    }), provideAnimationsAsync(),
+    }), provideAnimationsAsync(), provideAnimationsAsync(),
   ],
 };
