@@ -97,6 +97,15 @@ public void ConfigureServices(IServiceCollection services)
     });
 
     services.AddControllers().AddNewtonsoftJson();
+
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAllOrigins",
+            builder => builder.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader());
+    });
+
 }
 
 
@@ -118,6 +127,8 @@ public void ConfigureServices(IServiceCollection services)
             app.UseRouting();
 
             app.UseAuthentication();
+
+            app.UseCors("AllowAllOrigins");
 
             app.UseAuthorization();
 
