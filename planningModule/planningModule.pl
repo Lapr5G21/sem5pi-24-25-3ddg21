@@ -79,3 +79,16 @@ assignment_surgery(so100005,d003).
 
 agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
 
+% Procurar os tempos livres numa determinada agenda
+
+free_agenda0([],[(0,1440)]).
+free_agenda0([(0,Tfin,_)|LT],LT1):-!,free_agenda1([(0,Tfin,_)|LT],LT1).
+free_agenda0([(Tin,Tfin,_)|LT],[(0,T1)|LT1]):- T1 is Tin-1,
+    free_agenda1([(Tin,Tfin,_)|LT],LT1).
+
+free_agenda1([(_,Tfin,_)],[(T1,1440)]):-Tfin\==1440,!,T1 is Tfin+1.
+free_agenda1([(_,_,_)],[]).
+free_agenda1([(_,T,_),(T1,Tfin2,_)|LT],LT1):-Tx is T+1,T1==Tx,!,
+    free_agenda1([(T1,Tfin2,_)|LT],LT1).
+free_agenda1([(_,Tfin1,_),(Tin2,Tfin2,_)|LT],[(T1,T2)|LT1]):-T1 is Tfin1+1,T2 is Tin2-1,
+    free_agenda1([(Tin2,Tfin2,_)|LT],LT1).
