@@ -1,0 +1,25 @@
+.card {
+    max-width: 500px;
+    margin: 20px auto;
+  }
+  .menu-title {
+    margin: 0 0 20px 0; 
+    text-align: center; /* Centraliza o título */
+  }
+  .sidebar-buttons {
+    display:flex;
+    align-content: right;
+    width: 18px;
+    flex-direction: column;
+    gap: 10px; 
+  }
+  .full-width-button {
+    width: 50%;
+  }
+  
+  .toggle-button {
+    position: absolute; /* Posiciona o botão de forma absoluta */
+    top: 10px; /* Distância do topo */
+    left: 10px; /* Distância da esquerda */
+    z-index: 1000; /* Garante que o botão esteja acima de outros elementos */
+  }
