@@ -6,7 +6,7 @@
         [modal]="true" 
         [style]="{ width: '30rem' }">
         <span class="p-text-secondary block mb-5">Insert info :</span>
-        
+
         <div class="flex align-items-center gap-3 mb-3">
             <label for="operationTypeName" class="font-semibold w-6rem">Name</label>
             <input pInputText id="operationTypeName" [(ngModel)]="operationTypeName" class="flex-auto" autocomplete="off" />
@@ -38,7 +38,8 @@
                 id="specializations"
                 [options]="optionList"
                 [(ngModel)]="selectedSpecializations"
-                placeholder="Select Specializations" [appendTo] = "'body'">
+                placeholder="Select Specializations" 
+                [appendTo]="'body'">
             </p-multiSelect>
         </div>
 
@@ -52,20 +53,20 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-specialization>
                     <tr>
-                        <td>{{ specialization.label }}</td>
+                        <td>{{ specialization }}</td>
                         <td>
                             <input 
                                 pInputText 
                                 type="number" 
-                                [(ngModel)]="staffNumbers[specialization.specializationId]" 
+                                [(ngModel)]="staffNumbers[specialization]" 
                                 placeholder="Number of Staffs" 
-                                class="w-full" />
+                                class="w-full" 
+                                min="0" />
                         </td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
-        
 
         <ng-template pTemplate="footer">
             <p-button 

@@ -6,22 +6,22 @@ import { SelectItem } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown';
 import { CommonModule } from '@angular/common';
 import { OperationTypeService } from '../../../../services/operation-type-service.service';
 import { HttpClientModule } from '@angular/common/http';
+import { CreateOperationTypeDto, Specialization } from '../../../../domain/operationType-model';
 
 @Component({
     selector: 'create-operation-types-modal',
     templateUrl: './create-operation-types.component.html',
     standalone: true,
-    imports: [DialogModule, ButtonModule, InputTextModule, MultiSelectModule, TableModule, FormsModule, DropdownModule, CommonModule, HttpClientModule],
+    imports: [DialogModule, ButtonModule, InputTextModule, MultiSelectModule, TableModule, FormsModule, CommonModule, HttpClientModule],
     providers: [OperationTypeService]
 })
 export class CreateOperationTypesComponent implements OnInit {
     visible: boolean = false;
     optionList: SelectItem[] = [];
-    selectedSpecializations: any[] = [];
+    selectedSpecializations: string[] = [];
     staffNumbers: { [key: string]: number } = {};
 
     operationTypeName: string = '';
@@ -40,37 +40,41 @@ export class CreateOperationTypesComponent implements OnInit {
         this.operationTypeService.getSpecializations().subscribe(
             (specializations) => {
                 this.optionList = specializations.map(spec => ({
-                    label: spec.specializationName, 
+                    label: spec.specializationName,
                     value: spec.id
                 }));
             },
             (error) => console.error('Erro ao carregar especializações:', error)
         );
     }
-
+    
     showDialog() {
         this.visible = true;
     }
 
     saveOperationType() {
-        
-        const operationType = {
-            name: this.operationTypeName,
-            estimatedTimeDuration: this.estimatedDuration,
-            anesthesiaTime: this.anesthesiaTime,
-            surgeryTime: this.surgeryTime,
-            cleaningTime: this.cleaningTime,
-            specializations: this.selectedSpecializations.map(spec => {
-                return {
-                    specializationId: spec, 
-                    numberOfStaff: this.staffNumbers[spec.specializationId]
-                };
-            })
+    console.log('Selected Specializations:', this.selectedSpecializations);
+    console.log('Staff Numbers:', this.staffNumbers);
+
+    const specializationsData = this.selectedSpecializations.map(specId => {
+        return {
+            specializationId: specId,
+            numberOfStaff: this.staffNumbers[specId] || 0 
         };
+    });
 
-        console.log('Payload:', JSON.stringify(operationType));
+    const operationType = new CreateOperationTypeDto(
+        this.operationTypeName,
+        this.estimatedDuration ?? 0,
+        this.anesthesiaTime ?? 0,
+        this.surgeryTime ?? 0,
+        this.cleaningTime ?? 0,
+        specializationsData 
+    );
 
-        this.operationTypeService.saveOperationType(operationType).subscribe(
+    console.log('Payload:', JSON.stringify(operationType));
+
+    this.operationTypeService.saveOperationType(operationType).subscribe(
             () => {
                 console.log('Tipo de operação salvo com sucesso!');
                 this.resetForm();

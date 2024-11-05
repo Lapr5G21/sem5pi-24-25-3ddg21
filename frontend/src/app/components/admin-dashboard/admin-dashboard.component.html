@@ -1,1 +1,7 @@
-<p>admin-dashboard works!</p>
+<div class="dashboard-container">
+    <app-menubar [menuItems]="items"></app-menubar>
+    <create-operation-types-modal></create-operation-types-modal>
+    <h1>Admin Dashboard</h1>
+</div>
+<router-outlet></router-outlet>
+
