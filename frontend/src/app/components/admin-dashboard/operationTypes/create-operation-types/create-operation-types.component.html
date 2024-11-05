@@ -1,0 +1,85 @@
+    <div class="card flex justify-content-center">
+        <p-button (onClick)="showDialog()" label="Add Operation Type"></p-button>
+        <p-dialog 
+            header="Add Operation Type" 
+            [(visible)]="visible" 
+            [modal]="true" 
+            [style]="{ width: '30rem' }">
+            <span class="p-text-secondary block mb-5">Insert info :</span>
+            
+            <div class="flex align-items-center gap-3 mb-3">
+                <label for="operationTypeName" class="font-semibold w-6rem">
+                    Name
+                </label>
+                <input pInputText id="operationTypeName" class="flex-auto" autocomplete="off" />
+            </div>
+
+            <div class="flex align-items-center gap-3 mb-5">
+                <label for="duration" class="font-semibold w-6rem">Estimated Duration (min)</label>
+                <input pInputText id="duration" class="flex-auto" type="number" autocomplete="off" />
+            </div>
+
+            <div class="flex align-items-center gap-3 mb-5">
+                <label for="duration" class="font-semibold w-6rem">Anesthesia Time (min)</label>
+                <input pInputText id="duration" class="flex-auto" type="number" autocomplete="off" />
+            </div>
+
+            <div class="flex align-items-center gap-3 mb-5">
+                <label for="duration" class="font-semibold w-6rem">Surgery Time (min)</label>
+                <input pInputText id="duration" class="flex-auto" type="number" autocomplete="off" />
+            </div>
+
+            <div class="flex align-items-center gap-3 mb-5">
+                <label for="duration" class="font-semibold w-6rem">Cleaning Time (min)</label>
+                <input pInputText id="duration" class="flex-auto" type="number" autocomplete="off" />
+            </div>
+
+            <div class="flex align-items-center gap-3 mb-3">
+                <label for="specializations" class="font-semibold w-6rem">Specializations</label>
+                <p-multiSelect
+                    id="specializations"
+                    [options]="optionList"
+                    [(ngModel)]="selectedSpecializations"
+                    placeholder="Select Specializations">
+                </p-multiSelect>
+            </div>
+    
+            <div *ngIf="selectedSpecializations.length > 0" class="mb-5">
+                <p-table [value]="selectedSpecializations">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Specialization</th>
+                            <th>Number of Staffs</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-specialization>
+                        <tr>
+                            <td>{{ specialization }}</td>
+                            <td>
+                                <input 
+                                    pInputText 
+                                    type="number" 
+                                    [(ngModel)]="staffNumbers[specialization]" 
+                                    placeholder="Number of Staffs" 
+                                    class="w-full" />
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+    
+
+            <ng-template pTemplate="footer">
+                <p-button 
+                    label="Cancelar" 
+                    [text]="true" 
+                    severity="secondary" 
+                    (onClick)="visible = false"></p-button>
+                <p-button 
+                    label="Salvar" 
+                    [outlined]="true" 
+                    severity="primary" 
+                    (onClick)="saveOperationType()"></p-button>
+            </ng-template>
+        </p-dialog>
+    </div>
