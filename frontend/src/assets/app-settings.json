@@ -1,9 +1,0 @@
-
-{
-"Auth0": {
-    "domain": "dev-teie1lfprp6bjr5x.us.auth0.com",  
-    "audience": "https://api.healthcaresystem",     
-    "clientId": "bf7tb9s9cJr7AVClgLgDKg4r0uGJ8c1m",
-    "clientSecret": "yiSjWZ4jGMcy_zyiCaUR6RoBIbVoUJ5_MC63GIYNcBI85y4wC4FyiA9mBfaWHG_c"
-  }
-}

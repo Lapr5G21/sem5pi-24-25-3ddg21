@@ -1,12 +1,8 @@
-<div class="sidebar">
-  <mat-nav-list>
-    <a mat-list-item *ngFor="let item of sidebarItems" [routerLink]="item.route">
-      <mat-icon>{{ item.icon }}</mat-icon>
-      <span>{{ item.label }}</span>
-    </a>
-  </mat-nav-list>
-</div>
-
-<div class="main-content">
-  <ng-content></ng-content>
+<div class="card flex justify-content-center">
+    <p-sidebar [(visible)]="sidebarVisible">
+        <h3>Sidebar</h3>
+        <p>
+        </p>
+    </p-sidebar>
+    <p-button (onClick)="sidebarVisible = true" icon="pi pi-arrow-right" />
 </div>
