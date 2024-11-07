@@ -2,9 +2,9 @@
 export class CreateOperationRequestDTO {
     constructor(
 
-        public priority: string[],
+        public priority: string,
         public operationType: OperationTypeDTO,
-        public deadLineDate: string,
+        public deadLineDate: Date,
         public status: string,
         public DoctorId: DoctorDTO,
         public PatientId: PatientDTO

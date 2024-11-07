@@ -1,14 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { SelectItem } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
 import { OperationRequestService } from '../../../../services/operation-request.service';
 import { CreateOperationRequestDTO, DoctorDTO, OperationTypeDTO, PatientDTO } from '../../../../domain/operationRequest-model';
 
 @Component({
-  selector: 'app-create-operation-requests',
+  selector: 'create-operation-requests',
   standalone: true,
-  imports: [],
+  imports: [DialogModule, ToastModule, RadioButtonModule,FormsModule,DropdownModule,CalendarModule],
   templateUrl: './create-operation-requests.component.html',
-  styleUrl: './create-operation-requests.component.scss',
+  styleUrls: ['./create-operation-requests.component.scss'],
   providers: [OperationRequestService]
 })
 
@@ -16,12 +22,14 @@ export class CreateOperationRequestsComponent implements OnInit {
 
 
   visible: boolean = false;
-  priority: string[] = [];
+  priority: string = '';
+  operationTypeName: string = '';
   operationType: SelectItem[] = [];
-  deadlinedate: SelectItem[] = [];
+  deadlinedate: Date | null = null;
   status: string = '';
   doctorId: string = '';
-  PatientID: SelectItem[] = [];
+  patient: SelectItem[] = [];
+  selectedPatient: string | null = null;
   
 
   constructor(private operationRequestService: OperationRequestService) {}
@@ -30,8 +38,9 @@ export class CreateOperationRequestsComponent implements OnInit {
   loadOperationTypes() {
     this.operationRequestService.getOperationTypes().subscribe(
       (operationTypes) => {
+        console.log('operationTypes:', operationTypes);
         this.operationType = operationTypes.map(spec => ({
-          label: spec.operationTypeName,
+          label: spec.name,
           value: spec.id
         }));
       },
@@ -42,10 +51,11 @@ export class CreateOperationRequestsComponent implements OnInit {
 
   loadPacients() {
     this.operationRequestService.getPatients().subscribe(
-      (pacients) => {
-        this.PatientID = pacients.map(spec => ({
-          label: spec.patientName,
-          value: spec.id
+      (patient) => {
+        console.log('pacients:', patient);
+        this.patient = patient.map(spec => ({
+          label: spec.fullName,
+          value: spec.email
         }));
       },
         (error) => console.error('Erro ao carregar Pacientes', error)
@@ -58,28 +68,39 @@ export class CreateOperationRequestsComponent implements OnInit {
     this.loadPacients();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.visible) {  
+      this.resetForm();    
+    }
+  }
+  
   showDialog() {
     this.visible = true;
+  }
+
+  closeDialog(){
+    this.visible = false;
+    this.resetForm();
   }
 
   
 
   saveOperationRequest() {
-    const selectedOperationType = this.operationType[0]?.value || '';
-    const selectedDeadline = this.deadlinedate[0]?.value || '';
-    const selectedPatientId = this.PatientID[0]?.value || '';
+    const selectedOperationTypeId = this.operationTypeName || '';
+    const selectedDeadline = this.deadlinedate ? this.deadlinedate : new Date();
+    const selectedPatientId = this.selectedPatient || '';
 
     console.log('Selected Priority', this.priority);
-    console.log('Operation Type Selected', this.operationType);
+    console.log('Operation Type Selected', this.operationTypeName);
     console.log('DeadLine selected', this.deadlinedate);
     console.log('Doctor selected', this.doctorId);
-    console.log('Patient selected', this.PatientID);
+    console.log('Patient selected', this.patient);
 
   
 
   const operationRequest = new CreateOperationRequestDTO(
         this.priority,
-        new OperationTypeDTO(selectedOperationType),
+        new OperationTypeDTO(selectedOperationTypeId),
         selectedDeadline,
         this.status || 'onSchedule',
         new DoctorDTO(this.doctorId),
@@ -103,13 +124,14 @@ export class CreateOperationRequestsComponent implements OnInit {
 
 
   resetForm() {
-    this.priority = [];
+    this.priority = ''; 
+    this.operationTypeName = ''; 
     this.operationType = [];
-    this.deadlinedate = [];
-    this.status = '';
-    this.doctorId = '';
-    this.PatientID = [];
-}
+    this.deadlinedate = null; 
+    this.status = ''; 
+    this.doctorId = ''; 
+    this.selectedPatient = null ;
+  }
 
 }
 
