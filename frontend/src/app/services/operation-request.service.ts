@@ -1,0 +1,26 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OperationRequestService {
+  private apiUrl = 'https://localhost:5001/api';
+
+  constructor(private http: HttpClient) {}
+
+  getOperationTypes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/operationTypes`);
+  }
+
+  getPatients(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/patients`);
+  }
+
+  saveOperationRequest(operationRequestData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/operationRequests`, operationRequestData);
+  }
+
+
+}
