@@ -70,15 +70,18 @@
 
         <ng-template pTemplate="footer">
             <p-button 
-                label="Cancelar" 
+                label="Cancel" 
                 [text]="true" 
                 severity="secondary" 
                 (onClick)="visible = false"></p-button>
             <p-button 
-                label="Salvar" 
+                label="Save" 
                 [outlined]="true" 
                 severity="primary" 
                 (onClick)="saveOperationType()"></p-button>
         </ng-template>
     </p-dialog>
+
+    <!-- Toast Notifications -->
+    <p-toast></p-toast>
 </div>

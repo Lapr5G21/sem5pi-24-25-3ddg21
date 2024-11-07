@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
 import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
@@ -17,6 +17,7 @@ export class AdminDashboardComponent implements OnInit {
   items: MenuItem[] = [];
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
+  constructor() {}
 
   ngOnInit() {
     this.items = [
@@ -32,6 +33,7 @@ export class AdminDashboardComponent implements OnInit {
             label: 'Create',
             icon: 'pi pi-check',
             command: () => this.createOperationType()
+           // command: () => this.router.navigate(['/operationR'])
           },
           {
             label: 'Edit',
