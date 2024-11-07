@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
+import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
 import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
@@ -10,7 +11,7 @@ import { ProfileMenuComponent } from './profile-menu-component/profile-menu-comp
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CreateOperationTypesComponent, MenubarComponent,ProfileMenuComponent],
+  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, MenubarComponent,ProfileMenuComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -19,6 +20,7 @@ export class AdminDashboardComponent implements OnInit {
   showProfileDialog: boolean = false;
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
+  @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
   constructor() {}
@@ -37,6 +39,26 @@ export class AdminDashboardComponent implements OnInit {
             label: 'Create',
             icon: 'pi pi-check',
             command: () => this.createOperationType()
+           // command: () => this.router.navigate(['/operationR'])
+          },
+          {
+            label: 'Edit',
+            icon: 'pi pi-pencil'
+          },
+          {
+            label: 'List',
+            icon: 'pi pi-list'
+          }
+        ]
+      },
+      {
+        label: 'Staffs',
+        icon: '',
+        items: [
+          {
+            label: 'Create',
+            icon: 'pi pi-check',
+            command: () => this.createStaffs()
            // command: () => this.router.navigate(['/operationR'])
           },
           {
@@ -70,6 +92,10 @@ export class AdminDashboardComponent implements OnInit {
 
   createOperationType() {
     this.createOperationTypesComponent.showDialog(); 
+  }
+
+  createStaffs() {
+    this.createStaffsComponent.showDialog(); 
   }
 
   logout() {
