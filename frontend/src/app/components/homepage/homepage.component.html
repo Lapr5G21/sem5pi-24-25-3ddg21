@@ -1,0 +1,13 @@
+<div class="fullscreen-container">
+    <p-card styleClass="card-container" [style]="{ width: '350px', height: '300px', borderRadius: '15px', margin: 'auto' }">
+        <ng-template pTemplate="header">
+            <div class="header-text">Welcome to HealthCare</div>
+          </ng-template>
+        <div class="button-container">
+        <p-button label="Login" icon="pi pi-sign-in" (onClick)="login()" styleClass="p-button-raised p-button-rounded full-width large-button"></p-button>
+        <div class="divider"></div>
+        <p-button label="Sign Up" icon="pi pi-user-plus" (onClick)="signup()" styleClass="p-button-outlined p-button-rounded full-width large-button"></p-button>
+      </div>
+    </p-card>
+  </div>
+  

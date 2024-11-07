@@ -2,21 +2,32 @@ import { Component, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectItem } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { OperationTypeService } from '../../../../services/operation-type-service.service';
 import { HttpClientModule } from '@angular/common/http';
-import { CreateOperationTypeDto, Specialization } from '../../../../domain/operationType-model';
+import { CreateOperationTypeDto } from '../../../../domain/operationType-model';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
     selector: 'create-operation-types-modal',
     templateUrl: './create-operation-types.component.html',
     standalone: true,
-    imports: [DialogModule, ButtonModule, InputTextModule, MultiSelectModule, TableModule, FormsModule, CommonModule, HttpClientModule],
-    providers: [OperationTypeService]
+    imports: [
+        DialogModule,
+        ButtonModule,
+        InputTextModule,
+        MultiSelectModule,
+        TableModule,
+        FormsModule,
+        CommonModule,
+        HttpClientModule,
+        ToastModule
+    ],
+    providers: [OperationTypeService, MessageService]
 })
 export class CreateOperationTypesComponent implements OnInit {
     visible: boolean = false;
@@ -30,7 +41,10 @@ export class CreateOperationTypesComponent implements OnInit {
     surgeryTime: number | null = null;
     cleaningTime: number | null = null;
 
-    constructor(private operationTypeService: OperationTypeService) {}
+    constructor(
+        private operationTypeService: OperationTypeService,
+        private messageService: MessageService
+    ) {}
 
     ngOnInit() {
         this.loadSpecializations();
@@ -44,7 +58,14 @@ export class CreateOperationTypesComponent implements OnInit {
                     value: spec.id
                 }));
             },
-            (error) => console.error('Erro ao carregar especializações:', error)
+            (error) => {
+                console.error('Erro ao carregar especializações:', error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível carregar as especializações.'
+                });
+            }
         );
     }
     
@@ -53,34 +74,45 @@ export class CreateOperationTypesComponent implements OnInit {
     }
 
     saveOperationType() {
-    console.log('Selected Specializations:', this.selectedSpecializations);
-    console.log('Staff Numbers:', this.staffNumbers);
+        console.log('Selected Specializations:', this.selectedSpecializations);
+        console.log('Staff Numbers:', this.staffNumbers);
 
-    const specializationsData = this.selectedSpecializations.map(specId => {
-        return {
-            specializationId: specId,
-            numberOfStaff: this.staffNumbers[specId] || 0 
-        };
-    });
+        const specializationsData = this.selectedSpecializations.map(specId => {
+            return {
+                specializationId: specId,
+                numberOfStaff: this.staffNumbers[specId] || 0
+            };
+        });
 
-    const operationType = new CreateOperationTypeDto(
-        this.operationTypeName,
-        this.estimatedDuration ?? 0,
-        this.anesthesiaTime ?? 0,
-        this.surgeryTime ?? 0,
-        this.cleaningTime ?? 0,
-        specializationsData 
-    );
+        const operationType = new CreateOperationTypeDto(
+            this.operationTypeName,
+            this.estimatedDuration ?? 0,
+            this.anesthesiaTime ?? 0,
+            this.surgeryTime ?? 0,
+            this.cleaningTime ?? 0,
+            specializationsData
+        );
 
-    console.log('Payload:', JSON.stringify(operationType));
+        console.log('Payload:', JSON.stringify(operationType));
 
-    this.operationTypeService.saveOperationType(operationType).subscribe(
+        this.operationTypeService.saveOperationType(operationType).subscribe(
             () => {
-                console.log('Tipo de operação salvo com sucesso!');
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Tipo de operação salvo com sucesso!'
+                });
                 this.resetForm();
                 this.visible = false;
             },
-            (error) => console.error('Erro ao salvar tipo de operação:', error)
+            (error) => {
+                console.error('Erro ao salvar tipo de operação:', error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível salvar o tipo de operação.'
+                });
+            }
         );
     }
 
