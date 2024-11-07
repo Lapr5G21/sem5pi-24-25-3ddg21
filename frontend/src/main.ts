@@ -24,7 +24,7 @@ bootstrapApplication(AppComponent, {
     cacheLocation: 'localstorage',
     audience: 'https://dev-teie1lfprp6bjr5x.us.auth0.com/api/v2/',
 
-    scope: 'read:current_user',
+    scope: 'openid profile email'  
   }
 })
     )

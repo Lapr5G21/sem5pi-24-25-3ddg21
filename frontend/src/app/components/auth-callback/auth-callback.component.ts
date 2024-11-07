@@ -12,14 +12,12 @@ export class AuthCallbackComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe(isAuthenticated => {
-      console.log('Is authenticated:', isAuthenticated);  // Verifique o status de autenticação
+      console.log('Is authenticated:', isAuthenticated);  
       if (isAuthenticated) {
         this.authService.user$.subscribe(user => {
-          console.log('User:', user);  // Verifique se o usuário está sendo obtido corretamente
-  
+          console.log('User:', user);  
           if (user) {
             const roles = user['https://healthcaresystem.com/roles'] || [];  
-  
             if (Array.isArray(roles) && roles.includes('Admin')) {  
               console.log('Navigating to /adminDashboard/home');
               this.router.navigate(['/adminDashboard/home']);

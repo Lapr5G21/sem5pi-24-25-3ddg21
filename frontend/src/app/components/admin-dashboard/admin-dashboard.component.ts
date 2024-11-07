@@ -5,18 +5,22 @@ import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
 import { CommonModule } from '@angular/common';
+import { ProfileMenuComponent } from './profile-menu-component/profile-menu-component.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CreateOperationTypesComponent, MenubarComponent],
+  imports: [RouterOutlet, CreateOperationTypesComponent, MenubarComponent,ProfileMenuComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
   items: MenuItem[] = [];
+  showProfileDialog: boolean = false;
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
+  @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
+
   constructor() {}
 
   ngOnInit() {
@@ -45,10 +49,40 @@ export class AdminDashboardComponent implements OnInit {
           }
         ]
       },
+      {
+        label: 'Account',
+        icon: 'pi pi-user',
+        items: [
+          {
+            label: 'Ver Perfil',
+            command: () => {
+              this.openProfileDialog()
+            }
+          },
+          {
+            label: 'Logout',
+            command: () => this.logout()
+          }
+        ]
+      }
     ];
   }
 
   createOperationType() {
     this.createOperationTypesComponent.showDialog(); 
+  }
+
+  logout() {
+    this.ProfileMenuComponent.logout();
+  }
+
+  openProfileDialog() {
+    console.log("Clicou em Profile");
+    if (this.ProfileMenuComponent) {
+      console.log("Abrindo o diálogo de perfil...");
+      this.ProfileMenuComponent.openProfileDialog();
+    } else {
+      console.log("Componente ProfileMenu não está disponível");
+    }
   }
 }

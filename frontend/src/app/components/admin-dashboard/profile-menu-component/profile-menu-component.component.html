@@ -1,0 +1,6 @@
+<p-dialog header="User Profile" [(visible)]="showProfileDialog" modal="modal" [closable]="true">
+  <div *ngIf="auth.user$ | async as user">
+    <p><strong>Email:</strong> {{ user.email || 'Not available' }}</p>
+    <p><strong>Name:</strong> {{ user.nickname || 'Not available' }}</p>
+  </div>
+</p-dialog>
