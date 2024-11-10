@@ -22,5 +22,11 @@ export class StaffService {
     return this.http.post(`${this.apiUrl}/staffs`, staffData);
   }
 
-
+  updateStaff(staffData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/staffs/${staffData.staffId}`, staffData);
+  }
+  
+  getStaffById(staffId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/staffs/${staffId}`);
+  }
 }

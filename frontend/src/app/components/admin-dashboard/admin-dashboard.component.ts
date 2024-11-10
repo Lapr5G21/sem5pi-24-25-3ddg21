@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
+import { EditStaffsComponent } from './staffs/edit-staffs/edit-staffs.component';
 import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
@@ -11,7 +12,7 @@ import { ProfileMenuComponent } from './profile-menu-component/profile-menu-comp
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, MenubarComponent,ProfileMenuComponent],
+  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, MenubarComponent,ProfileMenuComponent, EditStaffsComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -21,6 +22,7 @@ export class AdminDashboardComponent implements OnInit {
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
+  @ViewChild(EditStaffsComponent) editStaffsComponent!: EditStaffsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
   constructor() {}
@@ -63,7 +65,8 @@ export class AdminDashboardComponent implements OnInit {
           },
           {
             label: 'Edit',
-            icon: 'pi pi-pencil'
+            icon: 'pi pi-pencil',
+            command: () => this.editStaffs()
           },
           {
             label: 'List',
@@ -96,6 +99,10 @@ export class AdminDashboardComponent implements OnInit {
 
   createStaffs() {
     this.createStaffsComponent.showDialog(); 
+  }
+
+  editStaffs() {
+    this.editStaffsComponent.showDialog(); 
   }
 
   logout() {
