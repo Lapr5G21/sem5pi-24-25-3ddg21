@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Basic Thumb Raiser</title>
+    <title>Hospital Model</title>
     <style>
         body {
             margin: 0;
@@ -313,13 +313,13 @@
     <script type="module">
         import * as THREE from "three";
         import Orientation from "./orientation.js";
-        import ThumbRaiser from "./thumb_raiser.js";
+        import hospitalModel from "./hospitalModel.js";
 
-        let thumbRaiser;
+        let hospitalModel;
 
         function initialize() {
             // Create the game
-            thumbRaiser = new ThumbRaiser(
+            hospitalModel = new hospitalModel(
                 {}, // General Parameters
                 { scale: new THREE.Vector3(1.0, 0.5, 1.0) }, // Maze parameters
                 {}, // Player parameters
@@ -336,7 +336,7 @@
         function animate() {
             requestAnimationFrame(animate);
             // Update the game
-            thumbRaiser.update();
+            hospitalModel.update();
         }
 
         initialize();
