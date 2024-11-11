@@ -10,7 +10,7 @@ export class CreateStaffDto {
         public staffEmail: string,
         public staffPhoneNumber: string,
         public staffAvailabilitySlots: string,
-        public username: string
+        public users: UserDto[]
     ) {}
 }
 
@@ -24,6 +24,18 @@ export class Specialization {
     constructor(
         public id: string,
         public specializationName: string
+    ) {}
+}
+
+export class UserDto {
+    constructor(
+        public username: string,
+    ) {}
+}
+
+export class User {
+    constructor(
+        public username: string,
     ) {}
 }
 
