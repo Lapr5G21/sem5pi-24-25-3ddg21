@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button'; 
+import { UserService } from '../../services/user-service.service';
+import { combineLatest, tap } from 'rxjs';
 @Component({
   selector: 'app-home',
   templateUrl: './homepage.component.html',
@@ -10,9 +12,9 @@ import { ButtonModule } from 'primeng/button';
   styleUrls: ['./homepage.component.scss']
 })
 export class HomeComponent {
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService, private userService: UserService) {}
 
-  login() {    
+  login() {
     this.auth.loginWithRedirect();
   }
 

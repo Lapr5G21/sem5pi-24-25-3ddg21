@@ -3,6 +3,7 @@ import { AuthService } from '@auth0/auth0-angular';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { Subscription } from 'rxjs';
+import { UserService } from '../../../services/user-service.service';
 
 @Component({
   selector: 'app-profile-menu',
@@ -15,7 +16,8 @@ export class ProfileMenuComponent {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    public auth: AuthService
+    public auth: AuthService,
+    public userService : UserService
   ) {}
 
 
@@ -29,6 +31,6 @@ export class ProfileMenuComponent {
   }
 
   logout() {
-    this.auth.logout({ logoutParams: { returnTo: this.document.location.origin + '/home'} });
-  }
+    this.userService.logout()
+    }
 }

@@ -9,6 +9,7 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { HomeComponent } from './components/homepage/homepage.component';
 import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
 import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-dashboard.component';
+import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 
 export const routes: Routes = [
     { path: 'sidebar', component: SidebarComponent }, 
@@ -20,4 +21,6 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'auth-callback', component: AuthCallbackComponent },  
     { path: 'doctorDashboard/home', component: DoctorDashboardComponent},
+    { path: 'hospitalModule', component: HospitalModelComponent},
+
 ];

@@ -1,6 +1,6 @@
 // operation-type.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,6 +16,11 @@ export class OperationTypeService {
     }
 
     saveOperationType(operationTypeData: any): Observable<any> {
-        return this.http.post(`${this.apiUrl}/operationtypes`, operationTypeData);
+        const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+          });
+          console.log(headers);
+        return this.http.post(`${this.apiUrl}/operationtypes`, operationTypeData,{headers});
     }
 }

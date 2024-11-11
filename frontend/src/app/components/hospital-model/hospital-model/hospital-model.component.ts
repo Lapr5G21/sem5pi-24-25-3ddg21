@@ -8,7 +8,7 @@ import HospitalModel from "../../../3DVisualizationModule/hospitalModel.js";
   standalone: true,
   imports: [],
   templateUrl: './hospital-model.component.html',
-  styleUrl: './hospital-model.componet.scss'
+  styleUrl: './hospital-model.component.scss'
 })
 
 export class HospitalModelComponent implements OnInit {
@@ -16,7 +16,7 @@ export class HospitalModelComponent implements OnInit {
   hospitalModel: any;
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.initialize();
   }
 
   
@@ -24,9 +24,9 @@ export class HospitalModelComponent implements OnInit {
    initialize() {
       // Create the game
       this.hospitalModel = new HospitalModel(
-          {}, // General Parameters
+          {},
           { scale: new THREE.Vector3(1.0, 0.5, 1.0) }, // Maze parameters
-          {}, // Player parameters
+          {},
           { ambientLight: { intensity: 0.1 }, pointLight1: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) }, pointLight2: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(3.5, 10.0, -2.5) } }, // Lights parameters
           {}, // Fog parameters
           { view: "fixed", multipleViewsViewport: new THREE.Vector4(0.0, 1.0, 0.45, 0.5) }, // Fixed view camera parameters
@@ -39,7 +39,6 @@ export class HospitalModelComponent implements OnInit {
 
   animate() {
       requestAnimationFrame(() => this.animate());
-      // Update the game
       this.hospitalModel.update();
   }
 

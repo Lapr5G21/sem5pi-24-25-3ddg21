@@ -17,12 +17,12 @@ bootstrapApplication(AppComponent, {
       RouterModule.forRoot(routes),
       AuthModule.forRoot({
         domain: 'dev-teie1lfprp6bjr5x.us.auth0.com',
-  clientId: 'bf7tb9s9cJr7AVClgLgDKg4r0uGJ8c1m',
+        clientId: 'bf7tb9s9cJr7AVClgLgDKg4r0uGJ8c1m',
 
-  authorizationParams: {
+        authorizationParams: {
     redirect_uri: 'http://localhost:4200/auth-callback',
     cacheLocation: 'localstorage',
-    audience: 'https://dev-teie1lfprp6bjr5x.us.auth0.com/api/v2/',
+    audience: 'https://api.healthcaresystem',
 
     scope: 'openid profile email'  
   }
