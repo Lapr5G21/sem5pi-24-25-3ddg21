@@ -18,6 +18,10 @@ export class OperationRequestService {
     return this.http.get<any[]>(`${this.apiUrl}/patients`);
   }
 
+  getOperationRequests(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/operationRequests`)
+  }
+
   saveOperationRequest(operationRequestData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/operationRequests`, operationRequestData);
   }

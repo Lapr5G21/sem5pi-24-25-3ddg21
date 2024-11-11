@@ -1,1 +1,43 @@
-<p>list-operation-requests works!</p>
+<div class="card flex justify-content-center">
+    <p-dialog 
+        header="Operation Requests List" 
+        [(visible)]="visible" 
+        [modal]="true" 
+        [style]="{ width: '50rem', height: '100rem' }">
+
+<div class="card">
+    <p-table [value]="operationRequests" [tableStyle]="{'min-width': '100rem', 'min-height': '60rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="Id" style="width:16%">
+                    Id <p-sortIcon field="id" />
+                </th>
+                <th pSortableColumn="Priority" style="width:16%">
+                    Priority <p-sortIcon field="priority" />
+                </th>
+                <th pSortableColumn="Operation Type" style="width:16%">
+                    Operation Type ID <p-sortIcon field="operationTypeId" />
+                </th>
+                <th pSortableColumn="Deadline Date" style="width:16%">
+                    Deadline Date <p-sortIcon field="deadlineDate" />
+                </th>
+                <th pSortableColumn="Patient Medical Record Number" style="width:16%">
+                    Patient Medical Record Number <p-sortIcon field="patientmedicalrecordnumber" />
+                </th>
+                <th pSortableColumn="Status" style="width:16%">
+                    Status <p-sortIcon field="status" />
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-operationRequest>
+            <tr>
+                <td>{{ operationRequest.id }}</td>
+                <td>{{ operationRequest.priority }}</td>
+                <td>{{ operationRequest.operationTypeId }}</td>
+                <td>{{ operationRequest.deadlineDate }}</td>
+                <td>{{ operationRequest.patientmedicalrecordnumber }}</td>
+                <td>{{ operationRequest.status }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
