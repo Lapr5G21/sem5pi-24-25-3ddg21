@@ -18,6 +18,10 @@ export class StaffService {
     return this.http.get<any[]>(`${this.apiUrl}/specializations`);
   }
 
+  getUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/users`);
+  }
+
   saveStaff(staffData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/staffs`, staffData);
   }

@@ -31,7 +31,8 @@ import { ToastModule } from 'primeng/toast';
 })
 export class CreateStaffsComponent implements OnInit {
     visible: boolean = false;
-    optionList: SelectItem[] = [];
+    optionListSpecs: SelectItem[] = [];
+    optionListUsers: SelectItem[] = [];
     selectedSpecializations: string[] = [];
 
     staffFirstName: string = '';
@@ -41,7 +42,7 @@ export class CreateStaffsComponent implements OnInit {
     staffEmail: string = '';
     staffPhoneNumber: string = '';
     staffAvailabilitySlots: string = '';
-    username: string = '';
+    selectedUsers: string[] = [];
 
     constructor(
         private staffService: StaffService,
@@ -50,12 +51,13 @@ export class CreateStaffsComponent implements OnInit {
 
     ngOnInit() {
         this.loadSpecializations();
+        this.loadUsers();
     }
 
     loadSpecializations() {
         this.staffService.getSpecializations().subscribe(
             (specializations) => {
-                this.optionList = specializations.map(spec => ({
+                this.optionListSpecs = specializations.map(spec => ({
                     label: spec.specializationName,
                     value: spec.id
                 }));
@@ -71,25 +73,46 @@ export class CreateStaffsComponent implements OnInit {
         );
     }
     
+    loadUsers() {
+        this.staffService.getUsers().subscribe(
+            (users) => {
+                this.optionListUsers = users.map(user => ({
+                    label: user.username,
+                    value: user.username
+                }));
+            },
+            (error) => {
+                console.error('Erro ao carregar utilizadores:', error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Erro',
+                    detail: 'Não foi possível carregar os utilizadores.'
+                });
+            }
+        );
+    }
+
     showDialog() {
         this.visible = true;
     }
 
     saveStaff() {
         console.log('Selected Specializations:', this.selectedSpecializations);
+        console.log('Selected Users:', this.selectedUsers);
     
-        const specializationDtos = this.selectedSpecializations.map(specializationId => ({ specializationId }));
-    
+        const specializationDto = this.selectedSpecializations.map(specializationId => ({ specializationId }));
+        const userDto = this.selectedUsers.map(username => ({ username }));
+
         const staff = new CreateStaffDto(
             this.staffFirstName,
             this.staffLastName,
             this.staffFullName,
             this.staffLicenseNumber,
-            specializationDtos,
+            specializationDto,
             this.staffEmail,
             this.staffPhoneNumber,
             this.staffAvailabilitySlots,
-            this.username
+            userDto
         );
     
         console.log('Payload:', JSON.stringify(staff));
@@ -125,6 +148,6 @@ export class CreateStaffsComponent implements OnInit {
         this.staffEmail = '';
         this.staffPhoneNumber = '';
         this.staffAvailabilitySlots = '';
-        this.username = '';
+        this.selectedUsers = [];
     }
 }
