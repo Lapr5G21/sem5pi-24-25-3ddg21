@@ -27,6 +27,7 @@ export class CreateOperationRequestsComponent implements OnInit {
   operationType: SelectItem[] = [];
   deadlinedate: Date | null = null;
   status: string = '';
+  doctor: SelectItem[] = [];
   doctorId: string = '';
   patient: SelectItem[] = [];
   selectedPatient: string | null = null;
@@ -49,6 +50,19 @@ export class CreateOperationRequestsComponent implements OnInit {
 
   }
 
+  loadDoctors(){
+    this.operationRequestService.getDoctors().subscribe(
+      (doctors) => {
+        console.log('Doctors:', doctors);
+        this.doctor = doctors.map(doc => ({
+          label: doc.staffFullName,
+          value: doc.Id
+        }));
+      },
+        (error) => console.error('Erro ao carregar Doutores', error)
+    );
+  }
+
   loadPacients() {
     this.operationRequestService.getPatients().subscribe(
       (patient) => {
@@ -64,6 +78,7 @@ export class CreateOperationRequestsComponent implements OnInit {
   }
 
   ngOnInit()  {
+    this.loadDoctors();
     this.loadOperationTypes();
     this.loadPacients();
   }
@@ -87,13 +102,14 @@ export class CreateOperationRequestsComponent implements OnInit {
 
   saveOperationRequest() {
     const selectedOperationTypeId = this.operationTypeName || '';
-    const selectedDeadline = this.deadlinedate ? this.deadlinedate : new Date();
+    const selectedDeadline = this.deadlinedate ||  new Date();
     const selectedPatientId = this.selectedPatient || '';
+    const selectedStaffId = this.doctorId || '';
 
     console.log('Selected Priority', this.priority);
     console.log('Operation Type Selected', this.operationTypeName);
     console.log('DeadLine selected', this.deadlinedate);
-    console.log('Doctor selected', this.doctorId);
+    console.log('Doctor selected', selectedStaffId);
     console.log('Patient selected', this.patient);
 
   
@@ -103,7 +119,7 @@ export class CreateOperationRequestsComponent implements OnInit {
         new OperationTypeDTO(selectedOperationTypeId),
         selectedDeadline,
         this.status || 'onSchedule',
-        new DoctorDTO(this.doctorId),
+        new DoctorDTO(selectedStaffId),
         new PatientDTO(selectedPatientId)
   );
 

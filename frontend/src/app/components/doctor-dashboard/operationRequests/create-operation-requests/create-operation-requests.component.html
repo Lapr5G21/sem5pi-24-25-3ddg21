@@ -21,6 +21,20 @@
              
         </div>
 
+        <span class="p-text-secondary block mb-5">Select Doctor :</span>
+
+        <div class="card flex justify-content-center">
+            <p-dropdown 
+                [options]="doctor"  
+                [(ngModel)]="doctor"
+                [checkmark]="true" 
+                optionLabel="label" 
+                [showClear]="true"
+                placeholder="Select a Doctor"
+                [style]="{width:'25rem', height: '2.5rem'}" 
+                [ngModelOptions]="{standalone: true}"/>
+        </div>
+
         <span class="p-text-secondary block mb-5">Select Operation Type :</span>
 
         <div class="card flex justify-content-center">
