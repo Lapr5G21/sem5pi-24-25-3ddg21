@@ -5,6 +5,7 @@ import { CreateOperationTypesComponent } from './components/admin-dashboard/oper
 import { CreateStaffsComponent } from './components/admin-dashboard/staffs/create-staffs/create-staffs.component';
 import { CreatePatientsComponent } from './components/admin-dashboard/patients/create-patients/create-patients.component';
 import { EditStaffsComponent } from './components/admin-dashboard/staffs/edit-staffs/edit-staffs.component';
+import { EditPatientsComponent } from './components/admin-dashboard/patients/edit-patients/edit-patients.component';
 import { MenubarComponent } from './components/menubar/menubar.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 import { HomeComponent } from './components/homepage/homepage.component';
@@ -18,6 +19,7 @@ export const routes: Routes = [
     { path: 'adminDashboard/staffs/create', component: CreateStaffsComponent }, 
     { path: 'adminDashboard/staffs/edit', component: EditStaffsComponent },   
     { path: 'adminDashboard/patients/create', component: CreatePatientsComponent },
+    { path: 'adminDashboard/patients/edit', component: EditPatientsComponent },
     { path: 'adminDashboard/home', component: AdminDashboardComponent },
     { path: 'home', component: HomeComponent },
     { path: 'auth-callback', component: AuthCallbackComponent },
