@@ -49,7 +49,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
                 UserId = staff.UserId.ToString()
             });
             return listDto;
@@ -81,14 +81,12 @@ namespace DDDSample1.Domain.Staffs
                 throw new InvalidOperationException("User not found.");
 
             RoleType roleType = user.Role.RoleValue;
-            
+
             var staffId = new StaffId(user.Id.ToString().Split('@')[0]);
 
             var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(dto.SpecializationId));
             if (specialization == null)
                 throw new InvalidOperationException("Specialization not found.");
-
-            var availabilitySlots = dto.StaffAvailabilitySlots;
 
             var staff = new Staff(
                 staffId, 
@@ -100,7 +98,7 @@ namespace DDDSample1.Domain.Staffs
                 new StaffEmail(dto.Email), 
                 new StaffPhoneNumber(dto.PhoneNumber), 
                 user.Id,
-                new StaffAvailabilitySlots(availabilitySlots)
+                new StaffAvailabilitySlots(dto.StaffAvailabilitySlots ?? new List<AvailabilitySlot>())
             );
 
             await this._staffRepository.AddAsync(staff);
@@ -135,14 +133,19 @@ namespace DDDSample1.Domain.Staffs
             var oldLastName = staff.StaffLastName.ToString();
             var oldSpecialization = staff.SpecializationId?.ToString() ?? "N/A";
 
+            var updatedAvailabilitySlots = new StaffAvailabilitySlots();
+            foreach (var slot in dto.StaffAvailabilitySlots)
+            {
+                updatedAvailabilitySlots.AddSlot(slot.Start, slot.End);
+            }
+            
+            staff.ChangeAvailabilitySlots(updatedAvailabilitySlots);
             staff.ChangeFirstName(new StaffFirstName(dto.FirstName));
             staff.ChangeLastName(new StaffLastName(dto.LastName));
             staff.ChangeFullName(new StaffFullName(dto.FullName));
             staff.ChangeEmail(new StaffEmail(dto.Email));
             staff.ChangePhoneNumber(new StaffPhoneNumber(dto.PhoneNumber));
             staff.ChangeSpecialization(new SpecializationId(dto.SpecializationId));
-            staff.ChangeAvailabilitySlots(new StaffAvailabilitySlots(dto.AvailabilitySlots));
-
             await this._unitOfWork.CommitAsync();
 
             if (oldEmail != staff.StaffEmail.ToString() || oldPhoneNumber != staff.StaffPhoneNumber.ToString())
