@@ -14,10 +14,12 @@ import { HomeComponent } from './components/homepage/homepage.component';
 import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
 import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-dashboard.component';
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
+import { ListOperationTypesComponent } from './components/admin-dashboard/operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 
 export const routes: Routes = [
     { path: 'sidebar', component: SidebarComponent }, 
     { path: 'adminDashboard/operationtypes/create', component: CreateOperationTypesComponent },
+    { path: 'adminDashboard/operationtypes/list', component: ListOperationTypesComponent },
     { path: 'adminDashboard/staffs/create', component: CreateStaffsComponent }, 
     { path: 'adminDashboard/staffs/edit', component: EditStaffsComponent },  
     { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },    

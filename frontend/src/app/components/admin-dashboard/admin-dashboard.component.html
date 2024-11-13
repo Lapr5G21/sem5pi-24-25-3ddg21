@@ -1,12 +1,14 @@
 <div class="dashboard-container">
     <app-menubar [menuItems]="items"></app-menubar>
+    <h1 class="dashboard-title">Admin Dashboard</h1>
     <create-operation-types-modal></create-operation-types-modal>
     <create-staffs-modal></create-staffs-modal>
     <edit-staffs-modal></edit-staffs-modal>
     <create-patients-modal></create-patients-modal>
     <edit-patients-modal></edit-patients-modal>
-    <list-patients-modal></list-patients-modal>
-    <h1>Admin Dashboard</h1>
+    <div *ngIf="showOperationTypesList">
+        <list-operation-types></list-operation-types>
+    </div>
     <app-profile-menu></app-profile-menu>
 </div>
 
