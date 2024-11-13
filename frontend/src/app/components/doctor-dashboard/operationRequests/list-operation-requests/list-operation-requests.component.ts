@@ -3,11 +3,14 @@ import { TableModule } from 'primeng/table';
 import { OperationRequestService } from '../../../../services/operation-request.service';
 import { DialogModule } from 'primeng/dialog';
 import { DataViewModule } from 'primeng/dataview';
+import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'list-operation-requests',
   standalone: true,
-  imports: [TableModule,DialogModule,DataViewModule],
+  imports: [TableModule,DialogModule,DataViewModule,ButtonModule,CommonModule],
   templateUrl: './list-operation-requests.component.html',
   styleUrl: './list-operation-requests.component.scss'
 })

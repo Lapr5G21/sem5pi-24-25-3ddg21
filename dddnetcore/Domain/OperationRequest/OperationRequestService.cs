@@ -50,11 +50,11 @@ private readonly IPatientRepository _PatientRepository;
              {
                 Id = op.Id.AsGuid(), 
                 PriorityLevel  = op.PriorityLevel.ToString(), 
-                OperationTypeId = op.OperationTypeId.ToString(),
+                OperationTypeId = op.OperationTypeId.AsString(),
                 DeadlineDate =  op.DeadlineDate.Value,
                 Status = op.Status.ToString(),
-                DoctorId = op.StaffId.ToString(),
-                PacientMedicalRecordNumber = op.PatientMedicalRecordNumber.ToString()
+                DoctorId = op.StaffId.AsString(),
+                PacientMedicalRecordNumber = op.PatientMedicalRecordNumber.AsString()
              
              });
 
