@@ -4,6 +4,7 @@ import { CreateOperationTypesComponent } from './operationTypes/create-operation
 import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
 import { EditStaffsComponent } from './staffs/edit-staffs/edit-staffs.component';
 import { CreatePatientsComponent } from './patients/create-patients/create-patients.component';
+import { EditPatientsComponent } from './patients/edit-patients/edit-patients.component';
 import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
@@ -13,7 +14,7 @@ import { ProfileMenuComponent } from './profile-menu-component/profile-menu-comp
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, MenubarComponent,ProfileMenuComponent],
+  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, MenubarComponent,ProfileMenuComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -25,6 +26,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
   @ViewChild(EditStaffsComponent) editStaffsComponent!: EditStaffsComponent;
   @ViewChild(CreatePatientsComponent) createPatientsComponent!: CreatePatientsComponent;
+  @ViewChild(EditPatientsComponent) editPatientsComponent!: EditPatientsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
   constructor() {}
@@ -85,6 +87,15 @@ export class AdminDashboardComponent implements OnInit {
             icon: 'pi pi-check',
             command: () => this.createPatient()
            // command: () => this.router.navigate(['/patients'])
+          },
+          {
+            label: 'Edit',
+            icon: 'pi pi-pencil',
+            command: () => this.editPatient()
+          },
+          {
+            label: 'List',
+            icon: 'pi pi-list'
           }
         ]
       },
@@ -121,6 +132,10 @@ export class AdminDashboardComponent implements OnInit {
 
   createPatient() {
     this.createPatientsComponent.showDialog(); 
+  }
+
+  editPatient() {
+    this.editPatientsComponent.showDialog(); 
   }
 
   logout() {

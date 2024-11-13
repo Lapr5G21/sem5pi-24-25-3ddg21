@@ -52,7 +52,7 @@ export class EditPatientsComponent {
         this.visible = true;
     }
 
-    savePatient() {
+    updatePatient() {
 
         const patient = new EditPatientDto(
             this.FirstName,
