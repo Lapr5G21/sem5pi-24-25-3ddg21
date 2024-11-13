@@ -86,13 +86,12 @@ namespace DDDSample1.Domain.Staffs
 
             this.SpecializationId = newSpecializationId ?? throw new ArgumentNullException(nameof(newSpecializationId));
         }
-
         public void ChangeAvailabilitySlots(StaffAvailabilitySlots newAvailabilitySlots)
         {
             if (!this.Active)
                 throw new InvalidOperationException("Cannot modify availability slots of an inactive staff member.");
 
-            this.StaffAvailabilitySlots = newAvailabilitySlots ?? throw new ArgumentNullException(nameof(newAvailabilitySlots));
+            StaffAvailabilitySlots = newAvailabilitySlots;
         }
 
         public void Deactivate()

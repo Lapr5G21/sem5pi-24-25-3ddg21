@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DDDSample1.Domain.OperationTypesSpecializations;
 
 namespace DDDSample1.Domain.Staffs
 
@@ -15,7 +14,7 @@ namespace DDDSample1.Domain.Staffs
         public string SpecializationId { get; set; }
         public string StaffEmail { get; set; }
         public string StaffPhoneNumber { get; set; }
-        public string StaffAvailabilitySlots { get; set; }
+        public List<AvailabilitySlot> StaffAvailabilitySlots { get; set; }
         public string UserId { get; set; }
     }
 }
