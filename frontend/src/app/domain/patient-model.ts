@@ -14,3 +14,15 @@ export class CreatePatientDto {
     ) {}
 }
 
+export class EditPatientDto {
+    constructor(
+        public FirstName: string,
+        public LastName: string,
+        public FullName: string,
+        public MedicalRecord : string,
+        public Email: string,
+        public PhoneNumber: string,
+        public Address: string,
+    ) {}
+}
+

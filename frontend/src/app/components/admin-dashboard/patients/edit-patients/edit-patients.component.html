@@ -1,0 +1,105 @@
+<div class="card flex justify-content-center">
+    <p-card header="Editar Paciente">
+        <form [formGroup]="pacienteForm" (ngSubmit)="onSubmit()">
+          <div class="p-fluid p-grid">
+            <!-- Primeiro Nome -->
+            <div class="p-field p-col-12 p-md-6">
+              <label for="firstName">First Name</label>
+              <input
+                id="firstName"
+                type="text"
+                pInputText
+                formControlName="firstName"
+                placeholder="Enter the first name"
+              />
+              <p-message *ngIf="pacienteForm.controls['firstName'].invalid && pacienteForm.controls['firstName'].touched" severity="error" text="First name required ."></p-message>
+            </div>
+      
+            <!-- Último Nome -->
+            <div class="p-field p-col-12 p-md-6">
+              <label for="lastName">Last Name</label>
+              <input
+                id="lastName"
+                type="text"
+                pInputText
+                formControlName="lastName"
+                placeholder="Enter the first name"
+              />
+              <p-message *ngIf="pacienteForm.controls['lastName'].invalid && pacienteForm.controls['lastName'].touched" severity="error" text="Last Name Required."></p-message>
+            </div>
+      
+            <!-- Nome Completo (apenas leitura) -->
+            <div class="p-field p-col-12">
+              <label for="fullName">Full Name</label>
+              <input
+                id="fullName"
+                type="text"
+                pInputText
+                formControlName="fullName"
+                readonly
+                placeholder="Full Name"
+              />
+            </div>
+      
+            <!-- Registo Médico -->
+            <div class="p-field p-col-12">
+              <label for="medicalRecord">Medical Record</label>
+              <input
+                id="medicalRecord"
+                type="text"
+                pInputText
+                formControlName="medicalRecord"
+                placeholder="Enter Medical Record"
+              />
+            </div>
+      
+            <!-- Email -->
+            <div class="p-field p-col-12 p-md-6">
+              <label for="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                pInputText
+                formControlName="email"
+                placeholder="Enter e-mail"
+              />
+              <p-message *ngIf="pacienteForm.controls['email'].invalid && pacienteForm.controls['email'].touched" severity="error" text="Invalid Email."></p-message>
+            </div>
+      
+            <!-- Telefone -->
+            <div class="p-field p-col-12 p-md-6">
+              <label for="phoneNumber">Phone Number</label>
+              <input
+                id="phoneNumber"
+                type="text"
+                pInputText
+                formControlName="phoneNumber"
+                placeholder="Enter phone number"
+              />
+            </div>
+      
+            <!-- Endereço -->
+            <div class="p-field p-col-12">
+              <label for="address">Address</label>
+              <textarea
+                id="address"
+                pInputTextarea
+                formControlName="address"
+                placeholder="Enter address"
+                rows="3"
+              ></textarea>
+            </div>
+      
+            <!-- Botões de ação -->
+            <div class="p-col-12 p-text-right">
+              <button type="button" pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="onCancel()"></button>
+              <button type="submit" pButton label="Salvar" icon="pi pi-check" class="p-button-primary" [disabled]="pacienteForm.invalid"></button>
+            </div>
+          </div>
+        </form>
+      </p-card>
+      
+    <!-- Toast Notifications -->
+    <p-toast></p-toast>
+</div>
+
