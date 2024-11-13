@@ -3,6 +3,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
 import { EditStaffsComponent } from './staffs/edit-staffs/edit-staffs.component';
+import { ListStaffsComponent } from './staffs/list-staffs/list-staffs.component';
 import { CreatePatientsComponent } from './patients/create-patients/create-patients.component';
 import { EditPatientsComponent } from './patients/edit-patients/edit-patients.component';
 import { ListPatientsComponent } from './patients/list-patients/list-patients.component';
@@ -26,12 +27,13 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
   @ViewChild(EditStaffsComponent) editStaffsComponent!: EditStaffsComponent;
+  @ViewChild(ListStaffsComponent) listStaffsComponent!: ListStaffsComponent;
   @ViewChild(CreatePatientsComponent) createPatientsComponent!: CreatePatientsComponent;
   @ViewChild(EditPatientsComponent) editPatientsComponent!: EditPatientsComponent;
   @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.items = [
@@ -76,7 +78,8 @@ export class AdminDashboardComponent implements OnInit {
           },
           {
             label: 'List',
-            icon: 'pi pi-list'
+            icon: 'pi pi-list',
+            command: () => this.listStaffs()
           }
         ]
       },
@@ -131,6 +134,10 @@ export class AdminDashboardComponent implements OnInit {
 
   editStaffs() {
     this.editStaffsComponent.showDialog(); 
+  }
+
+  listStaffs() {
+    this.router.navigate(['adminDashboard/staffs/list']);
   }
 
   createPatient() {

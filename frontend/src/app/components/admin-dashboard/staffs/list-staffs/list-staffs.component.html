@@ -1,1 +1,49 @@
-<p>list-staffs works!</p>
+<div *ngIf="staffs && staffs.length > 0; else noData" class="result-box">
+  <h3>Resultados</h3>
+  <table class="table table-bordered">
+      <thead>
+          <tr>
+              <th>Nome Completo</th>
+              <th>ID</th>
+              <th>Licença</th>
+              <th>Especialização</th>
+              <th>Email</th>
+              <th>Telefone</th>
+              <th>Disponibilidade</th>
+              <th>Ações</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let staff of staffs">
+              <td>
+                  <div class="flex align-items-center gap-2">
+                      <p-avatar 
+                          [image]="staff.avatarUrl || 'https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png'" 
+                          size="large" 
+                          shape="circle">
+                      </p-avatar>
+                      <span class="font-bold">{{ staff.staffFullName || 'Nome não disponível' }}</span>
+                  </div>
+              </td>
+              <td>{{ staff.staffId || 'ID não disponível' }}</td>
+              <td>{{ staff.staffLicenseNumber || 'Licença não disponível' }}</td>
+              <td>{{ staff.specializationId || 'Especialização não disponível' }}</td>
+              <td>{{ staff.staffEmail || 'Email não disponível' }}</td>
+              <td>{{ staff.staffPhoneNumber || 'Telefone não disponível' }}</td>
+              <td>{{ staff.staffAvailabilitySlots || 'Não disponível' }}</td>
+              <td>
+                  <p-button icon="pi pi-user" rounded="true" text="true"></p-button>
+                  <p-button icon="pi pi-bookmark" severity="secondary" rounded="true" text="true"></p-button>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+
+<!-- Template alternativo caso não haja dados -->
+<ng-template #noData>
+  <p>Nenhum staff encontrado.</p>
+</ng-template>
+
+<!-- Toast Notifications -->
+<p-toast></p-toast>
