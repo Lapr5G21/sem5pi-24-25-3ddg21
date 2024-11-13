@@ -5,6 +5,7 @@ import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.comp
 import { EditStaffsComponent } from './staffs/edit-staffs/edit-staffs.component';
 import { CreatePatientsComponent } from './patients/create-patients/create-patients.component';
 import { EditPatientsComponent } from './patients/edit-patients/edit-patients.component';
+import { ListPatientsComponent } from './patients/list-patients/list-patients.component';
 import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
@@ -14,7 +15,7 @@ import { ProfileMenuComponent } from './profile-menu-component/profile-menu-comp
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, MenubarComponent,ProfileMenuComponent],
+  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -27,6 +28,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(EditStaffsComponent) editStaffsComponent!: EditStaffsComponent;
   @ViewChild(CreatePatientsComponent) createPatientsComponent!: CreatePatientsComponent;
   @ViewChild(EditPatientsComponent) editPatientsComponent!: EditPatientsComponent;
+  @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
   constructor() {}
@@ -95,7 +97,8 @@ export class AdminDashboardComponent implements OnInit {
           },
           {
             label: 'List',
-            icon: 'pi pi-list'
+            icon: 'pi pi-list',
+            command: () => this.listPatient()
           }
         ]
       },
@@ -136,6 +139,10 @@ export class AdminDashboardComponent implements OnInit {
 
   editPatient() {
     this.editPatientsComponent.showDialog(); 
+  }
+
+  listPatient() {
+    this.listPatientsComponent.showDialog(); 
   }
 
   logout() {
