@@ -21,6 +21,26 @@ export class UserService {
     this.loginDto = null;
   }
 
-  
-  
+  registerUserOnBackend(): Observable<any> {
+    return new Observable((observer) => {
+      this.auth0.user$.subscribe((user) => {
+        if (user) {
+          const { email, name, sub } = user;
+
+          if (user['https://healthcaresystem.com/isNewUser']) {
+            this.http.post(this.apiUrl+ '/users/patients', { email, name }).subscribe({
+              next: (response) => {
+                observer.next(response);
+              },
+              error: (error) => {
+                observer.error(error);
+              },
+            });
+          } else {
+            observer.next({ message: 'Usuário já registrado' });
+          }
+        }
+      });
+    });
+  }
 }

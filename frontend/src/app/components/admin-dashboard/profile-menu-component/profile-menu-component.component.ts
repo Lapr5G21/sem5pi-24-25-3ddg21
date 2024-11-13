@@ -13,6 +13,7 @@ import { UserService } from '../../../services/user-service.service';
 })
 export class ProfileMenuComponent {
   showProfileDialog: boolean = false;
+  role : any = localStorage.getItem('role');
 
   constructor(
     @Inject(DOCUMENT) private document: Document,

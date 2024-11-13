@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user-service.service';
 
 @Component({
   selector: 'app-callback',
@@ -8,7 +9,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./auth-callback.component.scss']
 })
 export class AuthCallbackComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe(isAuthenticated => {
@@ -24,14 +29,18 @@ export class AuthCallbackComponent implements OnInit {
 
             this.authService.user$.subscribe(user => {
               const roles = user?.['https://healthcaresystem.com/roles'] ?? [];
-              localStorage.setItem('role',roles);
-              
+              localStorage.setItem('role', roles);
+
+              if (user && user['https://healthcaresystem.com/isNewUser']) {
+                this.registerUserInBackend(user);
+              }
+
               if (Array.isArray(roles) && roles.includes('Admin')) {  
                 console.log('Navigating to /adminDashboard/home');
                 this.router.navigate(['/adminDashboard/home']);
               } else {
-                console.log('Navigating to /user');
-                this.router.navigate(['/user']);
+                console.log('Navigating to /home');
+                this.router.navigate(['/home']);
               }
             });
           } else {
@@ -41,6 +50,17 @@ export class AuthCallbackComponent implements OnInit {
       } else {
         console.log('User is not authenticated');
         this.router.navigate(['/']);
+      }
+    });
+  }
+
+  private registerUserInBackend(user: any) {
+    this.userService.registerUserOnBackend().subscribe({
+      next: (response) => {
+        console.log('Usuário registrado no backend:', response);
+      },
+      error: (error) => {
+        console.error('Erro ao registrar o usuário no backend:', error);
       }
     });
   }

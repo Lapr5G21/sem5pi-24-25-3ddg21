@@ -291,7 +291,7 @@ namespace DDDSample1.Users
 
             var user = new User(new Role(RoleType.Patient), new Email(dto.Email), username);
             patient.SetUser(user);
-            
+            /*
             var auth0Domain = _configuration["Auth0:Domain"];
             var auth0Audience = _configuration["Auth0:APIAudience"];
             var auth0ClientId = _configuration["Auth0:ClientId"];
@@ -325,7 +325,8 @@ namespace DDDSample1.Users
                     throw new HttpRequestException($"Request failed with status {response.StatusCode}: {errorContent}");
                 }
             }
-
+            */
+            
             var user1 = new User(new Role(RoleType.Patient), new Email(dto.Email), username);
             await this._userRepository.AddAsync(user);
             await this._unitOfWork.CommitAsync();

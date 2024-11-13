@@ -2,5 +2,7 @@
   <div *ngIf="auth.user$ | async as user">
     <p><strong>Email:</strong> {{ user.email || 'Not available' }}</p>
     <p><strong>Name:</strong> {{ user.nickname || 'Not available' }}</p>
+    <p><strong>Role:</strong> {{ role || 'Not available' }}</p>
+
   </div>
 </p-dialog>

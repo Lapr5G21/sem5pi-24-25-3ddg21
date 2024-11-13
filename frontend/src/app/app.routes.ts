@@ -22,7 +22,7 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'auth-callback', component: AuthCallbackComponent },
     { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },  
-    { path: 'doctorDashboard/home', component: DoctorDashboardComponent},
-    { path: 'hospitalModule', component: HospitalModelComponent},
-
+    { path: 'doctorDashboard/home', component: DoctorDashboardComponent },
+    { path: 'hospitalModule', component: HospitalModelComponent },
+    { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
