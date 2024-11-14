@@ -15,7 +15,7 @@ export class CreateStaffDto {
 
 export class SpecializationDto {
     constructor(
-        public specializationId: string,
+        public specializationId: string
     ) {}
 }
 
@@ -25,7 +25,6 @@ export class Specialization {
         public specializationName: string
     ) {}
 }
-
 export class EditStaffDto {
     constructor(
         public staffId: string,

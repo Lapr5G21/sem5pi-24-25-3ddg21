@@ -1,88 +1,85 @@
 import { Component, OnInit } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
-import { PanelModule } from 'primeng/panel';
-import { AvatarModule } from 'primeng/avatar';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { StaffService } from '../../../../services/staff.service';
+import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { DataViewModule } from 'primeng/dataview';
+import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { BadgeModule } from 'primeng/badge';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { InputTextModule } from 'primeng/inputtext';  
 import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
-    selector: 'list-staffs',
-    templateUrl: './list-staffs.component.html',
-    styleUrls: ['./list-staffs.component.scss'],
-    standalone: true,
-    imports: [
-        DialogModule,
-        ButtonModule,
-        PanelModule,
-        AvatarModule,
-        ToastModule,
-        CommonModule,
-        FormsModule
-    ],
-    providers: [StaffService, MessageService]
+  selector: 'list-staffs',
+  standalone: true,
+  imports: [
+    TableModule,
+    DialogModule,
+    DataViewModule,
+    ButtonModule,
+    CommonModule,
+    BadgeModule,
+    ScrollPanelModule,
+    InputTextModule,
+    FormsModule,
+    DropdownModule,
+    FloatLabelModule
+  ],
+  templateUrl: './list-staffs.component.html',
+  styleUrls: ['./list-staffs.component.scss']
 })
 export class ListStaffsComponent implements OnInit {
-    staffs: any[] = [];
-    errorMessage: string | null = null;
-    
-    searchParams = {
-        name: '',
-        specialization: '',
-        status: -1
-    };
+  statusOptions: { label: string, value: boolean }[] = [
+    { label: 'Active', value: true },
+    { label: 'Deactivated', value: false }
+  ];
+  
+  staffs: any[] = [];  
+  specializationsMap: { [key: string]: string } = {};  
+  specializationsOptions: { label: string, value: string }[] = [];  
+  nameFilter: string = '';
+  statusFilter: boolean = true;  
+  specializationFilter: string = '';  
 
-    items: { label?: string; icon?: string; separator?: boolean }[] = [];
+  constructor(private staffService: StaffService) {}
 
-    constructor(
-        private router: Router,
-        private staffService: StaffService,
-        private messageService: MessageService
-    ) {}
+  ngOnInit(): void {
+    this.loadStaffs();  
+  }
 
-    loadStaffs() {
-        this.staffService.getStaffs().subscribe(
-            (staffs) => {
-                console.log('Lista de staffs:', staffs); // Verifique a saída no console
-                this.staffs = staffs;
+  loadStaffs() {
+    const statusBoolean = this.statusFilter;
+    this.staffService.searchStaffs(this.nameFilter, this.specializationFilter, statusBoolean).subscribe(
+        (staffs) => {
+            this.staffs = staffs;
+            this.loadSpecializations(); 
+        },
+        (error) => console.error('Error loading staffs', error)
+    );
+  }
+
+  loadSpecializations(): void {
+    const uniqueSpecializationIds = Array.from(new Set(this.staffs.map(staff => staff.specializationId)));
+
+    uniqueSpecializationIds.forEach(specializationId => {
+        this.staffService.getSpecializationById(specializationId).subscribe(
+            (specializationData) => {
+                this.specializationsMap[specializationId] = specializationData.specializationName;
             },
-            (error) => {
-                console.error('Erro ao carregar staff:', error);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Não foi possível carregar a lista de staff.'
-                });
-                this.errorMessage = 'Não foi possível carregar a lista de staff.';
-            }
+            (error) => console.error('Error loading specialization', error)
         );
-    }
+    });
+}
 
-    ngOnInit(): void {
-        this.loadStaffs(); // Carrega a lista inicial
-        this.items = [
-            { label: 'Refresh', icon: 'pi pi-refresh' },
-            { label: 'Search', icon: 'pi pi-search' },
-            { separator: true },
-            { label: 'Delete', icon: 'pi pi-times' }
-        ];
-    }
+  getSpecializationName(specializationId: string): string {
+    return this.specializationsMap[specializationId] || 'Not specified';  
+  }
 
-    // Método de busca para filtrar a lista de staff
-   /* onSearch(): void {
-        this.staffService.getFilteredStaffs(this.searchParams).subscribe(
-            (response) => {
-                this.staffs = response;
-                this.errorMessage = null;
-            },
-            (error) => {
-                this.errorMessage = 'Nenhum staff encontrado com os critérios fornecidos.';
-                this.staffs = [];
-            }
-        );
-    } */
+  onSearch(): void {
+    this.specializationsOptions = [];  
+    this.loadStaffs();  
+  }
 }

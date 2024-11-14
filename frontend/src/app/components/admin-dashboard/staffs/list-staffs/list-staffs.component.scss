@@ -1,94 +1,10 @@
-.container {
-    margin-top: 20px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    max-width: 600px;
-    margin: 50px auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Slightly larger shadow */
-  }
-  
-  h2 {
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    width: 100%; /* Ensure the input fields take up the full width */
-  }
-  
-  label {
-    font-weight: bold;
-    color: #555;
-    display: block;
-    margin-bottom: 8px; /* Space between label and input */
-  }
-  
-  input.form-control {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box; /* Ensure padding is included in the width */
-  }
-  
-  select.form-control {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    box-sizing: border-box; /* Ensure padding is included in the width */
-  }
-  
-  button {
-    width: 100%;
-    padding: 12px 0;
-    font-size: 18px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-  }
-  
-  table th, table td {
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #ddd;
-  }
-  
-  table th {
-    background-color: #f8f9fa;
-  }
-  
-  table tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  table tr:hover {
-    background-color: #e9ecef; /* Add hover effect for rows */
-  }
-  
-  .error-message {
-    color: red;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 20px;
-  }
+::ng-deep .p-button.p-button-danger {
+  background-color: #f44336 !important; /* Vermelho */
+  border-color: #f44336 !important;
+  color: #fff !important; /* Garantir que o texto fique branco */
+}
+
+::ng-deep .p-button.p-button-danger:hover {
+  background-color: #e53935 !important; /* Vermelho mais escuro ao passar o mouse */
+  border-color: #e53935 !important;
+}

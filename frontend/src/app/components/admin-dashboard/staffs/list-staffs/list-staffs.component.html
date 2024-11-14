@@ -1,49 +1,101 @@
-<div *ngIf="staffs && staffs.length > 0; else noData" class="result-box">
-  <h3>Resultados</h3>
-  <table class="table table-bordered">
-      <thead>
-          <tr>
-              <th>Nome Completo</th>
-              <th>ID</th>
-              <th>Licença</th>
-              <th>Especialização</th>
-              <th>Email</th>
-              <th>Telefone</th>
-              <th>Disponibilidade</th>
-              <th>Ações</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr *ngFor="let staff of staffs">
-              <td>
-                  <div class="flex align-items-center gap-2">
-                      <p-avatar 
-                          [image]="staff.avatarUrl || 'https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png'" 
-                          size="large" 
-                          shape="circle">
-                      </p-avatar>
-                      <span class="font-bold">{{ staff.staffFullName || 'Nome não disponível' }}</span>
+<div class="card">
+    <p-dataView #dv [value]="staffs" [rows]="5" [paginator]="true">
+      <ng-template pTemplate="header">
+        <div class="flex justify-between">
+          <div class="flex gap-4">
+            <!-- Filtro de Nome -->
+            <p-floatLabel class="flex-1">
+              <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
+              <label for="nameFilter">Name</label>
+            </p-floatLabel>
+  
+            <!-- Filtro de Status -->
+            <p-floatLabel class="flex-1">
+              <p-dropdown
+                [(ngModel)]="statusFilter"
+                [options]="statusOptions"
+                optionLabel="label"
+                optionValue="value"
+                class="p-dropdown-sm">
+              </p-dropdown>
+              <label for="statusFilter">Status</label>
+            </p-floatLabel>
+  
+            <!-- Filtro de Especialização -->
+            <p-floatLabel class="flex-1">
+              <p-dropdown 
+                [(ngModel)]="specializationFilter"
+                [options]="specializationsOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select Specialization"
+                class="p-dropdown-sm">
+              </p-dropdown>
+              <label for="specializationFilter">Specialization</label>
+            </p-floatLabel>
+  
+            <div class="flex items-end">
+              <button (click)="onSearch()" class="p-button p-button-sm p-button-primary">Search</button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+  
+      <ng-template pTemplate="list" let-items>
+        <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
+          <div class="grid grid-nogutter">
+            <div class="col-12" *ngFor="let item of items; let first = first">
+              <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" [ngClass]="{ 'border-top-1 surface-border': !first }">
+                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+                  <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                    <div>
+                      <p-badge 
+                        [value]="item.isActive ? 'Active' : 'Deactivated'"
+                        [severity]="item.isActive ? 'success' : 'danger'"
+                        class="text-sm mt-3 font-medium">
+                      </p-badge>
+  
+                      <br>
+
+                      <span class="font-bold text-xl text-900">{{ item.staffFullName || 'Not specified' }}</span>
+                        <div class="text-sm text-900 mt-2">Id: {{ item.staffId }}</div>
+                        <div class="text-sm">License Number: {{ item.staffLicenseNumber || 'Not specified' }}</div>
+                        <div class="text-sm">Specialization: {{ getSpecializationName(item.specializationId) || 'Not specified' }}</div>
+                        <div class="text-sm">Email: {{ item.staffEmail || 'Not specified' }}</div>
+                        <div class="text-sm">Phone Number: {{ item.staffPhoneNumber || 'Not specified' }}</div>
+                        <div class="text-sm">Availability Slots: {{ item.staffAvailabilitySlots || 'Not specified' }}</div>
+
+                    </div>
                   </div>
-              </td>
-              <td>{{ staff.staffId || 'ID não disponível' }}</td>
-              <td>{{ staff.staffLicenseNumber || 'Licença não disponível' }}</td>
-              <td>{{ staff.specializationId || 'Especialização não disponível' }}</td>
-              <td>{{ staff.staffEmail || 'Email não disponível' }}</td>
-              <td>{{ staff.staffPhoneNumber || 'Telefone não disponível' }}</td>
-              <td>{{ staff.staffAvailabilitySlots || 'Não disponível' }}</td>
-              <td>
-                  <p-button icon="pi pi-user" rounded="true" text="true"></p-button>
-                  <p-button icon="pi pi-bookmark" severity="secondary" rounded="true" text="true"></p-button>
-              </td>
-          </tr>
-      </tbody>
-  </table>
-</div>
-
-<!-- Template alternativo caso não haja dados -->
-<ng-template #noData>
-  <p>Nenhum staff encontrado.</p>
-</ng-template>
-
-<!-- Toast Notifications -->
-<p-toast></p-toast>
+                </div>
+  
+                <div class="flex flex-column md:align-items-end gap-5">
+                  <div class="flex flex-row-reverse md:flex-row gap-2">
+                    <p-button 
+                      icon="pi pi-pencil" 
+                      [outlined]="true"
+                      [disabled]="!item.isActive"
+                      [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }">
+                    </p-button>
+  
+                    <p-button 
+                      icon="pi pi-trash" 
+                      label="Delete" 
+                      [disabled]="!item.isActive" 
+                      [ngClass]="{ 'p-button-danger': true }" 
+                      [style]="{
+                        'background-color': '#f44336', 
+                        'border-color': '#f44336', 
+                        'color': 'white'
+                      }">
+                    </p-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-scrollPanel>
+      </ng-template>
+    </p-dataView>
+  </div>
+  
