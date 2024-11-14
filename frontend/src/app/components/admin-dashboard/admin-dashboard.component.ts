@@ -26,6 +26,7 @@ export class AdminDashboardComponent implements OnInit {
   showProfileDialog: boolean = false;
   showOperationTypesList: boolean = false;
   showStaffsList : boolean = false;
+  showPatientsList : boolean = false;
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
@@ -110,7 +111,10 @@ export class AdminDashboardComponent implements OnInit {
           {
             label: 'List',
             icon: 'pi pi-list',
-            command: () => this.listPatient()
+            command: () => {
+              this.showPatientsList = true;
+              this.showOperationTypesList=false;
+            }
           }
         ]
       },
@@ -161,8 +165,8 @@ export class AdminDashboardComponent implements OnInit {
     this.editPatientsComponent.showDialog(); 
   }
 
-  listPatient() {
-    this.listPatientsComponent.showDialog(); 
+  listPatients() {
+    this.router.navigate(['adminDashboard/patients/list']);
   }
 
   logout() {
