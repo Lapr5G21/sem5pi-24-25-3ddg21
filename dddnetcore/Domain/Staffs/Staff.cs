@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.Users;
@@ -14,7 +15,7 @@ namespace DDDSample1.Domain.Staffs
         public SpecializationId SpecializationId { get; private set; }
         public StaffEmail StaffEmail { get; private set; }
         public StaffPhoneNumber StaffPhoneNumber { get; private set; }
-        public StaffAvailabilitySlots StaffAvailabilitySlots { get; private set; }
+        public List<AvailabilitySlot> AvailabilitySlots { get; private set; } = new List<AvailabilitySlot>();
         public Username UserId { get; private set; }
 
         public bool Active { get; private set; }
@@ -24,7 +25,7 @@ namespace DDDSample1.Domain.Staffs
             this.Active = true;
         }
 
-        public Staff(StaffId staffId, StaffFirstName staffFirstName, StaffLastName staffLastName, StaffFullName staffFullName, StaffLicenseNumber licenseNumber, SpecializationId specializationId, StaffEmail staffEmail, StaffPhoneNumber staffPhoneNumber, Username userId, StaffAvailabilitySlots staffAvailabilitySlots)
+        public Staff(StaffId staffId, StaffFirstName staffFirstName, StaffLastName staffLastName, StaffFullName staffFullName, StaffLicenseNumber licenseNumber, SpecializationId specializationId, StaffEmail staffEmail, StaffPhoneNumber staffPhoneNumber, Username userId)
         {
             this.Active = true;
             this.Id = staffId;
@@ -35,7 +36,6 @@ namespace DDDSample1.Domain.Staffs
             this.SpecializationId = specializationId;
             this.StaffEmail = staffEmail;
             this.StaffPhoneNumber = staffPhoneNumber;
-            this.StaffAvailabilitySlots = staffAvailabilitySlots;
             this.UserId = userId;
         }
 
@@ -86,13 +86,14 @@ namespace DDDSample1.Domain.Staffs
 
             this.SpecializationId = newSpecializationId ?? throw new ArgumentNullException(nameof(newSpecializationId));
         }
-        public void ChangeAvailabilitySlots(StaffAvailabilitySlots newAvailabilitySlots)
+        public void AddAvailabilitySlot(DateTime start, DateTime end)
         {
-            if (!this.Active)
-                throw new InvalidOperationException("Cannot modify availability slots of an inactive staff member.");
+            if (!Active)
+                throw new InvalidOperationException("Cannot add availability slots to an inactive staff member.");
 
-            StaffAvailabilitySlots = newAvailabilitySlots;
+            AvailabilitySlots.Add(new AvailabilitySlot(start, end, Id));
         }
+
 
         public void Deactivate()
         {
@@ -102,6 +103,16 @@ namespace DDDSample1.Domain.Staffs
         public void Reactivate()
         {
             this.Active = true;
+        }
+
+        internal object WithOwner()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object Property(Func<object, object> value)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OperationTypeService } from '../../../../../services/operation-type-service.service';
-import { Specialization } from '../../../../../domain/operationType-model';  // Ajuste o caminho conforme necessário
+import { Specialization } from '../../../../../domain/operationType-model';  
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { DataViewModule } from 'primeng/dataview';
@@ -38,17 +38,17 @@ export class ListOperationTypesComponent implements OnInit {
     { label: 'Deactivated', value: false }
   ];
   
-  operationTypes: any[] = [];  // Lista de tipos de operação
-  specializationsMap: { [key: string]: string } = {};  // Mapeamento de especializações
-  specializationsOptions: { label: string, value: string }[] = [];  // Opções para o dropdown
+  operationTypes: any[] = [];  
+  specializationsMap: { [key: string]: string } = {};  
+  specializationsOptions: { label: string, value: string }[] = [];  
   nameFilter: string = '';
-  statusFilter: boolean = true;  // Status inicial
-  specializationFilter: string = '';  // ID de especialização
+  statusFilter: boolean = true;  
+  specializationFilter: string = '';  
 
   constructor(private operationTypeService: OperationTypeService) {}
 
   ngOnInit(): void {
-    this.loadOperationTypes();  // Carrega os dados ao inicializar
+    this.loadOperationTypes();  
   }
 
   loadOperationTypes(): void {
@@ -63,27 +63,20 @@ export class ListOperationTypesComponent implements OnInit {
   }
 
   loadSpecializations(): void {
-    this.operationTypes.forEach(item => {
-      item.specializations.forEach((specialization: Specialization) => { 
-        this.operationTypeService.getSpecializationById(specialization.id).subscribe(
-          (specializationData) => {
-            this.specializationsMap[specialization.id] = specializationData.specializationName; 
-          },
-          (error) => console.error('Error loading specialization', error)
-        );
-      })
-    });
-  };
-
-  getSpecializations(): void {
-    this.specializationsMap = {};
+    const specializationIds: Set<string> = new Set();
     
     this.operationTypes.forEach(item => {
       item.specializations.forEach((specialization: Specialization) => { 
-        if (!this.specializationsMap[specialization.id]) {
+        if (!specializationIds.has(specialization.id)) {
+          specializationIds.add(specialization.id);
+          
           this.operationTypeService.getSpecializationById(specialization.id).subscribe(
             (specializationData) => {
-              this.specializationsMap[specialization.id] = specializationData.specializationName;
+              this.specializationsMap[specialization.id] = specializationData.specializationName; 
+              this.specializationsOptions.push({
+                label: specializationData.specializationName,
+                value: specialization.id
+              });
             },
             (error) => console.error('Error loading specialization', error)
           );
@@ -97,6 +90,7 @@ export class ListOperationTypesComponent implements OnInit {
   }
 
   onSearch(): void {
+    this.specializationsOptions = [];  
     this.loadOperationTypes();  
   }
 }

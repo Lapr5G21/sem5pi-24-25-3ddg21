@@ -4,6 +4,7 @@ using DDDSample1.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    partial class DDDSample1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20241114084408_AddStaffAvailabilitySlotsColumn")]
+    partial class AddStaffAvailabilitySlotsColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,27 +287,6 @@ namespace DDDNetCore.Migrations
                     b.ToTable("Specializations");
                 });
 
-            modelBuilder.Entity("DDDSample1.Domain.Staffs.AvailabilitySlot", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("StaffId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("AvailabilitySlot");
-                });
-
             modelBuilder.Entity("DDDSample1.Domain.Staffs.Staff", b =>
                 {
                     b.Property<string>("Id")
@@ -317,6 +299,9 @@ namespace DDDNetCore.Migrations
                     b.Property<string>("SpecializationId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("StaffAvailabilitySlots")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("StaffEmail")
                         .IsRequired()
@@ -451,14 +436,6 @@ namespace DDDNetCore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DDDSample1.Domain.Staffs.AvailabilitySlot", b =>
-                {
-                    b.HasOne("DDDSample1.Domain.Staffs.Staff", null)
-                        .WithMany("AvailabilitySlots")
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("DDDSample1.Domain.Staffs.Staff", b =>
                 {
                     b.HasOne("DDDSample1.Domain.Specializations.Specialization", null)
@@ -482,11 +459,6 @@ namespace DDDNetCore.Migrations
             modelBuilder.Entity("DDDSample1.Domain.Specializations.Specialization", b =>
                 {
                     b.Navigation("OperationTypes");
-                });
-
-            modelBuilder.Entity("DDDSample1.Domain.Staffs.Staff", b =>
-                {
-                    b.Navigation("AvailabilitySlots");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,7 +17,7 @@ import { ListOperationTypesComponent } from './operationTypes/list-operation-typ
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent],
+  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -25,6 +25,7 @@ export class AdminDashboardComponent implements OnInit {
   items: MenuItem[] = [];
   showProfileDialog: boolean = false;
   showOperationTypesList: boolean = false;
+  showStaffsList : boolean = false;
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
@@ -63,6 +64,7 @@ export class AdminDashboardComponent implements OnInit {
             icon: 'pi pi-list',
             command: () => {
               this.showOperationTypesList = true;
+              this.showStaffsList = false;
             }          
           }
         ]
@@ -84,7 +86,10 @@ export class AdminDashboardComponent implements OnInit {
           {
             label: 'List',
             icon: 'pi pi-list',
-            command: () => this.listStaffs()
+            command: () => {
+              this.showStaffsList = true;
+              this.showOperationTypesList=false;
+            }   
           }
         ]
       },

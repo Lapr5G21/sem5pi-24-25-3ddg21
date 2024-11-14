@@ -2,15 +2,14 @@
 
 export class CreateStaffDto {
     constructor(
-        public staffFirstName: string,
-        public staffLastName: string,
-        public staffFullName: string,
-        public staffLicenseNumber: string,
-        public specializations: SpecializationDto[],
-        public staffEmail: string,
-        public staffPhoneNumber: string,
-        public staffAvailabilitySlots: string,
-        public users: UserDto[]
+        public firstName: string,
+        public lastName: string,
+        public fullName: string,
+        public licenseNumber: string,
+        public specializationId: string,
+        public email: string,
+        public phoneNumber: string,
+        public userId: string
     ) {}
 }
 
@@ -24,18 +23,6 @@ export class Specialization {
     constructor(
         public id: string,
         public specializationName: string
-    ) {}
-}
-
-export class UserDto {
-    constructor(
-        public username: string,
-    ) {}
-}
-
-export class User {
-    constructor(
-        public username: string,
     ) {}
 }
 
