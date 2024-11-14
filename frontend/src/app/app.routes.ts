@@ -16,6 +16,7 @@ import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-d
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 import { ListOperationTypesComponent } from './components/admin-dashboard/operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 
+
 export const routes: Routes = [
     { path: 'sidebar', component: SidebarComponent }, 
     { path: 'adminDashboard/operationtypes/create', component: CreateOperationTypesComponent },
