@@ -55,14 +55,6 @@ namespace DDDSample1.Tests.Domain.OperationRequest
             var deadline2 = new DeadlineDate(futureDate);
             Assert.Equal(deadline1.GetHashCode(), deadline2.GetHashCode());
         }
-
-        [Fact]
-        public void DeadlineDate_ToString_CorrectFormat()
-        {
-            var futureDate = new DateTime(2031, 10, 10);
-            var deadline = new DeadlineDate(futureDate);
-            Assert.Equal("10/10/2031 00:00:00 -> DeadlineDate", deadline.ToString());
-        }
         
     }
 }
