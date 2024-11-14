@@ -52,6 +52,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
+          
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v0.1.5
         with:
