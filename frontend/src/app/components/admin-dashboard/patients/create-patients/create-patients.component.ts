@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService, SelectItem } from 'primeng/api';
@@ -12,12 +13,20 @@ import { HttpClientModule } from '@angular/common/http';
 import { CreatePatientDto } from '../../../../domain/patient-model';
 import { ToastModule } from 'primeng/toast';
 
+enum PatientGender {
+    Male = 'Male',
+    Female = 'Female',
+    RatherNotSay = 'RatherNotSay'
+}
+
 @Component({
     selector: 'create-patients-modal',
     templateUrl: './create-patients.component.html',
+    styleUrls: ['./create-patients.component.scss'], // Certifique-se que este caminho está correto
     standalone: true,
     imports: [
         DialogModule,
+        DropdownModule,
         ButtonModule,
         InputTextModule,
         MultiSelectModule,
@@ -37,11 +46,18 @@ export class CreatePatientsComponent {
     LastName: string = '';
     FullName: string = '';
     BirthDate: string = '';
-    Gender: string = '';
+    Gender = PatientGender.RatherNotSay; // Usando enum como tipo
     Email: string = '';
     PhoneNumber: string = '';
     Address: string = '';
     EmergencyContact : string = '';
+
+    // Lista de opções para o dropdown de gênero
+    patientGenderOptions: SelectItem[] = [
+        { label: 'Male', value: PatientGender.Male },
+        { label: 'Female', value: PatientGender.Female },
+        { label: 'RatherNotSay', value: PatientGender.RatherNotSay }
+    ];    
 
     constructor(
         private patientService: PatientService,
@@ -96,7 +112,7 @@ export class CreatePatientsComponent {
         this.LastName = '';
         this.FullName = '';
         this.BirthDate = '';
-        this.Gender = '';
+        this.Gender = PatientGender.RatherNotSay;;
         this.Email = '';
         this.PhoneNumber = '';
         this.Address = '';
