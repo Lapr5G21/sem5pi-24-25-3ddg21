@@ -12,6 +12,7 @@ import { AuthCallbackComponent } from './components/auth-callback/auth-callback.
 import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-dashboard.component';
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 
+
 export const routes: Routes = [
     { path: 'sidebar', component: SidebarComponent }, 
     { path: 'adminDashboard/operationtypes/create', component: CreateOperationTypesComponent },

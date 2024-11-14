@@ -27,8 +27,8 @@ export class CreateOperationRequestsComponent implements OnInit {
   operationType: SelectItem[] = [];
   deadlinedate: Date | null = null;
   status: string = '';
-  doctor: SelectItem[] = [];
-  doctorId: string = '';
+  selectedDoctor: SelectItem[] = [];
+  selectedDoctorId: string | null = null;
   patient: SelectItem[] = [];
   selectedPatient: string | null = null;
   
@@ -54,7 +54,7 @@ export class CreateOperationRequestsComponent implements OnInit {
     this.operationRequestService.getDoctors().subscribe(
       (doctors) => {
         console.log('Doctors:', doctors);
-        this.doctor = doctors.map(doc => ({
+        this.selectedDoctor = doctors.map(doc => ({
           label: doc.staffFullName,
           value: doc.Id
         }));
@@ -104,7 +104,7 @@ export class CreateOperationRequestsComponent implements OnInit {
     const selectedOperationTypeId = this.operationTypeName || '';
     const selectedDeadline = this.deadlinedate ||  new Date();
     const selectedPatientId = this.selectedPatient || '';
-    const selectedStaffId = this.doctorId || '';
+    const selectedStaffId = this.selectedDoctorId || '';
 
     console.log('Selected Priority', this.priority);
     console.log('Operation Type Selected', this.operationTypeName);
@@ -145,7 +145,7 @@ export class CreateOperationRequestsComponent implements OnInit {
     this.operationType = [];
     this.deadlinedate = null; 
     this.status = ''; 
-    this.doctorId = ''; 
+    this.selectedDoctorId = ''; 
     this.selectedPatient = null ;
   }
 
