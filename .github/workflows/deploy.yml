@@ -52,7 +52,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
-          
+
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v0.1.5
         with:
@@ -71,6 +71,7 @@ jobs:
             dotnet restore ./dddnetcore/dddnetcore.csproj  
             dotnet build ./dddnetcore/dddnetcore.csproj --no-restore  
             dotnet publish ./dddnetcore/dddnetcore.csproj -c Release -o /root/apps/healthcare  
+            
             
             # Reinicia o serviço do servidor
             systemctl restart healthcare_deploy
