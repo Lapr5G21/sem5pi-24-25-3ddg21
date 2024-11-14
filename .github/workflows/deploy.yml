@@ -72,6 +72,5 @@ jobs:
             dotnet build ./dddnetcore/dddnetcore.csproj --no-restore  
             dotnet publish ./dddnetcore/dddnetcore.csproj -c Release -o /root/apps/healthcare  
             
-            
             # Reinicia o serviço do servidor
             systemctl restart healthcare_deploy
