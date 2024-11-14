@@ -12,9 +12,9 @@ namespace DDDSample1.Domain.Staffs
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string SpecializationId { get; set; }
-        public string AvailabilitySlots { get; set; }
+        public List<AvailabilitySlot> StaffAvailabilitySlots { get; set; } // Lista de slots de disponibilidade
 
-        public EditingStaffDto(string staffId, string firstName, string lastName, string fullName, string email, string phoneNumber, string specializationId, string availabilitySlots)
+        public EditingStaffDto(string staffId, string firstName, string lastName, string fullName, string email, string phoneNumber, string specializationId, List<AvailabilitySlot> availabilitySlots)
         {
             StaffId = staffId;
             FirstName = firstName;
@@ -23,7 +23,7 @@ namespace DDDSample1.Domain.Staffs
             Email = email;
             PhoneNumber = phoneNumber;
             SpecializationId = specializationId;
-            AvailabilitySlots = availabilitySlots; 
+            StaffAvailabilitySlots = availabilitySlots ?? new List<AvailabilitySlot>(); // Evita valores nulos
         }
     }
 }

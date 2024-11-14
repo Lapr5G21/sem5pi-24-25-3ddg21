@@ -50,11 +50,11 @@ namespace DDDSample1.Infrastructure.Staffs
                 .HasColumnName("IsActive")
                 .IsRequired();
             
-            builder.Property(b => b.StaffAvailabilitySlots)
-                .HasConversion(p => p.Slots, p => new StaffAvailabilitySlots(p))
-                .HasColumnName("Slots")
-                .IsRequired();
-
+            builder.HasMany(s => s.AvailabilitySlots)
+                .WithOne() 
+                .HasForeignKey(slot => slot.StaffId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
             builder.HasOne<Specialization>()
                 .WithMany()
                 .HasForeignKey(b => b.SpecializationId)

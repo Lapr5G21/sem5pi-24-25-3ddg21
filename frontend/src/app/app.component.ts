@@ -5,13 +5,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreateOperationTypesComponent } from './components/admin-dashboard/operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './components/admin-dashboard/staffs/create-staffs/create-staffs.component';
 import { EditStaffsComponent } from './components/admin-dashboard/staffs/edit-staffs/edit-staffs.component';
+import { ListStaffsComponent } from './components/admin-dashboard/staffs/list-staffs/list-staffs.component';
 import { MenubarComponent } from './components/menubar/menubar.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,AdminDashboardComponent,MenubarComponent,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent],
+  imports: [RouterOutlet,AdminDashboardComponent,MenubarComponent,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, ListStaffsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService, SelectItem } from 'primeng/api';
@@ -10,23 +9,15 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PatientService } from '../../../../services/patient.service';
 import { HttpClientModule } from '@angular/common/http';
-import { CreatePatientDto } from '../../../../domain/patient-model';
+import { EditPatientDto } from '../../../../domain/patient-model';
 import { ToastModule } from 'primeng/toast';
 
-enum PatientGender {
-    Male = 'Male',
-    Female = 'Female',
-    RatherNotSay = 'RatherNotSay'
-}
-
 @Component({
-    selector: 'create-patients-modal',
-    templateUrl: './create-patients.component.html',
-    styleUrls: ['./create-patients.component.scss'], // Certifique-se que este caminho está correto
+    selector: 'edit-patients-modal',
+    templateUrl: './edit-patients.component.html',
     standalone: true,
     imports: [
         DialogModule,
-        DropdownModule,
         ButtonModule,
         InputTextModule,
         MultiSelectModule,
@@ -38,26 +29,17 @@ enum PatientGender {
     ],
     providers: [PatientService, MessageService]
 })
-export class CreatePatientsComponent {
+export class EditPatientsComponent {
     visible: boolean = false;
     optionList: SelectItem[] = [];
 
     FirstName: string = '';
     LastName: string = '';
     FullName: string = '';
-    BirthDate: string = '';
-    Gender = PatientGender.RatherNotSay; // Usando enum como tipo
+    MedicalRecord : string = '';
     Email: string = '';
     PhoneNumber: string = '';
     Address: string = '';
-    EmergencyContact : string = '';
-
-    // Lista de opções para o dropdown de gênero
-    patientGenderOptions: SelectItem[] = [
-        { label: 'Male', value: PatientGender.Male },
-        { label: 'Female', value: PatientGender.Female },
-        { label: 'RatherNotSay', value: PatientGender.RatherNotSay }
-    ];    
 
     constructor(
         private patientService: PatientService,
@@ -70,38 +52,36 @@ export class CreatePatientsComponent {
         this.visible = true;
     }
 
-    savePatient() {
+    updatePatient() {
 
-        const patient = new CreatePatientDto(
+        const patient = new EditPatientDto(
             this.FirstName,
             this.LastName,
             this.FullName,
-            this.BirthDate,
-            this.Gender,
+            this.MedicalRecord,
             this.Email,
             this.PhoneNumber,
             this.Address,
-            this.EmergencyContact,
         );
 
         console.log('Payload:', JSON.stringify(patient));
 
-        this.patientService.savePatient(patient).subscribe(
+        this.patientService.updatePatient(patient).subscribe(
             () => {
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Success',
-                    detail: 'Patient Successfully Saved!'
+                    detail: 'Patient Successfully Updated!'
                 });
                 this.resetForm();
                 this.visible = false;
             },
             (error) => {
-                console.error('Patient Saving Error:', error);
+                console.error('Patient Updating Error:', error);
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Erro',
-                    detail: 'The patient could not be saved'
+                    detail: 'The patient could not be updated'
                 });
             }
         );
@@ -111,12 +91,10 @@ export class CreatePatientsComponent {
         this.FirstName = '';
         this.LastName = '';
         this.FullName = '';
-        this.BirthDate = '';
-        this.Gender = PatientGender.RatherNotSay;;
+        this.MedicalRecord = '';
         this.Email = '';
         this.PhoneNumber = '';
         this.Address = '';
-        this.EmergencyContact = '';
 
     }
 }

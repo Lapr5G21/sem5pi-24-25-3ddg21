@@ -3,31 +3,41 @@ import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
 import { EditStaffsComponent } from './staffs/edit-staffs/edit-staffs.component';
+import { ListStaffsComponent } from './staffs/list-staffs/list-staffs.component';
 import { CreatePatientsComponent } from './patients/create-patients/create-patients.component';
+import { EditPatientsComponent } from './patients/edit-patients/edit-patients.component';
+import { ListPatientsComponent } from './patients/list-patients/list-patients.component';
 import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
 import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './profile-menu-component/profile-menu-component.component';
+import { ListOperationTypesComponent } from './operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, MenubarComponent,ProfileMenuComponent],
+  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
   items: MenuItem[] = [];
   showProfileDialog: boolean = false;
+  showOperationTypesList: boolean = false;
+  showStaffsList : boolean = false;
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
   @ViewChild(EditStaffsComponent) editStaffsComponent!: EditStaffsComponent;
+  @ViewChild(ListStaffsComponent) listStaffsComponent!: ListStaffsComponent;
+  @ViewChild(ListOperationTypesComponent) listOperationTypesComponent !: ListOperationTypesComponent;
   @ViewChild(CreatePatientsComponent) createPatientsComponent!: CreatePatientsComponent;
+  @ViewChild(EditPatientsComponent) editPatientsComponent!: EditPatientsComponent;
+  @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.items = [
@@ -43,15 +53,19 @@ export class AdminDashboardComponent implements OnInit {
             label: 'Create',
             icon: 'pi pi-check',
             command: () => this.createOperationType()
-           // command: () => this.router.navigate(['/operationR'])
           },
+
           {
             label: 'Edit',
             icon: 'pi pi-pencil'
           },
           {
             label: 'List',
-            icon: 'pi pi-list'
+            icon: 'pi pi-list',
+            command: () => {
+              this.showOperationTypesList = true;
+              this.showStaffsList = false;
+            }          
           }
         ]
       },
@@ -63,7 +77,6 @@ export class AdminDashboardComponent implements OnInit {
             label: 'Create',
             icon: 'pi pi-check',
             command: () => this.createStaffs()
-           // command: () => this.router.navigate(['/operationR'])
           },
           {
             label: 'Edit',
@@ -72,7 +85,11 @@ export class AdminDashboardComponent implements OnInit {
           },
           {
             label: 'List',
-            icon: 'pi pi-list'
+            icon: 'pi pi-list',
+            command: () => {
+              this.showStaffsList = true;
+              this.showOperationTypesList=false;
+            }   
           }
         ]
       },
@@ -84,7 +101,16 @@ export class AdminDashboardComponent implements OnInit {
             label: 'Create',
             icon: 'pi pi-check',
             command: () => this.createPatient()
-           // command: () => this.router.navigate(['/patients'])
+          },
+          {
+            label: 'Edit',
+            icon: 'pi pi-pencil',
+            command: () => this.editPatient()
+          },
+          {
+            label: 'List',
+            icon: 'pi pi-list',
+            command: () => this.listPatient()
           }
         ]
       },
@@ -111,6 +137,10 @@ export class AdminDashboardComponent implements OnInit {
     this.createOperationTypesComponent.showDialog(); 
   }
 
+  listOperationTypes() {
+    this.showOperationTypesList = true;
+  }
+
   createStaffs() {
     this.createStaffsComponent.showDialog(); 
   }
@@ -119,8 +149,20 @@ export class AdminDashboardComponent implements OnInit {
     this.editStaffsComponent.showDialog(); 
   }
 
+  listStaffs() {
+    this.router.navigate(['adminDashboard/staffs/list']);
+  }
+
   createPatient() {
     this.createPatientsComponent.showDialog(); 
+  }
+
+  editPatient() {
+    this.editPatientsComponent.showDialog(); 
+  }
+
+  listPatient() {
+    this.listPatientsComponent.showDialog(); 
   }
 
   logout() {

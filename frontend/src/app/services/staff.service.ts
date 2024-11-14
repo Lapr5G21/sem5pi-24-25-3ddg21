@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -23,7 +23,11 @@ export class StaffService {
   }
 
   saveStaff(staffData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/staffs`, staffData);
+    const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+      });
+    return this.http.post(`${this.apiUrl}/staffs`, staffData,{headers});
   }
 
   updateStaff(staffData: any): Observable<any> {

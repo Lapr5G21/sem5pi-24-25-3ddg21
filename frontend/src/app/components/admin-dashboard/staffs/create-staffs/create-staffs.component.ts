@@ -11,6 +11,7 @@ import { StaffService } from '../../../../services/staff.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CreateStaffDto } from '../../../../domain/staff-model';
 import { ToastModule } from 'primeng/toast';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
     selector: 'create-staffs-modal',
@@ -23,6 +24,7 @@ import { ToastModule } from 'primeng/toast';
         MultiSelectModule,
         TableModule,
         FormsModule,
+        DropdownModule,
         CommonModule,
         HttpClientModule,
         ToastModule
@@ -33,7 +35,7 @@ export class CreateStaffsComponent implements OnInit {
     visible: boolean = false;
     optionListSpecs: SelectItem[] = [];
     optionListUsers: SelectItem[] = [];
-    selectedSpecializations: string[] = [];
+    selectedSpecializations: string = '';
 
     staffFirstName: string = '';
     staffLastName: string = '';
@@ -42,7 +44,7 @@ export class CreateStaffsComponent implements OnInit {
     staffEmail: string = '';
     staffPhoneNumber: string = '';
     staffAvailabilitySlots: string = '';
-    selectedUsers: string[] = [];
+    selectedUsers: string = '';
 
     constructor(
         private staffService: StaffService,
@@ -100,19 +102,18 @@ export class CreateStaffsComponent implements OnInit {
         console.log('Selected Specializations:', this.selectedSpecializations);
         console.log('Selected Users:', this.selectedUsers);
     
-        const specializationDto = this.selectedSpecializations.map(specializationId => ({ specializationId }));
-        const userDto = this.selectedUsers.map(username => ({ username }));
+        const specializationIds = this.selectedSpecializations;
+        const userNames = this.selectedUsers; 
 
         const staff = new CreateStaffDto(
             this.staffFirstName,
             this.staffLastName,
             this.staffFullName,
             this.staffLicenseNumber,
-            specializationDto,
+            specializationIds.toString(),
             this.staffEmail,
             this.staffPhoneNumber,
-            this.staffAvailabilitySlots,
-            userDto
+            userNames.toString()
         );
     
         console.log('Payload:', JSON.stringify(staff));
@@ -144,10 +145,10 @@ export class CreateStaffsComponent implements OnInit {
         this.staffLastName = '';
         this.staffFullName = '';
         this.staffLicenseNumber = '';
-        this.selectedSpecializations = [];
+        this.selectedSpecializations = '';
         this.staffEmail = '';
         this.staffPhoneNumber = '';
         this.staffAvailabilitySlots = '';
-        this.selectedUsers = [];
+        this.selectedUsers = '';
     }
 }

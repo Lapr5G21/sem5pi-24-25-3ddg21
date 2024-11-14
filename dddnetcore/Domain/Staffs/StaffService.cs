@@ -49,7 +49,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.ToString(),
+                StaffAvailabilitySlots = staff.AvailabilitySlots,
                 UserId = staff.UserId.ToString()
             });
             return listDto;
@@ -70,25 +70,24 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
+                StaffAvailabilitySlots = staff.AvailabilitySlots,
                 UserId = staff.UserId.ToString()
             };
         }
         public async Task<StaffDto> AddAsync(CreatingStaffDto dto)
         {
+            Console.WriteLine(dto.UserId);
             var user = await _userRepository.GetByIdAsync(new Username(dto.UserId));
             if (user == null)
                 throw new InvalidOperationException("User not found.");
 
             RoleType roleType = user.Role.RoleValue;
-            
+
             var staffId = new StaffId(user.Id.ToString().Split('@')[0]);
 
             var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(dto.SpecializationId));
             if (specialization == null)
                 throw new InvalidOperationException("Specialization not found.");
-
-            var availabilitySlots = dto.StaffAvailabilitySlots;
 
             var staff = new Staff(
                 staffId, 
@@ -99,8 +98,7 @@ namespace DDDSample1.Domain.Staffs
                 specialization.Id, 
                 new StaffEmail(dto.Email), 
                 new StaffPhoneNumber(dto.PhoneNumber), 
-                user.Id,
-                new StaffAvailabilitySlots(availabilitySlots)
+                user.Id
             );
 
             await this._staffRepository.AddAsync(staff);
@@ -116,7 +114,6 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = specialization.Id.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
                 UserId = staff.UserId.ToString()
             };
         }
@@ -135,14 +132,15 @@ namespace DDDSample1.Domain.Staffs
             var oldLastName = staff.StaffLastName.ToString();
             var oldSpecialization = staff.SpecializationId?.ToString() ?? "N/A";
 
+            UpdateAvailabilitySlots(staff, dto.StaffAvailabilitySlots);
+
+            
             staff.ChangeFirstName(new StaffFirstName(dto.FirstName));
             staff.ChangeLastName(new StaffLastName(dto.LastName));
             staff.ChangeFullName(new StaffFullName(dto.FullName));
             staff.ChangeEmail(new StaffEmail(dto.Email));
             staff.ChangePhoneNumber(new StaffPhoneNumber(dto.PhoneNumber));
             staff.ChangeSpecialization(new SpecializationId(dto.SpecializationId));
-            staff.ChangeAvailabilitySlots(new StaffAvailabilitySlots(dto.AvailabilitySlots));
-
             await this._unitOfWork.CommitAsync();
 
             if (oldEmail != staff.StaffEmail.ToString() || oldPhoneNumber != staff.StaffPhoneNumber.ToString())
@@ -184,10 +182,24 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail?.ToString() ?? "N/A",
                 StaffPhoneNumber = staff.StaffPhoneNumber?.ToString() ?? "N/A",
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
+                StaffAvailabilitySlots = staff.AvailabilitySlots,
                 UserId = staff.UserId?.ToString() ?? "N/A"
             };
         }
+
+        private void UpdateAvailabilitySlots(Staff staff, List<AvailabilitySlot> newSlots)
+{
+        if (newSlots == null)
+        {
+        throw new ArgumentException("Availability slots cannot be null.");
+        }
+
+
+        foreach (var slot in newSlots)
+        {
+        staff.AddAvailabilitySlot(slot.Start, slot.End);
+        }
+    }
 
 
         internal async Task<StaffDto> InactivateAsync(StaffId id)
@@ -211,7 +223,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
+                StaffAvailabilitySlots = staff.AvailabilitySlots,
                 UserId = staff.UserId.ToString()
             };
         }
@@ -234,7 +246,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = staff.SpecializationId.AsString(),
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = staff.StaffAvailabilitySlots.Slots,
+                StaffAvailabilitySlots = staff.AvailabilitySlots,
                 UserId = staff.UserId.ToString()
             };
         }
@@ -253,7 +265,7 @@ namespace DDDSample1.Domain.Staffs
                 SpecializationId = s.SpecializationId.AsString(),
                 StaffEmail = s.StaffEmail.ToString(),
                 StaffPhoneNumber = s.StaffPhoneNumber.ToString(),
-                StaffAvailabilitySlots = s.StaffAvailabilitySlots.Slots,
+                StaffAvailabilitySlots = s.AvailabilitySlots,
                 UserId = s.UserId.ToString()
             }).ToList();
         }
