@@ -1,15 +1,24 @@
 <div class="card">
     <p-dataView #dv [value]="staffs" [rows]="5" [paginator]="true">
       <ng-template pTemplate="header">
-        <div class="flex justify-between">
+        <div class="flex justify-between mt-2 mb-2">
           <div class="flex gap-4">
-            <!-- Filtro de Nome -->
+
             <p-floatLabel class="flex-1">
-              <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
-              <label for="nameFilter">Name</label>
-            </p-floatLabel>
-  
-            <!-- Filtro de Status -->
+                <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
+                <label for="nameFilter">Full Name</label>
+              </p-floatLabel>
+    
+              <p-floatLabel class="flex-1">
+                <input pInputText id="phoneNumberFilter" [(ngModel)]="phoneNumberFilter" placeholder="Search by phone number" class="p-inputtext-sm" />
+                <label for="phoneNumberFilter">Phone Number</label>
+              </p-floatLabel>
+    
+              <p-floatLabel class="flex-1">
+                <input pInputText id="emailFilter" [(ngModel)]="emailFilter" placeholder="Search by email" class="p-inputtext-sm" />
+                <label for="emailFilter">Email</label>
+              </p-floatLabel>
+      
             <p-floatLabel class="flex-1">
               <p-dropdown
                 [(ngModel)]="statusFilter"
@@ -20,8 +29,7 @@
               </p-dropdown>
               <label for="statusFilter">Status</label>
             </p-floatLabel>
-  
-            <!-- Filtro de Especialização -->
+
             <p-floatLabel class="flex-1">
               <p-dropdown 
                 [(ngModel)]="specializationFilter"
@@ -33,69 +41,87 @@
               </p-dropdown>
               <label for="specializationFilter">Specialization</label>
             </p-floatLabel>
-  
+
             <div class="flex items-end">
               <button (click)="onSearch()" class="p-button p-button-sm p-button-primary">Search</button>
             </div>
           </div>
         </div>
       </ng-template>
-  
+
       <ng-template pTemplate="list" let-items>
         <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
-          <div class="grid grid-nogutter">
-            <div class="col-12" *ngFor="let item of items; let first = first">
-              <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                  <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-                    <div>
-                      <p-badge 
-                        [value]="item.isActive ? 'Active' : 'Deactivated'"
-                        [severity]="item.isActive ? 'success' : 'danger'"
-                        class="text-sm mt-3 font-medium">
-                      </p-badge>
-  
-                      <br>
+          
+          <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+            <div class="col">Name</div>
+            <div class="col">Status</div>
+            <div class="col">License Number</div>
+            <div class="col">Specialization</div>
+            <div class="col">Email</div>
+            <div class="col">Phone Number</div>
+            <div class="col">Availability Slots</div>
+            <div class="col">Actions</div>
+          </div>
 
-                      <span class="font-bold text-xl text-900">{{ item.staffFullName || 'Not specified' }}</span>
-                        <div class="text-sm text-900 mt-2">Id: {{ item.staffId }}</div>
-                        <div class="text-sm">License Number: {{ item.staffLicenseNumber || 'Not specified' }}</div>
-                        <div class="text-sm">Specialization: {{ getSpecializationName(item.specializationId) || 'Not specified' }}</div>
-                        <div class="text-sm">Email: {{ item.staffEmail || 'Not specified' }}</div>
-                        <div class="text-sm">Phone Number: {{ item.staffPhoneNumber || 'Not specified' }}</div>
-                        <div class="text-sm">Availability Slots: {{ item.staffAvailabilitySlots || 'Not specified' }}</div>
+          
+          <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items; let first = first">
+            
+            <div class="col p-2">
+              <span class="font-bold text-900">{{ item.staffFullName || 'Not specified' }}</span>
+            </div>
 
-                    </div>
-                  </div>
-                </div>
-  
-                <div class="flex flex-column md:align-items-end gap-5">
-                  <div class="flex flex-row-reverse md:flex-row gap-2">
-                    <p-button 
-                      icon="pi pi-pencil" 
-                      [outlined]="true"
-                      [disabled]="!item.isActive"
-                      [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }">
-                    </p-button>
-  
-                    <p-button 
-                      icon="pi pi-trash" 
-                      label="Delete" 
-                      [disabled]="!item.isActive" 
-                      [ngClass]="{ 'p-button-danger': true }" 
-                      [style]="{
-                        'background-color': '#f44336', 
-                        'border-color': '#f44336', 
-                        'color': 'white'
-                      }">
-                    </p-button>
-                  </div>
-                </div>
+            <div class="col p-2">
+              <p-badge 
+                [value]="item.isActive ? 'Active' : 'Deactivated'"
+                [severity]="item.isActive ? 'success' : 'danger'"
+                class="text-sm">
+              </p-badge>
+            </div>
+
+            <div class="col p-2">
+              {{ item.staffLicenseNumber || 'Not specified' }}
+            </div>
+
+            <div class="col p-2">
+              {{ getSpecializationName(item.specializationId) || 'Not specified' }}
+            </div>
+
+            <div class="col p-2">
+              {{ item.staffEmail || 'Not specified' }}
+            </div>
+
+            <div class="col p-2">
+              {{ item.staffPhoneNumber || 'Not specified' }}
+            </div>
+
+            <div class="col p-2">
+              {{ item.staffAvailabilitySlots || 'Not specified' }}
+            </div>
+
+            <div class="col p-2">
+              <div class="flex justify-center gap-2">
+                <p-button 
+                  icon="pi pi-pencil" 
+                  [outlined]="true"
+                  [disabled]="!item.isActive"
+                  [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }">
+                </p-button>
+
+                <p-button 
+                  icon="pi pi-trash" 
+                  label="Delete" 
+                  [disabled]="!item.isActive" 
+                  [ngClass]="{ 'p-button-danger': true }" 
+                  [style]="{
+                    'background-color': '#f44336', 
+                    'border-color': '#f44336', 
+                    'color': 'white'
+                  }">
+                </p-button>
               </div>
             </div>
           </div>
         </p-scrollPanel>
       </ng-template>
     </p-dataView>
-  </div>
-  
+</div>

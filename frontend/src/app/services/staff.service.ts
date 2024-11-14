@@ -42,7 +42,7 @@ export class StaffService {
     return this.http.get<any>(`${this.apiUrl}/staffs/${staffId}`);
   }
 
-  searchStaffs(name: string, specializationId: string, isActive: boolean | null): Observable<any[]> {
+  searchStaffs(name: string, phonenUmber: string, email: string, specializationId: string, isActive: boolean | null): Observable<any[]> {
     let params = new HttpParams();
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
@@ -50,6 +50,12 @@ export class StaffService {
       }); 
     if (name) {
       params = params.append('fullName', name);
+    }
+    if (phonenUmber) {
+      params = params.append('phonenUmber', phonenUmber);
+    }
+    if (email) {
+      params = params.append('email', email);
     }
     if (specializationId) {
       params = params.append('specializationId', specializationId);

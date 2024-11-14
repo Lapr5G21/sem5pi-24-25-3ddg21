@@ -11,6 +11,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { Specialization } from '../../../../domain/staff-model';  
+
+
 
 @Component({
   selector: 'list-staffs',
@@ -41,6 +44,8 @@ export class ListStaffsComponent implements OnInit {
   specializationsMap: { [key: string]: string } = {};  
   specializationsOptions: { label: string, value: string }[] = [];  
   nameFilter: string = '';
+  phoneNumberFilter: string = '';
+  emailFilter: string = '';
   statusFilter: boolean = true;  
   specializationFilter: string = '';  
 
@@ -52,7 +57,7 @@ export class ListStaffsComponent implements OnInit {
 
   loadStaffs() {
     const statusBoolean = this.statusFilter;
-    this.staffService.searchStaffs(this.nameFilter, this.specializationFilter, statusBoolean).subscribe(
+    this.staffService.searchStaffs(this.nameFilter, this.phoneNumberFilter, this.emailFilter, this.specializationFilter, statusBoolean).subscribe(
         (staffs) => {
             this.staffs = staffs;
             this.loadSpecializations(); 
@@ -61,18 +66,29 @@ export class ListStaffsComponent implements OnInit {
     );
   }
 
-  loadSpecializations(): void {
-    const uniqueSpecializationIds = Array.from(new Set(this.staffs.map(staff => staff.specializationId)));
 
-    uniqueSpecializationIds.forEach(specializationId => {
-        this.staffService.getSpecializationById(specializationId).subscribe(
+loadSpecializations(): void {
+    const specializationIds: Set<string> = new Set();
+    
+    this.staffs.forEach(item => {
+      item.specializations.forEach((specialization: Specialization) => { 
+        if (!specializationIds.has(specialization.id)) {
+          specializationIds.add(specialization.id);
+          
+          this.staffService.getSpecializationById(specialization.id).subscribe(
             (specializationData) => {
-                this.specializationsMap[specializationId] = specializationData.specializationName;
+              this.specializationsMap[specialization.id] = specializationData.specializationName; 
+              this.specializationsOptions.push({
+                label: specializationData.specializationName,
+                value: specialization.id
+              });
             },
             (error) => console.error('Error loading specialization', error)
-        );
+          );
+        }
+      });
     });
-}
+  }
 
   getSpecializationName(specializationId: string): string {
     return this.specializationsMap[specializationId] || 'Not specified';  
