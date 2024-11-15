@@ -135,9 +135,10 @@ export class ListOperationRequestsComponent implements OnInit {
   
     // Filtra pelo nome do paciente
     if (this.nameFilter) {
-      filteredRequests = filteredRequests.filter(req =>
-        req.pacientMedicalRecordNumber?.toLowerCase().includes(this.nameFilter.toLowerCase())
-      );
+      filteredRequests = filteredRequests.filter(req => {
+        const patientName = this.getPatientName(req.pacientMedicalRecordNumber)?.toLowerCase();
+        return patientName && patientName.includes(this.nameFilter.toLowerCase());
+      });
     }
   
     // Filtra pelo nome do tipo de operação
@@ -163,6 +164,7 @@ export class ListOperationRequestsComponent implements OnInit {
   
     this.filteredOperationRequests = filteredRequests;
   }
+  
 
   getPriorityClass(priority: string): string {
     switch (priority) {
