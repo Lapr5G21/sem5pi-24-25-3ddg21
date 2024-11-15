@@ -13,6 +13,8 @@ import { PaginatorModule } from 'primeng/paginator';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 @Component({
     selector: 'list-patients',
@@ -30,7 +32,9 @@ import { FloatLabelModule } from 'primeng/floatlabel';
         DataViewModule,
         ScrollPanelModule,
         BadgeModule,
-        FormsModule
+        FormsModule,
+        InputGroupModule,
+        InputGroupAddonModule
     ],
     providers: [PatientService, MessageService]
 })

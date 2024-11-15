@@ -1,113 +1,114 @@
 <div class="card">
-    <p-dataView #dv [value]="patients" [rows]="5" [paginator]="true" rows]="5">
-      <ng-template pTemplate="header">
-        <div class="flex justify-between">
-          <div class="search-bar flex gap-4">
-            <!-- Filtro de Nome -->
-            <p-floatLabel class="flex-1">
-              <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
-              <label for="nameFilter">Name</label>
-            </p-floatLabel>
-  
-            <!-- Filtro de Status -->
-            <p-floatLabel class="flex-1">
-              <p-dropdown
-                [(ngModel)]="statusFilter"
-                [options]="statusOptions"
-                optionLabel="label"
-                optionValue="value"
-                class="p-dropdown-sm">
-              </p-dropdown>
-              <label for="statusFilter">Status</label>
-            </p-floatLabel>
-  
-            <!-- Filtro de Data de Nascimento -->
-            <p-floatLabel class="flex-1">
-              <input pInputText id="birthDateFilter" [(ngModel)]="birthDateFilter" placeholder="Search by birth date" class="p-inputtext-sm" />
-              <label for="birthDateFilter">Birth Date</label>
-            </p-floatLabel>
-  
-            <div class="flex items-end">
-              <button (click)="onSearch()" class="p-button p-button-sm p-button-primary">Search</button>
-            </div>
+  <!-- Barra de Pesquisa -->
+  <p-dataView #dv [value]="patients">
+    <ng-template pTemplate="header">
+      <div class="flex flex-column gap-4">
+        <div class="search-bar">
+          <!-- Filtro por Nome Completo -->
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-user"></i>
+            </p-inputGroupAddon>
+            <input
+              pInputText
+              id="nameFilter"
+              [(ngModel)]="nameFilter"
+              placeholder="Search by Full Name"
+              class="p-inputtext-sm"
+            />
+          </p-inputGroup>
+
+          <!-- Filtro por Data de Nascimento -->
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-calendar"></i>
+            </p-inputGroupAddon>
+            <input
+              type="text"
+              pInputText
+              id="birthDateFilter"
+              [(ngModel)]="birthDateFilter"
+              placeholder="Search by Birth Date"
+              class="p-inputtext-sm"
+            />
+          </p-inputGroup>
+
+          <!-- Filtro por Status -->
+          <p-inputGroup class="flex-1">
+            <p-inputGroupAddon>
+              <i class="pi pi-info-circle"></i>
+            </p-inputGroupAddon>
+            <p-dropdown
+              [(ngModel)]="statusFilter"
+              [options]="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Filter by Status"
+              class="p-dropdown-sm"
+            ></p-dropdown>
+          </p-inputGroup>
+
+          <!-- Botão de Pesquisa -->
+          <div class="flex justify-content-start mt-2">
+            <button (click)="onSearch()" class="p-button p-button-primary p-button-sm">
+              <i class="pi pi-search"></i>
+              <span class="ml-2">Search</span>
+            </button>
           </div>
         </div>
-      </ng-template>
-  
-      <ng-template pTemplate="list" let-items>
-        <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
-          <div class="grid grid-nogutter">
-            <div class="col-12" *ngFor="let patient of items; let first = first">
-              <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" [ngClass]="{ 'border-top-1 surface-border': !first }">
-                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                  <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-                    <div>
-                      <p-badge 
-                        [value]="patient.Active ? 'Active' : 'Deactivated'"
-                        [severity]="patient.Active ? 'success' : 'danger'"
-                        class="text-sm mt-3 font-medium">
-                      </p-badge>
-  
-                      <br>
-  
-                      <span class="font-bold text-xl text-900">{{ patient.FullName || 'Not specified' }}</span>
-  
-                      <div class="text-sm text-900 mt-2">Birth Date: {{ patient.BirthDate || 'Not specified' }}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </p-scrollPanel>
-      </ng-template>
-    </p-dataView>
-  </div>
-  
+      </div>
+    </ng-template>
+  </p-dataView>
 
-<!-- Tabela de Pacientes -->
-<p-table [value]="patients" [tableStyle]="{'min-width': '60rem'}">
+  <!-- Tabela de Pacientes -->
+  <p-table [value]="patients" [tableStyle]="{ 'min-width': '60rem' }" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]">
+
     <ng-template pTemplate="header">
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Full Name</th>
-            <th>Birth Date</th>
-            <th>Gender</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Address</th>
-            <th>Medical History</th>
-            <th>Status</th>
-        </tr>
+      <tr class="text-center bg-primary text-white font-bold">
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Full Name</th>
+        <th>Birth Date</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Address</th>
+        <th>Medical History</th>
+        <th>Status</th>
+      </tr>
     </ng-template>
+
     <ng-template pTemplate="body" let-patient>
-        <tr>
-            <td>{{patient.FirstName}}</td>
-            <td>{{patient.LastName}}</td>
-            <td>{{patient.FullName}}</td>
-            <td>{{patient.BirthDate}}</td>
-            <td>{{patient.Gender}}</td>
-            <td>{{patient.Email}}</td>
-            <td>{{patient.PhoneNumber}}</td>
-            <td>{{patient.Address}}</td>
-            <td>
-                <p-button 
-                    icon="pi pi-eye" 
-                    label="View" 
-                    (click)="showMedicalHistory(patient.MedicalRecord)">
-                </p-button>
-            </td>
-            <td>
-                <p-badge [value]="patient.Active ? 'Active' : 'Deactivated'" [severity]="patient.Active ? 'success' : 'danger'"></p-badge>
-            </td>
-        </tr>
+      <tr class="text-center border-top-1 surface-border">
+        <td class="p-2">{{ patient.FirstName || 'Not specified' }}</td>
+        <td class="p-2">{{ patient.LastName || 'Not specified' }}</td>
+        <td class="p-2">{{ patient.FullName || 'Not specified' }}</td>
+        <td class="p-2">{{ patient.BirthDate || 'Not specified' }}</td>
+        <td class="p-2">{{ patient.Gender || 'Not specified' }}</td>
+        <td class="p-2">{{ patient.Email || 'Not specified' }}</td>
+        <td class="p-2">{{ patient.PhoneNumber || 'Not specified' }}</td>
+        <td class="p-2">{{ patient.Address || 'Not specified' }}</td>
+        <td class="p-2">
+          <p-button
+            icon="pi pi-eye"
+            label="View"
+            (click)="showMedicalHistory(patient.MedicalRecord)"
+            class="p-button-sm"
+          ></p-button>
+        </td>
+        <td class="p-2">
+          <p-badge
+            [value]="patient.Active ? 'Active' : 'Deactivated'"
+            [severity]="patient.Active ? 'success' : 'danger'"
+            class="text-sm"
+          ></p-badge>
+        </td>
+      </tr>
     </ng-template>
-</p-table>
+  </p-table>
 
-<!-- Diálogo de Histórico Médico -->
-<p-dialog header="Medical History" [(visible)]="medicalHistoryDialogVisible" modal="true" [style]="{width: '40vw'}">
-    <p>{{selectedMedicalHistory}}</p>
-</p-dialog>
-
-
+  <!-- Diálogo de Histórico Médico -->
+  <p-dialog header="Medical History" [(visible)]="medicalHistoryDialogVisible" modal="true" [style]="{ width: '40vw' }">
+    <p>{{ selectedMedicalHistory }}</p>
+  </p-dialog>
+</div>
