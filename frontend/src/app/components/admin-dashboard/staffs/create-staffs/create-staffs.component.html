@@ -8,47 +8,117 @@
 
         <div class="flex align-items-center gap-3 mb-3">
             <label for="staffFirstName" class="font-semibold w-6rem">First Name</label>
-            <input pInputText id="staffFirstName" [(ngModel)]="staffFirstName" class="flex-auto" autocomplete="off" />
+            <input 
+                pInputText 
+                id="staffFirstName" 
+                [(ngModel)]="staffFirstName" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isFirstNameValid}" />
         </div>
-
+        <div *ngIf="isSubmitted && !isFirstNameValid" class="error-text">
+            First name is required.
+        </div>
+        
         <div class="flex align-items-center gap-3 mb-3">
             <label for="staffLastName" class="font-semibold w-6rem">Last Name</label>
-            <input pInputText id="staffLastName" [(ngModel)]="staffLastName" class="flex-auto" autocomplete="off" />
+            <input 
+                pInputText 
+                id="staffLastName" 
+                [(ngModel)]="staffLastName" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isLastNameValid}" />
         </div>
-
+        <div *ngIf="isSubmitted && !isLastNameValid" class="error-text">
+            Last name is required.
+        </div>
+        
         <div class="flex align-items-center gap-3 mb-5">
             <label for="staffFullName" class="font-semibold w-6rem">Full Name</label>
-            <input pInputText id="staffFullName" [(ngModel)]="staffFullName" class="flex-auto" autocomplete="off" />
+            <input 
+                pInputText 
+                id="staffFullName" 
+                [(ngModel)]="staffFullName" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isFullNameValid}" />
         </div>
-
+        <div *ngIf="isSubmitted && !isFullNameValid" class="error-text">
+            Full name is required.
+        </div>
+        
         <div class="flex align-items-center gap-3 mb-5">
             <label for="staffLicenseNumber" class="font-semibold w-6rem">License Number</label>
-            <input pInputText id="staffLicenseNumber" [(ngModel)]="staffLicenseNumber" class="flex-auto" autocomplete="off" />
+            <input 
+                pInputText 
+                id="staffLicenseNumber" 
+                [(ngModel)]="staffLicenseNumber" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isLicenseNumberValid}" />
+        </div>
+        <div *ngIf="isSubmitted && !isLicenseNumberValid" class="error-text">
+            License number is required.
         </div>
 
         <div class="flex align-items-center gap-3 mb-3">
             <label for="specializations" class="font-semibold w-6rem">Specializations</label>
             <p-dropdown
-            id="specializations"
-            [options]="optionListSpecs"
-            [(ngModel)]="selectedSpecializations"
-            placeholder="Select Specialization">
+                id="specializations"
+                [options]="optionListSpecs"
+                [(ngModel)]="selectedSpecializations"
+                placeholder="Select Specialization"
+                [ngClass]="{'invalid-border': isSubmitted && !isSpecValid}"
+                (ngModelChange)="validateFields()">
             </p-dropdown>
-            </div>
+        </div>
+        <div *ngIf="isSubmitted && !isSpecValid" class="error-text">
+            A specialization must be selected.
+        </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="staffEmail" class="font-semibold w-6rem">Email</label>
-            <input pInputText id="staffEmail" [(ngModel)]="staffEmail" class="flex-auto" type="email" autocomplete="off" />
+            <input 
+                pInputText 
+                id="staffEmail" 
+                [(ngModel)]="staffEmail" 
+                class="flex-auto" 
+                type="email" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateEmail()" 
+                [ngClass]="{'invalid-border': (isSubmitted && !isEmailValid) || (isSubmitted && !staffEmail)}" />
         </div>
+        <div *ngIf="(isSubmitted && !isEmailValid) || (isSubmitted && !staffEmail)" class="error-text">
+            Please enter a valid email address.
+        </div>       
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="staffPhoneNumber" class="font-semibold w-6rem">Phone Number</label>
-            <input pInputText id="staffPhoneNumber" [(ngModel)]="staffPhoneNumber" class="flex-auto" type="number" autocomplete="off" />
+            <input 
+                pInputText 
+                id="staffPhoneNumber" 
+                [(ngModel)]="staffPhoneNumber" 
+                class="flex-auto" 
+                autocomplete="off" 
+                type="text" 
+                maxlength="9" 
+                (keypress)="allowOnlyNumbers($event)" 
+                (ngModelChange)="validatePhoneNumber()" 
+                required
+                [ngClass]="{'invalid-border': (isSubmitted && !isPhoneNumberValid) || (isSubmitted && !staffPhoneNumber)}" />
         </div>
-
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="staffAvailabilitySlots" class="font-semibold w-6rem">Availability Slots</label>
-            <input pInputText id="staffAvailabilitySlots" [(ngModel)]="staffAvailabilitySlots" class="flex-auto" autocomplete="off" />
+        <div *ngIf="(isSubmitted && !isPhoneNumberValid) || (isSubmitted && !staffPhoneNumber)" class="error-text">
+            The number must start with 91, 92, 93, or 96 and must have 9 digits.
         </div>
 
         <div class="flex align-items-center gap-3 mb-3">
@@ -57,16 +127,21 @@
                 id="users"
                 [options]="optionListUsers"
                 [(ngModel)]="selectedUsers"
-                placeholder="Select User">
+                placeholder="Select User"
+                [ngClass]="{'invalid-border': isSubmitted && !isUserValid}"
+                (ngModelChange)="validateFields()">
             </p-dropdown>
         </div>
-        
+        <div *ngIf="isSubmitted && !isUserValid" class="error-text">
+            A user must be selected.
+        </div>
+
         <ng-template pTemplate="footer">
             <p-button 
                 label="Cancel" 
                 [text]="true" 
                 severity="secondary" 
-                (onClick)="visible = false"></p-button>
+                (onClick)="resetForm(); visible = false"></p-button>
             <p-button 
                 label="Save" 
                 [outlined]="true" 

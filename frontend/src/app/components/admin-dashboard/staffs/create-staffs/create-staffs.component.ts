@@ -16,6 +16,7 @@ import { DropdownModule } from 'primeng/dropdown';
 @Component({
     selector: 'create-staffs-modal',
     templateUrl: './create-staffs.component.html',
+    styleUrls: ['./create-staffs.component.scss'],
     standalone: true,
     imports: [
         DialogModule,
@@ -45,6 +46,18 @@ export class CreateStaffsComponent implements OnInit {
     staffPhoneNumber: string = '';
     staffAvailabilitySlots: string = '';
     selectedUsers: string = '';
+
+    isPhoneNumberValid: boolean = true;
+    isEmailValid: boolean = true;
+    isFirstNameValid: boolean = true;
+    isLastNameValid: boolean = true;
+    isFullNameValid: boolean = true;
+    isLicenseNumberValid: boolean = true;
+    isUserValid: boolean = true;
+    isSpecValid: boolean = true;
+
+    isSubmitted: boolean = false;
+
 
     constructor(
         private staffService: StaffService,
@@ -99,46 +112,75 @@ export class CreateStaffsComponent implements OnInit {
     }
 
     saveStaff() {
-        console.log('Selected Specializations:', this.selectedSpecializations);
-        console.log('Selected Users:', this.selectedUsers);
-    
-        const specializationIds = this.selectedSpecializations;
-        const userNames = this.selectedUsers; 
+        this.isSubmitted = true; // Isso vai garantir que as validações sejam feitas somente ao tentar salvar
+        this.validateFields();
+        if (this.isFirstNameValid && this.isLastNameValid && this.isFullNameValid && this.isLicenseNumberValid && this.isSpecValid && this.isUserValid) {     const specializationIds = this.selectedSpecializations;
+            const userNames = this.selectedUsers;
 
-        const staff = new CreateStaffDto(
-            this.staffFirstName,
-            this.staffLastName,
-            this.staffFullName,
-            this.staffLicenseNumber,
-            specializationIds.toString(),
-            this.staffEmail,
-            this.staffPhoneNumber,
-            userNames.toString()
-        );
-    
-        console.log('Payload:', JSON.stringify(staff));
-    
-        this.staffService.saveStaff(staff).subscribe(
-            () => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Staff salvo com sucesso!'
-                });
-                this.resetForm();
-                this.visible = false;
-            },
-            (error) => {
-                console.error('Erro ao salvar staff:', error);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Não foi possível salvar o staff.'
-                });
-            }
-        );
+            const staff = new CreateStaffDto(
+                this.staffFirstName,
+                this.staffLastName,
+                this.staffFullName,
+                this.staffLicenseNumber,
+                specializationIds.toString(),
+                this.staffEmail,
+                this.staffPhoneNumber,
+                userNames.toString()
+            );
+
+            console.log('Payload:', JSON.stringify(staff));
+
+            this.staffService.saveStaff(staff).subscribe(
+                () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Sucesso',
+                        detail: 'Staff salvo com sucesso!'
+                    });
+                    this.resetForm();
+                    this.visible = false;
+                    this.isSubmitted = false; // Reset ao estado após salvar
+                },
+                (error) => {
+                    console.error('Erro ao salvar staff:', error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'Não foi possível salvar o staff.'
+                    });
+                }
+            );
+        }
     }
     
+    validateFields() {
+        this.isFirstNameValid = !!this.staffFirstName;
+        this.isLastNameValid = !!this.staffLastName;
+        this.isFullNameValid = !!this.staffFullName;
+        this.isLicenseNumberValid = !!this.staffLicenseNumber;
+        this.isSpecValid = !!this.selectedSpecializations;
+        this.isUserValid = !!this.selectedUsers;
+        this.validateEmail();
+        this.validatePhoneNumber();
+    }
+
+    validatePhoneNumber(): void {
+        const phonePattern = /^(91|92|93|96)\d{7}$/;
+        this.isPhoneNumberValid = phonePattern.test(this.staffPhoneNumber);
+    }
+
+    validateEmail(): void {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        this.isEmailValid = emailPattern.test(this.staffEmail);
+    }
+
+    allowOnlyNumbers(event: KeyboardEvent) {
+        const pattern = /^[0-9]*$/;
+        if (!pattern.test(event.key)) {
+            event.preventDefault();
+        }
+    }
+ 
 
     resetForm() {
         this.staffFirstName = '';
@@ -150,5 +192,14 @@ export class CreateStaffsComponent implements OnInit {
         this.staffPhoneNumber = '';
         this.staffAvailabilitySlots = '';
         this.selectedUsers = '';
+        this.isSubmitted = false;
+        this.isFirstNameValid = true;
+        this.isLastNameValid = true;
+        this.isFullNameValid = true;
+        this.isLicenseNumberValid = true;
+        this.isEmailValid = true;
+        this.isPhoneNumberValid = true;
+        this.isSpecValid = true;
+        this.isUserValid = true;
     }
 }
