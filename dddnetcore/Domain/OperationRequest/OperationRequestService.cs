@@ -154,7 +154,8 @@ private readonly IPatientRepository _PatientRepository;
                 var priority = Enum.Parse<Priority>(dto.Priority);
                 var status = Enum.Parse<Status>(dto.Status); 
                 var doctorId = dto.DoctorId;
-                var PatientMedicalRecordNumber= dto.PatientId;
+                var patientMedicalRecordNumber = dto.PatientId;
+                
 
                 var operationRequest = new OperationRequest( 
                     priority,
@@ -162,7 +163,7 @@ private readonly IPatientRepository _PatientRepository;
                     new DeadlineDate(dto.DeadlineDate),
                     status,
                     new StaffId(doctorId),
-                    new PatientMedicalRecordNumber(PatientMedicalRecordNumber));
+                    new PatientMedicalRecordNumber(patientMedicalRecordNumber));
 
 
             await this._repo.AddAsync(operationRequest);

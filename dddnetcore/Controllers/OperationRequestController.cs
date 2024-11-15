@@ -76,7 +76,7 @@ namespace DDDSample1.Controllers
 
         //POST: api/operationRequests
         [HttpPost]
-        [Authorize(Policy="DoctorRole")]
+        //[Authorize(Policy="DoctorRole")]
         public async Task<ActionResult<OperationRequestDto>> Create([FromBody] CreatingOperationRequestDto dto){
 
             if (dto == null)
@@ -126,7 +126,7 @@ namespace DDDSample1.Controllers
 
 
         // DELETE: api/operationRequests/{id}/delete
-        [Authorize(Policy="DoctorRole")]
+        //[Authorize(Policy="DoctorRole")]
         [HttpDelete("{id}/delete")]
         public async Task<ActionResult<OperationRequestDto>> Delete(string id)
         {

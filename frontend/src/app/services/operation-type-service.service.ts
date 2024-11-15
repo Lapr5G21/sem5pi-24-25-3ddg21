@@ -27,6 +27,14 @@ export class OperationTypeService {
         return this.http.get<any[]>(`${this.apiUrl}/operationtypes`,{headers});
     }
 
+    getOperationTypeById(id: string): Observable<any> {
+      const token = localStorage.getItem('access_token');
+      const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
+      });
+      return this.http.get<any>(`${this.apiUrl}/operationtypes/${id}`, { headers });
+  }
+
     saveOperationType(operationTypeData: any): Observable<any> {
         const token = localStorage.getItem('access_token');
         const headers = new HttpHeaders({
@@ -64,4 +72,12 @@ export class OperationTypeService {
 
         return this.http.delete(`${this.apiUrl}/operationtypes/${operationTypeId}`,{headers});    
       }
+
+      updateOperationType(operationTypeData: any): Observable<any> {
+        const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.put(`${this.apiUrl}/operationtypes/${operationTypeData.id}`, operationTypeData, { headers });
+    }
 }

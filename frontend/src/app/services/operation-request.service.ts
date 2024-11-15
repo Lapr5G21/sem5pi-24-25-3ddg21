@@ -31,7 +31,7 @@ export class OperationRequestService {
   }
 
   removeOperationRequest(operationRequestId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/operationRequests/${operationRequestId}`);
+    return this.http.delete(`${this.apiUrl}/operationRequests/${operationRequestId}/delete`);
   }
 
 }

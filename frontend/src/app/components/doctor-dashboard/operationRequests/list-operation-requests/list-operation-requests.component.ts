@@ -9,6 +9,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';  
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { OperationRequestService } from '../../../../services/operation-request.service';
 import { PatientService } from '../../../../services/patient.service';
@@ -28,6 +29,7 @@ import { OperationTypeService } from '../../../../services/operation-type-servic
     DropdownModule,
     InputTextModule,  
     FloatLabelModule,
+    ConfirmDialogModule
   ],  
   templateUrl: './list-operation-requests.component.html',
   styleUrls: ['./list-operation-requests.component.scss'],
@@ -198,36 +200,38 @@ export class ListOperationRequestsComponent implements OnInit {
     return this.operationTypes.get(operationTypeId) || 'Não especificado';
   }
 
-  confirmDeactivateOperationRequest(id: string) {
-    this.confirmationService.confirm({
-      message: 'Tem certeza de que deseja desativar esta operação?',
-      accept: () => {
-        this.removeOperationRequest(id);
-      },
-    });
-  }
-
   removeOperationRequest(id: string) {
     this.operationRequestService.removeOperationRequest(id).subscribe(
       () => {
-        const request = this.operationRequests.find((item) => item.id === id);
-        if (request) {
-          request.status = 'DESATIVADO';
-        }
+        // Remove a operação da lista de operationRequests
+        this.operationRequests = this.operationRequests.filter(item => item.id !== id);
+        this.filteredOperationRequests = this.filteredOperationRequests.filter(item => item.id !== id); // Atualiza também a lista filtrada
+  
+        // Exibe uma mensagem de sucesso
         this.messageService.add({
           severity: 'success',
           summary: 'Sucesso',
-          detail: 'Operação desativada com sucesso!',
+          detail: 'Operação removida com sucesso!',
         });
       },
       (error) => {
-        console.error('Erro ao desativar operação', error);
+        console.error('Erro ao remover operação', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Erro ao desativar a operação!',
+          detail: 'Erro ao remover a operação!',
         });
       }
     );
+  }
+
+  confirmDeactivateOperationRequest(id: string) {
+    this.confirmationService.confirm({
+      message: 'Tem certeza de que deseja excluir esta operação permanentemente?',
+      accept: () => {
+        // Chama o método para remover a operação
+        this.removeOperationRequest(id);
+      },
+    });
   }
 }

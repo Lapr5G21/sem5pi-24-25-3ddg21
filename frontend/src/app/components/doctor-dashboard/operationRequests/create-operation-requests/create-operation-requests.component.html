@@ -1,93 +1,66 @@
 <div class="card flex justify-content-center">
-    <p-dialog 
-        header="Request Operation" 
-        [(visible)]="visible" 
-        [modal]="true" 
+    <p-dialog header="Request Operation" [(visible)]="visible" [modal]="true"
         [style]="{ width: '50rem', height: '100rem' }">
-        
+
 
         <span class="p-text-secondary block mb-5">Select Patient :</span>
 
         <div class="card flex justify-content-center">
             <p-dropdown 
-                [options]="patient"  
-                [(ngModel)]="selectedPatient"
-                [checkmark]="true" 
-                optionLabel="label" 
-                [showClear]="true"
-                placeholder="Select a Patient"
-                [style]="{width:'25rem', height: '2.5rem'}" 
-                [ngModelOptions]="{standalone: true}"/>
-             
+    [options]="patient"  
+    [(ngModel)]="selectedPatient"
+    [checkmark]="true" 
+    optionLabel="label" 
+    [showClear]="true"
+    placeholder="Select a Patient"
+    [style]="{width:'25rem', height: '2.5rem'}" 
+    [ngModelOptions]="{standalone: true}"/>
+
         </div>
 
         <span class="p-text-secondary block mb-5">Select Doctor :</span>
 
         <div class="card flex justify-content-center">
-            <p-dropdown 
-                [options]="selectedDoctor"  
-                [(ngModel)]="selectedDoctorId"
-                [checkmark]="true" 
-                optionLabel="label" 
-                [showClear]="true"
-                placeholder="Select a Doctor"
-                [style]="{width:'25rem', height: '2.5rem'}" 
-                [ngModelOptions]="{standalone: true}"/>
+            <p-dropdown [options]="selectedDoctor" [(ngModel)]="selectedDoctorId" [checkmark]="true" optionLabel="label"
+                [showClear]="true" placeholder="Select a Doctor" [style]="{width:'25rem', height: '2.5rem'}"
+                [ngModelOptions]="{standalone: true}" (onChange)="onDoctorChange()" />
         </div>
 
         <span class="p-text-secondary block mb-5">Select Operation Type :</span>
 
         <div class="card flex justify-content-center">
-            <p-dropdown 
-                [options]="operationType" 
-                [(ngModel)]="operationTypeName" 
-                placeholder="Select a Operation Type" 
-                [editable]="true" 
-                optionLabel="label"
-                [appendTo]="'body'"
-                [showClear]="true"
-                [ngModelOptions]="{standalone: true}"/>
-           
+            <p-dropdown [options]="operationType" [(ngModel)]="operationTypeName" placeholder="Select a Operation Type"
+                [editable]="true" optionLabel="label" [appendTo]="'body'" [showClear]="true"
+                [ngModelOptions]="{standalone: true}" />
+
         </div>
-       
+
 
         <span class="p-text-secondary block mb-5">Select Priority :</span>
 
         <div class="card flex justify-content-center">
             <div class="flex flex-wrap gap-3">
                 <div class="flex align-items-center">
-                    <p-radioButton 
-                        name="Elective" 
-                        value="Elective" 
-                        [(ngModel)]="priority" 
-                        inputId="priority1" />
+                    <p-radioButton name="Elective" value="Elective" [(ngModel)]="priority" inputId="priority1" />
                     <label for="priority1" class="ml-2">
                         Elective
                     </label>
                 </div>
-                
+
                 <div class="flex align-items-center">
-                    <p-radioButton 
-                        name="Urgent" 
-                        value="Urgent" 
-                        [(ngModel)]="priority" 
-                        inputId="priority2" />
+                    <p-radioButton name="Urgent" value="Urgent" [(ngModel)]="priority" inputId="priority2" />
                     <label for="priority2" class="ml-2">
                         Urgent
                     </label>
                 </div>
-                
+
                 <div class="flex align-items-center">
-                    <p-radioButton 
-                        name="Emergency" 
-                        value="Emergency" 
-                        [(ngModel)]="priority" 
-                        inputId="priorityt3" />
+                    <p-radioButton name="Emergency" value="Emergency" [(ngModel)]="priority" inputId="priorityt3" />
                     <label for="priority3" class="ml-2">
                         Emergency
                     </label>
                 </div>
-                
+
             </div>
         </div>
 
@@ -95,23 +68,14 @@
         <span class="p-text-secondary block mb-5">Select Deadline date :</span>
 
         <div class="card flex justify-content-center">
-            <p-calendar [(ngModel)]="deadlinedate"
-                        class="p-fluid" />
+            <p-calendar [(ngModel)]="deadlinedate" class="p-fluid" />
         </div>
 
 
         <ng-template pTemplate="footer">
-            <p-button 
-                label="Cancel" 
-                [text]="true" 
-                severity="secondary" 
-                (onClick)="visible = false"></p-button>
-            <p-button 
-                label="Save" 
-                [outlined]="true" 
-                severity="primary" 
-                (onClick)="saveOperationRequest()"></p-button>
+            <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="visible = false"></p-button>
+            <p-button label="Save" [outlined]="true" severity="primary" (onClick)="saveOperationRequest()"></p-button>
         </ng-template>
     </p-dialog>
-    
-<div>
+
+    <div>
