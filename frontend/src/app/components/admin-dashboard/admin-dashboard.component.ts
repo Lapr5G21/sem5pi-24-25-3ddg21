@@ -55,11 +55,6 @@ export class AdminDashboardComponent implements OnInit {
             icon: 'pi pi-check',
             command: () => this.createOperationType()
           },
-
-          {
-            label: 'Edit',
-            icon: 'pi pi-pencil'
-          },
           {
             label: 'List',
             icon: 'pi pi-list',

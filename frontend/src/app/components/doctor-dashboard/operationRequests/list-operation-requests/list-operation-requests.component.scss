@@ -8,3 +8,46 @@
     color: red !important; 
 }
 
+.p-tag {
+  background: transparent; 
+  color: transparent;           
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.4rem;
+  border-radius: 3px;
+  border: 1px solid transparent; 
+}
+
+::ng-deep .trash-button .p-button.p-button-outlined {
+  color: red !important;
+  border-color: red !important;
+  background-color: transparent !important;
+}
+
+::ng-deep .trash-button .p-button-icon {
+  color: red !important;
+}
+
+::ng-deep .p-tag-success {
+  background-color: transparent;  
+  border-color: green;             
+  color: green;                    
+}
+
+::ng-deep .p-tag-warning {
+  background-color: transparent;  
+  border-color: yellow;           
+  color: yellow;                  
+}
+
+::ng-deep .p-tag-danger {
+  background-color: transparent;  
+  border-color: red;              
+  color: red;                     
+}
+
+::ng-deep .p-tag-secondary {
+  background-color: transparent;  
+  border-color: grey;             
+  color: grey;                   
+}

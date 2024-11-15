@@ -1,8 +1,14 @@
 <div class="dashboard-container">
     <h1>Doctor Dashboard</h1>
     <app-menubar [menuItems]="items"></app-menubar>
+
+
     <create-operation-requests></create-operation-requests>
-    <list-operation-requests></list-operation-requests>
+
+
+   <div *ngIf="showOperationRequestsList">
+        <list-operation-requests></list-operation-requests>
+    </div>
 
 </div>
 
