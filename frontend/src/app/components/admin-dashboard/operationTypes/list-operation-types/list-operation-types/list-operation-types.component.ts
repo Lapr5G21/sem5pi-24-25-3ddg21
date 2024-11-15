@@ -12,6 +12,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+
 
 @Component({
   selector: 'list-operation-types',
@@ -27,8 +30,10 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     InputTextModule,
     FormsModule,
     DropdownModule,
-    FloatLabelModule
+    FloatLabelModule,
+    ConfirmDialogModule
   ],
+  providers: [ConfirmationService],
   templateUrl: './list-operation-types.component.html',
   styleUrls: ['./list-operation-types.component.scss']
 })
@@ -45,7 +50,9 @@ export class ListOperationTypesComponent implements OnInit {
   statusFilter: boolean = true;  
   specializationFilter: string = '';  
 
-  constructor(private operationTypeService: OperationTypeService) {}
+  constructor(private operationTypeService: OperationTypeService,
+              private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
     this.loadOperationTypes();  
@@ -92,5 +99,32 @@ export class ListOperationTypesComponent implements OnInit {
   onSearch(): void {
     this.specializationsOptions = [];  
     this.loadOperationTypes();  
+  }
+
+  onDisable(operationTypeId: string): void {
+    this.operationTypeService.disableOperationType(operationTypeId).subscribe(
+      () => {
+        
+        const operationType = this.operationTypes.find(op => op.id === operationTypeId);
+        if (operationType) {
+          operationType.isActive = false;
+        }
+      },
+      (error) => console.error('Erro ao desativar o tipo de operação', error)
+    );
+  }
+
+  confirmDisable(operationTypeId: string): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to disable this operation type?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.onDisable(operationTypeId);
+      },
+      reject: () => {
+        console.log('Operation type disable action canceled.');
+      }
+    });
   }
 }

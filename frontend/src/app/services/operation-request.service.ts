@@ -34,5 +34,4 @@ export class OperationRequestService {
     return this.http.delete(`${this.apiUrl}/operationRequests/${operationRequestId}`);
   }
 
-
 }

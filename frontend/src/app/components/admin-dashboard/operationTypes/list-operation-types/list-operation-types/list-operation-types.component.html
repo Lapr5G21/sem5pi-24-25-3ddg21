@@ -93,14 +93,15 @@
 
                   <p-button 
                     icon="pi pi-trash" 
-                    label="Delete" 
+                    label="Disable" 
                     [disabled]="!item.isActive" 
                     [ngClass]="{ 'p-button-danger': true }" 
                     [style]="{
                       'background-color': '#f44336', 
                       'border-color': '#f44336', 
                       'color': 'white'
-                    }">
+                    }"
+                    (click)="confirmDisable(item.id)">
                   </p-button>
                 </div>
               </div>
@@ -111,3 +112,5 @@
     </ng-template>
   </p-dataView>
 </div>
+
+<p-confirmDialog></p-confirmDialog>
