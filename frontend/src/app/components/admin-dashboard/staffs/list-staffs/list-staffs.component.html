@@ -53,10 +53,12 @@
         <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
           
           <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-            <div class="col">Name</div>
+            <div class="col">Staff ID</div>
             <div class="col">Status</div>
+            <div class="col">Name</div>
             <div class="col">License Number</div>
             <div class="col">Specialization</div>
+            <div class="col">User ID</div>
             <div class="col">Email</div>
             <div class="col">Phone Number</div>
             <div class="col">Availability Slots</div>
@@ -67,7 +69,7 @@
           <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items; let first = first">
             
             <div class="col p-2">
-              <span class="font-bold text-900">{{ item.staffFullName || 'Not specified' }}</span>
+              <span class="font-bold text-900">{{ item.staffId || 'Not specified' }}</span>
             </div>
 
             <div class="col p-2">
@@ -79,11 +81,19 @@
             </div>
 
             <div class="col p-2">
+              {{ item.staffFullName || 'Not specified' }}
+            </div>
+
+            <div class="col p-2">
               {{ item.staffLicenseNumber || 'Not specified' }}
             </div>
 
             <div class="col p-2">
               {{ getSpecializationName(item.specializationId) || 'Not specified' }}
+            </div>
+
+            <div class="col p-2">
+              {{ item.userId || 'Not specified' }}
             </div>
 
             <div class="col p-2">
@@ -95,17 +105,24 @@
             </div>
 
             <div class="col p-2">
-              {{ item.staffAvailabilitySlots || 'Not specified' }}
+              <p-button 
+                  icon="pi pi-eye" 
+                  [outlined]="true"
+                  label="View"
+                  (click)="showSlots(item.staffId)"
+                  [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }">
+                </p-button>
+
             </div>
 
             <div class="col p-2">
               <div class="flex justify-center gap-2">
                 <p-button 
-                  icon="pi pi-pencil" 
-                  [outlined]="true"
-                  [disabled]="!item.isActive"
-                  [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }">
-                </p-button>
+                icon="pi pi-pencil" 
+                [outlined]="true"
+                [disabled]="!item.isActive"
+                [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }" >
+              </p-button>
 
                 <p-button 
                   icon="pi pi-trash" 
@@ -120,8 +137,60 @@
                 </p-button>
               </div>
             </div>
+            
+
+            <div class="card flex justify-content-center">
+              <p-dialog 
+                header="Availability Slots" 
+                [(visible)]="slotsDialogVisible" 
+                modal="true" 
+                [responsive]="true"
+                [style]="{ width: '80rem', height: '50rem' }">
+                
+                <div class="card">
+                  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">                        
+                    <p-calendar [(ngModel)]="day" [showIcon]="true" placeholder="Select Day" id="day" [touchUI]="false" [readonlyInput]="true"> </p-calendar>               
+                    <p-calendar [(ngModel)]="startHour" [showIcon]="true" [timeOnly]="true" placeholder="Start Time" id="startHour" [touchUI]="false"></p-calendar>            
+                    <p-calendar [(ngModel)]="endHour" [showIcon]="true" [timeOnly]="true" placeholder="End Time" id="endHour" [touchUI]="false"></p-calendar>
+                    
+                    <button pButton label="Add Slot" (click)="addSlot()" [disabled]="!day || !startHour || !endHour"></button>
+                  </div>
+
+                  <p-dataView #dv [value]="slots" [rows]="10" [paginator]="true" >
+                    <ng-template pTemplate="list" let-slot>                       
+                      <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                        <div class="col">Day</div>
+                        <div class="col">Start Time</div>
+                        <div class="col">End Time</div>
+                        <div class="col"></div>
+                      </div>
+
+                      <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let slot of slots">
+                        <div class="col-3">{{ slot.startHour | date: 'dd/MM/yyyy' || 'Not specified' }}</div>
+                        <div class="col-3">{{ slot.startHour | date: 'HH:mm' || 'Not specified' }}</div>
+                        <div class="col-3">{{ slot.endHour | date: 'HH:mm' || 'Not specified' }}</div>
+                        <div class="col-3">
+                          <button 
+                          pButton 
+                          type="button" 
+                          label="Remove" 
+                          icon="pi pi-trash" 
+                          class="p-button-danger" 
+                          (click)="removeSlot(slot)">
+                        </button>
+                        
+                        </div>
+                      </div>
+                    </ng-template>                    
+                  </p-dataView>
+                </div>
+              </p-dialog>
+            </div>
+                    
+            
           </div>
         </p-scrollPanel>
       </ng-template>
     </p-dataView>
+
 </div>

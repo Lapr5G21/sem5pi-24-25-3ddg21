@@ -71,7 +71,7 @@
         </div>
 
         <div class="flex align-items-center gap-3 mb-3">
-            <label for="specializations" class="font-semibold w-6rem">Specializations</label>
+            <label for="specializations" class="font-semibold w-6rem">Specialization</label>
             <p-dropdown
                 id="specializations"
                 [options]="optionListSpecs"
@@ -83,6 +83,21 @@
         </div>
         <div *ngIf="isSubmitted && !isSpecValid" class="error-text">
             A specialization must be selected.
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="users" class="font-semibold w-6rem">User</label>
+            <p-dropdown
+                id="users"
+                [options]="optionListUsers"
+                [(ngModel)]="selectedUsers"
+                placeholder="Select User"
+                [ngClass]="{'invalid-border': isSubmitted && !isUserValid}"
+                (ngModelChange)="validateFields()">
+            </p-dropdown>
+        </div>
+        <div *ngIf="isSubmitted && !isUserValid" class="error-text">
+            A user must be selected.
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
@@ -119,21 +134,6 @@
         </div>
         <div *ngIf="(isSubmitted && !isPhoneNumberValid) || (isSubmitted && !staffPhoneNumber)" class="error-text">
             The number must start with 91, 92, 93, or 96 and must have 9 digits.
-        </div>
-
-        <div class="flex align-items-center gap-3 mb-3">
-            <label for="users" class="font-semibold w-6rem">Users</label>
-            <p-dropdown
-                id="users"
-                [options]="optionListUsers"
-                [(ngModel)]="selectedUsers"
-                placeholder="Select User"
-                [ngClass]="{'invalid-border': isSubmitted && !isUserValid}"
-                (ngModelChange)="validateFields()">
-            </p-dropdown>
-        </div>
-        <div *ngIf="isSubmitted && !isUserValid" class="error-text">
-            A user must be selected.
         </div>
 
         <ng-template pTemplate="footer">
