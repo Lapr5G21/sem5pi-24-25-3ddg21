@@ -15,6 +15,7 @@ import { AuthCallbackComponent } from './components/auth-callback/auth-callback.
 import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-dashboard.component';
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 import { ListOperationTypesComponent } from './components/admin-dashboard/operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
+import { PatientDashboardComponent } from './components/patient-dashboard/patient-dashboard.component';
 
 
 export const routes: Routes = [
@@ -30,6 +31,7 @@ export const routes: Routes = [
     { path: 'adminDashboard/home', component: AdminDashboardComponent },
     { path: 'adminDashboard/3DModule', component: HospitalModelComponent },
     { path: 'home', component: HomeComponent },
+    { path: 'patientDashboard/home', component: PatientDashboardComponent },
     { path: 'auth-callback', component: AuthCallbackComponent },
     { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },  
     { path: 'doctorDashboard/home', component: DoctorDashboardComponent },

@@ -86,12 +86,12 @@ namespace DDDSample1.Domain.Staffs
 
             this.SpecializationId = newSpecializationId ?? throw new ArgumentNullException(nameof(newSpecializationId));
         }
-        public void AddAvailabilitySlot(DateTime start, DateTime end)
+        public void AddAvailabilitySlot(DateTime start, DateTime end, StaffId staffId)
         {
             if (!Active)
                 throw new InvalidOperationException("Cannot add availability slots to an inactive staff member.");
 
-            AvailabilitySlots.Add(new AvailabilitySlot(start, end, Id));
+            AvailabilitySlots.Add(new AvailabilitySlot(start, end, staffId));
         }
 
 

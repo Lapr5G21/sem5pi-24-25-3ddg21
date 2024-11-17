@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using DDDSample1.Domain.Emails;
 using DDDSample1.Domain.AuditLogs;
+using DDDSample1.Infrastructure.Staffs;
 
 namespace DDDSample1.Domain.Staffs
 {
@@ -23,9 +24,9 @@ namespace DDDSample1.Domain.Staffs
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly ILogRepository _logRepository;
+        private readonly IAvailabilitySlotRepository _availabilitySlotRepository;
 
-
-        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository, IEmailService emailService, ILogRepository logRepository)
+        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository, IEmailService emailService, ILogRepository logRepository,IAvailabilitySlotRepository availabilitySlotRepository)
         {
             _unitOfWork = unitOfWork;
             _staffRepository = staffRepository;
@@ -34,6 +35,7 @@ namespace DDDSample1.Domain.Staffs
             _userRepository = userRepository;
             _emailService=emailService;
             _logRepository = logRepository;
+            _availabilitySlotRepository = availabilitySlotRepository;
         }
 
         public async Task<List<StaffDto>> GetAllAsync()
@@ -197,7 +199,7 @@ namespace DDDSample1.Domain.Staffs
 
         foreach (var slot in newSlots)
         {
-        staff.AddAvailabilitySlot(slot.Start, slot.End);
+        staff.AddAvailabilitySlot(slot.Start, slot.End,staff.Id);
         }
     }
 
@@ -269,5 +271,23 @@ namespace DDDSample1.Domain.Staffs
                 UserId = s.UserId.ToString()
             }).ToList();
         }
+
+         public async Task<List<AvailabilitySlotDto>> GetAvailabilitySlotsAsync(string staffId)
+        {
+        var availabilitySlots = await _availabilitySlotRepository.GetByStaffIdAsync(new StaffId(staffId));
+
+        if (availabilitySlots == null)
+        {
+            throw new ArgumentException("Staff not found or has no availability slots.");
+        }
+
+        return availabilitySlots
+            .Select(slot => new AvailabilitySlotDto
+            {
+                Start = slot.Start,
+                End = slot.End
+            })
+            .ToList();
+    }
     }
 }

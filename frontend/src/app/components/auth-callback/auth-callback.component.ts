@@ -38,9 +38,12 @@ export class AuthCallbackComponent implements OnInit {
               if (Array.isArray(roles) && roles.includes('Admin')) {  
                 console.log('Navigating to /adminDashboard/home');
                 this.router.navigate(['/adminDashboard/home']);
-              } else {
-                console.log('Navigating to /home');
-                this.router.navigate(['/home']);
+              } else  if(Array.isArray(roles) && roles.includes('Patient')){
+                console.log('Navigating to /patientDashboard/home');
+                this.router.navigate(['/patientDashboard/home']);
+              } else if (Array.isArray(roles) && roles.includes('Doctor')){
+                console.log('Navigating to /doctorDashboard/home');
+                this.router.navigate(['/doctorDashboard/home']);
               }
             });
           } else {

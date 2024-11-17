@@ -46,7 +46,7 @@ namespace DDDSample1.Infrastructure
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<AnonimyzedPatient> AnonimyzedPatients { get; set; }
-
+        public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
 
@@ -66,7 +66,7 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new LogsEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AnonimyzedPatientEntityTypeConfiguration());
-
+            modelBuilder.ApplyConfiguration(new AvailabilitySlotEntityTypeConfiguration());
         }
     }
 }

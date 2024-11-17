@@ -126,6 +126,21 @@ namespace DDDSample1.Controllers
                     return BadRequest($"An error occurred while searching: {ex.Message}");
                 }
             }
+            
+    [HttpGet("{id}/availability-slots")]
+    public async Task<IActionResult> GetAvailabilitySlots(string id)
+    {
+        try
+        {
+            var availabilitySlots = await _staffService.GetAvailabilitySlotsAsync(id);
 
+            return Ok(availabilitySlots);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
     }
+}
+            
 }

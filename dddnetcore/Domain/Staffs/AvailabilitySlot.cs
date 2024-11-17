@@ -16,7 +16,7 @@ namespace DDDSample1.Domain.Staffs
             Id = new AvailabilitySlotId(Guid.NewGuid());  // Geração do ID do Slot
             Start = start;
             End = end;
-            StaffId = staffId ?? throw new ArgumentNullException(nameof(staffId));
+            StaffId = staffId;
         }
     }
 }
