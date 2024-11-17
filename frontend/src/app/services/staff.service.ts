@@ -23,7 +23,7 @@ export class StaffService {
   }
 
   getSlotsByStaffId(staffId: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/AvailabilitySlot/${staffId}`);
+    return this.http.get<any>(`${this.apiUrl}/staffs/${staffId}/availability-slots`);
   }
 
   getUsers(): Observable<any[]> {

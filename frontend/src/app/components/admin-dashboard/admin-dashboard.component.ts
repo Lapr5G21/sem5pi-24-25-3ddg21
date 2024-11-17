@@ -44,7 +44,12 @@ export class AdminDashboardComponent implements OnInit {
     this.items = [
       {
         label: 'Home',
-        icon: 'pi pi-home'
+        icon: 'pi pi-home',
+        command: () => {
+          this.showOperationTypesList=false;
+        this.showStaffsList=false;
+        this.showPatientsList=false;
+        }
       },
       {
         label: 'OperationTypes',
@@ -61,6 +66,7 @@ export class AdminDashboardComponent implements OnInit {
             command: () => {
               this.showOperationTypesList = true;
               this.showStaffsList = false;
+              this.showPatientsList = false;
             }          
           }
         ]
@@ -85,6 +91,7 @@ export class AdminDashboardComponent implements OnInit {
             command: () => {
               this.showStaffsList = true;
               this.showOperationTypesList=false;
+              this.showPatientsList=false;
             }   
           }
         ]
@@ -109,6 +116,7 @@ export class AdminDashboardComponent implements OnInit {
             command: () => {
               this.showPatientsList = true;
               this.showOperationTypesList=false;
+              this.showStaffsList=false;
             }
           }
         ]

@@ -172,6 +172,8 @@ public void ConfigureServices(IServiceCollection services)
             services.AddTransient<IPatientRepository,PatientRepository>();
             services.AddTransient<PatientService>();
 
+            services.AddScoped<IAvailabilitySlotRepository,AvailabilitySlotRepository>();
+
             services.AddTransient<AuthenticationService>();
 
             services.AddScoped<IEmailService,EmailService>();
