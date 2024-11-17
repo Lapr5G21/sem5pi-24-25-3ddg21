@@ -6,6 +6,9 @@
     <edit-staffs-modal></edit-staffs-modal>
     <create-patients-modal></create-patients-modal>
     <edit-patients-modal></edit-patients-modal>
+    <div *ngIf="showHospitalModel">
+        <app-hospital-model></app-hospital-model>
+    </div>
     <div *ngIf="showOperationTypesList">
         <list-operation-types></list-operation-types>
     </div>

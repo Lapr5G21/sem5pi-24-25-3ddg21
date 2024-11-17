@@ -4,8 +4,9 @@
 
 
     <create-operation-requests></create-operation-requests>
-
-
+    <div *ngIf="showHospitalModel">
+        <app-hospital-model></app-hospital-model>
+    </div>
    <div *ngIf="showOperationRequestsList">
         <list-operation-requests></list-operation-requests>
     </div>

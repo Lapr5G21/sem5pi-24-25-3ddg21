@@ -13,11 +13,12 @@ import { MenubarModule } from 'primeng/menubar';
 import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './profile-menu-component/profile-menu-component.component';
 import { ListOperationTypesComponent } from './operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
+import { HospitalModelComponent } from '../hospital-model/hospital-model/hospital-model.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent],
+  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent,HospitalModelComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -27,6 +28,7 @@ export class AdminDashboardComponent implements OnInit {
   showOperationTypesList: boolean = false;
   showStaffsList : boolean = false;
   showPatientsList : boolean = false;
+  showHospitalModel: boolean = false;
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
@@ -37,6 +39,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(EditPatientsComponent) editPatientsComponent!: EditPatientsComponent;
   @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
+  @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent;
 
   constructor(private router: Router) {}
 
@@ -113,6 +116,18 @@ export class AdminDashboardComponent implements OnInit {
           }
         ]
       },
+
+      {
+        label: '3D Visualization',
+        icon: '',
+        items: [
+          {
+            label: 'Watch',
+            icon: 'pi pi-check',
+            command: () => this.showHospitalModelComponent()
+          },
+        ]
+      },
       {
         label: 'Account',
         icon: 'pi pi-user',
@@ -166,6 +181,10 @@ export class AdminDashboardComponent implements OnInit {
 
   logout() {
     this.ProfileMenuComponent.logout();
+  }
+
+  showHospitalModelComponent() {
+    this.router.navigate(['adminDashboard/3DModule']);
   }
 
   openProfileDialog() {

@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
 import { CreateOperationRequestsComponent } from './operationRequests/create-operation-requests/create-operation-requests.component';
 import { ListOperationRequestsComponent } from './operationRequests/list-operation-requests/list-operation-requests.component';
 import { CommonModule } from '@angular/common';
+import { HospitalModelComponent } from '../hospital-model/hospital-model/hospital-model.component';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -15,7 +16,8 @@ import { CommonModule } from '@angular/common';
     MenubarComponent,
     CreateOperationRequestsComponent,
     ListOperationRequestsComponent,
-    CommonModule
+    CommonModule,
+    HospitalModelComponent
   ],
   templateUrl: './doctor-dashboard.component.html',
   styleUrls: ['./doctor-dashboard.component.scss']
@@ -23,10 +25,11 @@ import { CommonModule } from '@angular/common';
 export class DoctorDashboardComponent implements OnInit {
   items: MenuItem[] = [];
   showOperationRequestsList: boolean = false;
+  showHospitalModel: boolean = false;
 
   @ViewChild(CreateOperationRequestsComponent) createOperationRequestsComponent!: CreateOperationRequestsComponent;
   @ViewChild(ListOperationRequestsComponent) listOperationRequestsComponent!: ListOperationRequestsComponent;
-
+  @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -51,6 +54,17 @@ export class DoctorDashboardComponent implements OnInit {
             command: () => this.listOperationRequests()
           }
         ]
+      },
+      {
+        label: '3D Visualization',
+        icon: '',
+        items: [
+          {
+            label: 'Watch',
+            icon: 'pi pi-check',
+            command: () => this.showHospitalModelComponent()
+          },
+        ]
       }
     ];
   }
@@ -68,4 +82,10 @@ export class DoctorDashboardComponent implements OnInit {
     this.showOperationRequestsList = true;
     this.listOperationRequestsComponent.loadOperationRequests();
   }
+
+  showHospitalModelComponent() {
+    this.router.navigate(['doctorDashboard/3DModule']);
+  }
+
+  
 }

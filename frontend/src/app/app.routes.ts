@@ -28,10 +28,12 @@ export const routes: Routes = [
     { path: 'adminDashboard/patients/edit', component: EditPatientsComponent },
     { path: 'adminDashboard/patients/list', component: ListPatientsComponent },
     { path: 'adminDashboard/home', component: AdminDashboardComponent },
+    { path: 'adminDashboard/3DModule', component: HospitalModelComponent },
     { path: 'home', component: HomeComponent },
     { path: 'auth-callback', component: AuthCallbackComponent },
     { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },  
     { path: 'doctorDashboard/home', component: DoctorDashboardComponent },
+    { path: 'doctorDashboard/3DModule', component: HospitalModelComponent },
     { path: 'hospitalModule', component: HospitalModelComponent },
     { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
