@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Ground from "./ground.js";
 import Wall from "./wall.js";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 /*
  * parameters = {
@@ -11,8 +12,43 @@ import Wall from "./wall.js";
  */
 
 export default class Maze {
+
     constructor(parameters) {
+
+        this.bed  = null;
+        this.patient = null;
+        this.loadedPatient = false;
+        this.loadedBed = false;
+
         this.onLoad = function (description) {
+            
+
+            const loader = new GLTFLoader();
+
+            const loadBedPromise = new Promise((resolve, reject) => {
+                loader.load(".\models\gltf\hospital_bed.glb", (glb) => {
+                    this.table = { object: glb.scene };
+                    this.loadedBed = true;
+                    console.log("Table loaded successfully:", this.bed);
+                    resolve();
+                }, undefined, (error) => {
+                    console.error(`Error loading bed model (${error}).`);
+                    reject(error);
+                });
+            });
+
+            const loadPatientPromise = new Promise((resolve, reject) => {
+                loader.load(".\models\gltf\patient.glb", (glb) => { 
+                    this.patient = { object: glb.scene };
+                    this.loadedPatient = true;
+                    console.log("patient loaded successfully:", this.patient);
+                    resolve();
+                }, undefined, (error) => {
+                    console.error(`Error loading patient model (${error}).`);
+                    reject(error);
+                });
+                        });
+            
             // Store the maze's map and size
             this.map = description.map;
             this.size = description.size;
@@ -35,6 +71,14 @@ export default class Maze {
             
             this.wall = new Wall({ textureUrl: description.wallTextureUrl });
 
+            // Create a Bed
+            
+
+            // Create a Patient 
+
+
+            
+
             // Build the maze
             let wallObject;
             for (let i = 0; i <= description.size.width; i++) { // In order to represent the eastmost walls, the map width is one column greater than the actual maze width
@@ -46,6 +90,8 @@ export default class Maze {
                      *          1          |     No     |    Yes
                      *          2          |    Yes     |     No
                      *          3          |    Yes     |    Yes
+                     *          4          |           Bed
+                     *          5          |         Pacient
                      */
                     if (description.map[j][i] == 2 || description.map[j][i] == 3) {
                         wallObject = this.wall.object.clone();
@@ -53,6 +99,14 @@ export default class Maze {
                         this.object.add(wallObject);
                     }
                     if (description.map[j][i] == 1 || description.map[j][i] == 3) {
+                        wallObject = this.wall.object.clone();
+                        wallObject.rotateY(Math.PI / 2.0);
+                        wallObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);
+                        this.object.add(wallObject);
+                    }
+
+                     
+                    if (description.map[j][i] == 4) {
                         wallObject = this.wall.object.clone();
                         wallObject.rotateY(Math.PI / 2.0);
                         wallObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);

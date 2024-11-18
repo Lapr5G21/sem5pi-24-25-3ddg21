@@ -13,7 +13,7 @@ export const mazeData = {
 
 export const playerData = {
     url: "./models/gltf/RobotExpressive/RobotExpressive.glb",
-    credits: "Model and related code snippets created by <a href='https://www.patreon.com/quaternius' target='_blank' rel='noopener'>Tomás Laulhé</a>. CC0 1.0. Modified by <a href='https://donmccurdy.com/' target='_blank' rel='noopener'>Don McCurdy</a>.",
+    credits: "",
     eyeHeight: 0.8, // fraction of character height
     scale: new THREE.Vector3(0.1, 0.1, 0.1),
     walkingSpeed: 0.75,
@@ -25,8 +25,8 @@ export const playerData = {
 
 export const lightsData = {
     ambientLight: { color: 0xffffff, intensity: 1.0 },
-    pointLight1: { color: 0xffffff, intensity: 1.0, distance: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0) },
-    pointLight2: { color: 0xffffff, intensity: 1.0, distance: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0) },
+    directionalLight1: { color: 0xffffff, intensity: 1.0, position: new THREE.Vector3(5.0, 10.0, 5.0) },
+    directionalLight2: { color: 0xffffff, intensity: 1.0, position: new THREE.Vector3(-5.0, 10.0, -5.0) },
     spotLight: { color: 0xffffff, intensity: 1.0, distance: 0.0, angle: Math.PI / 3.0, penumbra: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0), direction: 0.0 } // angle and direction expressed in radians
 }
 
