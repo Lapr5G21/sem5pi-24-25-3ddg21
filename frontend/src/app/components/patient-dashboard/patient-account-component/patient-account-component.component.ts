@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PatientService } from '../../../services/patient.service';
 import { Patient } from '../../../domain/patient-model';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserService } from '../../../services/user-service.service';
 import { DialogModule } from 'primeng/dialog';
 import { PanelMenu } from 'primeng/panelmenu';
@@ -11,14 +11,15 @@ import { ConfirmPopup } from 'primeng/confirmpopup';
 import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormsModule } from '@angular/forms';  // Add this import
 import { SpinnerModule } from 'primeng/spinner';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-patient-account',
-  imports:[PanelModule,CommonModule,ConfirmDialogModule,FormsModule,SpinnerModule],
+  imports:[PanelModule,CommonModule,ConfirmDialogModule,FormsModule,SpinnerModule,ToastModule],
   standalone : true,
   templateUrl: './patient-account-component.component.html',
   styleUrls: ['./patient-account-component.component.scss'],
-  providers: [ConfirmationService]  // Adicionar o serviço de confirmação
+  providers: [ConfirmationService,MessageService]  // Adicionar o serviço de confirmação
 })
 export class PatientAccountComponent implements OnInit {
   patient: Patient | null = null;
@@ -27,7 +28,7 @@ export class PatientAccountComponent implements OnInit {
   isEditing: boolean = false;  
   displayConfirmDialog: boolean = false;  
 
-  constructor(private patientService: PatientService, private confirmationService: ConfirmationService,private userService : UserService) {}
+  constructor(private patientService: PatientService, private confirmationService: ConfirmationService,private userService : UserService,private messageService : MessageService) {}
 
   ngOnInit(): void {
     this.fetchPatientData();
@@ -68,12 +69,11 @@ export class PatientAccountComponent implements OnInit {
       this.patientService.updatePatient(this.patient).subscribe(
         () => {
           this.isEditing = false;
-          this.error = '';  // Limpar qualquer erro
-          console.log('Changes saved successfully');
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Updated your information successfully!' }); // Toast para sucesso
         },
         (err) => {
-          this.error = 'Erro ao salvar alterações';
-          console.error('Error saving patient:', err);
+          this.error = 'Error saving information';
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: this.error }); // Toast para erro
         }
       );
     }
@@ -81,31 +81,32 @@ export class PatientAccountComponent implements OnInit {
 
   confirmDelete(): void {
     this.confirmationService.confirm({
-      message: 'Tem certeza de que deseja excluir sua conta?',
-      header: 'Confirmação de Excluir',
+      message: 'You want to confirm the delete of your account?',
+      header: 'Delete Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.deleteAccount();
       },
       reject: () => {
-        console.log('Account deletion canceled');
+        this.messageService.add({ severity: 'info', summary: 'Canceled', detail: 'Delete account canceled' }); 
       }
     });
   }
 
   deleteAccount(): void {
     if (this.patient) {
-      this.userService.deletePatient(this.patient.medicalRecordNumber).subscribe(
+      this.userService.deletePatient(this.patient.email).subscribe(
         () => {
-          console.log('Account deleted');
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Email send to confirm the deletion of the account!' }); // Toast para sucesso
         },
         (err) => {
-          this.error = 'Erro ao excluir a conta';
-          console.error('Error deleting patient account:', err);
+          this.error = 'Error deleting account';
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: this.error });
         }
       );
     }
   }
+
   onConfirmDialogVisibleChange(event: any): void {
     this.displayConfirmDialog = event.visible;
   }
