@@ -5,7 +5,7 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Staffs;
 
-namespace DDDSample1.Domain.OperationRequest
+namespace DDDSample1.Domain.OperationRequests
 {
 
 

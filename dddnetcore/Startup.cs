@@ -21,7 +21,6 @@ using DDDSample1.Domain.Families;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.OperationTypesSpecializations;
-using DDDSample1.Domain.OperationRequest;
 using DDDSample1.Domain.Users;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Users;
@@ -36,6 +35,11 @@ using DDDSample1.Domain.Emails;
 using DDDSample1.Infrastructure.Emails;
 using DDDSample1.Domain.AuditLogs;
 using DDDSample1.Infrastructure.AuditLogs;
+using DDDSample1.Domain.SurgeryRooms;
+using DDDSample1.Infraestructure.SurgeryRooms;
+using DDDSample1.Domain.OperationRequests;
+using DDDSample1.Domain.Appointments;
+using dddnetcore.Infraestructure.Appointments;
 
 
 
@@ -171,6 +175,12 @@ public void ConfigureServices(IServiceCollection services)
 
             services.AddTransient<IPatientRepository,PatientRepository>();
             services.AddTransient<PatientService>();
+
+            services.AddTransient<ISurgeryRoomRepository,SurgeryRoomRepository>();
+            services.AddTransient<SurgeryRoomService>();
+
+            services.AddTransient<IAppointmentRepository,AppointmentRepository>();
+            services.AddTransient<AppointmentService>();
 
             services.AddScoped<IAvailabilitySlotRepository,AvailabilitySlotRepository>();
 

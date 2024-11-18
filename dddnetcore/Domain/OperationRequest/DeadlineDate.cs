@@ -1,7 +1,7 @@
 using System;
 using DDDSample1.Domain.Shared;
 
-namespace DDDSample1.Domain.OperationRequest
+namespace DDDSample1.Domain.OperationRequests
 {
     public class DeadlineDate : IValueObject
     {

@@ -1,9 +1,9 @@
 using Xunit;
-using DDDSample1.Domain.OperationRequest;
 using DDDSample1.Domain.Shared;
 using System;
+using DDDSample1.Domain.OperationRequests;
 
-namespace DDDSample1.Tests.Domain.OperationRequest
+namespace DDDSample1.Tests.Domain.OperationRequests
 {
     public class DeadLineDateTests
     {

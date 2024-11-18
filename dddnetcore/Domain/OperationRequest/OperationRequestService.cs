@@ -2,8 +2,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
-using DDDSample1.Domain.OperationRequest;
-using DDDSample1.Domain.OperationRequestsx;
 using DDDSample1.Domain.OperationTypes;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -15,7 +13,7 @@ using FluentAssertions;
 using Microsoft.IdentityModel.Tokens;
 
 
-namespace DDDSample1.Domain.OperationRequest
+namespace DDDSample1.Domain.OperationRequests
 {
 
 public class OperationRequestService{

@@ -2,17 +2,18 @@ using System;
 using DDDSample1.Domain.Shared;
 using Newtonsoft.Json;
 
-namespace DDDSample1.Domain.OperationRequests
+namespace DDDSample1.Domain.Appointments
 {
-    public class OperationRequestId : EntityId
+    public class AppointmentId : EntityId
     {
         [JsonConstructor]
-        public OperationRequestId(Guid value) : base(value)
+        public AppointmentId(Guid value):base(value)
         {
-        }
 
-        public OperationRequestId(String value) : base(value)
+        }
+        public AppointmentId(String value):base(value)
         {
+
         }
 
         override

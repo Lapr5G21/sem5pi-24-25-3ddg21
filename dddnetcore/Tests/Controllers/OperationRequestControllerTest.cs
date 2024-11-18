@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDSample1.Controllers;
-using DDDSample1.Domain.OperationRequest;
-using DDDSample1.Domain.OperationRequestsx;
 using DDDSample1.Domain.Staffs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

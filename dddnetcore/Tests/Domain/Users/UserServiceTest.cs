@@ -36,7 +36,7 @@ namespace DDDSample1.Tests.Users
             _patientRepositoryMock = new Mock<IPatientRepository>();
             _logRepositoryMock = new Mock<ILogRepository>();
             _anonimyzedPatientRepositoryMock = new Mock<IAnonimyzedPatientRepository>();
-
+            _emailService = null;
             _userService = new UserService(
                 _unitOfWorkMock.Object,
                 _userRepositoryMock.Object,

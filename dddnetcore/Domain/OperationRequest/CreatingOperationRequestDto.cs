@@ -2,7 +2,7 @@
 using System;
 using DDDSample1.Domain.OperationTypes;
 
-namespace DDDSample1.Domain.OperationRequest
+namespace DDDSample1.Domain.OperationRequests
 {
 
 public class CreatingOperationRequestDto {

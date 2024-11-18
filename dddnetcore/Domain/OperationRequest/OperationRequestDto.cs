@@ -1,9 +1,8 @@
 
 using System;
-using DDDSample1.Domain.OperationRequest;
 using DDDSample1.Domain.OperationTypes;
 
-namespace DDDSample1.Domain.OperationRequestsx
+namespace DDDSample1.Domain.OperationRequests
 {
 
 public class OperationRequestDto{

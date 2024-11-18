@@ -12,7 +12,7 @@ using DDDSample1.Domain.OperationTypesSpecializations;
 using DDDSample1.Infrastructure.OperationTypesSpecializations;
 using DDDSample1.Infrastructure.Users;
 using DDDSample1.Domain.Users;
-using DDDSample1.Domain.OperationRequest;
+using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.OperationRequests;
 using DDDSample1.Domain.Staffs;
 using DDDSample1.Infrastructure.Staffs;
@@ -20,6 +20,10 @@ using DDDSample1.Domain.Patients;
 using DDDSample1.Infrastructure.Patients;
 using DDDSample1.Domain.AuditLogs;
 using DDDSample1.Infrastructure.AuditLogs;
+using DDDSample1.Domain.SurgeryRooms;
+using DDDSample1.Infraestructure.SurgeryRooms;
+using DDDSample1.Domain.Appointments;
+using dddnetcore.Infraestructure.Appointments;
 
 namespace DDDSample1.Infrastructure
 {
@@ -47,6 +51,8 @@ namespace DDDSample1.Infrastructure
         public DbSet<Log> Logs { get; set; }
         public DbSet<AnonimyzedPatient> AnonimyzedPatients { get; set; }
         public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
+        public DbSet<SurgeryRoom> SurgeryRooms { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
 
@@ -67,6 +73,8 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new LogsEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AnonimyzedPatientEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AvailabilitySlotEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SurgeryRoomEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
         }
     }
 }

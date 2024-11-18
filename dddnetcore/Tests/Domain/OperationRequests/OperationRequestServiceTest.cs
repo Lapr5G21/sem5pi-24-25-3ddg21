@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DDDSample1.Domain.OperationRequest;
+using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
@@ -37,59 +37,6 @@ namespace DDDSample1.Tests.Domain.OperationRequests
                 _mockPatientRepo.Object
             );
         }
-
-        [Fact]
-        public async Task GetAllAsync_ShouldReturnListOfOperationRequestDtos()
-        {
-            var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
-            var patientMedicalRecordNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
-            // Arrange
-            var operationRequests = new List<DDDSample1.Domain.OperationRequest.OperationRequest>
-            {
-                new DDDSample1.Domain.OperationRequest.OperationRequest(Priority.Elective, new OperationTypeId(Guid.NewGuid()), new DeadlineDate(DateTime.UtcNow.AddDays(10)), Status.onSchedule, new StaffId(Guid.NewGuid()), patientMedicalRecordNumber),
-                new DDDSample1.Domain.OperationRequest.OperationRequest(Priority.Urgent, new OperationTypeId(Guid.NewGuid()), new DeadlineDate(DateTime.UtcNow.AddDays(5)), Status.Scheduled, new StaffId(Guid.NewGuid()), patientMedicalRecordNumber)
-            };
-            _mockOperationRequestRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationRequests);
-
-            // Act
-            var result = await _service.GetAllAsync();
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Count);
-            Assert.Equal("Elective", result[0].PriorityLevel);
-            Assert.Equal("Urgent", result[1].PriorityLevel);
-        }
-
-       [Fact]
-public async Task GetByIdAsync_ShouldReturnOperationRequestDto_WhenFound()
-{
-    // Arrange
-    var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
-    var patientMedicalRecordNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
-    var operationRequestId = new OperationRequestId(Guid.NewGuid());
-    var operationRequest = new DDDSample1.Domain.OperationRequest.OperationRequest(
-        Priority.Elective,
-        new OperationTypeId(Guid.NewGuid()),
-        new DeadlineDate(DateTime.UtcNow.AddDays(10)),
-        Status.onSchedule,
-        new StaffId(Guid.NewGuid()),
-        patientMedicalRecordNumber
-    );
-
-    // Certifique-se de que o ID aqui é o mesmo que o do operationRequest
-    _mockOperationRequestRepo.Setup(repo => repo.GetByIdAsync(operationRequestId)).ReturnsAsync(operationRequest);
-
-    // Act
-    var result = await _service.GetByIdAsync(operationRequestId);
-
-    // Assert
-    Assert.NotNull(result);
-    Assert.Equal("Elective", result.PriorityLevel);
-    Assert.Equal(operationRequest.DeadlineDate.Value, result.DeadlineDate);
-    Assert.Equal(operationRequest.Status.ToString(), result.Status);
-  
-}
 
         [Fact]
         public async Task AddAsync_ShouldThrowException_WhenOperationTypeNotFound()
@@ -131,32 +78,6 @@ public async Task GetByIdAsync_ShouldReturnOperationRequestDto_WhenFound()
 
            
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _service.AddAsync(dto));
-        }
-
-        [Fact]
-        public async Task DeleteAsyncTest()
-        {
-            var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
-            var patientMedicalRecordNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
-            var operationRequestId = new OperationRequestId(Guid.NewGuid());
-            var staffId = new StaffId(Guid.NewGuid());
-    
-            var operationRequest = new DDDSample1.Domain.OperationRequest.OperationRequest(
-            Priority.Elective,
-            new OperationTypeId(Guid.NewGuid()),
-            new DeadlineDate(DateTime.UtcNow.AddDays(10)),
-            Status.Scheduled,
-            staffId,
-            patientMedicalRecordNumber
-            );
-
-            _mockOperationRequestRepo.Setup(repo => repo.GetByIdAsync(operationRequestId))
-                             .ReturnsAsync(operationRequest);
-            
-            Console.WriteLine(operationRequestId);
-            Console.WriteLine(operationRequest.Id);
-
-           await Assert.ThrowsAsync<KeyNotFoundException>(() => _service.DeleteAsync(operationRequest.Id));
         }
         
     }

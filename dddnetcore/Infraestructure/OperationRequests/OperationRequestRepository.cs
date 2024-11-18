@@ -1,4 +1,4 @@
-using DDDSample1.Domain.OperationRequest;
+using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Infrastructure.Shared;
 
 namespace DDDSample1.Infrastructure.OperationRequests

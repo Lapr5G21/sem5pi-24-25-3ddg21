@@ -79,7 +79,6 @@ namespace DDDSample1.Domain.Patients
 
         public void ChangeGender(PatientGender newGender)
         {
-            if (newGender == null) throw new ArgumentNullException(nameof(newGender));
             this.Gender = newGender;
         }
 

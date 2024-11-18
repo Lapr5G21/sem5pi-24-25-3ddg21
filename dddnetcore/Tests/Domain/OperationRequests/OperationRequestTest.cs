@@ -4,9 +4,9 @@ using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Staffs;
-using DDDSample1.Domain.OperationRequest;
+using DDDSample1.Domain.OperationRequests;
 
-namespace DDDSample1.Tests.Domain.OperationRequest
+namespace DDDSample1.Tests.Domain.OperationRequests
 {
     public class OperationRequestTests
     {
@@ -25,7 +25,7 @@ namespace DDDSample1.Tests.Domain.OperationRequest
            
 
             // Act
-            var operationRequest = new DDDSample1.Domain.OperationRequest.OperationRequest(priority, operationTypeId, deadlineDate, status, staffId, patientMedicalRecordNumber);
+            var operationRequest = new OperationRequest(priority, operationTypeId, deadlineDate, status, staffId, patientMedicalRecordNumber);
 
 
             // Assert
@@ -38,7 +38,7 @@ namespace DDDSample1.Tests.Domain.OperationRequest
             Assert.Equal(patientMedicalRecordNumber, operationRequest.PatientMedicalRecordNumber);
         }
 
-        private DDDSample1.Domain.OperationRequest.OperationRequest CreateOperationRequest()
+        private OperationRequest CreateOperationRequest()
             {
                 var priority = Priority.Elective;
                 var operationTypeId = new OperationTypeId(Guid.NewGuid());
@@ -50,7 +50,7 @@ namespace DDDSample1.Tests.Domain.OperationRequest
                 var patientMedicalRecordNumberString = PatientMedicalRecordNumber.GenerateNewRecordNumber(DateTime.UtcNow, 123456);
                 var patientMedicalRecordNumber = new PatientMedicalRecordNumber(patientMedicalRecordNumberString);
 
-                return new DDDSample1.Domain.OperationRequest.OperationRequest(priority, operationTypeId, deadlineDate, status, staffId, patientMedicalRecordNumber);
+                return new OperationRequest(priority, operationTypeId, deadlineDate, status, staffId, patientMedicalRecordNumber);
             }
 
         [Fact]
