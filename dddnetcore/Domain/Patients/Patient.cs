@@ -1,6 +1,7 @@
 using System;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DDDSample1.Domain.Patients
 {
@@ -109,6 +110,9 @@ namespace DDDSample1.Domain.Patients
         public void ChangeMedicalRecord(PatientMedicalRecord newMedicalRecord)
         {
             if (newMedicalRecord == null) throw new ArgumentNullException(nameof(newMedicalRecord));
+            if(newMedicalRecord.MedicalRecord.IsNullOrEmpty()){
+                return;
+            }
             if(newMedicalRecord!=this.MedicalRecord){
             this.MedicalRecord = new PatientMedicalRecord(this.MedicalRecord.ToString() + "; " + newMedicalRecord.ToString());
             }

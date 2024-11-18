@@ -24,8 +24,8 @@ export class PatientAccountComponent implements OnInit {
   patient: Patient | null = null;
   error: string = '';
   isLoading: boolean = true;
-  isEditing: boolean = false;  // Flag para saber se estamos no modo de edição
-  displayConfirmDialog: boolean = false;  // Para controle do modal de confirmação de exclusão
+  isEditing: boolean = false;  
+  displayConfirmDialog: boolean = false;  
 
   constructor(private patientService: PatientService, private confirmationService: ConfirmationService,private userService : UserService) {}
 
@@ -42,6 +42,7 @@ export class PatientAccountComponent implements OnInit {
     if (email) {
       this.patientService.getPatientByEmail(email).subscribe(
         (data) => {
+          console.log('Fetched patient:', data); 
           this.patient = data;
           this.error = '';
           this.isLoading = false;
@@ -94,7 +95,7 @@ export class PatientAccountComponent implements OnInit {
 
   deleteAccount(): void {
     if (this.patient) {
-      this.userService.deletePatient(this.patient.MedicalRecordNumber).subscribe(
+      this.userService.deletePatient(this.patient.medicalRecordNumber).subscribe(
         () => {
           console.log('Account deleted');
         },

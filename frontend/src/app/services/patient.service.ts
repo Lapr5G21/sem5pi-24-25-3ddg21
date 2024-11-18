@@ -29,7 +29,7 @@ export class PatientService {
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`  
           });
-        return this.http.put(`${this.apiUrl}/patients/${patientData.Id}`, patientData,{headers});
+        return this.http.put(`${this.apiUrl}/patients/${patientData.medicalRecordNumber}`, patientData,{headers});
       }
 
       searchPatients(name: string, birthDate: string, isActive: boolean | null): Observable<any[]> {

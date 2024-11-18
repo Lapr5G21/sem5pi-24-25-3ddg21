@@ -36,16 +36,16 @@ export class EditPatientDto {
 
 export class Patient {
     constructor(
-        public MedicalRecordNumber: string,  
-        public FirstName: string,            
-        public LastName: string,             
-        public FullName: string,             
-        public BirthDate: string,           
-        public Gender: string,              
-        public Email: string,                
-        public PhoneNumber: string,          
-        public Address: string,              
-        public EmergencyContact: string,     
-        public MedicalRecord: string,        
+        public medicalRecordNumber: string,  
+        public firstName: string,            
+        public lastName: string,             
+        public fullName: string,             
+        public birthDate: string,           
+        public gender: string,              
+        public email: string,                
+        public phoneNumber: string,          
+        public address: string,              
+        public emergencyContact: string,     
+        public medicalRecord: string,        
     ) {}
 }
