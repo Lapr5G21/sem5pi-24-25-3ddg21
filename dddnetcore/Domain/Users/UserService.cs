@@ -198,7 +198,7 @@ namespace DDDSample1.Users
                 Email = user.Email.ToString()
             };
         }
-
+ 
         public async Task<Username> GenerateUsernameAsync(RoleType role)
         {
             var domain = "healthcare.com";
