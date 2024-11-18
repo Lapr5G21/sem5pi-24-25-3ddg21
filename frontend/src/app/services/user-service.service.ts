@@ -43,4 +43,12 @@ export class UserService {
       });
     });
   }
-}
+
+  deletePatient(medicalRecordNumber : string) : Observable<any>{
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`  
+      });
+      return this.http.delete(`${this.apiUrl}/${medicalRecordNumber}`, { headers });
+  }
+  }

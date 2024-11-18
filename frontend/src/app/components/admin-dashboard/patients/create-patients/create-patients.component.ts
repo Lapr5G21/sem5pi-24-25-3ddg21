@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PatientService } from '../../../../services/patient.service';
 import { HttpClientModule } from '@angular/common/http';
-import { CreatePatientDto } from '../../../../domain/patient-model';
+import { CreatePatientDto, Patient } from '../../../../domain/patient-model';
 import { ToastModule } from 'primeng/toast';
 
 enum PatientGender {
@@ -46,7 +46,7 @@ export class CreatePatientsComponent {
     LastName: string = '';
     FullName: string = '';
     BirthDate: string = '';
-    Gender = PatientGender.RatherNotSay; // Usando enum como tipo
+    Gender : string = PatientGender.RatherNotSay; // Usando enum como tipo
     Email: string = '';
     PhoneNumber: string = '';
     Address: string = '';
@@ -71,6 +71,7 @@ export class CreatePatientsComponent {
     }
 
     savePatient() {
+        console.log('Gender before saving:', this.Gender); 
 
         const patient = new CreatePatientDto(
             this.FirstName,

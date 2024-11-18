@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
-import { SelectItem } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -14,7 +14,7 @@ import { OperationRequestService } from '../../../../services/operation-request.
   imports: [DialogModule, ToastModule, RadioButtonModule, FormsModule, DropdownModule, CalendarModule],
   templateUrl: './create-operation-requests.component.html',
   styleUrls: ['./create-operation-requests.component.scss'],
-  providers: [OperationRequestService]
+  providers: [OperationRequestService,MessageService]
 })
 export class CreateOperationRequestsComponent implements OnInit {
   visible: boolean = false;
@@ -28,7 +28,7 @@ export class CreateOperationRequestsComponent implements OnInit {
   patient: { label: string; value: string }[] = [];
   selectedPatient: { label: string; value: string } | null = null;
 
-  constructor(private operationRequestService: OperationRequestService) {}
+  constructor(private operationRequestService: OperationRequestService,private messageService: MessageService) {}
 
   loadOperationTypes() {
     this.operationRequestService.getOperationTypes().subscribe(
@@ -96,31 +96,46 @@ loadPacients() {
     console.log('selectedDoctorId:', this.selectedDoctorId); // Verifique se o doctorId está correto
 
     if (!this.priority || !this.operationTypeName || !this.selectedPatient || !this.selectedDoctorId?.value || !this.deadlinedate) {
-        console.error('Todos os campos obrigatórios devem ser preenchidos!');
-        return;
-    }
+      this.messageService.add({
+          severity: 'warn',
+          summary: 'Warning',
+          detail: 'All required fields must be filled!'
+      });
+      console.error('Todos os campos obrigatórios devem ser preenchidos!');
+      return;
+  }
 
-    const operationRequest = {
-      priorityLevel: this.priority,
+  const operationRequest = {
+      priority: this.priority,
       operationTypeId: this.operationTypeName ? this.operationTypeName.value : '',
       deadlineDate: this.deadlinedate ? this.deadlinedate.toISOString() : '',
       status: this.status || 'Scheduled',
       doctorId: this.selectedDoctorId?.value || '',
-      patientMedicalRecordNumber: this.selectedPatient ? this.selectedPatient.value : 'DefaultPatientId' // Should be correctly bound
+      patientId: this.selectedPatient ? this.selectedPatient.value : 'DefaultPatientId'
   };
 
-    console.log('Payload:', operationRequest);
+  console.log('Payload:', operationRequest);
 
-    this.operationRequestService.saveOperationRequest(operationRequest).subscribe(
-        () => {
-            console.log('Pedido registrado com sucesso!');
-            this.resetForm();
-            this.visible = false;
-        },
-        (error) => {
-            console.error('Erro ao registrar pedido', error);
-        }
-    );
+  this.operationRequestService.saveOperationRequest(operationRequest).subscribe(
+      () => {
+          this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Operation Request Successfully Saved!'
+          });
+          console.log('Pedido registrado com sucesso!');
+          this.resetForm();
+          this.visible = false;
+      },
+      (error) => {
+          console.error('Erro ao registrar pedido', error);
+          this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'The operation request could not be saved!'
+          });
+      }
+  );
 }
 
 resetForm() {

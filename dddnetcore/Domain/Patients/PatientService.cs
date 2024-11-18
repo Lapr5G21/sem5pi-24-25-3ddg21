@@ -341,5 +341,29 @@ namespace DDDSample1.Domain.Patients
             return new PatientMedicalRecordNumber(medicalRecordNumber);
         }
 
+        public async Task<PatientDto> GetByEmailAsync(string email)
+        {       
+            var patient = await _patientRepository.FindByEmailAsync(new PatientEmail(email));
+    
+            if (patient == null) return null;
+
+        return new PatientDto
+        {
+        MedicalRecordNumber = patient.Id?.Value.ToString() ?? "N/A",
+        FirstName = patient.FirstName?.ToString() ?? "N/A",
+        LastName = patient.LastName?.ToString() ?? "N/A",
+        FullName = patient.FullName?.ToString() ?? "N/A",
+        BirthDate = patient.BirthDate?.ToString() ?? "N/A",
+        Gender = patient.Gender.ToString() ?? "N/A",
+        Email = patient.Email?.ToString() ?? "N/A",
+        Address = patient.Address?.AddressString ?? "N/A",
+        MedicalRecord = patient.MedicalRecord?.ToString() ?? "N/A",
+        EmergencyContact = patient.EmergencyContact.ToString() ?? "N/A",
+        AppointmentHistory = patient.AppointmentHistory?.AppointmentHistoryString ?? "N/A",
+        User = patient.User?.Id.ToString() ?? "N/A",
+        PhoneNumber = patient.PhoneNumber?.ToString() ?? "N/A",
+        Active = patient.Active
+        };
+    }
     }
 }

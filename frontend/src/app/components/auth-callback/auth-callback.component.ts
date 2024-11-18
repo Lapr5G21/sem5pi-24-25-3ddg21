@@ -30,6 +30,10 @@ export class AuthCallbackComponent implements OnInit {
             this.authService.user$.subscribe(user => {
               const roles = user?.['https://healthcaresystem.com/roles'] ?? [];
               localStorage.setItem('role', roles);
+              var email;
+              if(user?.email){
+                localStorage.setItem('email',user.email.toString());
+              }
 
               if (user && user['https://healthcaresystem.com/isNewUser']) {
                 this.registerUserInBackend(user);

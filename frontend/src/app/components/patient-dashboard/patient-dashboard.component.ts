@@ -3,16 +3,21 @@ import { Router, RouterOutlet } from '@angular/router';
 import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/profile-menu-component.component';
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenuItem } from 'primeng/api';
+import { PatientAccountComponent } from './patient-account-component/patient-account-component.component';
+import { DialogModule } from 'primeng/dialog';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-patient-dashboard',
   standalone: true,
-  imports: [RouterOutlet,ProfileMenuComponent,MenubarComponent],
+  imports: [RouterOutlet,ProfileMenuComponent,MenubarComponent,PatientAccountComponent,CommonModule],
   templateUrl: './patient-dashboard.component.html',
   styleUrl: './patient-dashboard.component.scss'
 })
 export class PatientDashboardComponent {
   items: MenuItem[] = [];
+  showPatientAccountPanel : boolean = false;
+  @ViewChild(PatientAccountComponent) PatientAccountComponentComponent!: PatientAccountComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
   constructor(private router: Router) {}
@@ -30,7 +35,8 @@ export class PatientDashboardComponent {
           {
             label: 'My Account',
             command: () => {
-              this.openProfileDialog()
+              this.showPatientAccount()
+              this.showPatientAccountPanel=true;
             }
           },
           {
@@ -41,18 +47,15 @@ export class PatientDashboardComponent {
       }
     ];
   }
-  logout() {
-    this.ProfileMenuComponent.logout();
+
+  showPatientAccount() {
+    if (this.PatientAccountComponentComponent) {
+      this.PatientAccountComponentComponent.fetchPatientData(); 
+    }
   }
 
-  openProfileDialog() {
-    console.log("Clicou em Profile");
-    if (this.ProfileMenuComponent) {
-      console.log("Abrindo o diálogo de perfil...");
-      this.ProfileMenuComponent.openProfileDialog();
-    } else {
-      console.log("Componente ProfileMenu não está disponível");
-    }
+  logout() {
+    this.ProfileMenuComponent.logout();
   }
 }
 

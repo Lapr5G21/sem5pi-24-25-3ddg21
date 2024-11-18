@@ -142,10 +142,22 @@ namespace DDDSample1.Controllers
                 }
             }
 
+            [HttpGet("by-email")]
+            public async Task<IActionResult> GetByEmail([FromQuery] string email)
+            {
+                if (string.IsNullOrEmpty(email))
+                {
+                    return BadRequest("O e-mail não pode ser vazio.");
+                }
 
+                var patient = await _service.GetByEmailAsync(email);
 
+                if (patient == null)
+                {
+                    return NotFound("Paciente não encontrado.");
+                }
 
-
-
+                return Ok(patient);
+            }
     }
 }

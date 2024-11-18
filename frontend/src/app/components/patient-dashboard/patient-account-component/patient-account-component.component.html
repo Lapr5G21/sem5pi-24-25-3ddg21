@@ -1,0 +1,84 @@
+<!-- Spinner Centralizado, cobrindo toda a tela -->
+<div *ngIf="isLoading" class="loading-overlay">
+    <p-spinner styleClass="p-d-block p-m-auto" strokeWidth="8" [style]="{width: '100px', height: '100px'}"></p-spinner>
+  </div>
+  
+  <!-- Conteúdo da página que será exibido após o carregamento -->
+  <div *ngIf="!isLoading">
+    <div class="p-card">
+      <div class="p-card-header">
+        <h2>My Account</h2>
+      </div>
+      <div class="p-card-body">
+        <!-- Personal Information Panel -->
+        <p-panel header="Personal Information" [toggleable]="true">
+          <div class="grid">
+            <div class="col-6">
+              <strong>Full Name:</strong>
+              <!--<input *ngIf="isEditing" [(ngModel)]="patient.Address" type="text" />!-->
+              <span *ngIf="!isEditing">{{ patient?.FullName }}</span>
+            </div>
+            <div class="col-6">
+              <strong>First Name:</strong>
+              <!--<input *ngIf="isEditing" [(ngModel)]="patient.Address" type="text" />!-->
+              <span *ngIf="!isEditing">{{ patient?.FirstName }}</span>
+            </div>
+            <div class="col-6">
+              <strong>Last Name:</strong>
+              <!--<input *ngIf="isEditing" [(ngModel)]="patient.Address" type="text" />!-->
+              <span *ngIf="!isEditing">{{ patient?.LastName }}</span>
+            </div>
+            <div class="col-6">
+              <strong>Email:</strong>
+              <!--<input *ngIf="isEditing" [(ngModel)]="patient.Address" type="text" />!-->
+              <span *ngIf="!isEditing">{{ patient?.Email }}</span>
+            </div>
+            <div class="col-6">
+              <strong>Phone:</strong>
+              <!--<input *ngIf="isEditing" [(ngModel)]="patient.Address" type="text" />!-->
+              <span *ngIf="!isEditing">{{ patient?.PhoneNumber }}</span>
+            </div>
+            <div class="col-6">
+              <strong>Address:</strong>
+              <!--<input *ngIf="isEditing" [(ngModel)]="patient.Address" type="text" />!-->
+              <span *ngIf="!isEditing">{{ patient?.Address }}</span>
+            </div>
+            <div class="col-6">
+              <strong>Emergency Contact:</strong>
+              <!--<<input *ngIf="isEditing" [(ngModel)]="patient.EmergencyContact" type="text" />-->
+              <span *ngIf="!isEditing">{{ patient?.EmergencyContact }}</span>
+            </div>
+            <div class="col-6">
+              <strong>Gender:</strong>
+              <!--<input *ngIf="isEditing" [(ngModel)]="patient.Gender" type="text" />!-->
+              <span *ngIf="!isEditing">{{ patient?.Gender }}</span>
+            </div>
+          </div>
+        </p-panel>
+  
+        <!-- Medical Record Panel -->
+        <p-panel header="Medical Record" [toggleable]="true" class="mt-3">
+          <p><strong>Record Number:</strong> {{ patient?.MedicalRecordNumber }}</p>
+          <p><strong>Medical Record:</strong> {{ patient?.MedicalRecord || 'No record available' }}</p>
+          <p><strong>Birth Date:</strong> {{ patient?.BirthDate }}</p>
+        </p-panel>
+  
+        <!-- Exibe erro caso haja algum -->
+        <div *ngIf="error" class="p-alert p-alert-error">
+          {{ error }}
+        </div>
+  
+        <!-- Botões de Editar e Excluir -->
+        <div class="mt-3">
+          <button *ngIf="!isEditing" pButton label="Edit" icon="pi pi-pencil" (click)="toggleEdit()"></button>
+          <button *ngIf="isEditing" pButton label="Save Changes" icon="pi pi-save" (click)="saveChanges()"></button>
+          <button pButton label="Delete Account" icon="pi pi-trash" class="p-button-danger" (click)="confirmDelete()"></button>
+        </div>
+  
+        <!-- Modal de Confirmação de Excluir -->
+        <p-confirmDialog [visible]="displayConfirmDialog" (onVisibleChange)="onConfirmDialogVisibleChange($event)">
+        </p-confirmDialog>
+        </div>
+    </div>
+  </div>
+  

@@ -7,6 +7,7 @@ import { CreateOperationRequestsComponent } from './operationRequests/create-ope
 import { ListOperationRequestsComponent } from './operationRequests/list-operation-requests/list-operation-requests.component';
 import { CommonModule } from '@angular/common';
 import { HospitalModelComponent } from '../hospital-model/hospital-model/hospital-model.component';
+import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/profile-menu-component.component';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -17,7 +18,8 @@ import { HospitalModelComponent } from '../hospital-model/hospital-model/hospita
     CreateOperationRequestsComponent,
     ListOperationRequestsComponent,
     CommonModule,
-    HospitalModelComponent
+    HospitalModelComponent,
+    ProfileMenuComponent
   ],
   templateUrl: './doctor-dashboard.component.html',
   styleUrls: ['./doctor-dashboard.component.scss']
@@ -30,6 +32,7 @@ export class DoctorDashboardComponent implements OnInit {
   @ViewChild(CreateOperationRequestsComponent) createOperationRequestsComponent!: CreateOperationRequestsComponent;
   @ViewChild(ListOperationRequestsComponent) listOperationRequestsComponent!: ListOperationRequestsComponent;
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent
+  @ViewChild(ProfileMenuComponent) profileMenuComponent!: ProfileMenuComponent
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -65,6 +68,22 @@ export class DoctorDashboardComponent implements OnInit {
             command: () => this.showHospitalModelComponent()
           },
         ]
+      },
+      {
+        label: 'Account',
+        icon: 'pi pi-user',
+        items: [
+          {
+            label: 'Ver Perfil',
+            command: () => {
+              this.openProfileDialog()
+            }
+          },
+          {
+            label: 'Logout',
+            command: () => this.logout()
+          }
+        ]
       }
     ];
   }
@@ -86,6 +105,17 @@ export class DoctorDashboardComponent implements OnInit {
   showHospitalModelComponent() {
     this.router.navigate(['doctorDashboard/3DModule']);
   }
+  logout() {
+    this.profileMenuComponent.logout();
+  }
 
-  
+  openProfileDialog() {
+    console.log("Clicou em Profile");
+    if (this.profileMenuComponent) {
+      console.log("Abrindo o diálogo de perfil...");
+      this.profileMenuComponent.openProfileDialog();
+    } else {
+      console.log("Componente ProfileMenu não está disponível");
+    }
+  }
 }

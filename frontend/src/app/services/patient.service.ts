@@ -25,7 +25,11 @@ export class PatientService {
     }
 
     updatePatient(patientData: any): Observable<any> {
-        return this.http.put(`${this.apiUrl}/patients/${patientData.Id}`, patientData);
+      const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+          });
+        return this.http.put(`${this.apiUrl}/patients/${patientData.Id}`, patientData,{headers});
       }
 
       searchPatients(name: string, birthDate: string, isActive: boolean | null): Observable<any[]> {
@@ -45,6 +49,11 @@ export class PatientService {
         }
     
         return this.http.get<any[]>(`${this.apiUrl}/patients/search`, { params,headers});
+      }
+
+      getPatientByEmail(email: string): Observable<any> {
+        const params = new HttpParams().set('email', email);
+        return this.http.get(`${this.apiUrl}/patients/by-email`, { params });
       }
 }
 
