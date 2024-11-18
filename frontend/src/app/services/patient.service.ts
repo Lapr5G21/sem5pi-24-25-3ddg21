@@ -32,24 +32,43 @@ export class PatientService {
         return this.http.put(`${this.apiUrl}/patients/${patientData.medicalRecordNumber}`, patientData,{headers});
       }
 
-      searchPatients(name: string, birthDate: string, isActive: boolean | null): Observable<any[]> {
+      searchPatients(
+        id: string,
+        name: string,
+        phoneNumber: string,
+        birthDate: string,
+        email: string,
+        isActive: boolean | null
+      ): Observable<any[]> {
         let params = new HttpParams();
         const token = localStorage.getItem('access_token');
         const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`  
-          }); 
+          'Authorization': `Bearer ${token}`
+        });
+      
+        // Adiciona os filtros conforme definidos
+        if (id) {
+          params = params.append('id', id);
+        }
         if (name) {
           params = params.append('name', name);
+        }
+        if (phoneNumber) {
+          params = params.append('phoneNumber', phoneNumber);
         }
         if (birthDate) {
           params = params.append('birthDate', birthDate);
         }
+        if (email) {
+          params = params.append('email', email);
+        }
         if (isActive !== null) {
           params = params.append('isActive', isActive.toString());
         }
-    
-        return this.http.get<any[]>(`${this.apiUrl}/patients/search`, { params,headers});
+      
+        return this.http.get<any[]>(`${this.apiUrl}/patients/search`, { params, headers });
       }
+      
 
       getPatientByEmail(email: string): Observable<any> {
         const params = new HttpParams().set('email', email);

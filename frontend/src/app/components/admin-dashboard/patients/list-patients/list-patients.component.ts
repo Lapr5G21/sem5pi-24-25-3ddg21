@@ -39,48 +39,64 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
     providers: [PatientService, MessageService]
 })
 export class ListPatientsComponent implements OnInit {
-  // Opções de status para o filtro
-  statusOptions: { label: string, value: boolean }[] = [
-      { label: 'Active', value: true },
-      { label: 'Deactivated', value: false }
-  ];
+    // Opções de status para o filtro
+    statusOptions: { label: string, value: boolean | null }[] = [
+        { label: 'All', value: null },
+        { label: 'Active', value: true },
+        { label: 'Deactivated', value: false }
+    ];
 
-  patients: any[] = [];
-  filteredPatients: any[] = [];
-  
-  nameFilter: string = '';
-  birthDateFilter: string = '';
-  statusFilter: boolean = true;
+    patients: any[] = [];
+    filteredPatients: any[] = [];
 
-  medicalHistoryDialogVisible: boolean = false;
-  selectedMedicalHistory: string = '';
+    // Filtros
+    idFilter: string = '';
+    nameFilter: string = '';
+    phoneNumberFilter: string = '';
+    birthDateFilter: string = '';
+    emailFilter: string = '';
+    statusFilter: boolean | null = null;
 
-  constructor(private patientService: PatientService, private messageService: MessageService) {}
+    medicalHistoryDialogVisible: boolean = false;
+    selectedMedicalHistory: string = '';
 
-  ngOnInit(): void {
-      this.loadPatients();
-  }
+    constructor(private patientService: PatientService, private messageService: MessageService) {}
 
-  loadPatients(): void {
-      this.patientService.searchPatients(this.nameFilter, this.birthDateFilter, this.statusFilter).subscribe(
-          (patients) => {
-              this.patients = patients;
-              this.filteredPatients = patients;
-          },
-          (error) => {
-              console.error('Error loading patients:', error);
-              this.messageService.add({severity: 'error', summary: 'Error', detail: 'Failed to load patients'});
-          }
-      );
-  }
+    ngOnInit(): void {
+        this.loadPatients();
+    }
 
-  showMedicalHistory(medicalHistory: string) {
-      this.selectedMedicalHistory = medicalHistory;
-      this.medicalHistoryDialogVisible = true;
-  }
+    // Carrega os pacientes com base nos filtros aplicados
+    loadPatients(): void {
+        this.patientService
+            .searchPatients(
+                this.idFilter,
+                this.nameFilter,
+                this.phoneNumberFilter,
+                this.birthDateFilter,
+                this.emailFilter,
+                this.statusFilter
+            )
+            .subscribe(
+                (patients) => {
+                    this.patients = patients;
+                    this.filteredPatients = patients;
+                },
+                (error) => {
+                    console.error('Error loading patients:', error);
+                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load patients' });
+                }
+            );
+    }
 
-  // Método de busca acionado ao clicar no botão ou alterar filtros
-  onSearch(): void {
-      this.loadPatients();
-  }
+    // Mostra o histórico médico em um diálogo
+    showMedicalHistory(medicalHistory: string): void {
+        this.selectedMedicalHistory = medicalHistory;
+        this.medicalHistoryDialogVisible = true;
+    }
+
+    // Método de busca acionado ao clicar no botão ou alterar filtros
+    onSearch(): void {
+        this.loadPatients();
+    }
 }
