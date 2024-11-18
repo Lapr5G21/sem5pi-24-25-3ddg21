@@ -74,8 +74,8 @@
 
             <div class="col p-2">
               <p-badge 
-                [value]="item.isActive ? 'Active' : 'Deactivated'"
-                [severity]="item.isActive ? 'success' : 'danger'"
+                [value]="item.Active ? 'Active' : 'Deactivated'"
+                [severity]="item.Active ? 'success' : 'danger'"
                 class="text-sm">
               </p-badge>
             </div>
@@ -120,14 +120,14 @@
                 <p-button 
                 icon="pi pi-pencil" 
                 [outlined]="true"
-                [disabled]="!item.isActive"
+                [disabled]="!item.Active"
                 [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }" >
               </p-button>
 
                 <p-button 
                   icon="pi pi-trash" 
                   label="Delete" 
-                  [disabled]="!item.isActive" 
+                  [disabled]="!item.Active" 
                   [ngClass]="{ 'p-button-danger': true }" 
                   [style]="{
                     'background-color': '#f44336', 
@@ -141,51 +141,45 @@
 
             <div class="card flex justify-content-center">
               <p-dialog 
-                header="Availability Slots" 
-                [(visible)]="slotsDialogVisible" 
-                modal="true" 
-                [responsive]="true"
-                [style]="{ width: '80rem', height: '50rem' }">
-                
-                <div class="card">
+              header="Availability Slots" 
+              [(visible)]="slotsDialogVisible" 
+              modal="true" 
+              [responsive]="true"
+              [style]="{ width: '80rem', height: '50rem' }">
+              
+              <div class="card">
                   <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">                        
-                    <p-calendar [(ngModel)]="day" [showIcon]="true" placeholder="Select Day" id="day" [touchUI]="false" [readonlyInput]="true"> </p-calendar>               
-                    <p-calendar [(ngModel)]="startHour" [showIcon]="true" [timeOnly]="true" placeholder="Start Time" id="startHour" [touchUI]="false"></p-calendar>            
-                    <p-calendar [(ngModel)]="endHour" [showIcon]="true" [timeOnly]="true" placeholder="End Time" id="endHour" [touchUI]="false"></p-calendar>
-                    
-                    <button pButton label="Add Slot" (click)="addSlot()" [disabled]="!day || !startHour || !endHour"></button>
+                      <p-calendar [(ngModel)]="day" [showIcon]="true" placeholder="Select Day" id="day" [touchUI]="false" [readonlyInput]="true"> </p-calendar>               
+                      <p-calendar [(ngModel)]="startHour" [showIcon]="true" [timeOnly]="true" placeholder="Start Time" id="startHour" [touchUI]="false"></p-calendar>            
+                      <p-calendar [(ngModel)]="endHour" [showIcon]="true" [timeOnly]="true" placeholder="End Time" id="endHour" [touchUI]="false"></p-calendar>
+                      
+                      <button pButton label="Add Slot" (click)="addSlot()" [disabled]="!day || !startHour || !endHour"></button>
                   </div>
-
-                  <p-dataView #dv [value]="slots" [rows]="10" [paginator]="true" >
-                    <ng-template pTemplate="list" let-slot>                       
-                      <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-                        <div class="col">Day</div>
-                        <div class="col">Start Time</div>
-                        <div class="col">End Time</div>
-                        <div class="col"></div>
-                      </div>
-
-                      <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let slot of slots">
-                        <div class="col-3">{{ slot.startHour | date: 'dd/MM/yyyy' || 'Not specified' }}</div>
-                        <div class="col-3">{{ slot.startHour | date: 'HH:mm' || 'Not specified' }}</div>
-                        <div class="col-3">{{ slot.endHour | date: 'HH:mm' || 'Not specified' }}</div>
-                        <div class="col-3">
-                          <button 
-                          pButton 
-                          type="button" 
-                          label="Remove" 
-                          icon="pi pi-trash" 
-                          class="p-button-danger" 
-                          (click)="removeSlot(slot)">
-                        </button>
-                        
-                        </div>
-                      </div>
-                    </ng-template>                    
+      
+                  <p-dataView #dv [value]="slots" [rows]="10" [paginator]="true">
+                      <ng-template pTemplate="list" let-slot>
+                          <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                              <div class="col">Day</div>
+                              <div class="col">Start Time</div>
+                              <div class="col">End Time</div>
+                              <div class="col"></div>
+                          </div>
+      
+                          <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let slot of slots; let first = first">
+                              <div class="col-3">{{ slot.start | date: 'dd/MM/yyyy' || 'Not specified' }}</div>
+                              <div class="col-3">{{ slot.start | date: 'HH:mm' || 'Not specified' }}</div>
+                              <div class="col-3">{{ slot.end | date: 'HH:mm' || 'Not specified' }}</div>
+                              <div class="col-3">
+                                  <button pButton type="button" label="Remove" icon="pi pi-trash" class="p-button-danger" (click)="removeSlot(slot)"></button>
+                              </div>
+                          </div>
+                      </ng-template>
                   </p-dataView>
-                </div>
-              </p-dialog>
+              </div>
+          </p-dialog>
+
             </div>
+            
                     
             
           </div>

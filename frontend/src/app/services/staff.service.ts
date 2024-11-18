@@ -22,7 +22,7 @@ export class StaffService {
     return this.http.get<any>(`${this.apiUrl}/specializations/${id}`);
   }
 
-  getSlotsByStaffId(staffId: string): Observable<any> {
+  getAvailabilitySlots(staffId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/staffs/${staffId}/availability-slots`);
   }
 
@@ -70,4 +70,20 @@ export class StaffService {
 
     return this.http.get<any[]>(`${this.apiUrl}/staffs/search`, { params,headers});
   }
+
+  updateAvailabilitySlots(staffId: string, slots: { start: string, end: string }[]): Observable<any> {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`
+    });
+
+    // Ajuste no payload
+    const payload = slots.map(slot => ({
+        start: slot.start,
+        end: slot.end
+    }));
+
+    return this.http.put<any>(`${this.apiUrl}/staffs/${staffId}/availability-slots`, payload, { headers });
+}
+
 }
