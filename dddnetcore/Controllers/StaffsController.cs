@@ -141,6 +141,19 @@ namespace DDDSample1.Controllers
             return BadRequest(new { Message = ex.Message });
         }
     }
+
+        //[Authorize(Policy = "AdminRole")]
+        [HttpPost("{id}/availability-slots")]
+        public ActionResult<AvailabilitySlot> AddSlot(CreatingAvailabitySlotDto dto)
+        {
+            if (dto.StaffId == null || dto == null)
+            {
+                return BadRequest("StaffId and AvailabilitySlot data must be provided.");
+            }
+                var slot = _staffService.AddAvailabilitySlot(dto);
+                return CreatedAtAction(nameof(AddSlot), new { id = slot.Id }, slot);
+        
+        }
 }
             
 }

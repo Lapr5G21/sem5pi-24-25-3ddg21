@@ -52,7 +52,8 @@ namespace DDDSample1.Domain.Staffs
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
                 StaffAvailabilitySlots = staff.AvailabilitySlots,
-                UserId = staff.UserId.ToString()
+                UserId = staff.UserId.ToString(),
+                Active = staff.Active
             });
             return listDto;
         }
@@ -133,9 +134,6 @@ namespace DDDSample1.Domain.Staffs
             var oldFirstName = staff.StaffFirstName.ToString();
             var oldLastName = staff.StaffLastName.ToString();
             var oldSpecialization = staff.SpecializationId?.ToString() ?? "N/A";
-
-            UpdateAvailabilitySlots(staff, dto.StaffAvailabilitySlots);
-
             
             staff.ChangeFirstName(new StaffFirstName(dto.FirstName));
             staff.ChangeLastName(new StaffLastName(dto.LastName));
@@ -189,20 +187,15 @@ namespace DDDSample1.Domain.Staffs
             };
         }
 
-        private void UpdateAvailabilitySlots(Staff staff, List<AvailabilitySlot> newSlots)
-{
-        if (newSlots == null)
+        public AvailabilitySlot AddAvailabilitySlot(CreatingAvailabitySlotDto dto)
         {
-        throw new ArgumentException("Availability slots cannot be null.");
+
+            StaffId staffId = new StaffId(dto.StaffId);
+           var staff = this._staffRepository.GetByIdAsync(staffId).Result; 
+            if (staff == null) return null;
+            var slot = staff.AddAvailabilitySlot(dto.Start, dto.End, staffId);
+            return slot;
         }
-
-
-        foreach (var slot in newSlots)
-        {
-        staff.AddAvailabilitySlot(slot.Start, slot.End,staff.Id);
-        }
-    }
-
 
         internal async Task<StaffDto> InactivateAsync(StaffId id)
         {
@@ -226,7 +219,8 @@ namespace DDDSample1.Domain.Staffs
                 StaffEmail = staff.StaffEmail.ToString(),
                 StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
                 StaffAvailabilitySlots = staff.AvailabilitySlots,
-                UserId = staff.UserId.ToString()
+                UserId = staff.UserId.ToString(),
+                Active = staff.Active
             };
         }
 
@@ -268,7 +262,8 @@ namespace DDDSample1.Domain.Staffs
                 StaffEmail = s.StaffEmail.ToString(),
                 StaffPhoneNumber = s.StaffPhoneNumber.ToString(),
                 StaffAvailabilitySlots = s.AvailabilitySlots,
-                UserId = s.UserId.ToString()
+                UserId = s.UserId.ToString(),
+                Active = s.Active
             }).ToList();
         }
 
@@ -289,5 +284,7 @@ namespace DDDSample1.Domain.Staffs
             })
             .ToList();
     }
+
+    
     }
 }

@@ -17,7 +17,6 @@ namespace DDDSample1.Domain.Staffs
         public StaffPhoneNumber StaffPhoneNumber { get; private set; }
         public List<AvailabilitySlot> AvailabilitySlots { get; private set; } = new List<AvailabilitySlot>();
         public Username UserId { get; private set; }
-
         public bool Active { get; private set; }
 
         private Staff()
@@ -86,14 +85,20 @@ namespace DDDSample1.Domain.Staffs
 
             this.SpecializationId = newSpecializationId ?? throw new ArgumentNullException(nameof(newSpecializationId));
         }
-        public void AddAvailabilitySlot(DateTime start, DateTime end, StaffId staffId)
+
+
+        public AvailabilitySlot AddAvailabilitySlot(DateTime start, DateTime end, StaffId staffId)
         {
             if (!Active)
+            {
                 throw new InvalidOperationException("Cannot add availability slots to an inactive staff member.");
+            }
 
-            AvailabilitySlots.Add(new AvailabilitySlot(start, end, staffId));
+            var newSlot = new AvailabilitySlot(start, end, staffId);
+            AvailabilitySlots.Add(newSlot);
+
+            return newSlot;
         }
-
 
         public void Deactivate()
         {

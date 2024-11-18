@@ -148,19 +148,23 @@ loadSlots(staffId: string) {
         const endMinute = this.endHour.getMinutes();
         endDate.setHours(endHour, endMinute, 0, 0);
 
+         // Print startDate and endDate
+         console.log('Start Date:', startDate);
+         console.log('End Date:', endDate);
+
         if (startDate >= endDate) {
             alert('Start time must be before end time.');
             return;
         }
 
-        const slotExists = this.slots.some(slot => {
+/*         const slotExists = this.slots.some(slot => {
             return slot.start.getTime() === startDate.getTime() && slot.end.getTime() === endDate.getTime();
         });
 
         if (slotExists) {
             alert('A slot with the same time already exists.');
             return;
-        }
+        } */
 
         const isOverlapping = this.slots.some(slot => {
             return startDate < new Date(slot.end) && endDate > new Date(slot.start);
@@ -171,14 +175,13 @@ loadSlots(staffId: string) {
             return;
         }
 
-
         const newSlot = {
             staffId: this.idStaff,
             start: startDate.toISOString(),
             end: endDate.toISOString()
         };
 
-        this.staffService.updateAvailabilitySlots(this.idStaff, [...this.slots, newSlot]).subscribe({
+        this.staffService.addAvailabilitySlots(this.idStaff, [...this.slots, newSlot]).subscribe({
             next: () => {
                 alert('Availability slot added successfully!');
                 this.slots.push(newSlot);
@@ -212,5 +215,6 @@ loadSlots(staffId: string) {
     this.specializationsOptions = [];  
     this.loadStaffs();  
   }
+
 
 }

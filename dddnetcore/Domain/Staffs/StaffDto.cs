@@ -16,5 +16,6 @@ namespace DDDSample1.Domain.Staffs
         public string StaffPhoneNumber { get; set; }
         public List<AvailabilitySlot> StaffAvailabilitySlots { get; set; }
         public string UserId { get; set; }
+        public bool Active { get; set;}
     }
 }
