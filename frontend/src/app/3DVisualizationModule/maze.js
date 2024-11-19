@@ -105,7 +105,6 @@ export default class Maze {
                         this.object.add(wallObject);
                     }
 
-                     
                     if (description.map[j][i] == 4) {
                         wallObject = this.wall.object.clone();
                         wallObject.rotateY(Math.PI / 2.0);

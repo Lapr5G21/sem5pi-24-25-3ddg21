@@ -10,7 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';  
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
+import { Router } from '@angular/router';
 import { OperationRequestService } from '../../../../services/operation-request.service';
 import { PatientService } from '../../../../services/patient.service';
 import { StaffService } from '../../../../services/staff.service';
@@ -64,7 +64,8 @@ export class ListOperationRequestsComponent implements OnInit {
     private staffService: StaffService,
     private operationTypeService: OperationTypeService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -223,6 +224,10 @@ export class ListOperationRequestsComponent implements OnInit {
         });
       }
     );
+  }
+
+  editOperationRequest(operationRequestId: string): void {
+    this.router.navigate(['/edit-operation-request', operationRequestId]);
   }
 
   confirmDeactivateOperationRequest(id: string) {

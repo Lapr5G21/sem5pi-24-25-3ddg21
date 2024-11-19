@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -24,6 +24,18 @@ export class OperationRequestService {
 
   getOperationRequests(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/operationRequests`)
+  }
+
+  getOperationRequestById(operationRequestId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/operationRequests/${operationRequestId}`);
+  }
+  
+  updateOperationRequest(operationRequestData: any): Observable<any> {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`  
+      });
+    return this.http.put(`${this.apiUrl}/operationRequests/${operationRequestData.operationRequestId}`, operationRequestData,{headers});
   }
 
   saveOperationRequest(operationRequestData: any): Observable<any> {

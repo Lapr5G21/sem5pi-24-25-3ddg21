@@ -16,26 +16,33 @@ import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-d
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 import { ListOperationTypesComponent } from './components/admin-dashboard/operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 import { PatientDashboardComponent } from './components/patient-dashboard/patient-dashboard.component';
-
+import { EditOperationRequestsComponent } from './components/doctor-dashboard/operationRequests/edit-operation-requests/edit-operation-requests.component';
 
 export const routes: Routes = [
-    { path: 'sidebar', component: SidebarComponent }, 
+    // General Routes
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'home', component: HomeComponent },
+    { path: 'auth-callback', component: AuthCallbackComponent },
+    { path: 'hospitalModule', component: HospitalModelComponent },
+
+    // Admin Dashboard 
+    { path: 'adminDashboard/home', component: AdminDashboardComponent },
     { path: 'adminDashboard/operationtypes/create', component: CreateOperationTypesComponent },
     { path: 'adminDashboard/operationtypes/list', component: ListOperationTypesComponent },
-    { path: 'adminDashboard/staffs/create', component: CreateStaffsComponent }, 
-    { path: 'adminDashboard/staffs/edit', component: EditStaffsComponent },  
-    { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },    
+    { path: 'adminDashboard/staffs/create', component: CreateStaffsComponent },
+    { path: 'adminDashboard/staffs/edit', component: EditStaffsComponent },
+    { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },
     { path: 'adminDashboard/patients/create', component: CreatePatientsComponent },
     { path: 'adminDashboard/patients/edit', component: EditPatientsComponent },
     { path: 'adminDashboard/patients/list', component: ListPatientsComponent },
-    { path: 'adminDashboard/home', component: AdminDashboardComponent },
     { path: 'adminDashboard/3DModule', component: HospitalModelComponent },
-    { path: 'home', component: HomeComponent },
-    { path: 'patientDashboard/home', component: PatientDashboardComponent },
-    { path: 'auth-callback', component: AuthCallbackComponent },
-    { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },  
+
+    // Doctor Dashboard 
     { path: 'doctorDashboard/home', component: DoctorDashboardComponent },
+    { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },
+    { path: 'edit_operation-request/:id', component: EditOperationRequestsComponent },
     { path: 'doctorDashboard/3DModule', component: HospitalModelComponent },
-    { path: 'hospitalModule', component: HospitalModelComponent },
-    { path: '', redirectTo: 'home', pathMatch: 'full' }
+
+    // Patient Dashboard 
+    { path: 'patientDashboard/home', component: PatientDashboardComponent }
 ];
