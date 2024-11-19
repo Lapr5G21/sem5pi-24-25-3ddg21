@@ -77,6 +77,7 @@ export class ListStaffsComponent implements OnInit {
     const statusBoolean = this.statusFilter;
     this.staffService.searchStaffs(this.nameFilter, this.phoneNumberFilter, this.emailFilter, this.specializationFilter, statusBoolean).subscribe(
         (staffs) => {
+            console.log(staffs);
             this.staffs = staffs;
             this.loadSpecializations();    
         },
