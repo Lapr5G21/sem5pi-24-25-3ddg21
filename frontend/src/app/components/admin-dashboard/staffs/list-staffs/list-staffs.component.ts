@@ -14,6 +14,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { Specialization } from '../../../../domain/staff-model';  
 import { CalendarModule } from 'primeng/calendar';
 import { Router } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 
 @Component({
@@ -31,10 +33,12 @@ import { Router } from '@angular/router';
     FormsModule,
     DropdownModule,
     FloatLabelModule,
-    CalendarModule
+    CalendarModule,
+    ToastModule
   ],
   templateUrl: './list-staffs.component.html',
-  styleUrls: ['./list-staffs.component.scss']
+  styleUrls: ['./list-staffs.component.scss'],
+  providers:[MessageService]
 })
 
 export class ListStaffsComponent implements OnInit {
@@ -53,22 +57,6 @@ export class ListStaffsComponent implements OnInit {
   specializationFilter: string = '';  
 
   slotsDialogVisible: boolean = false; 
- 
-/*   slots: Array<{ startHour: Date; endHour: Date }> = [
-    { startHour: new Date('2024-11-16 08:00:00.000000'), endHour: new Date('2024-11-16 10:00:00.000000') },
-    { startHour: new Date('2024-11-17 09:00:00.000000'), endHour: new Date('2024-11-17 11:30:00.000000') },
-    { startHour: new Date('2024-11-18 14:00:00.000000'), endHour: new Date('2024-11-18 16:00:00.000000') },
-    { startHour: new Date('2024-11-19 14:00:00.000000'), endHour: new Date('2024-11-19 16:00:00.000000') },
-    { startHour: new Date('2024-11-20 14:00:00.000000'), endHour: new Date('2024-11-20 16:00:00.000000') },
-    { startHour: new Date('2024-11-21 14:00:00.000000'), endHour: new Date('2024-11-21 16:00:00.000000') }, 
-    { startHour: new Date('2024-11-22 14:00:00.000000'), endHour: new Date('2024-11-22 16:00:00.000000') },
-    { startHour: new Date('2024-11-23 14:00:00.000000'), endHour: new Date('2024-11-23 16:00:00.000000') },
-    { startHour: new Date('2024-11-24 14:00:00.000000'), endHour: new Date('2024-11-24 16:00:00.000000') },
-    { startHour: new Date('2024-11-25 14:00:00.000000'), endHour: new Date('2024-11-25 16:00:00.000000') },
-    { startHour: new Date('2024-11-26 14:00:00.000000'), endHour: new Date('2024-11-26 16:00:00.000000') },
-    { startHour: new Date('2024-11-27 14:00:00.000000'), endHour: new Date('2024-11-27 16:00:00.000000') },
-    { startHour: new Date('2024-11-28 14:00:00.000000'), endHour: new Date('2024-11-18 16:00:00.000000') },
-    ]; */
 
     slots: any[] = [];
 
@@ -80,7 +68,7 @@ export class ListStaffsComponent implements OnInit {
     editDialogVisible: boolean = false;
     selectedStaffId: string = "";
 
-  constructor(private staffService: StaffService, private router: Router) {}
+  constructor(private staffService: StaffService, private router: Router, private messageService : MessageService) {}
 
   ngOnInit(): void {
     this.loadStaffs();  
@@ -137,76 +125,102 @@ loadSlots(staffId: string) {
 
   addSlot() {
     if (this.day && this.startHour && this.endHour) {
-        const startDate = new Date(this.day);
-        const startHour = this.startHour.getHours();
-        const startMinute = this.startHour.getMinutes();
-        startDate.setHours(startHour, startMinute, 0, 0);
-
-        const endDate = new Date(this.day);
-        const endHour = this.endHour.getHours();
-        const endMinute = this.endHour.getMinutes();
-        endDate.setHours(endHour, endMinute, 0, 0);
-
-        // Validar se o horário de início é antes do horário de término
-        if (startDate >= endDate) {
-            alert('Start time must be before end time.');
-            return;
-        }
-
-        // Verificar sobreposição
-        const isOverlapping = this.slots.some(slot => {
-            return startDate < new Date(slot.end) && endDate > new Date(slot.start);
+      const startDate = new Date(this.day);
+      const startHour = this.startHour.getHours();
+      const startMinute = this.startHour.getMinutes();
+      startDate.setHours(startHour, startMinute, 0, 0);
+  
+      const endDate = new Date(this.day);
+      const endHour = this.endHour.getHours();
+      const endMinute = this.endHour.getMinutes();
+      endDate.setHours(endHour, endMinute, 0, 0);
+  
+      if (startDate >= endDate) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Validation Error',
+          detail: 'Start time must be before end time.',
         });
-
-        if (isOverlapping) {
-            alert('The time slot overlaps with another slot.');
-            return;
-        }
-
-        // Criar o objeto do novo slot
-        const newSlot = {
-            staffId: this.idStaff,
-            start: startDate.toISOString(),
-            end: endDate.toISOString()
-        };
-
-        // Chamar o serviço para adicionar o slot
-        this.staffService.addAvailabilitySlot(this.idStaff, newSlot).subscribe({
-            next: () => {
-                alert('Availability slot added successfully!');
-                this.slots.push(newSlot); // Atualizar a lista local de slots
-            },
-            error: (error) => {
-                console.error('Failed to update availability slots:', error);
-                alert('Failed to update availability slots: ' + (error.message || 'Unknown error.'));
-            }
-        });
-
-        // Limpar os campos após adicionar o slot
-        this.day = null;
-        this.startHour = null;
-        this.endHour = null;
-    } else {
-        alert('Please select a day, start time, and end time.');
-    }
-}
-
-
-
-removeSlot(slot: { start: string, end: string }) {
-  if (confirm('Are you sure you want to remove this availability slot?')) {
-      this.staffService.removeAvailabilitySlot(this.idStaff, slot).subscribe({
-          next: () => {
-              alert('Availability slot removed successfully!');
-              this.slots = this.slots.filter(s => s.start !== slot.start || s.end !== slot.end);
-          },
-          error: (error) => {
-              console.error('Failed to remove availability slot:', error);
-              alert('Failed to remove availability slot: ' + (error.message || 'Unknown error.'));
-          }
+        return;
+      }
+  
+      const isOverlapping = this.slots.some(slot => {
+        return startDate < new Date(slot.end) && endDate > new Date(slot.start);
       });
+  
+      if (isOverlapping) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Validation Error',
+          detail: 'The time slot overlaps with another slot.',
+        });
+        return;
+      }
+  
+      const newSlot = {
+        staffId: this.idStaff,
+        start: startDate.toISOString(),
+        end: endDate.toISOString(),
+      };
+  
+      this.staffService.addAvailabilitySlot(this.idStaff, newSlot).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Availability slot added successfully!',
+          });
+          this.slots.push(newSlot);
+        },
+        error: (error) => {
+          console.error('Failed to update availability slots:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update availability slots.',
+          });
+        },
+      });
+  
+      this.day = null;
+      this.startHour = null;
+      this.endHour = null;
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Validation Error',
+        detail: 'Please select a day, start time, and end time.',
+      });
+    }
   }
-}
+  
+
+
+
+  removeSlot(slot: { start: string, end: string }) {
+    if (confirm('Are you sure you want to remove this availability slot?')) {
+      this.staffService.removeAvailabilitySlot(this.idStaff, slot).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Availability slot removed successfully!',
+          });
+          this.slots = this.slots.filter(
+            s => s.start !== slot.start || s.end !== slot.end
+          );
+        },
+        error: (error) => {
+          console.error('Failed to remove availability slot:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to remove availability slot.',
+          });
+        },
+      });
+    }
+  }
 
   
 

@@ -98,10 +98,12 @@ removeAvailabilitySlot(staffId: string, slot: { start: string, end: string }): O
 
   const payload = {
       start: slot.start,
-      end: slot.end
+      end: slot.end,
+      staffId : staffId
   };
+  console.log(staffId);
 
-  return this.http.request<any>('DELETE', `${this.apiUrl}/staffs/${staffId}/availability-slots`, {
+  return this.http.request<any>('DELETE', `${this.apiUrl}/staffs/${staffId}/availability-slots/hard`, {
       headers,
       body: payload
   });
