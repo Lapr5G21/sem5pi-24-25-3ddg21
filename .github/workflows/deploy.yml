@@ -61,3 +61,5 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           ~//apps/healthcare/deploy.sh
+
+          
