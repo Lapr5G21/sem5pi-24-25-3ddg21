@@ -60,6 +60,5 @@ jobs:
         username: ${{ secrets.VM_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          ~//apps/healthcare/deploy.sh
+          ~/apps/healthcare/deploy.sh
 
-          
