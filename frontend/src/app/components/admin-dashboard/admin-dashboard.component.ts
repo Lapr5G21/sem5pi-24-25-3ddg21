@@ -186,7 +186,6 @@ export class AdminDashboardComponent implements OnInit {
   listPatients() {
     this.router.navigate(['adminDashboard/patients/list']);
   }
-  
 
   logout() {
     this.ProfileMenuComponent.logout();
