@@ -54,7 +54,7 @@ jobs:
         target: ~/apps/healthcare
 
     - name: Deploy Frontend
-      uses: appleboy/ssh-action@v0.1.4
+      uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.VM_IP }}
         username: ${{ secrets.VM_USER }}

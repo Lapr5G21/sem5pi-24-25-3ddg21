@@ -186,6 +186,7 @@ export class AdminDashboardComponent implements OnInit {
   listPatients() {
     this.router.navigate(['adminDashboard/patients/list']);
   }
+  
 
   logout() {
     this.ProfileMenuComponent.logout();
@@ -204,5 +205,5 @@ export class AdminDashboardComponent implements OnInit {
       console.log("Componente ProfileMenu não está disponível");
     }
   }
-  
+
 }
