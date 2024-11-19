@@ -204,5 +204,4 @@ export class AdminDashboardComponent implements OnInit {
       console.log("Componente ProfileMenu não está disponível");
     }
   }
-  //teste
 }
