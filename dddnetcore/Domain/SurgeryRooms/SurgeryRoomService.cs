@@ -34,32 +34,37 @@ namespace DDDSample1.Domain.SurgeryRooms
         public async Task<SurgeryRoomDto> AddAsync(CreatingSurgeryRoomDto dto)
         {
 
-            var roomType = Enum.Parse<SurgeryRoomType>(dto.RoomType.ToUpper());
-            var status = Enum.Parse<SurgeryRoomStatus>(dto.Status.ToUpper());
-            var surgeryRoom = new SurgeryRoom(
-                new SurgeryRoomNumber(dto.Id),
-                roomType,
-                new SurgeryRoomCapacity(dto.RoomCapacity),
-                new SurgeryRoomMaintenanceSlots(dto.MaintenanceSlots),
-                new SurgeryRoomEquipment(dto.Equipment),
-                status
-            );
+                var roomType = Enum.Parse<SurgeryRoomType>(dto.RoomType);
 
-            await _repo.AddAsync(surgeryRoom);
-            await _unitOfWork.CommitAsync();
+                var status = Enum.Parse<SurgeryRoomStatus>(dto.Status);
 
-            return MapToDto(surgeryRoom);
-        }
+                var surgeryRoom = new SurgeryRoom(
+                    new SurgeryRoomNumber(dto.Id),
+                    roomType,
+                    new SurgeryRoomCapacity(dto.RoomCapacity),
+                    new SurgeryRoomMaintenanceSlots(dto.MaintenanceSlots),
+                    new SurgeryRoomEquipment(dto.Equipment),
+                    status
+                );
+
+                await _repo.AddAsync(surgeryRoom);
+
+                await _unitOfWork.CommitAsync();
+
+                var resultDto = MapToDto(surgeryRoom);
+
+                return resultDto;
+            }
 
         private SurgeryRoomDto MapToDto(SurgeryRoom surgeryRoom)
         {
             return new SurgeryRoomDto
             {
-                Id = surgeryRoom.Id.ToString(),
+                Id = surgeryRoom.Id.Value,
                 RoomType = surgeryRoom.RoomType.ToString(),
                 RoomCapacity = surgeryRoom.RoomCapacity.Capacity, 
                 MaintenanceSlots = surgeryRoom.MaintenanceSlots.MaintenanceSlots,
-                Equipment = surgeryRoom.Equipment.ToString(),
+                Equipment = surgeryRoom.Equipment.Equipment.ToString(),
                 Status = surgeryRoom.Status.ToString()
             };
         }

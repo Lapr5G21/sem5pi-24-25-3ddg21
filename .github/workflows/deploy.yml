@@ -39,38 +39,25 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
-    
+
     steps:
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: dotnet-build
-      
-      - name: Set up SSH key for deploy
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
+    - name: Transfer Frontend to Remote Server
+      uses: appleboy/scp-action@v0.1.5
+      with:
+        host: ${{ secrets.VM_IP }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        source: ./frontend/*
+        target: ~/apps/healthcare
 
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v0.1.5
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USER }}
-          port: ${{ secrets.VM_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            # Navega até o diretório de deploy no servidor
-            cd /root/apps/healthcare  
-            
-            # Extraí os artefatos do build
-            tar -xzvf ./dotnet-build.tar.gz -C .  
-            
-            # Restaura as dependências, compila e publica, se necessário
-            dotnet restore ./dddnetcore/dddnetcore.csproj  
-            dotnet build ./dddnetcore/dddnetcore.csproj --no-restore  
-            dotnet publish ./dddnetcore/dddnetcore.csproj -c Release -o /root/apps/healthcare  
-            
-            # Reinicia o serviço do servidor
-            systemctl restart healthcare_deploy
+    - name: Deploy Frontend
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{ secrets.VM_IP }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          ~//apps/healthcare/deploy.sh
