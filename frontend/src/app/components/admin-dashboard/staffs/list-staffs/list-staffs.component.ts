@@ -53,8 +53,7 @@ export class ListStaffsComponent implements OnInit {
   specializationFilter: string = '';  
 
   slotsDialogVisible: boolean = false; 
-  slotsArray: any[] = []; 
-
+ 
 /*   slots: Array<{ startHour: Date; endHour: Date }> = [
     { startHour: new Date('2024-11-16 08:00:00.000000'), endHour: new Date('2024-11-16 10:00:00.000000') },
     { startHour: new Date('2024-11-17 09:00:00.000000'), endHour: new Date('2024-11-17 11:30:00.000000') },
@@ -148,24 +147,13 @@ loadSlots(staffId: string) {
         const endMinute = this.endHour.getMinutes();
         endDate.setHours(endHour, endMinute, 0, 0);
 
-         // Print startDate and endDate
-         console.log('Start Date:', startDate);
-         console.log('End Date:', endDate);
-
+        // Validar se o horário de início é antes do horário de término
         if (startDate >= endDate) {
             alert('Start time must be before end time.');
             return;
         }
 
-/*         const slotExists = this.slots.some(slot => {
-            return slot.start.getTime() === startDate.getTime() && slot.end.getTime() === endDate.getTime();
-        });
-
-        if (slotExists) {
-            alert('A slot with the same time already exists.');
-            return;
-        } */
-
+        // Verificar sobreposição
         const isOverlapping = this.slots.some(slot => {
             return startDate < new Date(slot.end) && endDate > new Date(slot.start);
         });
@@ -175,16 +163,18 @@ loadSlots(staffId: string) {
             return;
         }
 
+        // Criar o objeto do novo slot
         const newSlot = {
             staffId: this.idStaff,
             start: startDate.toISOString(),
             end: endDate.toISOString()
         };
 
-        this.staffService.addAvailabilitySlots(this.idStaff, [...this.slots, newSlot]).subscribe({
+        // Chamar o serviço para adicionar o slot
+        this.staffService.addAvailabilitySlot(this.idStaff, newSlot).subscribe({
             next: () => {
                 alert('Availability slot added successfully!');
-                this.slots.push(newSlot);
+                this.slots.push(newSlot); // Atualizar a lista local de slots
             },
             error: (error) => {
                 console.error('Failed to update availability slots:', error);
@@ -192,6 +182,7 @@ loadSlots(staffId: string) {
             }
         });
 
+        // Limpar os campos após adicionar o slot
         this.day = null;
         this.startHour = null;
         this.endHour = null;
@@ -201,9 +192,22 @@ loadSlots(staffId: string) {
 }
 
 
- removeSlot(id: string): void {
 
+removeSlot(slot: { start: string, end: string }) {
+  if (confirm('Are you sure you want to remove this availability slot?')) {
+      this.staffService.removeAvailabilitySlot(this.idStaff, slot).subscribe({
+          next: () => {
+              alert('Availability slot removed successfully!');
+              this.slots = this.slots.filter(s => s.start !== slot.start || s.end !== slot.end);
+          },
+          error: (error) => {
+              console.error('Failed to remove availability slot:', error);
+              alert('Failed to remove availability slot: ' + (error.message || 'Unknown error.'));
+          }
+      });
+  }
 }
+
   
 
   preventDefault(event: Event): void {

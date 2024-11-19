@@ -13,8 +13,8 @@ import { PaginatorModule } from 'primeng/paginator';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { CalendarModule } from 'primeng/calendar';
+
 
 @Component({
     selector: 'list-patients',
@@ -22,45 +22,43 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
     styleUrls: ['./list-patients.component.scss'],
     standalone: true,
     imports: [
-        DialogModule,
-        ButtonModule,
         TableModule,
-        FloatLabelModule,
-        DropdownModule,
-        PaginatorModule,
-        CommonModule,
+        DialogModule,
         DataViewModule,
-        ScrollPanelModule,
+        ButtonModule,
+        CommonModule,
         BadgeModule,
+        ScrollPanelModule,
+        InputTextModule,
         FormsModule,
-        InputGroupModule,
-        InputGroupAddonModule
+        DropdownModule,
+        FloatLabelModule,
+        CalendarModule,
+        PaginatorModule
     ],
-    providers: [PatientService, MessageService]
 })
 export class ListPatientsComponent implements OnInit {
     // Opções de status para o filtro
-    statusOptions: { label: string, value: boolean | null }[] = [
-        { label: 'All', value: null },
+    statusOptions: { label: string, value: boolean}[] = [
         { label: 'Active', value: true },
         { label: 'Deactivated', value: false }
     ];
 
     patients: any[] = [];
-    filteredPatients: any[] = [];
 
     // Filtros
-    idFilter: string = '';
     nameFilter: string = '';
-    phoneNumberFilter: string = '';
     birthDateFilter: string = '';
+    genderFilter: string = '';
     emailFilter: string = '';
-    statusFilter: boolean | null = null;
+    phoneNumberFilter: string = '';
+    mrnFilter: string = '';
+    statusFilter: boolean = true;
 
     medicalHistoryDialogVisible: boolean = false;
     selectedMedicalHistory: string = '';
 
-    constructor(private patientService: PatientService, private messageService: MessageService) {}
+    constructor(private patientService: PatientService) {}
 
     ngOnInit(): void {
         this.loadPatients();
@@ -68,23 +66,15 @@ export class ListPatientsComponent implements OnInit {
 
     // Carrega os pacientes com base nos filtros aplicados
     loadPatients(): void {
+        const statusBoolean = this.statusFilter;
         this.patientService
-            .searchPatients(
-                this.idFilter,
-                this.nameFilter,
-                this.phoneNumberFilter,
-                this.birthDateFilter,
-                this.emailFilter,
-                this.statusFilter
-            )
+            .searchPatients(this.nameFilter, this.birthDateFilter, this.genderFilter, this.emailFilter, this.phoneNumberFilter, this.mrnFilter, this.statusFilter)
             .subscribe(
                 (patients) => {
                     this.patients = patients;
-                    this.filteredPatients = patients;
                 },
                 (error) => {
                     console.error('Error loading patients:', error);
-                    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load patients' });
                 }
             );
     }

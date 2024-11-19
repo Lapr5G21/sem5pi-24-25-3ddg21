@@ -194,6 +194,7 @@ namespace DDDSample1.Domain.Staffs
            var staff = this._staffRepository.GetByIdAsync(staffId).Result; 
             if (staff == null) return null;
             var slot = staff.AddAvailabilitySlot(dto.Start, dto.End, staffId);
+            this._unitOfWork.CommitAsync();
             return slot;
         }
 
@@ -279,12 +280,34 @@ namespace DDDSample1.Domain.Staffs
         return availabilitySlots
             .Select(slot => new AvailabilitySlotDto
             {
+                Id = slot.Id.AsString(),
+                StaffId = slot.StaffId.AsString(),
                 Start = slot.Start,
                 End = slot.End
             })
             .ToList();
     }
 
+public async Task<AvailabilitySlot> RemoveAvailabilitySlotAsync(string staffId, DateTime start, DateTime end)
+{
+    StaffId id = new StaffId(staffId);
+    var staff = await _staffRepository.GetByIdAsync(id);
     
+    if (staff == null)
+    {
+        return null;
+    }
+
+    var slotRemoved = staff.RemoveAvailabilitySlot(id, start, end);
+
+    if (slotRemoved != null)
+    {
+        await _unitOfWork.CommitAsync();
+        return slotRemoved;
+    }
+
+    return null;
+}
+
     }
 }
