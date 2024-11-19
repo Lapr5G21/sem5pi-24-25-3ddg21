@@ -1,22 +1,12 @@
 <div class="card">
-  <!-- Barra de Pesquisa -->
   <p-dataView #dv [value]="patients" [rows]="5" [paginator]="true">
     <ng-template pTemplate="header">
-      <div class="flex justify-between mt-4 mb-4">
+      <div class="flex justify-between mt-2 mb-2">
         <div class="flex gap-4">
-          <p-floatLabel class="flex-1">
-            <input pInputText id="idFilter" [(ngModel)]="idFilter" placeholder="Search by medical record number" class="p-inputtext-sm" />
-            <label for="idFilter">Medical Record Number</label>
-          </p-floatLabel>
 
           <p-floatLabel class="flex-1">
             <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
             <label for="nameFilter">Full Name</label>
-          </p-floatLabel>
-
-          <p-floatLabel class="flex-1">
-            <input pInputText id="phoneNumberFilter" [(ngModel)]="phoneNumberFilter" placeholder="Search by phone number" class="p-inputtext-sm" />
-            <label for="phoneNumberFilter">Phone Number</label>
           </p-floatLabel>
 
           <p-floatLabel class="flex-1">
@@ -25,8 +15,23 @@
           </p-floatLabel>
 
           <p-floatLabel class="flex-1">
+            <input pInputText id="genderFilter" [(ngModel)]="genderFilter" placeholder="Search by gender" class="p-inputtext-sm" />
+            <label for="genderFilter">Gender</label>
+          </p-floatLabel>
+
+          <p-floatLabel class="flex-1">
             <input pInputText id="emailFilter" [(ngModel)]="emailFilter" placeholder="Search by email" class="p-inputtext-sm" />
             <label for="emailFilter">Email</label>
+          </p-floatLabel>
+
+          <p-floatLabel class="flex-1">
+            <input pInputText id="phoneNumberFilter" [(ngModel)]="phoneNumberFilter" placeholder="Search by phone number" class="p-inputtext-sm" />
+            <label for="phoneNumberFilter">Phone Number</label>
+          </p-floatLabel>
+
+          <p-floatLabel class="flex-1">
+            <input pInputText id="mrnFilter" [(ngModel)]="mrnFilter" placeholder="Search by medical record number" class="p-inputtext-sm" />
+            <label for="mrnFilter">Medical Record Number</label>
           </p-floatLabel>
 
           <p-floatLabel class="flex-1">
@@ -41,7 +46,7 @@
           </p-floatLabel>
 
           <!-- Botão de Pesquisa -->
-          <div class="flex justify-content-start mt-2">
+          <div class="flex items-end">
             <button (click)="onSearch()" class="p-button p-button-primary">Search
             </button>
           </div>
