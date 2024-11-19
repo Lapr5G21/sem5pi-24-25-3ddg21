@@ -75,21 +75,37 @@ export class StaffService {
     return this.http.get<any[]>(`${this.apiUrl}/staffs/search`, { params,headers});
   }
 
-  addAvailabilitySlots(staffId: string, slots: { start: string, end: string }[]): Observable<any> {
+  addAvailabilitySlot(staffId: string, slot: { start: string, end: string }): Observable<any> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
         'Authorization': `Bearer ${token}`
     });
 
-
-    // Ajuste no payload
-    const payload = slots.map(slot => ({
+    const payload = {
         start: slot.start,
         end: slot.end,
         staffId: staffId
-    }));
+    };
 
     return this.http.post<any>(`${this.apiUrl}/staffs/${staffId}/availability-slots`, payload, { headers });
 }
+
+removeAvailabilitySlot(staffId: string, slot: { start: string, end: string }): Observable<any> {
+  const token = localStorage.getItem('access_token');
+  const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+  });
+
+  const payload = {
+      start: slot.start,
+      end: slot.end
+  };
+
+  return this.http.request<any>('DELETE', `${this.apiUrl}/staffs/${staffId}/availability-slots`, {
+      headers,
+      body: payload
+  });
+}
+
 
 }

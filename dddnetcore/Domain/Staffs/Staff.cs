@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.Users;
@@ -99,6 +100,40 @@ namespace DDDSample1.Domain.Staffs
 
             return newSlot;
         }
+
+public AvailabilitySlot RemoveAvailabilitySlot(StaffId staffId, DateTime start, DateTime end)
+{
+    // Arredonda as datas para o formato 'yyyy-MM-dd HH:mm:00' (sem segundos e milissegundos)
+    var startNormalized = start.AddSeconds(-start.Second).AddMilliseconds(-start.Millisecond);
+    var endNormalized = end.AddSeconds(-end.Second).AddMilliseconds(-end.Millisecond);
+
+    // Imprime as datas arredondadas para verificar
+    Console.WriteLine($"Tentando remover slot para StaffId: {staffId}, Start: {startNormalized.ToString("yyyy-MM-dd HH:mm:00")}, End: {endNormalized.ToString("yyyy-MM-dd HH:mm:00")}");
+
+    // Procurar o slot com base no StaffId e nas datas arredondadas
+    var slot = AvailabilitySlots.FirstOrDefault(s =>
+        s.StaffId == staffId &&
+        s.Start == startNormalized &&
+        s.End == endNormalized);
+
+    if (slot != null)
+    {
+        Console.WriteLine($"Slot encontrado: {slot.Id}, StaffId: {slot.StaffId}, Start: {slot.Start}, End: {slot.End}");
+        AvailabilitySlots.Remove(slot);
+        return slot;
+    }
+
+    Console.WriteLine("Nenhum slot encontrado para remover.");
+    return null;
+}
+
+
+
+
+
+
+
+
 
         public void Deactivate()
         {

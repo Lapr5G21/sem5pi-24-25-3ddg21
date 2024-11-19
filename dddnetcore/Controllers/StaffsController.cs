@@ -154,6 +154,30 @@ namespace DDDSample1.Controllers
                 return CreatedAtAction(nameof(AddSlot), new { id = slot.Id }, slot);
         
         }
+
+[HttpDelete("{id}/availability-slots/hard")]
+public async Task<IActionResult> RemoveAvailabilitySlotAsync([FromBody] AvailabilitySlotDto slotDto)
+{
+    var deletedSlot = await _staffService.RemoveAvailabilitySlotAsync(slotDto.StaffId, slotDto.Start, slotDto.End);
+
+    if (deletedSlot != null)
+    {
+        return Ok(new 
+        {
+            message = "Availability slot removed successfully.",
+            deletedSlot = new 
+            {
+                start = deletedSlot.Start,
+                end = deletedSlot.End
+            }
+        });
+    }
+
+    return NotFound(new { message = "Availability slot not found." });
 }
+
+
+
+    }
             
 }
