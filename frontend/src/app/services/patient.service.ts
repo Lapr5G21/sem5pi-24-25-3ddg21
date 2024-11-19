@@ -56,7 +56,7 @@ export class PatientService {
           params = params.append('phoneNumber', phoneNumber);
         }
         if (mrn) {
-          params = params.append('id', mrn);
+          params = params.append('mrn', mrn);
         }
         if (isActive !== null) {
           params = params.append('isActive', isActive.toString());
