@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,24 @@ public class AvailabilitySlotRepository : BaseRepository<AvailabilitySlot, Avail
         return await _context.AvailabilitySlots
             .Where(slot => slot.StaffId == staffId)
             .ToListAsync();
+    }
+    
+    public async Task<bool> RemoveBySlot(StaffId staffId, DateTime start, DateTime end)
+    {
+    var startNormalized = start.AddSeconds(-start.Second).AddMilliseconds(-start.Millisecond);
+    var endNormalized = end.AddSeconds(-end.Second).AddMilliseconds(-end.Millisecond);
+
+    var slot = await _context.AvailabilitySlots
+        .FirstOrDefaultAsync(s => s.StaffId == staffId && s.Start == startNormalized && s.End == endNormalized);
+
+    if (slot != null)
+    {
+        _context.AvailabilitySlots.Remove(slot);
+        await _context.SaveChangesAsync();
+        return true; 
+    }
+
+    return false; 
     }
 }
 }

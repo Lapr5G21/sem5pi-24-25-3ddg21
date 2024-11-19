@@ -123,7 +123,7 @@ export class EditStaffsComponent implements OnInit {
     
         console.log('Payload:', JSON.stringify(staff));
     
-        this.staffService.updateStaff(staff).subscribe(
+        this.staffService.updateStaff(staff.staffId,staff).subscribe(
             () => {
                 this.messageService.add({
                     severity: 'success',

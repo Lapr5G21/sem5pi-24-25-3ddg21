@@ -68,9 +68,10 @@ export class ListPatientsComponent implements OnInit {
     loadPatients(): void {
         const statusBoolean = this.statusFilter;
         this.patientService
-            .searchPatients(this.nameFilter, this.birthDateFilter, this.genderFilter, this.emailFilter, this.phoneNumberFilter, this.mrnFilter, this.statusFilter)
+            .searchPatients(this.nameFilter, this.birthDateFilter, this.genderFilter, this.emailFilter, this.phoneNumberFilter, this.mrnFilter, statusBoolean)
             .subscribe(
                 (patients) => {
+                    console.log('Patients received:', patients);
                     this.patients = patients;
                 },
                 (error) => {

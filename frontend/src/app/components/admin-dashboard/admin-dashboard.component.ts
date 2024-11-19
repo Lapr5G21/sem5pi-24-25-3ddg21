@@ -84,11 +84,6 @@ export class AdminDashboardComponent implements OnInit {
             command: () => this.createStaffs()
           },
           {
-            label: 'Edit',
-            icon: 'pi pi-pencil',
-            command: () => this.editStaffs()
-          },
-          {
             label: 'List',
             icon: 'pi pi-list',
             command: () => {
@@ -167,10 +162,6 @@ export class AdminDashboardComponent implements OnInit {
     this.createStaffsComponent.showDialog(); 
   }
 
-  editStaffs() {
-    this.editStaffsComponent.showDialog(); 
-  }
-
   listStaffs() {
     this.router.navigate(['adminDashboard/staffs/list']);
   }
@@ -194,7 +185,7 @@ export class AdminDashboardComponent implements OnInit {
   showHospitalModelComponent() {
     this.router.navigate(['adminDashboard/3DModule']);
   }
-
+  
   openProfileDialog() {
     console.log("Clicou em Profile");
     if (this.ProfileMenuComponent) {
@@ -204,4 +195,5 @@ export class AdminDashboardComponent implements OnInit {
       console.log("Componente ProfileMenu não está disponível");
     }
   }
+
 }

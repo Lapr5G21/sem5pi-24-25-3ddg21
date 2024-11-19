@@ -101,18 +101,17 @@ namespace DDDSample1.Domain.Staffs
             return newSlot;
         }
 
-public AvailabilitySlot RemoveAvailabilitySlot(StaffId staffId, DateTime start, DateTime end)
+public AvailabilitySlot RemoveAvailabilitySlot(String staffId, DateTime start, DateTime end)
 {
     // Arredonda as datas para o formato 'yyyy-MM-dd HH:mm:00' (sem segundos e milissegundos)
     var startNormalized = start.AddSeconds(-start.Second).AddMilliseconds(-start.Millisecond);
     var endNormalized = end.AddSeconds(-end.Second).AddMilliseconds(-end.Millisecond);
 
-    // Imprime as datas arredondadas para verificar
     Console.WriteLine($"Tentando remover slot para StaffId: {staffId}, Start: {startNormalized.ToString("yyyy-MM-dd HH:mm:00")}, End: {endNormalized.ToString("yyyy-MM-dd HH:mm:00")}");
 
     // Procurar o slot com base no StaffId e nas datas arredondadas
     var slot = AvailabilitySlots.FirstOrDefault(s =>
-        s.StaffId == staffId &&
+        s.StaffId.ToString() == staffId &&
         s.Start == startNormalized &&
         s.End == endNormalized);
 
