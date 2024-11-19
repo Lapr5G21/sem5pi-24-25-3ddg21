@@ -238,10 +238,34 @@ loadSlots(staffId: string) {
   }
 
   saveStaffInfo(selectedStaff: any) {
-  
-    console.log('Saving staff info', this.selectedStaff);
-    this.staffService.updateStaff(this.selectedStaff);
-    this.editDialogVisible = false;
+    console.log('Saving staff info:', selectedStaff);
+    
+    this.staffService.updateStaff(selectedStaff.staffId, selectedStaff).subscribe({
+      next: (response) => {
+        console.log('Staff info atualizado com sucesso:', response);
+        
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Staff information updated successfully!',
+        });
+        
+        this.editDialogVisible = false; 
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar staff info:', error);
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update staff information.',
+        });
+      },
+      complete: () => {
+        console.log('Processo de atualização de staff concluído.');
+      }
+    });
   }
+  
 
 }

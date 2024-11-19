@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams  } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -105,16 +105,30 @@ removeAvailabilitySlot(staffId: string, slot: { start: string, end: string }): O
   });
 }
 
-updateStaff(staffData: any): Observable<any> {
+updateStaff(id: string, staffData: any): Observable<any> {
   const token = localStorage.getItem('access_token');
+
   const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
   });
 
-  console.log('staffData', staffData);
+  const payload = {
+    staffId: id,
+    firstName: staffData.staffFirstName,
+    lastName: staffData.staffLastName,
+    fullName: staffData.staffFullName,
+    email: staffData.staffEmail,
+    phoneNumber: staffData.staffPhoneNumber,
+    specializationId: staffData.specializationId,
+    staffAvailabilitySlots: staffData.staffAvailabilitySlots || []
+  };
 
-  return this.http.put(`${this.apiUrl}/staffs/${staffData.staffId}`, staffData, { headers });
+  console.log('Payload enviado para o backend:', payload);
+
+  return this.http.put(`${this.apiUrl}/staffs/${id}`, payload, { headers });
 }
+
 
 
 }
