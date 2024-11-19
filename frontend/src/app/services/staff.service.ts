@@ -41,10 +41,6 @@ export class StaffService {
       });
     return this.http.post(`${this.apiUrl}/staffs`, staffData,{headers});
   }
-
-  updateStaff(staffData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/staffs/${staffData.staffId}`, staffData);
-  }
   
   getStaffById(staffId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/staffs/${staffId}`);
@@ -97,14 +93,26 @@ removeAvailabilitySlot(staffId: string, slot: { start: string, end: string }): O
   });
 
   const payload = {
+      staffId: staffId,
       start: slot.start,
       end: slot.end
   };
 
-  return this.http.request<any>('DELETE', `${this.apiUrl}/staffs/${staffId}/availability-slots`, {
-      headers,
-      body: payload
+  return this.http.delete(`${this.apiUrl}/staffs/${staffId}/availability-slots`, {
+    body: payload,  
+    headers
   });
+}
+
+updateStaff(staffData: any): Observable<any> {
+  const token = localStorage.getItem('access_token');
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
+  console.log('staffData', staffData);
+
+  return this.http.put(`${this.apiUrl}/staffs/${staffData.staffId}`, staffData, { headers });
 }
 
 

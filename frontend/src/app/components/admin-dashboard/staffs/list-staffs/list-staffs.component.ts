@@ -53,32 +53,15 @@ export class ListStaffsComponent implements OnInit {
   specializationFilter: string = '';  
 
   slotsDialogVisible: boolean = false; 
- 
-/*   slots: Array<{ startHour: Date; endHour: Date }> = [
-    { startHour: new Date('2024-11-16 08:00:00.000000'), endHour: new Date('2024-11-16 10:00:00.000000') },
-    { startHour: new Date('2024-11-17 09:00:00.000000'), endHour: new Date('2024-11-17 11:30:00.000000') },
-    { startHour: new Date('2024-11-18 14:00:00.000000'), endHour: new Date('2024-11-18 16:00:00.000000') },
-    { startHour: new Date('2024-11-19 14:00:00.000000'), endHour: new Date('2024-11-19 16:00:00.000000') },
-    { startHour: new Date('2024-11-20 14:00:00.000000'), endHour: new Date('2024-11-20 16:00:00.000000') },
-    { startHour: new Date('2024-11-21 14:00:00.000000'), endHour: new Date('2024-11-21 16:00:00.000000') }, 
-    { startHour: new Date('2024-11-22 14:00:00.000000'), endHour: new Date('2024-11-22 16:00:00.000000') },
-    { startHour: new Date('2024-11-23 14:00:00.000000'), endHour: new Date('2024-11-23 16:00:00.000000') },
-    { startHour: new Date('2024-11-24 14:00:00.000000'), endHour: new Date('2024-11-24 16:00:00.000000') },
-    { startHour: new Date('2024-11-25 14:00:00.000000'), endHour: new Date('2024-11-25 16:00:00.000000') },
-    { startHour: new Date('2024-11-26 14:00:00.000000'), endHour: new Date('2024-11-26 16:00:00.000000') },
-    { startHour: new Date('2024-11-27 14:00:00.000000'), endHour: new Date('2024-11-27 16:00:00.000000') },
-    { startHour: new Date('2024-11-28 14:00:00.000000'), endHour: new Date('2024-11-18 16:00:00.000000') },
-    ]; */
 
     slots: any[] = [];
-
     day: Date | null = null;
     startHour: Date | null = null;
     endHour: Date | null = null;
     idStaff: string = "";
 
     editDialogVisible: boolean = false;
-    selectedStaffId: string = "";
+    selectedStaff: any = {}; 
 
   constructor(private staffService: StaffService, private router: Router) {}
 
@@ -147,13 +130,11 @@ loadSlots(staffId: string) {
         const endMinute = this.endHour.getMinutes();
         endDate.setHours(endHour, endMinute, 0, 0);
 
-        // Validar se o horário de início é antes do horário de término
         if (startDate >= endDate) {
             alert('Start time must be before end time.');
             return;
         }
 
-        // Verificar sobreposição
         const isOverlapping = this.slots.some(slot => {
             return startDate < new Date(slot.end) && endDate > new Date(slot.start);
         });
@@ -163,26 +144,23 @@ loadSlots(staffId: string) {
             return;
         }
 
-        // Criar o objeto do novo slot
         const newSlot = {
             staffId: this.idStaff,
             start: startDate.toISOString(),
             end: endDate.toISOString()
         };
 
-        // Chamar o serviço para adicionar o slot
         this.staffService.addAvailabilitySlot(this.idStaff, newSlot).subscribe({
             next: () => {
                 alert('Availability slot added successfully!');
-                this.slots.push(newSlot); // Atualizar a lista local de slots
+                this.slots.push(newSlot); 
             },
             error: (error) => {
                 console.error('Failed to update availability slots:', error);
                 alert('Failed to update availability slots: ' + (error.message || 'Unknown error.'));
             }
         });
-
-        // Limpar os campos após adicionar o slot
+        
         this.day = null;
         this.startHour = null;
         this.endHour = null;
@@ -208,8 +186,6 @@ removeSlot(slot: { start: string, end: string }) {
   }
 }
 
-  
-
   preventDefault(event: Event): void {
     event.preventDefault();
   }
@@ -220,5 +196,16 @@ removeSlot(slot: { start: string, end: string }) {
     this.loadStaffs();  
   }
 
+   openEditDialog(item: any) {
+    this.selectedStaff = { ...item };
+    this.editDialogVisible = true;
+  }
+
+  saveStaffInfo(selectedStaff: any) {
+  
+    console.log('Saving staff info', this.selectedStaff);
+    this.staffService.updateStaff(this.selectedStaff);
+    this.editDialogVisible = false;
+  }
 
 }
