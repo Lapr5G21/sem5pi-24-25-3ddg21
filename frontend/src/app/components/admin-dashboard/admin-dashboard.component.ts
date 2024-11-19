@@ -194,6 +194,7 @@ export class AdminDashboardComponent implements OnInit {
   showHospitalModelComponent() {
     this.router.navigate(['adminDashboard/3DModule']);
   }
+  
   openProfileDialog() {
     console.log("Clicou em Profile");
     if (this.ProfileMenuComponent) {
