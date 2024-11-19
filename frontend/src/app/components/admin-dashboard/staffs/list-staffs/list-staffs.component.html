@@ -120,8 +120,8 @@
                 <p-button 
                 icon="pi pi-pencil" 
                 [outlined]="true"
-                [disabled]="!item.Active"
-                [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }" >
+                [disabled]="item.Active"
+                [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }" (click)="openEditDialog(item)">
               </p-button>
 
                 <p-button 
@@ -138,6 +138,86 @@
               </div>
             </div>
             
+   <!-- Diálogo para editar as informações do Staff -->
+<p-dialog header="Edit Staff Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
+  <div class="card">
+    <p-dataView [value]="[selectedStaff]" [rows]="1">
+      <ng-template pTemplate="header">
+        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+          <div class="col">Field</div>
+          <div class="col">Value</div>
+        </div>
+      </ng-template>
+      
+      <ng-template pTemplate="list" let-staff>
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="firstName">First Name</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="firstName" [(ngModel)]="selectedStaff.staffFirstName" />
+          </div>
+        </div>
+        
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="lastName">Last Name</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="lastName" [(ngModel)]="selectedStaff.staffLastName" />
+          </div>
+        </div>
+
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="fullName">Full Name</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="fullName" [(ngModel)]="selectedStaff.staffFullName" />
+          </div>
+        </div>
+
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="phoneNumber">Phone Number</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="phoneNumber" [(ngModel)]="selectedStaff.staffPhoneNumber" />
+          </div>
+        </div>
+
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="email">Email</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="email" [(ngModel)]="selectedStaff.staffEmail" />
+          </div>
+        </div>
+
+        <!-- Adicionando a especialização -->
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="specialization">Specialization</label>
+          </div>
+          <div class="col p-2">
+            <p-dropdown 
+              [(ngModel)]="selectedStaff.specializationId" 
+              [options]="specializationsOptions" 
+              optionLabel="label" 
+              optionValue="value" 
+              placeholder="Select Specialization">
+            </p-dropdown>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+
+    <div class="flex justify-content-end">
+      <button pButton label="Save" icon="pi pi-check" (click)="saveStaffInfo(selectedStaff)" class="p-button-primary"></button>
+    </div>
+  </div>
+</p-dialog>
 
             <div class="card flex justify-content-center">
               <p-dialog 

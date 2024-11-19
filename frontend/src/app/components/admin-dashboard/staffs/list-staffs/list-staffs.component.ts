@@ -59,14 +59,13 @@ export class ListStaffsComponent implements OnInit {
   slotsDialogVisible: boolean = false; 
 
     slots: any[] = [];
-
     day: Date | null = null;
     startHour: Date | null = null;
     endHour: Date | null = null;
     idStaff: string = "";
 
     editDialogVisible: boolean = false;
-    selectedStaffId: string = "";
+    selectedStaff: any = {}; 
 
   constructor(private staffService: StaffService, private router: Router, private messageService : MessageService) {}
 
@@ -222,8 +221,6 @@ loadSlots(staffId: string) {
     }
   }
 
-  
-
   preventDefault(event: Event): void {
     event.preventDefault();
   }
@@ -234,5 +231,16 @@ loadSlots(staffId: string) {
     this.loadStaffs();  
   }
 
+   openEditDialog(item: any) {
+    this.selectedStaff = { ...item };
+    this.editDialogVisible = true;
+  }
+
+  saveStaffInfo(selectedStaff: any) {
+  
+    console.log('Saving staff info', this.selectedStaff);
+    this.staffService.updateStaff(this.selectedStaff);
+    this.editDialogVisible = false;
+  }
 
 }

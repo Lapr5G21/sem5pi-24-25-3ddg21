@@ -6,7 +6,6 @@ import { CreateStaffsComponent } from './components/admin-dashboard/staffs/creat
 import { CreatePatientsComponent } from './components/admin-dashboard/patients/create-patients/create-patients.component';
 import { EditStaffsComponent } from './components/admin-dashboard/staffs/edit-staffs/edit-staffs.component';
 import { ListStaffsComponent } from './components/admin-dashboard/staffs/list-staffs/list-staffs.component';
-import { EditPatientsComponent } from './components/admin-dashboard/patients/edit-patients/edit-patients.component';
 import { ListPatientsComponent } from './components/admin-dashboard/patients/list-patients/list-patients.component';
 import { MenubarComponent } from './components/menubar/menubar.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
@@ -26,7 +25,6 @@ export const routes: Routes = [
     { path: 'adminDashboard/staffs/edit', component: EditStaffsComponent },  
     { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },    
     { path: 'adminDashboard/patients/create', component: CreatePatientsComponent },
-    { path: 'adminDashboard/patients/edit', component: EditPatientsComponent },
     { path: 'adminDashboard/patients/list', component: ListPatientsComponent },
     { path: 'adminDashboard/home', component: AdminDashboardComponent },
     { path: 'adminDashboard/3DModule', component: HospitalModelComponent },
