@@ -125,17 +125,16 @@
               [disabled]="!item.active"
               [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }" (click)="openEditDialog(item)">
             </p-button>
-
               <p-button 
                 icon="pi pi-trash" 
-                label="Delete" 
+                label="Disable" 
                 [disabled]="!item.active" 
                 [ngClass]="{ 'p-button-danger': true }" 
                 [style]="{
                   'background-color': '#f44336', 
                   'border-color': '#f44336', 
-                  'color': 'white'
-                }">
+                  'color': 'white'}"
+                  (click)="confirmDisable(item.staffId)">
               </p-button>
             </div>
           </div>
@@ -265,3 +264,5 @@
   </p-dataView>
 <p-toast></p-toast>
 </div>
+
+<p-confirmDialog></p-confirmDialog>

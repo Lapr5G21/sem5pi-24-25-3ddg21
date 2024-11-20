@@ -11,12 +11,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { Specialization } from '../../../../domain/staff-model';  
 import { CalendarModule } from 'primeng/calendar';
 import { Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
-
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'list-staffs',
@@ -34,11 +33,12 @@ import { MessageService } from 'primeng/api';
     DropdownModule,
     FloatLabelModule,
     CalendarModule,
-    ToastModule
+    ToastModule,
+    ConfirmDialogModule
   ],
   templateUrl: './list-staffs.component.html',
   styleUrls: ['./list-staffs.component.scss'],
-  providers:[MessageService]
+  providers:[MessageService, ConfirmationService]
 })
 
 export class ListStaffsComponent implements OnInit {
@@ -67,7 +67,8 @@ export class ListStaffsComponent implements OnInit {
     editDialogVisible: boolean = false;
     selectedStaff: any = {}; 
 
-  constructor(private staffService: StaffService, private router: Router, private messageService : MessageService) {}
+  constructor(private staffService: StaffService, private router: Router, private messageService : MessageService,  private confirmationService: ConfirmationService,
+  ) {}
 
   ngOnInit(): void {
     this.loadStaffs();  
@@ -235,6 +236,7 @@ loadSlots(staffId: string) {
    openEditDialog(item: any) {
     this.selectedStaff = { ...item };
     this.editDialogVisible = true;
+    
   }
 
   saveStaffInfo(selectedStaff: any) {
@@ -263,9 +265,37 @@ loadSlots(staffId: string) {
       },
       complete: () => {
         console.log('Processo de atualização de staff concluído.');
+        this.loadStaffs();
       }
     });
   }
   
+  onDisable(staffId: string): void {
+    this.staffService.disableStaff(staffId).subscribe(
+      () => {
+        
+        const staff = this.staffs.find(s => s.id === staffId);
+        if (staff) {
+          staff.active = false;
+        }
+        this.loadStaffs();
+      },
+      (error) => console.error('Erro ao desativar a staff', error)
+    );
+  }
+
+  confirmDisable(staffId: string): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to disable this staff?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.onDisable(staffId);
+      },
+      reject: () => {
+        console.log('Staff disable action canceled.');
+      }
+    });
+  }
 
 }
