@@ -142,7 +142,7 @@ namespace DDDSample1.Controllers
         }
     }
 
-        //[Authorize(Policy = "AdminRole")]
+        [Authorize(Policy = "AdminRole")]
         [HttpPost("{id}/availability-slots")]
         public ActionResult<AvailabilitySlot> AddSlot(CreatingAvailabitySlotDto dto)
         {
@@ -155,29 +155,31 @@ namespace DDDSample1.Controllers
         
         }
 
-[HttpDelete("{id}/availability-slots/hard")]
-public async Task<IActionResult> RemoveAvailabilitySlotAsync([FromBody] AvailabilitySlotDto slotDto)
-{
-    var deletedSlot = await _staffService.RemoveAvailabilitySlotAsync(slotDto.StaffId, slotDto.Start, slotDto.End);
-
-    if (deletedSlot != null)
-    {
-        return Ok(new 
+        [Authorize(Policy = "AdminRole")]
+        [HttpDelete("{id}/availability-slots/hard")]
+        public async Task<IActionResult> RemoveAvailabilitySlotAsync([FromBody] AvailabilitySlotDto slotDto)
         {
-            message = "Availability slot removed successfully.",
-            deletedSlot = new 
+            if (slotDto == null)
             {
-                start = deletedSlot.Start,
-                end = deletedSlot.End
+                return BadRequest(new { message = "Invalid request body." });
             }
-        });
-    }
 
-    return NotFound(new { message = "Availability slot not found." });
-}
+            var success = await _staffService.RemoveAvailabilitySlotAsync(slotDto.StaffId, slotDto.Start, slotDto.End);
 
+            if (success)
+            {
+                return Ok(new 
+                {
+                    message = "Availability slot removed successfully.",
+                    deletedSlot = new 
+                    {
+                        start = slotDto.Start,
+                        end = slotDto.End
+                    }
+                });
+            }
 
-
-    }
-            
+            return NotFound(new { message = "Availability slot not found." });
+        }
+    }       
 }

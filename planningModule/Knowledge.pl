@@ -19,6 +19,8 @@ staff(d001,doctor,orthopaedist,[so2,so3,so4]).
 staff(d002,doctor,orthopaedist,[so2,so3,so4]).
 staff(d003,doctor,orthopaedist,[so2,so3,so4]).
 staff(d004,doctor,orthopaedist,[so2,so3,so4]).
+
+
  
 %surgery(SurgeryType,TAnesthesia,TSurgery,TCleaning).
  
@@ -32,14 +34,14 @@ surgery_id(so100002,so3).
 surgery_id(so100003,so4).
 surgery_id(so100004,so2).
 surgery_id(so100005,so4).
-surgery_id(so100006,so2).
-surgery_id(so100007,so3).
-surgery_id(so100008,so2).
-surgery_id(so100009,so2).
-surgery_id(so100010,so2).
-surgery_id(so100011,so4).
-surgery_id(so100012,so2).
-surgery_id(so100013,so2).
+%surgery_id(so100006,so2).
+%surgery_id(so100007,so3).
+%surgery_id(so100008,so2).
+%surgery_id(so100009,so2).
+%surgery_id(so100010,so2).
+%surgery_id(so100011,so4).
+%surgery_id(so100012,so2).
+%surgery_id(so100013,so2).
  
 assignment_surgery(so100001,d001).
 assignment_surgery(so100002,d002).
@@ -48,17 +50,17 @@ assignment_surgery(so100004,d001).
 assignment_surgery(so100004,d002).
 assignment_surgery(so100005,d002).
 assignment_surgery(so100005,d003).
-assignment_surgery(so100006,d001).
-assignment_surgery(so100007,d003).
-assignment_surgery(so100008,d004).
-assignment_surgery(so100008,d003).
-assignment_surgery(so100009,d002).
-assignment_surgery(so100009,d004).
-assignment_surgery(so100010,d003).
-assignment_surgery(so100011,d001).
-assignment_surgery(so100012,d001).
-assignment_surgery(so100013,d004).
-    
+%assignment_surgery(so100006,d001).
+%assignment_surgery(so100007,d003).
+%assignment_surgery(so100008,d004).
+%ssignment_surgery(so100008,d003).
+%assignment_surgery(so100009,d002).
+%assignment_surgery(so100009,d004).
+%assignment_surgery(so100010,d003).
+%assignment_surgery(so100011,d001).
+%assignment_surgery(so100012,d001).
+%assignment_surgery(so100013,d004).
+ 
  
  
 agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
@@ -235,55 +237,119 @@ remove_equals([],[]).
 remove_equals([X|L],L1):-member(X,L),!,remove_equals(L,L1).
 remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
  
-%Euristica do caixeiro Viagante
-%esta Euristica vai organizar primeiro as consultas consoante 
-% minimiza o tempo de uso da sala 
-% maximiza a utilização eficiente do tempo da sala e doctor
 
-obtain_better_sol_tsp(Room, Day, AgOpRoomBetter, LAgDoctorsBetter, TFinOp) :-
+
+
+ % Primeira euristica do ppt %
+
+obtain_better_sol_with_constraints(Room, Day, AgOpRoomBetter, LAgDoctorsBetter, TFinOp) :-
     get_time(Ti),
-    asserta(better_sol(Day, Room, _, _, 1441)),
-    findall(OpCode, surgery_id(OpCode, _), LOC),
-    sort_surgeries_tsp(LOC, Day, Room, SortedLOC),
-    schedule_surgeries_tsp(SortedLOC, Room, Day),
-    retract(better_sol(Day, Room, AgOpRoomBetter, LAgDoctorsBetter, TFinOp)),
-    write('Final Result: AgOpRoomBetter='), write(AgOpRoomBetter), nl,
-    write('LAgDoctorsBetter='), write(LAgDoctorsBetter), nl,
-    write('TFinOp='), write(TFinOp), nl,
-    get_time(Tf),
-    T is Tf - Ti,
-    write('Solution generation time: '), write(T), nl.
-
-sort_surgeries_tsp(Surgeries, Day, Room, SortedSurgeries) :-
-    findall((OpCode, MinDistance), 
-        (
-            member(OpCode, Surgeries),
-            surgery_id(OpCode, OpType),
-            surgery(OpType, _, TSurgery, _),
-            availability_operation(OpCode, Room, Day, LPossibilities, _),
-            min_distance_to_schedule(LPossibilities, TSurgery, MinDistance)
-        ), ScoredSurgeries),
-    keysort(ScoredSurgeries, SortedPairs),
-    pairs_values(SortedPairs, SortedSurgeries).
-
-min_distance_to_schedule([], _, 1441).  % Large value for unschedulable surgeries
-min_distance_to_schedule([(Tin, Tfin) | Rest], TSurgery, MinDistance) :-
-    Duration is Tfin - Tin + 1,
-    (Duration >= TSurgery ->
-        MinDistance = 0  % Perfect fit
-    ;
-        min_distance_to_schedule(Rest, TSurgery, RestMinDistance),
-        MinDistance is min(RestMinDistance, Tfin - Tin + 1)
+    (obtain_better_sol_with_constraints_aux(Room, Day, ErrorFlag); true),  % Passando ErrorFlag
+    (ErrorFlag == false ->
+        retract(better_sol_with_constraints(Day, Room, AgOpRoomBetter, LAgDoctorsBetter, TFinOp)),
+        write('Final Result with Constraints: AgOpRoomBetter='), write(AgOpRoomBetter), nl,
+        write('LAgDoctorsBetter='), write(LAgDoctorsBetter), nl,
+        write('TFinOp='), write(TFinOp), nl,
+        get_time(Tf),
+        T is Tf - Ti,
+        write('Tempo de geração da solução com restrições:'), write(T), nl
+    ;   write('Erro detectado durante a geração da solução com restrições.'), nl
     ).
 
-schedule_surgeries_tsp([], _, _).
-schedule_surgeries_tsp([OpCode | Rest], Room, Day) :-
+obtain_better_sol_with_constraints_aux(Room, Day, ErrorFlag) :-
+    asserta(better_sol_with_constraints(Day, Room, _, _, 1441)),
+    findall(OpCode, surgery_id(OpCode, _), LOC),
+    (LOC == [] ->  % Verifica se não encontrou nenhum código de cirurgia
+        ErrorFlag = true,
+        write('Erro: Nenhum código de cirurgia encontrado!'), nl,
+        fail
+    ;   true),
+    permutation(LOC, LOpCode),
+    retractall(agenda_staff1(_, _, _)),
+    retractall(agenda_operation_room1(_, _, _)),
+    retractall(availability(_, _, _)),
+    findall(_, (agenda_staff(D, Day, Agenda), assertz(agenda_staff1(D, Day, Agenda))), _),
+    agenda_operation_room(Room, Day, Agenda),
+    (Agenda == [] ->  % Verifica se a agenda está vazia
+        ErrorFlag = true,
+        write('Erro: Agenda não encontrada para o dia e sala especificados!'), nl,
+        fail
+    ;   assert(agenda_operation_room1(Room, Day, Agenda))),
+    findall(_, (agenda_staff1(D, Day, L), free_agenda0(L, LFA), adapt_timetable(D, Day, LFA, LFA2), assertz(availability(D, Day, LFA2))), _),
+    availability_all_surgeries_with_constraints(LOpCode, Room, Day),
+    agenda_operation_room1(Room, Day, AgendaR),
+    update_better_sol_with_constraints(Day, Room, AgendaR, LOpCode),
+    ErrorFlag = false,  % Indica que o processo terminou sem erros
+    fail.
+
+
+update_better_sol_with_constraints(Day, Room, Agenda, LOpCode) :-
+    better_sol_with_constraints(Day, Room, _, _, FinTime),
+    reverse(Agenda, AgendaR),
+    evaluate_final_time(AgendaR, LOpCode, FinTime1),
+    write('Analyzing with Constraints for LOpCode='), write(LOpCode), nl,
+    write('now: FinTime1='), write(FinTime1), write(' Agenda='), write(Agenda), nl,
+    FinTime1 < FinTime,
+    write('Best solution with constraints updated'), nl,
+    retract(better_sol_with_constraints(_, _, _, _, _)),
+    findall(Doctor, assignment_surgery(_, Doctor), LDoctors1),
+    remove_equals(LDoctors1, LDoctors),
+    list_doctors_agenda(Day, LDoctors, LDAgendas),
+    asserta(better_sol_with_constraints(Day, Room, Agenda, LDAgendas, FinTime1)).
+
+availability_all_surgeries_with_constraints([], _, _).
+availability_all_surgeries_with_constraints([OpCode | LOpCode], Room, Day) :-
     surgery_id(OpCode, OpType),
     surgery(OpType, _, TSurgery, _),
-    availability_operation(OpCode, Room, Day, LPossibilities, LDoctors),
+    availability_operation_with_constraints(OpCode, Room, Day, LPossibilities, LDoctors),
     schedule_first_interval(TSurgery, LPossibilities, (TinS, TfinS)),
     retract(agenda_operation_room1(Room, Day, Agenda)),
-    insert_agenda((TinS, TfinS, OpCode), Agenda, UpdatedAgenda),
-    assertz(agenda_operation_room1(Room, Day, UpdatedAgenda)),
+    insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
+    assertz(agenda_operation_room1(Room, Day, Agenda1)),
     insert_agenda_doctors((TinS, TfinS, OpCode), Day, LDoctors),
-    schedule_surgeries_tsp(Rest, Room, Day).
+    availability_all_surgeries_with_constraints(LOpCode, Room, Day).
+
+availability_operation_with_constraints(OpCode, Room, Day, LPossibilities, LDoctors) :-
+    surgery_id(OpCode, OpType),
+    surgery(OpType, _, TSurgery, _),
+    findall(Doctor, assignment_surgery(OpCode, Doctor), LDoctors),
+    intersect_all_agendas(LDoctors, Day, LA),
+    agenda_operation_room1(Room, Day, LAgenda),
+    free_agenda0(LAgenda, LFAgRoom),
+    intersect_2_agendas(LA, LFAgRoom, LIntAgDoctorsRoom),
+    remove_unf_intervals_with_constraints(LDoctors, Day, TSurgery, LIntAgDoctorsRoom, LPossibilities).
+
+ availability_operation2(OpCode, Room, Day, LPossibilities, LDoctors) :-
+    surgery_id(OpCode, OpType),
+    surgery(OpType, _, TSurgery, _),
+    findall(Doctor, assignment_surgery(OpCode, Doctor), LDoctors),
+    intersect_all_agendas(LDoctors, Day, LA),
+    agenda_operation_room1(Room, Day, LAgenda),
+    free_agenda0(LAgenda, LFAgRoom),
+    intersect_2_agendas(LA, LFAgRoom, LIntAgDoctorsRoom),
+    remove_unf_intervals_with_constraints(LDoctors, Day, TSurgery, LIntAgDoctorsRoom, LPossibilities).
+
+
+remove_unf_intervals_with_constraints(_, _, _, [], []).
+remove_unf_intervals_with_constraints(LDoctors, Day, TSurgery, [(Tin, Tfin) | LA], [(Tin, Tfin) | LA1]) :-
+    TDur is Tfin - Tin + 1,
+    TSurgery =< TDur,
+    check_doctors_availability(LDoctors, Day, Tin, TSurgery),
+    !,
+    remove_unf_intervals_with_constraints(LDoctors, Day, TSurgery, LA, LA1).
+remove_unf_intervals_with_constraints(LDoctors, Day, TSurgery, [_ | LA], LA1) :-
+    remove_unf_intervals_with_constraints(LDoctors, Day, TSurgery, LA, LA1).
+
+check_doctors_availability([], _, _, _).
+check_doctors_availability([Doctor | LDoctors], Day, Start, TSurgery) :-
+    agenda_staff1(Doctor, Day, Agenda),
+    \+ has_conflict(Agenda, Start, TSurgery),
+    check_doctors_availability(LDoctors, Day, Start, TSurgery).
+
+has_conflict([], _, _) :- fail.
+has_conflict([(Tin, Tfin, _) | _], Start, TSurgery) :-
+    SurgeryEnd is Start + TSurgery - 1,
+    (SurgeryEnd >= Tin ; Start < Tfin),
+    !.
+has_conflict([_ | Rest], Start, TSurgery) :-
+    has_conflict(Rest, Start, TSurgery).

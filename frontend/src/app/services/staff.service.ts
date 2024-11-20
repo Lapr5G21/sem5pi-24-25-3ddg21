@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams  } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -40,10 +40,6 @@ export class StaffService {
             'Authorization': `Bearer ${token}`  
       });
     return this.http.post(`${this.apiUrl}/staffs`, staffData,{headers});
-  }
-
-  updateStaff(staffData: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/staffs/${staffData.staffId}`, staffData);
   }
   
   getStaffById(staffId: string): Observable<any> {
@@ -97,15 +93,42 @@ removeAvailabilitySlot(staffId: string, slot: { start: string, end: string }): O
   });
 
   const payload = {
+      staffId: staffId,
       start: slot.start,
-      end: slot.end
-  };
+      end: slot.end,
+};
+  console.log(staffId);
 
-  return this.http.request<any>('DELETE', `${this.apiUrl}/staffs/${staffId}/availability-slots`, {
+  return this.http.request<any>('DELETE', `${this.apiUrl}/staffs/${staffId}/availability-slots/hard`, {
       headers,
       body: payload
   });
 }
+
+updateStaff(id: string, staffData: any): Observable<any> {
+  const token = localStorage.getItem('access_token');
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+
+  const payload = {
+    staffId: id,
+    firstName: staffData.staffFirstName,
+    lastName: staffData.staffLastName,
+    fullName: staffData.staffFullName,
+    email: staffData.staffEmail,
+    phoneNumber: staffData.staffPhoneNumber,
+    specializationId: staffData.specializationId,
+    staffAvailabilitySlots: staffData.staffAvailabilitySlots || []
+  };
+
+  console.log('Payload enviado para o backend:', payload);
+
+  return this.http.put(`${this.apiUrl}/staffs/${id}`, payload, { headers });
+}
+
 
 
 }

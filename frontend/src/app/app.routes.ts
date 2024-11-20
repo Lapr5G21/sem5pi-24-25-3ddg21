@@ -6,7 +6,6 @@ import { CreateStaffsComponent } from './components/admin-dashboard/staffs/creat
 import { CreatePatientsComponent } from './components/admin-dashboard/patients/create-patients/create-patients.component';
 import { EditStaffsComponent } from './components/admin-dashboard/staffs/edit-staffs/edit-staffs.component';
 import { ListStaffsComponent } from './components/admin-dashboard/staffs/list-staffs/list-staffs.component';
-import { EditPatientsComponent } from './components/admin-dashboard/patients/edit-patients/edit-patients.component';
 import { ListPatientsComponent } from './components/admin-dashboard/patients/list-patients/list-patients.component';
 import { MenubarComponent } from './components/menubar/menubar.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
@@ -16,26 +15,32 @@ import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-d
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 import { ListOperationTypesComponent } from './components/admin-dashboard/operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 import { PatientDashboardComponent } from './components/patient-dashboard/patient-dashboard.component';
-
+import { EditOperationRequestsComponent } from './components/doctor-dashboard/operationRequests/edit-operation-requests/edit-operation-requests.component';
 
 export const routes: Routes = [
-    { path: 'sidebar', component: SidebarComponent }, 
+    // General Routes
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'home', component: HomeComponent },
+    { path: 'auth-callback', component: AuthCallbackComponent },
+    { path: 'hospitalModule', component: HospitalModelComponent },
+
+    // Admin Dashboard 
+    { path: 'adminDashboard/home', component: AdminDashboardComponent },
     { path: 'adminDashboard/operationtypes/create', component: CreateOperationTypesComponent },
     { path: 'adminDashboard/operationtypes/list', component: ListOperationTypesComponent },
-    { path: 'adminDashboard/staffs/create', component: CreateStaffsComponent }, 
-    { path: 'adminDashboard/staffs/edit', component: EditStaffsComponent },  
-    { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },    
+    { path: 'adminDashboard/staffs/create', component: CreateStaffsComponent },
+    { path: 'adminDashboard/staffs/edit', component: EditStaffsComponent },
+    { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },
     { path: 'adminDashboard/patients/create', component: CreatePatientsComponent },
-    { path: 'adminDashboard/patients/edit', component: EditPatientsComponent },
     { path: 'adminDashboard/patients/list', component: ListPatientsComponent },
-    { path: 'adminDashboard/home', component: AdminDashboardComponent },
     { path: 'adminDashboard/3DModule', component: HospitalModelComponent },
-    { path: 'home', component: HomeComponent },
-    { path: 'patientDashboard/home', component: PatientDashboardComponent },
-    { path: 'auth-callback', component: AuthCallbackComponent },
-    { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },  
+
+    // Doctor Dashboard 
     { path: 'doctorDashboard/home', component: DoctorDashboardComponent },
+    { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },
+    { path: 'edit_operation-request/:id', component: EditOperationRequestsComponent },
     { path: 'doctorDashboard/3DModule', component: HospitalModelComponent },
-    { path: 'hospitalModule', component: HospitalModelComponent },
-    { path: '', redirectTo: 'home', pathMatch: 'full' }
+
+    // Patient Dashboard 
+    { path: 'patientDashboard/home', component: PatientDashboardComponent }
 ];

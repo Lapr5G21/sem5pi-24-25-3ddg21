@@ -9,7 +9,7 @@ namespace DDDSample1.Domain.Staffs
     public interface IAvailabilitySlotRepository : IRepository<AvailabilitySlot, AvailabilitySlotId>
     {
     Task<List<AvailabilitySlot>> GetByStaffIdAsync(StaffId staffId);
-
+    Task<bool> RemoveBySlot(StaffId staffId, DateTime start, DateTime end);
     }
 
 }

@@ -288,26 +288,24 @@ namespace DDDSample1.Domain.Staffs
             .ToList();
     }
 
-public async Task<AvailabilitySlot> RemoveAvailabilitySlotAsync(string staffId, DateTime start, DateTime end)
+public async Task<bool> RemoveAvailabilitySlotAsync(string staffId, DateTime start, DateTime end)
 {
     StaffId id = new StaffId(staffId);
     var staff = await _staffRepository.GetByIdAsync(id);
     
     if (staff == null)
     {
-        return null;
+        return false;
     }
 
-    var slotRemoved = staff.RemoveAvailabilitySlot(id, start, end);
+    bool isRemoved = await _availabilitySlotRepository.RemoveBySlot(id, start, end);
 
-    if (slotRemoved != null)
-    {
-        await _unitOfWork.CommitAsync();
-        return slotRemoved;
+    if(isRemoved){
+    await _unitOfWork.CommitAsync();
+    } 
+
+    return isRemoved;
+
     }
-
-    return null;
 }
-
-    }
 }

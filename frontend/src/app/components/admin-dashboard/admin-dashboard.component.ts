@@ -84,11 +84,6 @@ export class AdminDashboardComponent implements OnInit {
             command: () => this.createStaffs()
           },
           {
-            label: 'Edit',
-            icon: 'pi pi-pencil',
-            command: () => this.editStaffs()
-          },
-          {
             label: 'List',
             icon: 'pi pi-list',
             command: () => {
@@ -165,10 +160,6 @@ export class AdminDashboardComponent implements OnInit {
 
   createStaffs() {
     this.createStaffsComponent.showDialog(); 
-  }
-
-  editStaffs() {
-    this.editStaffsComponent.showDialog(); 
   }
 
   listStaffs() {

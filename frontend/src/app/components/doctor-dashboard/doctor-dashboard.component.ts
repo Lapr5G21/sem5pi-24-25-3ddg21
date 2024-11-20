@@ -90,6 +90,7 @@ export class DoctorDashboardComponent implements OnInit {
 
   goHome() {
     this.showOperationRequestsList = false; 
+    this.showHospitalModel = false;
     this.router.navigate(['/doctorDashboard/home']); 
   }
 
