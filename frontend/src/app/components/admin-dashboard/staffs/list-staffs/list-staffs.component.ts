@@ -298,4 +298,18 @@ loadSlots(staffId: string) {
     });
   }
 
+  confirmEnable(staffId: string): void {
+    this.staffService.enableStaff(staffId).subscribe(
+      () => {
+        
+        const staff = this.staffs.find(s => s.id === staffId);
+        if (staff) {
+          staff.active = true;
+        }
+        this.loadStaffs();
+      },
+      (error) => console.error('Erro ao ativar a staff', error)
+    );
+  }
+
 }

@@ -8,5 +8,6 @@ namespace DDDSample1.Domain.AuditLogs
         Log LogUpdateOperation(LogCategoryType categoryType, string details);
         Log LogDeleteOperation(LogCategoryType categoryType, string details);
         Log LogDeactivationOperation(LogCategoryType categoryType, string details);
+        Log LogActivationOperation(LogCategoryType categoryType, string details);
     }
 }

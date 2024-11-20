@@ -43,5 +43,14 @@ namespace DDDSample1.Infrastructure.AuditLogs
                 new LogContent(details),
                 categoryType);      
         }
+
+        public Log LogActivationOperation(LogCategoryType categoryType, string details)
+        {
+            return new Log(
+                new LogId(Guid.NewGuid().ToString()),
+                LogActionType.DEACTIVATION,
+                new LogContent(details),
+                categoryType);      
+        }
     }
 }

@@ -126,14 +126,6 @@ public AvailabilitySlot RemoveAvailabilitySlot(String staffId, DateTime start, D
     return null;
 }
 
-
-
-
-
-
-
-
-
         public void Deactivate()
         {
             this.Active = false;

@@ -90,6 +90,32 @@ namespace DDDSample1.Controllers
             return Ok(staff);
         }
 
+    // PUT: api/staffs/{id}/activate
+    [Authorize(Policy = "AdminRole")]
+    [HttpPut("{id}/activate")]
+    public async Task<ActionResult<StaffDto>> Activate(string id)
+    {
+        try
+        {
+            var staff = await _staffService.ActivateAsync(new StaffId(id));
+
+            if (staff == null)
+            {
+                return NotFound(new { message = "Staff not found or already active." });
+            }
+
+            return Ok(new 
+            {
+                message = "Staff activated successfully.",
+                staff
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
         // DELETE: api/staff/{id}/hard
         [HttpDelete("{id}/hard")]
         [Authorize(Policy="AdminRole")]

@@ -225,6 +225,33 @@ namespace DDDSample1.Domain.Staffs
             };
         }
 
+    internal async Task<StaffDto> ActivateAsync(StaffId id)
+    {
+        var staff = await this._staffRepository.GetByIdAsync(id);
+        if (staff == null) return null;
+
+        staff.Reactivate();
+
+        var log = _logRepository.LogDeactivationOperation(LogCategoryType.STAFF_PROFILE, $"Active Staff {staff.StaffFullName} with this email {staff.StaffEmail}");
+        await _logRepository.AddAsync(log);
+
+        await this._unitOfWork.CommitAsync();
+        return new StaffDto
+        {
+            StaffId = staff.Id.AsString(),
+            StaffFirstName = staff.StaffFirstName.ToString(),
+            StaffLastName = staff.StaffLastName.ToString(),
+            StaffFullName = staff.StaffFullName.ToString(),
+            StaffLicenseNumber = staff.StaffLicenseNumber.ToString(),
+            SpecializationId = staff.SpecializationId.AsString(),
+            StaffEmail = staff.StaffEmail.ToString(),
+            StaffPhoneNumber = staff.StaffPhoneNumber.ToString(),
+            StaffAvailabilitySlots = staff.AvailabilitySlots,
+            UserId = staff.UserId.ToString(),
+            Active = staff.Active
+        };
+    }
+
         public async Task<StaffDto> DeleteAsync(StaffId staffId)
         {
             var staff = await this._staffRepository.GetByIdAsync(staffId);
