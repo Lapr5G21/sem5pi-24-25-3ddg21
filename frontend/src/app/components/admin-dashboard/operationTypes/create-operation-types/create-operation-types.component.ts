@@ -125,4 +125,14 @@ export class CreateOperationTypesComponent implements OnInit {
         this.selectedSpecializations = [];
         this.staffNumbers = {};
     }
+
+    isFormValid(): boolean {
+        return this.operationTypeName != null && 
+               this.estimatedDuration != null && 
+               this.anesthesiaTime != null && 
+               this.surgeryTime != null && 
+               this.cleaningTime != null && 
+               this.selectedSpecializations.length > 0;
+    }    
+    
 }

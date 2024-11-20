@@ -8,27 +8,70 @@
 
         <div class="flex align-items-center gap-3 mb-3">
             <label for="operationTypeName" class="font-semibold w-6rem">Name</label>
-            <input pInputText id="operationTypeName" [(ngModel)]="operationTypeName" class="flex-auto" autocomplete="off" />
+            <input pInputText 
+                   id="operationTypeName" 
+                   [(ngModel)]="operationTypeName" 
+                   class="flex-auto" 
+                   autocomplete="off" 
+                   required 
+                   #operationTypeNameInput="ngModel" />
+            <small *ngIf="operationTypeNameInput.invalid && operationTypeNameInput.touched" class="p-error">Name is required.</small>
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="estimatedDuration" class="font-semibold w-6rem">Estimated Duration (min)</label>
-            <input pInputText id="estimatedDuration" [(ngModel)]="estimatedDuration" class="flex-auto" type="number" autocomplete="off" />
+            <input pInputText 
+                   id="estimatedDuration" 
+                   [(ngModel)]="estimatedDuration" 
+                   class="flex-auto" 
+                   type="number" 
+                   autocomplete="off" 
+                   required 
+                   min="1"
+                   #estimatedDurationInput="ngModel" />
+            <small *ngIf="estimatedDurationInput.invalid && estimatedDurationInput.touched" class="p-error">Estimated Duration is required and must be at least 1 minute.</small>
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="anesthesiaTime" class="font-semibold w-6rem">Anesthesia Time (min)</label>
-            <input pInputText id="anesthesiaTime" [(ngModel)]="anesthesiaTime" class="flex-auto" type="number" autocomplete="off" />
+            <input pInputText 
+                   id="anesthesiaTime" 
+                   [(ngModel)]="anesthesiaTime" 
+                   class="flex-auto" 
+                   type="number" 
+                   autocomplete="off" 
+                   required 
+                   min="1" 
+                   #anesthesiaTimeInput="ngModel" />
+            <small *ngIf="anesthesiaTimeInput.invalid && anesthesiaTimeInput.touched" class="p-error">Anesthesia Time is required and must be at least 1 minute.</small>
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="surgeryTime" class="font-semibold w-6rem">Surgery Time (min)</label>
-            <input pInputText id="surgeryTime" [(ngModel)]="surgeryTime" class="flex-auto" type="number" autocomplete="off" />
+            <input pInputText 
+                   id="surgeryTime" 
+                   [(ngModel)]="surgeryTime" 
+                   class="flex-auto" 
+                   type="number" 
+                   autocomplete="off" 
+                   required 
+                   min="1"
+                   #surgeryTimeInput="ngModel" />
+            <small *ngIf="surgeryTimeInput.invalid && surgeryTimeInput.touched" class="p-error">Surgery Time is required and must be at least 1 minute.</small>
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="cleaningTime" class="font-semibold w-6rem">Cleaning Time (min)</label>
-            <input pInputText id="cleaningTime" [(ngModel)]="cleaningTime" class="flex-auto" type="number" autocomplete="off" />
+            <input pInputText 
+                   id="cleaningTime" 
+                   [(ngModel)]="cleaningTime" 
+                   class="flex-auto" 
+                   type="number" 
+                   autocomplete="off" 
+                   required 
+                   min="1"
+                   #cleaningTimeInput="ngModel" />
+            <small *ngIf="cleaningTimeInput.invalid && cleaningTimeInput.touched" class="p-error">Cleaning Time is required and must be at least 1 minute.</small>
         </div>
 
         <div class="flex align-items-center gap-3 mb-3">
@@ -37,9 +80,12 @@
                 id="specializations"
                 [options]="optionList"
                 [(ngModel)]="selectedSpecializations"
-                placeholder="Select Specializations" 
-                [appendTo]="'body'">
+                placeholder="Select Specializations"
+                [appendTo]="'body'"
+                required
+                #specializationsInput="ngModel">
             </p-multiSelect>
+            <small *ngIf="specializationsInput.invalid && specializationsInput.touched" class="p-error">At least one specialization is required.</small>
         </div>
 
         <div *ngIf="selectedSpecializations.length > 0" class="mb-5">
@@ -77,7 +123,8 @@
                 label="Save" 
                 [outlined]="true" 
                 severity="primary" 
-                (onClick)="saveOperationType()"></p-button>
+                (onClick)="saveOperationType()" 
+                [disabled]="!isFormValid()"></p-button>
         </ng-template>
     </p-dialog>
 
