@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { CalendarModule } from 'primeng/calendar';
+import { EditPatientsComponent } from '../edit-patients/edit-patients.component';
+
 
 
 @Component({
@@ -34,7 +36,8 @@ import { CalendarModule } from 'primeng/calendar';
         DropdownModule,
         FloatLabelModule,
         CalendarModule,
-        PaginatorModule
+        PaginatorModule,
+        EditPatientsComponent
     ],
 })
 export class ListPatientsComponent implements OnInit {
@@ -57,6 +60,11 @@ export class ListPatientsComponent implements OnInit {
 
     medicalHistoryDialogVisible: boolean = false;
     selectedMedicalHistory: string = '';
+
+    editDialogVisible: boolean = false;
+    selectedPatient: any = {}; //Paciente Selecionado
+
+
 
     constructor(private patientService: PatientService) {}
 
@@ -90,4 +98,14 @@ export class ListPatientsComponent implements OnInit {
     onSearch(): void {
         this.loadPatients();
     }
+
+    openEditDialog(patient: any) {
+        this.selectedPatient = { ...patient }; // Define o paciente selecionado
+        this.editDialogVisible = true; // Exibe o diálogo
+      }
+
+      closeEditDialog() {
+        this.editDialogVisible = false; // Fecha o diálogo
+        this.selectedPatient = null; // Reseta o paciente selecionado
+      }
 }

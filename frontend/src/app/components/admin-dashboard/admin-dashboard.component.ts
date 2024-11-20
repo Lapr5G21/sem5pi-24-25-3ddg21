@@ -104,11 +104,6 @@ export class AdminDashboardComponent implements OnInit {
             command: () => this.createPatient()
           },
           {
-            label: 'Edit',
-            icon: 'pi pi-pencil',
-            command: () => this.editPatient()
-          },
-          {
             label: 'List',
             icon: 'pi pi-list',
             command: () => {
@@ -168,10 +163,6 @@ export class AdminDashboardComponent implements OnInit {
 
   createPatient() {
     this.createPatientsComponent.showDialog(); 
-  }
-
-  editPatient() {
-    this.editPatientsComponent.showDialog(); 
   }
 
   listPatients() {

@@ -126,13 +126,13 @@
               <p-button 
                 icon="pi pi-pencil"
                 [outlined]="true"
-                [disabled]="!patient.Active"
-                [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }">
+                [disabled]="!patient.active"
+                [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }" (click)="openEditDialog(patient)">
               </p-button>
 
               <p-button 
                 icon="pi pi-trash"
-                [disabled]="!patient.Active"
+                [disabled]="!patient.active"
                 [ngClass]="{ 'p-button-danger': true }"
                 [style]="{
                   'background-color': '#f44336',
@@ -151,4 +151,16 @@
   <p-dialog header="Medical Record" [(visible)]="medicalHistoryDialogVisible" modal="true" [style]="{ width: '40vw' }">
     <p>{{ selectedMedicalHistory }}</p>
   </p-dialog>
+
+  <!-- Diálogo para editar -->
+  <p-dialog
+  header="Edit Patient Information"
+  [(visible)]="editDialogVisible"
+  [style]="{ width: '50%' }"
+>
+  <edit-patients-modal
+    [patient]="selectedPatient"
+    (close)="closeEditDialog()"
+  ></edit-patients-modal>
+</p-dialog>
 </div>

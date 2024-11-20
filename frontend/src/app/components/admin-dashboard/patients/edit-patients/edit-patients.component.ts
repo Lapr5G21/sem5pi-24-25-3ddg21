@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
+import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService, SelectItem } from 'primeng/api';
@@ -25,18 +26,23 @@ import { ToastModule } from 'primeng/toast';
         FormsModule,
         CommonModule,
         HttpClientModule,
-        ToastModule
+        ToastModule,
+        DataViewModule
     ],
     providers: [PatientService, MessageService]
 })
 export class EditPatientsComponent {
-    visible: boolean = false;
-    optionList: SelectItem[] = [];
+
+    @Input() patient: any = {} ; // Paciente passado pelo list-patients
+    @Output() close = new EventEmitter<void>(); // Emite evento ao fechar o diálogo
+
+    editDialogVisible: boolean = false;
+    selectedPatient: any = {}; 
 
     FirstName: string = '';
     LastName: string = '';
     FullName: string = '';
-    MedicalRecord : string = '';
+    MedicalHistory : string = '';
     Email: string = '';
     PhoneNumber: string = '';
     Address: string = '';
@@ -49,53 +55,52 @@ export class EditPatientsComponent {
   
     
     showDialog() {
-        this.visible = true;
+        this.editDialogVisible = true;
     }
 
-    updatePatient() {
-
-        const patient = new EditPatientDto(
-            this.FirstName,
-            this.LastName,
-            this.FullName,
-            this.MedicalRecord,
-            this.Email,
-            this.PhoneNumber,
-            this.Address,
-        );
-
-        console.log('Payload:', JSON.stringify(patient));
-
-        this.patientService.updatePatient(patient).subscribe(
-            () => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'Patient Successfully Updated!'
-                });
-                this.resetForm();
-                this.visible = false;
-            },
-            (error) => {
-                console.error('Patient Updating Error:', error);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Erro',
-                    detail: 'The patient could not be updated'
-                });
-            }
-        );
-    }
+    updatePatient(selectedPatient: any) {
+        console.log('Saving patient info:', selectedPatient);
+        
+        this.patientService.updatePatient(selectedPatient.medicalRecordNumber, selectedPatient).subscribe({
+          next: (response) => {
+            console.log('Patient info successfully updated:', response);
+            
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Patient info successfully updated!',
+            });
+            
+            this.editDialogVisible = false; 
+          },
+          error: (error) => {
+            console.error('Error updating patient info:', error);
+            
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to update patient information.',
+            });
+          },
+          complete: () => {
+            console.log('Patient update process completed.');
+          }
+        });
+      }
 
     resetForm() {
         this.FirstName = '';
         this.LastName = '';
         this.FullName = '';
-        this.MedicalRecord = '';
+        this.MedicalHistory = '';
         this.Email = '';
         this.PhoneNumber = '';
         this.Address = '';
 
     }
+
+    closeDialog(): void {
+        this.close.emit(); // Notifica o componente pai
+      }
 }
 

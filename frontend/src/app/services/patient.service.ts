@@ -24,13 +24,29 @@ export class PatientService {
         return this.http.post(`${this.apiUrl}/patients`, patientData, {headers});
     }
 
-    updatePatient(patientData: any): Observable<any> {
+    updatePatient(id: string, patientData: any): Observable<any> {
       const token = localStorage.getItem('access_token');
-        const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`  
-          });
-        return this.http.put(`${this.apiUrl}/patients/${patientData.medicalRecordNumber}`, patientData,{headers});
-      }
+    
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      });
+    
+      const payload = {
+        medicalRecordNumber: id,
+        firstName: patientData.FisrtName,
+        lastName: patientData.LastName,
+        fullName: patientData.FullName,
+        medicaLRecord: patientData.MedicalHistory,
+        email: patientData.Email,
+        phoneNumber: patientData.PhoneNumber,
+        address: patientData.Address
+      };
+    
+      console.log('Payload enviado para o backend:', payload);
+    
+      return this.http.put(`${this.apiUrl}/patients/${id}`, payload, { headers });
+    }
 
     searchPatients(name: string, birthDate: string, gender: string, email: string, phoneNumber: string, mrn: string, isActive: boolean | null): Observable<any[]> {
         let params = new HttpParams();

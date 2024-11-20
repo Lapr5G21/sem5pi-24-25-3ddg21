@@ -1,63 +1,78 @@
-<div class="card flex justify-content-center">
-    <p-dialog 
-        header="Edit Patient" 
-        [(visible)]="visible" 
-        [modal]="true" 
-        [style]="{ width: '30rem' }">
-        <span class="p-text-secondary block mb-5">Insert info :</span>
-
-        <div class="flex align-items-center gap-3 mb-3">
-            <label for="FirstName" class="font-semibold w-6rem">First Name</label>
-            <input pInputText id="FirstName" [(ngModel)]="FirstName" class="flex-auto" autocomplete="off" />
-        </div>
-
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="LastName" class="font-semibold w-6rem">Last Name</label>
-            <input pInputText id="LastName" [(ngModel)]="LastName" class="flex-auto" autocomplete="off" />
-        </div>
-
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="FullName" class="font-semibold w-6rem">Full Name</label>
-            <input pInputText id="FullName" [(ngModel)]="FullName" class="flex-auto" autocomplete="off" />
-        </div>       
-
-                
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="MedicalRecord" class="font-semibold w-6rem">Medical Record</label>
-            <input pInputText id="MedicalRecord" [(ngModel)]="MedicalRecord" class="flex-auto" autocomplete="off" />
-        </div>        
-        
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="Email" class="font-semibold w-6rem">Email</label>
-            <input pInputText id="Email" [(ngModel)]="Email" class="flex-auto" autocomplete="off" />
-        </div>
-        
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="PhoneNumber" class="font-semibold w-6rem">Phone Number</label>
-            <input pInputText id="PhoneNumber" [(ngModel)]="PhoneNumber" class="flex-auto" autocomplete="off" />
-        </div>
-        
-        <div class="flex align-items-center gap-3 mb-5">
-            <label for="Address" class="font-semibold w-6rem">Address</label>
-            <input pInputText id="Address" [(ngModel)]="Address" class="flex-auto" autocomplete="off" />
-        </div>       
-
-
-        <ng-template pTemplate="footer">
-            <p-button 
-                label="Cancel" 
-                [text]="true" 
-                severity="secondary" 
-                (onClick)="visible = false"></p-button>
-            <p-button 
-                label="Save" 
-                [outlined]="true" 
-                severity="primary" 
-                (onClick)="updatePatient()"></p-button>
+<!-- Diálogo para editar as informações do Staff -->
+<p-dialog header="Edit Patient Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
+    <div class="card">  
+    <p-dataView [value]="[selectedPatient]" [rows]="1">
+        <ng-template pTemplate="header">
+          <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+            <div class="col">Field</div>
+            <div class="col">Value</div>
+          </div>
         </ng-template>
+        
+        <ng-template pTemplate="list" let-staff>
+          <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+              <label for="firstName">First Name</label>
+            </div>
+            <div class="col p-2">
+              <input pInputText id="firstName" [(ngModel)]="selectedPatient.firstName" />
+            </div>
+          </div>
+          
+          <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+              <label for="lastName">Last Name</label>
+            </div>
+            <div class="col p-2">
+              <input pInputText id="lastName" [(ngModel)]="selectedPatient.lastName" />
+            </div>
+          </div>
+          <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+              <label for="fullName">Full Name</label>
+            </div>
+            <div class="col p-2">
+              <input pInputText id="fullName" [(ngModel)]="selectedPatient.fullName" />
+            </div>
+          </div>
+          <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+              <label for="medicalRecord">Medical Record</label>
+            </div>
+            <div class="col p-2">
+              <input pInputText id="medicalRecord" [(ngModel)]="selectedPatient.medicalRecord" />
+            </div>
+          </div>
+          <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+              <label for="phoneNumber">Phone Number</label>
+            </div>
+            <div class="col p-2">
+              <input pInputText id="phoneNumber" [(ngModel)]="selectedPatient.phoneNumber" />
+            </div>
+          </div>
+          <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+              <label for="email">Email</label>
+            </div>
+            <div class="col p-2">
+              <input pInputText id="email" [(ngModel)]="selectedPatient.email" />
+            </div>
+          </div>
+          <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+              <label for="address">Address</label>
+            </div>
+            <div class="col p-2">
+              <input pInputText id="address" [(ngModel)]="selectedPatient.address" />
+            </div>
+          </div>
+
+        </ng-template>
+      </p-dataView>
+      <div class="flex justify-content-end">
+        <button pButton label="Save" icon="pi pi-check" (click)="updatePatient(selectedPatient)" class="p-button-primary"></button>
+        <button pButton label="Close" icon="pi pi-times" (click)="closeDialog()" class="p-button-secondary"></button>  
+    </div>
+    </div>
     </p-dialog>
-
-    <!-- Toast Notifications -->
-    <p-toast></p-toast>
-</div>
-

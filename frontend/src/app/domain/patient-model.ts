@@ -27,7 +27,7 @@ export class EditPatientDto {
         public FirstName: string,
         public LastName: string,
         public FullName: string,
-        public MedicalRecord: string,
+        public MedicalHistory: string,
         public Email: string,
         public PhoneNumber: string,
         public Address: string,
