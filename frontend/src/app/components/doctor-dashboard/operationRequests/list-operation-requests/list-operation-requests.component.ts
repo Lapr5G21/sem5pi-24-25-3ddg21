@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
-import { FormsModule } from '@angular/forms'; // Para usarmos ngModel
+import { FormsModule } from '@angular/forms'; 
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -38,11 +38,14 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ListOperationRequestsComponent implements OnInit {
-  // Variáveis para armazenar os valores sem usar o FormGroup
-  priority: string = '';
-  status: string = '';
-  deadlineDate: Date |null  = null;
+  
   operationRequestId: string = '';
+  priority: string = '';
+  operationTypeId: string = '';
+  deadlineDate: Date |null  = null;
+  status: string = '';
+  doctorId:  string = '';
+  patientMedicalRecordNumber: string = '';
 
   operationRequests: any[] = [];
   filteredOperationRequests: any[] = [];
@@ -60,8 +63,11 @@ export class ListOperationRequestsComponent implements OnInit {
 
   operationRequest = {
     priority: '',
+    operationTypeId: '',
+    deadlineDate: null,
     status: '',
-    deadlineDate: null
+    doctorId: '',
+    patientMedicalRecordNumber: ''
   };
 
   priorityOptions = [
@@ -93,8 +99,7 @@ export class ListOperationRequestsComponent implements OnInit {
     this.operationRequestService.getOperationRequests().subscribe(
       (operationRequests) => {
         this.operationRequests = operationRequests;
-        this.filteredOperationRequests = [...operationRequests]; // Inicializa com todos os dados
-
+        this.filteredOperationRequests = [...operationRequests]; 
         this.loadPatients();
         this.loadDoctors();
 
@@ -241,47 +246,53 @@ export class ListOperationRequestsComponent implements OnInit {
   }
 
   openDialog(item: any): void {
-    // Preenche diretamente as variáveis com os dados da solicitação de operação selecionada
-    this.priority = item.priorityLevel;
-    this.status = item.status;
-    this.deadlineDate = item.deadlineDate ? new Date(item.deadlineDate) : null;
+    
     this.operationRequestId = item.id;
+    this.priority = item.priorityLevel;
+    this.operationTypeId = item.operationTypeId;
+    this.deadlineDate = item.deadlineDate ? new Date(item.deadlineDate) : null;
+    this.status = item.status;
+    this.doctorId = item.doctorId;
+    this.patientMedicalRecordNumber = item.patientMedicalRecordNumber;
+    
+    console.log("Payload")
+    console.log("ID do Op Request:", this.operationRequestId);
+    console.log("Prioridade:", this.priority);
+    console.log("ID do tipo de Operação:", this.operationTypeId);
+    console.log("Data de prazo:", this.deadlineDate);
+    console.log("Status:", this.status);
+    console.log("ID do médico:", this.doctorId);
+    console.log("Número do paciente:", this.patientMedicalRecordNumber);
+
 
     this.display = true;
   }
 
   saveChanges(): void {
+    // Encontrar a operação original na lista (caso precise manter outros campos)
+    const originalRequest = this.operationRequests.find(req => req.id === this.operationRequestId);
+  
+    if (!originalRequest){
+      console.error('Operation request original não encontrada');
+      return;
+    }
+    
     const updatedRequest = {
-      id: this.operationRequestId,
-      priority: this.priority,
+      operationRequestId : this.operationRequestId,
+      ...originalRequest, // Mantém todos os dados originais
+      priorityLevel: this.priority, // Atualiza apenas os campos modificados
       status: this.status,
-      deadlineDate: this.deadlineDate
+      deadlineDate: this.deadlineDate ? this.deadlineDate : originalRequest.deadlineDate, // Atualiza se houver nova data
     };
+    
+  
+    console.log("Payload do save:");
+    console.log(updatedRequest);
+  
+    
+    this.operationRequestService.updateOperationRequest(this.operationRequestId,updatedRequest);
 
-    this.operationRequestService.updateOperationRequest(updatedRequest).subscribe(
-      (response) => {
-        const index = this.operationRequests.findIndex(request => request.id === updatedRequest.id);
-        if (index !== -1) {
-          this.operationRequests[index] = updatedRequest;
-          this.filteredOperationRequests = [...this.operationRequests];
-        }
-
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Operação atualizada com sucesso!',
-        });
-
-        this.display = false;
-      },
-      (error) => {
-        console.error('Erro ao atualizar operação', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao atualizar a operação!',
-        });
-      }
-    );
+    console.log("Operação atualizada com sucesso!");
+      
   }
 }

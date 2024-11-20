@@ -30,12 +30,22 @@ export class OperationRequestService {
     return this.http.get<any>(`${this.apiUrl}/operationRequests/${operationRequestId}`);
   }
   
-  updateOperationRequest(operationRequestData: any): Observable<any> {
+  updateOperationRequest(id: string, operationRequestData: any): Observable<any> {
     const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
         'Authorization': `Bearer ${token}`  
       });
-    return this.http.put(`${this.apiUrl}/operationRequests/${operationRequestData.operationRequestId}`, operationRequestData,{headers});
+      const payload = {
+        priority: operationRequestData.priority,
+        operationTypeId: operationRequestData.operationTypeId,
+        deadlineDate: operationRequestData.deadlineDate,
+        status: operationRequestData.status,
+        doctorId: operationRequestData.doctorId,
+        patientMedicalRecordNumber: operationRequestData.patientMedicalRecordNumber};
+    
+        console.log('Payload enviado para o backend:', payload);
+    
+        return this.http.put(`${this.apiUrl}/operationRequests/${id}`, operationRequestData,{headers});
   }
 
   saveOperationRequest(operationRequestData: any): Observable<any> {

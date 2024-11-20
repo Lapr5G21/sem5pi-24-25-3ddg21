@@ -25,6 +25,7 @@ import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/
   styleUrls: ['./doctor-dashboard.component.scss']
 })
 export class DoctorDashboardComponent implements OnInit {
+  
   items: MenuItem[] = [];
   showOperationRequestsList: boolean = false;
   showHospitalModel: boolean = false;

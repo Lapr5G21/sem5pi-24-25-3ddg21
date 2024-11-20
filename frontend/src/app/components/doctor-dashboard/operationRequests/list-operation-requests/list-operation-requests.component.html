@@ -5,18 +5,24 @@
           <div class="flex gap-4">
             <!-- Filtro de Nome de Paciente -->
             <p-floatLabel class="flex-1">
-              <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
               <label for="nameFilter">Name</label>
+              <p></p>
+              <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
+              
             </p-floatLabel>
   
             <!-- Filtro de Nome de Tipo de Operação -->
             <p-floatLabel class="flex-1">
-              <input pInputText id="operationTypeFilter" [(ngModel)]="operationTypeFilter" placeholder="Search by operation type" class="p-inputtext-sm" />
               <label for="operationTypeFilter">Operation Type</label>
+              <p></p>
+              <input pInputText id="operationTypeFilter" [(ngModel)]="operationTypeFilter" placeholder="Search by operation type" class="p-inputtext-sm" />
+              
             </p-floatLabel>
   
             <!-- Filtro de Prioridade -->
             <p-floatLabel class="flex-1">
+              <label for="priorityFilter">Priority</label>
+              <p></p>
               <p-dropdown
                 [(ngModel)]="priorityFilter"
                 [options]="priorityOptions"
@@ -24,11 +30,12 @@
                 optionValue="value"
                 class="p-dropdown-sm">
               </p-dropdown>
-              <label for="priorityFilter">Priority</label>
             </p-floatLabel>
   
             <!-- Filtro de Status -->
             <p-floatLabel class="flex-1">
+              <label for="statusFilter">Status</label>
+              <p></p>
               <p-dropdown 
                 [(ngModel)]="statusFilter"
                 [options]="statusOptions"
@@ -36,7 +43,7 @@
                 optionValue="value"
                 class="p-dropdown-sm">
               </p-dropdown>
-              <label for="statusFilter">Status</label>
+              
             </p-floatLabel>
   
             <div class="flex items-end">
@@ -94,12 +101,13 @@
   [modal]="true" 
   [closable]="false" 
   [responsive]="true" 
-  [style]="{width: '100vw', height: '50vh'}" 
+  [style]="{width: '50vw', height: '100vh'}" 
   header="Editar Pedido de Operação">
   <div class="p-fluid">
     <div class="p-field">
       <p></p>
       <label for="priority">Prioridade</label>
+      <p></p>
       <p-dropdown 
         id="priority"
         [(ngModel)]="operationRequest.priority"
@@ -110,9 +118,11 @@
         class="p-dropdown-sm">
       </p-dropdown>
     </div>
-    <p></p>
+ 
     <div class="p-field">
+      <p></p>
       <label for="status">Status</label>
+      <p></p>
       <p-dropdown 
         id="status"
         [(ngModel)]="operationRequest.status"
@@ -123,21 +133,34 @@
         class="p-dropdown-sm">
       </p-dropdown>
     </div>
-    <p></p>
+    
     <div class="p-field">
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p></p>
       <label for="deadlineDate">Data de Prazo</label>
+      
       <p-calendar 
         id="deadlineDate" 
         [(ngModel)]="operationRequest.deadlineDate" 
         [showIcon]="true" 
-        placeholder="Selecione a data de prazo">
+        placeholder="Selecione a data de prazo"
+        [style]="{'width': '250px'}">
       </p-calendar>
     </div>
+   
+    <p></p>
+    <p></p>
+    <p></p>
     <p></p>
     <p></p>
     <div class="p-dialog-footer">
       <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="display = false"></button>
       <button pButton type="button" label="Salvar" icon="pi pi-check" (click)="saveChanges()"></button>
     </div>
+
+    
   </div>
 </p-dialog>
