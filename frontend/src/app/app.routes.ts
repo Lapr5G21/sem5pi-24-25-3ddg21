@@ -15,7 +15,6 @@ import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-d
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 import { ListOperationTypesComponent } from './components/admin-dashboard/operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 import { PatientDashboardComponent } from './components/patient-dashboard/patient-dashboard.component';
-import { EditOperationRequestsComponent } from './components/doctor-dashboard/operationRequests/edit-operation-requests/edit-operation-requests.component';
 
 export const routes: Routes = [
     // General Routes
@@ -38,7 +37,6 @@ export const routes: Routes = [
     // Doctor Dashboard 
     { path: 'doctorDashboard/home', component: DoctorDashboardComponent },
     { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },
-    { path: 'edit_operation-request/:id', component: EditOperationRequestsComponent },
     { path: 'doctorDashboard/3DModule', component: HospitalModelComponent },
 
     // Patient Dashboard 

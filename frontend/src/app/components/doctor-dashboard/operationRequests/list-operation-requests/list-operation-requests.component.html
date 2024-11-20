@@ -77,9 +77,7 @@
   
                 <div class="flex flex-row-reverse md:flex-row gap-2">
                   <p-button icon="pi pi-trash" styleClass="trash-button" [outlined]="true" (onClick)="confirmDeactivateOperationRequest(item.id)"></p-button>
-                  <p-button icon="pi pi-pencil" label="Editar" [disabled]="item.status === 'CONCLUÍDO'"
-                  (click)="editOperationRequest(item.id)">
-                  </p-button>
+                  <p-button icon="pi pi-pencil" label="Editar" [disabled]="item.status === 'CONCLUÍDO'" (click)="openDialog(item)"></p-button>
                 </div>
               </div>
             </div>
@@ -88,4 +86,58 @@
       </ng-template>
     </p-dataView>
   </div>
+
   <p-confirmDialog></p-confirmDialog>
+
+  <p-dialog 
+  [(visible)]="display" 
+  [modal]="true" 
+  [closable]="false" 
+  [responsive]="true" 
+  [style]="{width: '100vw', height: '50vh'}" 
+  header="Editar Pedido de Operação">
+  <div class="p-fluid">
+    <div class="p-field">
+      <p></p>
+      <label for="priority">Prioridade</label>
+      <p-dropdown 
+        id="priority"
+        [(ngModel)]="operationRequest.priority"
+        [options]="priorityOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Selecione a prioridade"
+        class="p-dropdown-sm">
+      </p-dropdown>
+    </div>
+    <p></p>
+    <div class="p-field">
+      <label for="status">Status</label>
+      <p-dropdown 
+        id="status"
+        [(ngModel)]="operationRequest.status"
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Selecione o status"
+        class="p-dropdown-sm">
+      </p-dropdown>
+    </div>
+    <p></p>
+    <div class="p-field">
+      <label for="deadlineDate">Data de Prazo</label>
+      <p-calendar 
+        id="deadlineDate" 
+        [(ngModel)]="operationRequest.deadlineDate" 
+        [showIcon]="true" 
+        placeholder="Selecione a data de prazo">
+      </p-calendar>
+    </div>
+    <p></p>
+    <p></p>
+    <div class="p-dialog-footer">
+      <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="display = false"></button>
+      <button pButton type="button" label="Salvar" icon="pi pi-check" (click)="saveChanges()"></button>
+    </div>
+  </div>
+</p-dialog>

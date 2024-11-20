@@ -4,17 +4,18 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; // Para usarmos ngModel
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputMaskModule } from 'primeng/inputmask';  
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Router } from '@angular/router';
 import { OperationRequestService } from '../../../../services/operation-request.service';
 import { PatientService } from '../../../../services/patient.service';
 import { StaffService } from '../../../../services/staff.service';
 import { OperationTypeService } from '../../../../services/operation-type-service.service';
+import { CalendarModule } from 'primeng/calendar';
+import { DialogModule } from 'primeng/dialog';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'list-operation-requests',
@@ -25,16 +26,24 @@ import { OperationTypeService } from '../../../../services/operation-type-servic
     CommonModule,
     DataViewModule,
     TagModule,
-    FormsModule,  
+    FormsModule,
     DropdownModule,
-    InputTextModule,  
-    FloatLabelModule,
-    ConfirmDialogModule
-  ],  
+    InputTextModule,
+    ConfirmDialogModule,
+    CalendarModule,
+    DialogModule,
+  ],
   templateUrl: './list-operation-requests.component.html',
   styleUrls: ['./list-operation-requests.component.scss'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ListOperationRequestsComponent implements OnInit {
+  // Variáveis para armazenar os valores sem usar o FormGroup
+  priority: string = '';
+  status: string = '';
+  deadlineDate: Date |null  = null;
+  operationRequestId: string = '';
+
   operationRequests: any[] = [];
   filteredOperationRequests: any[] = [];
   patients: Map<string, any> = new Map();
@@ -45,7 +54,15 @@ export class ListOperationRequestsComponent implements OnInit {
   operationTypeFilter: string = '';
   priorityFilter: string = '';
   statusFilter: string = '';
-  nameFilter: string = '';  
+  nameFilter: string = '';
+
+  display: boolean = false;
+
+  operationRequest = {
+    priority: '',
+    status: '',
+    deadlineDate: null
+  };
 
   priorityOptions = [
     { label: 'Elective', value: 'Elective' },
@@ -71,18 +88,16 @@ export class ListOperationRequestsComponent implements OnInit {
   ngOnInit(): void {
     this.loadOperationRequests();
   }
-  
+
   loadOperationRequests() {
     this.operationRequestService.getOperationRequests().subscribe(
       (operationRequests) => {
         this.operationRequests = operationRequests;
         this.filteredOperationRequests = [...operationRequests]; // Inicializa com todos os dados
-  
-        // Carrega os pacientes e médicos após carregar as solicitações de operação
+
         this.loadPatients();
         this.loadDoctors();
-        
-        // Carrega os tipos de operação
+
         const operationTypeIds = operationRequests.map(req => req.operationTypeId);
         this.loadOperationTypes(operationTypeIds);
       },
@@ -95,7 +110,6 @@ export class ListOperationRequestsComponent implements OnInit {
   loadPatients() {
     this.patientService.getPatients().subscribe(
       (patients) => {
-        console.log('Pacientes carregados:', patients); // Debugging
         patients.forEach(patient => {
           this.patients.set(patient.medicalRecordNumber, patient.fullName);
         });
@@ -105,13 +119,12 @@ export class ListOperationRequestsComponent implements OnInit {
       }
     );
   }
-  
+
   loadDoctors() {
     this.staffService.getStaffs().subscribe(
       (doctors) => {
-        console.log('Médicos carregados:', doctors); // Debugging
         doctors.forEach(doctor => {
-          this.doctors.set(doctor.staffId, doctor.staffFullName); // Usa staffId como chave e staffFullName como valor
+          this.doctors.set(doctor.staffId, doctor.staffFullName);
         });
       },
       (error) => {
@@ -124,7 +137,7 @@ export class ListOperationRequestsComponent implements OnInit {
     this.operationTypeService.getOperationTypes().subscribe(
       (operationTypes) => {
         operationTypes.forEach(type => {
-          this.operationTypes.set(type.id, type.name); // Assuming type.id is the ID and type.name is the name
+          this.operationTypes.set(type.id, type.name);
         });
       },
       (error) => {
@@ -135,39 +148,34 @@ export class ListOperationRequestsComponent implements OnInit {
 
   applyFilter() {
     let filteredRequests = this.operationRequests;
-  
-    // Filtra pelo nome do paciente
+
     if (this.nameFilter) {
       filteredRequests = filteredRequests.filter(req => {
         const patientName = this.getPatientName(req.pacientMedicalRecordNumber)?.toLowerCase();
         return patientName && patientName.includes(this.nameFilter.toLowerCase());
       });
     }
-  
-    // Filtra pelo nome do tipo de operação
+
     if (this.operationTypeFilter) {
       filteredRequests = filteredRequests.filter(req =>
         this.getOperationTypeName(req.operationTypeId).toLowerCase().includes(this.operationTypeFilter.toLowerCase())
       );
     }
-  
-    // Filtra pela prioridade
+
     if (this.priorityFilter) {
       filteredRequests = filteredRequests.filter(req =>
         req.priorityLevel === this.priorityFilter
       );
     }
-  
-    // Filtra pelo status
+
     if (this.statusFilter) {
       filteredRequests = filteredRequests.filter(req =>
         req.status === this.statusFilter
       );
     }
-  
+
     this.filteredOperationRequests = filteredRequests;
   }
-  
 
   getPriorityClass(priority: string): string {
     switch (priority) {
@@ -187,14 +195,13 @@ export class ListOperationRequestsComponent implements OnInit {
   }
 
   getDoctorName(doctorId: string): string {
-    const doctorName = this.doctors.get(doctorId); // Verifica com a chave staffId
+    const doctorName = this.doctors.get(doctorId);
     return doctorName ? doctorName : 'Não especificado';
   }
-  
-  
+
   getPatientName(patientId: string): string {
-    const patientName = this.patients.get(patientId); // Aqui usamos paciente pelo `medicalRecordNumber`
-    return patientName ? patientName : 'Não especificado'; 
+    const patientName = this.patients.get(patientId);
+    return patientName ? patientName : 'Não especificado';
   }
 
   getOperationTypeName(operationTypeId: string): string {
@@ -204,15 +211,13 @@ export class ListOperationRequestsComponent implements OnInit {
   removeOperationRequest(id: string) {
     this.operationRequestService.removeOperationRequest(id).subscribe(
       () => {
-        // Remove a operação da lista de operationRequests
         this.operationRequests = this.operationRequests.filter(item => item.id !== id);
-        this.filteredOperationRequests = this.filteredOperationRequests.filter(item => item.id !== id); // Atualiza também a lista filtrada
-  
-        // Exibe uma mensagem de sucesso
+        this.filteredOperationRequests = this.filteredOperationRequests.filter(item => item.id !== id);
+
         this.messageService.add({
           severity: 'success',
           summary: 'Sucesso',
-          detail: 'Operação removida com sucesso!',
+          detail: 'Operação removida com sucesso!'
         });
       },
       (error) => {
@@ -220,23 +225,63 @@ export class ListOperationRequestsComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Erro ao remover a operação!',
+          detail: 'Erro ao remover a operação!'
         });
       }
     );
-  }
-
-  editOperationRequest(operationRequestId: string): void {
-    this.router.navigate(['/edit-operation-request', operationRequestId]);
   }
 
   confirmDeactivateOperationRequest(id: string) {
     this.confirmationService.confirm({
       message: 'Tem certeza de que deseja excluir esta operação permanentemente?',
       accept: () => {
-        // Chama o método para remover a operação
         this.removeOperationRequest(id);
-      },
+      }
     });
+  }
+
+  openDialog(item: any): void {
+    // Preenche diretamente as variáveis com os dados da solicitação de operação selecionada
+    this.priority = item.priorityLevel;
+    this.status = item.status;
+    this.deadlineDate = item.deadlineDate ? new Date(item.deadlineDate) : null;
+    this.operationRequestId = item.id;
+
+    this.display = true;
+  }
+
+  saveChanges(): void {
+    const updatedRequest = {
+      id: this.operationRequestId,
+      priority: this.priority,
+      status: this.status,
+      deadlineDate: this.deadlineDate
+    };
+
+    this.operationRequestService.updateOperationRequest(updatedRequest).subscribe(
+      (response) => {
+        const index = this.operationRequests.findIndex(request => request.id === updatedRequest.id);
+        if (index !== -1) {
+          this.operationRequests[index] = updatedRequest;
+          this.filteredOperationRequests = [...this.operationRequests];
+        }
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Operação atualizada com sucesso!',
+        });
+
+        this.display = false;
+      },
+      (error) => {
+        console.error('Erro ao atualizar operação', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao atualizar a operação!',
+        });
+      }
+    );
   }
 }

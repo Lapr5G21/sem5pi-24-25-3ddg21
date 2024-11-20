@@ -95,7 +95,7 @@ namespace DDDSample1.Controllers
         
 
 
-        [Authorize(Policy="DoctorRole")]
+        //[Authorize(Policy="DoctorRole")]
         [HttpPut("{id}")]
         public async Task<ActionResult<OperationRequestDto>> Update(string id, [FromBody] OperationRequestDto dto)
         {
