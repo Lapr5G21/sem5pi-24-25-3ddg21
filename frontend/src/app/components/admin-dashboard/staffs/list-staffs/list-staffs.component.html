@@ -66,7 +66,7 @@
         </div>
         
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
-          <div class="col" style="flex: 1;">{{ item.staffId || 'Not specified' }}</div>
+          <div class="col font-bold text-900" style="flex: 1;">{{ item.staffId || 'Not specified' }}</div>
           <div class="col" style="flex: 1;">
             <p-badge [value]="item.active ? 'Active' : 'Deactivated'" [severity]="item.active ? 'success' : 'danger'" class="text-sm"></p-badge>
           </div>
