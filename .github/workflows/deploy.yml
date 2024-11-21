@@ -53,15 +53,6 @@ jobs:
         source: ./dddnetcore/*
         target: ~/apps/healthcare
 
-    - name: Transfer Frontend to Remote Server
-      uses: appleboy/scp-action@v0.1.5
-      with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        source: ./frontend/*
-        target: ~/apps/healthcare
-
     - name: Deploy Backend
       uses: appleboy/ssh-action@v0.1.5
       with:
