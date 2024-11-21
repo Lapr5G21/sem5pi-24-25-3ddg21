@@ -141,7 +141,12 @@
           </div>
 
 <!-- Diálogo para editar as informações do Staff -->
-<p-dialog header="Edit Patient Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
+<p-dialog [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
+  <ng-template pTemplate="header">
+    <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">          
+      <div class="col">Edit Patient Information</div>
+    </div>
+  </ng-template>   
   <div class="card">
     <p-dataView [value]="[selectedPatient]" [rows]="1">
       <ng-template pTemplate="header">
