@@ -9,7 +9,6 @@ participant SERVICE as "StaffService <<service>>"
 participant Staff as "Staff <<domain>>"
 participant StaffDTO as "StaffDto <<domain>>"
 database UserRepository as "UserRepository"
-database SpecializationRepository as "SpecializationRepository"
 database IStaffRepository as "IStaffRepository"
 database SpecializationRepository as "SpecializationRepository"
 database UserRepository as "UserRepository"
@@ -85,7 +84,7 @@ activate IStaffRepository
 IStaffRepository -> SERVICE : staff
 deactivate IStaffRepository
 
-SERVICE -> StaffDTO : create(StaffId, StaffFirstName, StaffLastName, StaffFullName, StaffLicenseNumber, SpecializationId, StaffEmail, StaffPhoneNumber, UserId)
+SERVICE -> StaffDTO : create(StaffId, StaffFirstName, StaffLastName, StaffFullName, StaffLicenseNumber, SpecializationId, \nStaffEmail, StaffPhoneNumber, UserId)
 
 activate StaffDTO 
 

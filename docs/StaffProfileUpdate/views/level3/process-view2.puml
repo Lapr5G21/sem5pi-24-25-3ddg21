@@ -1,33 +1,37 @@
 @startuml 
 autonumber
 actor Admin as "Admin"
+participant Frontend as "FrontendComponent <<UI>>"
+participant StaffModel as "Staff <<Model>>"
+participant FrontendService as "FrontendService <<Service>>"
 participant CTRL as "StaffController"
 participant SERVICE as "StaffService <<service>>"
-participant StaffDomain as "Staff"
-participant EmailService as "EmailService"
+participant EMAILSERVICE as "EmailService"
+participant Staff as "Staff <<domain>>"
 participant StaffDto as "StaffDto"
 database ILogRepository as "ILogRepository"
 database IStaffRepository as "IStaffRepository"
+database SpecializationRepository as "SpecializationRepository"
 
-
-opt want to filter
-    Admin -> CTRL : GET /api/staffs{searchVariable}
-    activate BE
-            CTRL -> SERVICE : searchStaffAsync(searchVariable)
-        activate SERVICE 
-                SERVICE -> IStaffRepository : getBy"searchVariable"(searchVariable)
-                activate IStaffRepository
-                IStaffRepository --> SERVICE : staffsList
-                deactivate IStaffRepository
-            SERVICE --> CTRL : staffsList
-        deactivate SERVICE 
-    CTRL --> Admin : 200 Ok
-    deactivate CTRL
-end
 
 activate Admin
 
-Admin -> CTRL : PUT /api/staffs/{id}
+Admin -> Frontend : Asks to edit a staff
+
+activate Frontend
+Frontend -> Admin : Displays form for input
+deactivate Frontend
+
+Admin -> Frontend : Insers the new info with staff details
+
+activate Frontend 
+
+Frontend ->  StaffModel : create()
+
+Frontend -> FrontendService : updateStaff(staffModel)
+
+activate FrontendService
+FrontendService -> CTRL : PUT /api/staffs/{id}
 activate CTRL
 
 CTRL -> SERVICE : updateAsync(editingStaffDto)
@@ -41,7 +45,23 @@ IStaffRepository --> SERVICE : staff
 
 deactivate IStaffRepository
 
-SERVICE -> StaffDomain : changeStaff(editingStaffDto)
+SERVICE -> SpecializationRepository : GetByIdAsync(new SpecializationId(editingStaffDto.SpecializationId))
+
+activate SpecializationRepository 
+
+SpecializationRepository -> SERVICE : specialization
+
+deactivate SpecializationRepository
+alt specialization == null  
+
+SERVICE -> CTRL : NotFoundException
+
+CTRL -> Frontend : Displays "Specialization Not Found" message
+
+end alt 
+deactivate SpecializationRepository
+
+SERVICE -> Staff : changeStaff(editingStaffDto)
 
 opt oldEmail != staff.email || oldPhoneNumber != staff.phoneNumber
 
@@ -54,6 +74,26 @@ EMAILSERVICE --> SERVICE : emailSent
 deactivate EMAILSERVICE
 
 end opt
+
+ alt add availabilitySlot
+            Frontend -> FrontendService : addAvailabilitySlot(availabilitySlot)
+
+            FrontendService -> CTRL : POST /api/staffs/{id}/availability-slots
+
+            CTRL -> SERVICE : addAvailabilitySlot(availabilitySlotdTO.staffId, \n availabilitySlot.start, availabilitySlot.end)
+            SERVICE -> Staff : addAvailabilitySlot(availabilitySlotDto)
+            activate Staff
+            Staff --> SERVICE : availabilitySlotDto
+            deactivate Staff 
+        else delete availabilitySlot
+            Frontend -> FrontendService : removeAvailabilitySlot(availabilitySlot)
+            FrontendService -> CTRL : DELETE /api/staffs/{id}/availability-slots/hard
+            CTRL -> SERVICE : removeAvailabilitySlot(availabilitySlotdTO.staffId, \n availabilitySlot.start, availabilitySlot.end)
+            SERVICE -> Staff : removeAvailabilitySlotAsync(availabilitySlotDto)
+            activate Staff
+            Staff --> SERVICE : availabilitySlotDto
+            deactivate Staff 
+ end
 
 SERVICE -> ILogRepository : LogUpdateOperation(LogCategoryType.STAFF_PROFILE,details)
 
@@ -71,7 +111,7 @@ ILogRepository --> SERVICE : log
 
 deactivate ILogRepository
 
-SERVICE -> StaffDto : create()
+SERVICE -> StaffDto : create(StaffId, StaffFirstName, StaffLastName, \nStaffFullName, StaffLicenseNumber, SpecializationId, StaffEmail, StaffPhoneNumber, UserId)
 
 activate StaffDto
 StaffDto --> SERVICE : staffDto
@@ -81,9 +121,13 @@ SERVICE --> CTRL : stafftDto
 
 deactivate SERVICE 
 
-CTRL --> Admin : 200 OK
+CTRL --> FrontendService : 200 OK
 
 deactivate CTRL 
 
+FrontendService --> Frontend : 200 OK
+deactivate FrontendService
+Frontend -> Admin : Displays success notification (201)
 deactivate Admin
+deactivate Frontend
 @enduml

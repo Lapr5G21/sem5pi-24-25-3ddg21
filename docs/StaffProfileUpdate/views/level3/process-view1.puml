@@ -6,17 +6,6 @@ participant BE as "Backend Management" <<system>>
 participant DB as "Database"
 
 
-opt want to filter
-    Admin -> BE : GET /api/staffs{searchVariable}
-    activate BE
-            BE -> DB : get staff
-        activate DB 
-            DB --> BE : staffProfile
-        deactivate DB 
-    BE --> Admin : 200 Ok
-    deactivate BE
-end
-
 Admin-> BE : PUT api/staffs/{id}
 activate BE
 
@@ -31,5 +20,24 @@ deactivate DB
 Admin <-- BE : 200 Ok
 
 deactivate BE
+ alt add availabilitySlot
+            Admin -> BE : POST /api/staffs/{id}/availability-slots
+            activate BE
+            BE -> DB : add availabilitySlot
+            activate DB 
+            DB --> BE : addedAvailabilitySlot
+            deactivate DB 
+                Admin <-- BE : 200 OK
+            deactivate BE
+        else delete availabilitySlot
+            Admin -> BE : DELETE /api/staffs/{id}/availability-slots/hard
+            activate BE
+            BE -> DB : delete availabilitySlot
+            activate DB 
+            DB --> BE : deletedAvailabilitySlot
+            deactivate DB 
+                Admin <-- BE : 200 OK
+            deactivate BE
+ end
 
 @enduml
