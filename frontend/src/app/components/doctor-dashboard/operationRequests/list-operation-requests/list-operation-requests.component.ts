@@ -16,6 +16,7 @@ import { OperationTypeService } from '../../../../services/operation-type-servic
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'list-operation-requests',
@@ -32,10 +33,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     ConfirmDialogModule,
     CalendarModule,
     DialogModule,
+    ToastModule
   ],
   templateUrl: './list-operation-requests.component.html',
   styleUrls: ['./list-operation-requests.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ListOperationRequestsComponent implements OnInit {
   
@@ -246,7 +248,6 @@ export class ListOperationRequestsComponent implements OnInit {
   }
 
   openDialog(item: any): void {
-    
     this.operationRequestId = item.id;
     this.priority = item.priorityLevel;
     this.operationTypeId = item.operationTypeId;
@@ -272,27 +273,53 @@ export class ListOperationRequestsComponent implements OnInit {
     // Encontrar a operação original na lista (caso precise manter outros campos)
     const originalRequest = this.operationRequests.find(req => req.id === this.operationRequestId);
   
-    if (!originalRequest){
-      console.error('Operation request original não encontrada');
+    if (!originalRequest) {
+      console.error('Original operation request not found');
       return;
     }
-    
-    const updatedRequest = {
-      operationRequestId : this.operationRequestId,
-      ...originalRequest, // Mantém todos os dados originais
-      priorityLevel: this.priority, // Atualiza apenas os campos modificados
-      status: this.status,
-      deadlineDate: this.deadlineDate ? this.deadlineDate : originalRequest.deadlineDate, // Atualiza se houver nova data
-    };
-    
-  
-    console.log("Payload do save:");
-    console.log(updatedRequest);
-  
-    
-    this.operationRequestService.updateOperationRequest(this.operationRequestId,updatedRequest);
 
-    console.log("Operação atualizada com sucesso!");
-      
+    console.log(originalRequest);
+  
+    // Criar o objeto atualizado
+    const updatedRequest = {
+      id: this.operationRequestId, 
+      operationTypeId : originalRequest.operationTypeId,
+      priorityLevel: this.operationRequest.priority,
+      status: this.operationRequest.status, // Propriedade ajustada para "Status"
+      deadlineDate: this.operationRequest.deadlineDate,
+      doctorId: originalRequest.doctorId, // "DoctorId"
+      pacientMedicalRecordNumber: originalRequest.pacientMedicalRecordNumber, // Propriedade corrigida
+    };
+  
+    console.log('Payload for save:', updatedRequest);
+  
+    // Chamar o serviço para atualizar
+    this.operationRequestService.updateOperationRequest(updatedRequest.id, updatedRequest).subscribe({
+      next: (response) => {
+        console.log('Operation request updated successfully:', response);
+  
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Operation request updated successfully!',
+        });
+  
+        this.display = false; // Fechar o diálogo
+      },
+      error: (error) => {
+        console.error('Error updating operation request:', error);
+        console.log('Full error details:', JSON.stringify(error));
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update operation request.',
+        });
+      },
+      complete: () => {
+        console.log('Operation request update process completed.');
+        this.loadOperationRequests();
+      }
+    });
   }
-}
+}  
