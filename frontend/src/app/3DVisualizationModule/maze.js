@@ -119,6 +119,7 @@ export default class Maze {
                      *          5          |         Pacient
                      *          6          |           Door
                      *          7          |           Bench
+                     *          8          |       Pacient & Bed 
                      */
                     if (cellValue == 2 || cellValue == 3) {
                         // Adiciona paredes
@@ -170,6 +171,24 @@ export default class Maze {
                         benchObject.castShadow = true;
                         benchObject.receiveShadow = true;
                         this.object.add(benchObject);
+                    }
+
+                    if (cellValue == 8 && this.loadedBed && this.loadedPatient) {
+                        // Criar cama e patient
+                        const bedObject = this.bed.object.clone();
+                        bedObject.position.set(i - description.size.width / 2.0 + 0.2, 0.1, j - description.size.height / 2.0 + 0.2);
+                        bedObject.scale.set(0.0025, 0.0025, 0.0025); // Adjust scale
+                        bedObject.rotateY( -(Math.PI / 2));
+                        bedObject.castShadow = true;
+                        bedObject.receiveShadow = true;
+                        this.object.add(bedObject);
+                        const patientObject = this.patient.object.clone();
+                        patientObject.position.set(i - description.size.width / 2.0 + 0.1, 0.6, j - description.size.height / 2.0 + 0.2);
+                        patientObject.scale.set(0.008, 0.008, 0.007); // Adjust scale
+                        patientObject.rotateY( -(Math.PI / 2 * 3));
+                        patientObject.castShadow = true;
+                        patientObject.receiveShadow = true;
+                        this.object.add(patientObject);
                     }
 
                 }
