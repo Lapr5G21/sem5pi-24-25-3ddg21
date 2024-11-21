@@ -59,12 +59,12 @@ export class AdminDashboardComponent implements OnInit {
         icon: '',
         items: [
           {
-            label: 'Create',
+            label: 'Create Operation Type',
             icon: 'pi pi-check',
             command: () => this.createOperationType()
           },
           {
-            label: 'List',
+            label: 'List Operation Types',
             icon: 'pi pi-list',
             command: () => {
               this.showOperationTypesList = true;
@@ -79,12 +79,12 @@ export class AdminDashboardComponent implements OnInit {
         icon: '',
         items: [
           {
-            label: 'Create',
+            label: 'Create Staff',
             icon: 'pi pi-check',
             command: () => this.createStaffs()
           },
           {
-            label: 'List',
+            label: 'List Staffs',
             icon: 'pi pi-list',
             command: () => {
               this.showStaffsList = true;
@@ -99,12 +99,12 @@ export class AdminDashboardComponent implements OnInit {
         icon: '',
         items: [
           {
-            label: 'Create',
+            label: 'Create Patient',
             icon: 'pi pi-check',
             command: () => this.createPatient()
           },
           {
-            label: 'List',
+            label: 'List Patients',
             icon: 'pi pi-list',
             command: () => {
               this.showPatientsList = true;

@@ -31,14 +31,14 @@ describe('Create Operation Types Modal', () => {
 
   it('should open modal from Operation Types menu dropdown', () => {
     cy.get('app-menubar').should('exist').within(() => {
-      cy.contains('OperationTypes').trigger('mouseover');
+      cy.contains('OperationTypes').click({ force: true });
     });
 
     cy.get('.p-menubar').should('be.visible').contains('Create');
-    cy.get('.p-menubar').contains('Create').click({ force: true });
+    cy.get('.p-menubar').contains('Create Operation Type').click({ force: true });
 
     cy.get('.p-dialog-content').should('be.visible');
-    cy.get('.p-dialog-header').should('contain', 'Add Operation Type');
+    cy.get('.p-dialog .p-dialog-header').should('contain', 'Add Operation Type');
   });
 
   it('should show validation errors when trying to save with empty form', () => {
@@ -138,6 +138,7 @@ describe('Create Operation Types Modal', () => {
     .find('input[type="number"]') 
     .type('2');
 
+    
     cy.get('p-button').contains('Save').click();
 
     cy.get('.p-dialog-content').should('not.exist');
