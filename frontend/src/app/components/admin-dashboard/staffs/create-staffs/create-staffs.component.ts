@@ -134,8 +134,8 @@ export class CreateStaffsComponent implements OnInit {
                 () => {
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Sucesso',
-                        detail: 'Staff salvo com sucesso!'
+                        summary: 'Sucess',
+                        detail: 'Staff saved successfully!'
                     });
                     this.resetForm();
                     this.visible = false;
