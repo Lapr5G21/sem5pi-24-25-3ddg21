@@ -1,0 +1,34 @@
+@startuml
+
+autonumber
+actor Admin as "Admin"
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
+
+
+activate Admin
+Admin -> Frontend : requests to search for staff profiles by \n eg. name, specialization,  or email.
+
+activate Frontend
+Frontend -> Backend : GET /api/staffs/search{filters}
+activate Backend
+
+Backend -> Backend : searchStaffs(name, specialization, \nemail, phoneNumber, status)
+Frontend <-- Backend : 200 Ok
+
+deactivate Backend
+
+
+Frontend -> Backend : GET /api/staffs/{id}/availability-slots
+activate Backend
+
+Backend -> Backend : getAvailabilitySlots(staffId)
+Frontend <-- Backend : 200 Ok
+
+deactivate Backend
+Frontend --> Admin : displays staffs list
+
+deactivate Frontend
+
+
+@enduml

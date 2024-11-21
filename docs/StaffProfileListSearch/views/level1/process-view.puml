@@ -1,0 +1,15 @@
+@startuml
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system>>
+
+activate Admin 
+
+Admin -> SYS : requests to search for staff profiles by \n eg. name, specialization,  or email.
+
+activate SYS 
+
+SYS --> Admin : lists staff profiles.
+
+
+@enduml
