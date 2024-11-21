@@ -1,0 +1,38 @@
+textarea {
+    border: 2px solid #2196F3; /* Contorno azul */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-family: Arial, sans-serif; /* Tipo de letra Arial */
+    font-size: 14px; /* Tamanho da fonte */
+    padding: 10px; /* Espaçamento interno */
+    color: #333; /* Cor do texto */
+    outline: none; /* Remove o contorno padrão ao focar */
+  }
+  
+  textarea:focus {
+    border-color: #1565C0; /* Azul mais escuro ao focar */
+    box-shadow: 0 0 5px #2196F3; /* Efeito de brilho ao redor */
+  }
+  
+//* Forçar o estilo no cabeçalho do diálogo */
+.p-dialog .p-dialog-header {
+    background-color: #2196F3 !important; /* Fundo azul */
+    color: white !important; /* Texto branco */
+    display: flex; /* Torna o cabeçalho um contêiner flex */
+    align-items: center; /* Alinha o texto verticalmente ao centro */
+    justify-content: center; /* Centraliza o texto horizontalmente */
+    border-bottom: none !important; /* Remove a borda inferior */
+    padding: 15px; /* Adiciona espaçamento interno */
+    text-align: center; /* Centraliza o texto, como fallback */
+}
+
+/* Estilo apenas no título */
+.p-dialog .p-dialog-title {
+    color: white !important; /* Texto branco */
+    font-size: 1.5rem; /* Ajuste o tamanho do texto */
+    font-weight: bold; /* Texto em negrito */
+}
+
+  
+
+  
+  

@@ -116,7 +116,6 @@ export class ListPatientsComponent implements OnInit {
 
     closeEditDialog() {
         this.editDialogVisible = false; // Fecha o diálogo
-        this.selectedPatient = null; // Reseta o paciente selecionado
     }
 
     updatePatient(selectedPatient: any) {
@@ -151,26 +150,36 @@ export class ListPatientsComponent implements OnInit {
         });
       }
 
-      // Abre o diálogo para editar o registro médico
+ // Abre o diálogo para editar o registro médico
 openMedicalRecordDialog(): void {
-    if (this.selectedPatient) {
-      this.medicalRecordDialogVisible = true;
-    } else {
-      console.error('No patient selected for editing medical record!');
-    }
+  if (this.selectedPatient) {
+    this.medicalRecordDialogVisible = true;
+  } else {
+    console.error('No patient selected for editing medical record!');
   }
-  
-  // Fecha o diálogo de edição do registro médico
-  closeMedicalRecordDialog(): void {
-    this.medicalRecordDialogVisible = false;
-  }
-  
-  // Salva as alterações feitas no registro médico
-  saveMedicalRecord(): void {
-    console.log('Saving updated medical record:', this.selectedPatient.medicalRecord);
-  
-    // Chamada ao serviço para salvar as alterações no backend
-    this.updatePatient(this.selectedPatient);
-  }
+}
+
+// Fecha o diálogo de edição do registro médico
+closeMedicalRecordDialog(): void {
+  this.medicalRecordDialogVisible = false;
+}
+
+// Salva as alterações feitas no registro médico
+saveMedicalRecord(): void {
+  console.log('Saving updated medical record:', this.selectedPatient.medicalRecord);
+
+  // Chamada para salvar as alterações no backend
+  this.updatePatient(this.selectedPatient);
+  this.medicalRecordDialogVisible = false;
+
+}
+
+adjustTextarea(event: Event): void {
+  const textarea = event.target as HTMLTextAreaElement;
+  textarea.style.height = 'auto'; // Redefine a altura para calcular o novo tamanho
+  textarea.style.height = `${textarea.scrollHeight}px`; // Ajusta para o tamanho do conteúdo
+}
+
+
   
 }
