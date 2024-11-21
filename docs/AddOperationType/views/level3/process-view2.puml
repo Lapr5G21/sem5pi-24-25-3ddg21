@@ -1,6 +1,9 @@
 @startuml 
 autonumber
 actor Admin as "Admin"
+participant Frontend as "FrontendComponent <<UI>>"
+participant OperationTypeModel as "Operation Type <<Model>>"
+participant FrontendService as "FrontendService <<Service>>"
 participant CTRL as "OperationTypesController"
 participant SERVICE as "OperationTypeService <<service>>"
 participant OperationType as "OperationType <<domain>>"
@@ -12,9 +15,26 @@ database IOperationTypeSpecializationRepository as "IOperationTypeSpecialization
 
 activate Admin
 
-Admin -> CTRL : POST /api/operationTypes
+Admin -> Frontend : Asks to add new operation type
+
+activate Frontend
+Frontend -> Admin : Displays form for input
+deactivate Frontend
+
+Admin -> Frontend : Insers the info with operation types details
+
+activate Frontend 
+
+Frontend ->  OperationTypeModel : create()
+
+Frontend -> FrontendService : saveOperationType(operationTypeModel)
+
+activate FrontendService
+FrontendService -> CTRL : POST /api/operationTypes
+
 activate CTRL
 
+' Controller processes the request
 CTRL -> SERVICE : addAsync(creatingOperationTypeDTO)
 activate SERVICE
 
@@ -60,7 +80,7 @@ else
 
 SERVICE -> CTRL : NotFoundException
 
-CTRL -> Admin : 404 Not Found
+CTRL -> Frontend : Displays "Specialization Not Found" message
 
 end alt 
 end loop
@@ -73,13 +93,17 @@ OperationTypeDTO -> SERVICE : operationTypeDTO
 
 deactivate OperationTypeDTO
 
-SERVICE -> CTRL : operationTypeDTO
+SERVICE --> CTRL : operationTypeDTO
 
 deactivate SERVICE 
 
-CTRL -> Admin : 201 Created
-
+CTRL --> FrontendService : 200 OK
 deactivate CTRL 
 
+FrontendService --> Frontend : 200 OK
+deactivate FrontendService
+Frontend -> Admin : Displays success notification (201 Created)
+
 deactivate Admin
+deactivate Frontend
 @enduml
