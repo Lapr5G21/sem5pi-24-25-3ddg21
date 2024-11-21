@@ -106,16 +106,25 @@ namespace DDDSample1.Domain.Patients
             this.Address = newAddress;
         }
 
-        public void ChangeMedicalRecord(PatientMedicalRecord newMedicalRecord)
-        {
-            if (newMedicalRecord == null) throw new ArgumentNullException(nameof(newMedicalRecord));
-            if(newMedicalRecord.MedicalRecord.IsNullOrEmpty()){
-                return;
-            }
-            if(newMedicalRecord!=this.MedicalRecord){
-            this.MedicalRecord = new PatientMedicalRecord(this.MedicalRecord.ToString() + "; " + newMedicalRecord.ToString());
-            }
-        }
+public void ChangeMedicalRecord(PatientMedicalRecord newMedicalRecord)
+{
+
+
+    // Se o novo registro for vazio, apaga o antigo
+    if (newMedicalRecord == null)
+    {
+        this.MedicalRecord.MedicalRecord = " "; 
+        return;
+    }
+
+    // Caso o novo registro seja diferente do atual, substitui o antigo
+    if (newMedicalRecord != this.MedicalRecord)
+    {
+        this.MedicalRecord = newMedicalRecord; // Armazena apenas o novo registro
+    }
+}
+
+
 
         public void ChangeEmergencyContact(PatientEmergencyContact newEmergencyContact)
         {
