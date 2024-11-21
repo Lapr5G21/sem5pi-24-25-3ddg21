@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OperationTypeService } from '../../../../../services/operation-type-service.service';
-import { Specialization } from '../../../../../domain/operationType-model';  
+import { Specialization, SpecializationDto } from '../../../../../domain/operationType-model';  
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { DataViewModule } from 'primeng/dataview';
@@ -53,9 +53,11 @@ export class ListOperationTypesComponent implements OnInit {
   specializationsOptions: { label: string, value: string }[] = [];  
   nameFilter: string = '';
   statusFilter: boolean = true;  
-  specializationFilter: string = '';  
+  specializationFilter: string = '';
+  staffNumbers: { [key: string]: number } = {};  
 
   selectedOperationType: any = {
+    id: '',
     name: '',
     estimatedTimeDuration: 0,
     anesthesiaTime: 0,
@@ -144,34 +146,44 @@ export class ListOperationTypesComponent implements OnInit {
     });
   }
 
-  onEdit(item: any): void {
-    this.selectedOperationType = { ...item }; 
-    this.editDialogVisible = true; 
+  onEdit(operationType: any): void {
+    this.selectedOperationType = { ...operationType };
+
+  this.selectedOperationType.specializations = this.selectedOperationType.specializations.filter(
+    (spec: any) => spec.id && spec.numberOfStaff !== undefined
+  );
+
+  this.selectedOperationType.specializations.forEach((spec: any) => {
+    if (!this.specializationsMap[spec.id]) return;
+    this.staffNumbers[spec.id] = spec.numberOfStaff || 0;
+  });
+
+  this.editDialogVisible = true;
   }
 
   saveOperationTypeInfo(selectedOperationType: any) {
-
+    const validSpecializations : SpecializationDto = this.selectedOperationType.specializations.filter(
+      (spec: any) => spec.id && spec.numberOfStaff > 0)
+      .map((spec: any) => ({
+        specializationId: spec.id,
+        numberOfStaff: spec.numberOfStaff,
+    }));
     
      const payload = {
+      operationTypeId: selectedOperationType.id,
       name: selectedOperationType.name,
       estimatedTimeDuration: selectedOperationType.estimatedTimeDuration,
-      anesthesiaTime: selectedOperationType.anesthesiaTime,
-      cleaningTime: selectedOperationType.cleaningTime,
-      surgeryTime: selectedOperationType.surgeryTime,
-      specializations: selectedOperationType.specializations.map((id: string) => ({
-        specializationId: id,
-        specializationName: this.getSpecializationName(id),
-      }))
+      specializations: validSpecializations
     };
 
 
-    console.log('Saving operation type info:', selectedOperationType);
+    console.log('Saving operation type info:', payload);
     
 
     this.operationTypeService.updateOperationType(selectedOperationType.id, payload).subscribe(
       () => {
         this.loadOperationTypes(); 
-        this.editDialogVisible = false; 
+          this.editDialogVisible = false; 
       },
       (error) => console.error('Erro ao salvar os dados do tipo de operação', error)
     );
