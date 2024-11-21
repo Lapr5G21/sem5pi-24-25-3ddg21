@@ -9,16 +9,16 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    
+
     - name: Restore dependencies
       run: dotnet restore ./dddnetcore/dddnetcore.csproj
 
@@ -29,13 +29,13 @@ jobs:
       run: dotnet test ./dddnetcore/dddnetcore.csproj --no-build --verbosity normal
 
     - name: Publish for deployment
-      run: dotnet publish ./dddnetcore/dddnetcore.csproj -c Release -o ./publish
+      run: dotnet publish ./dddnetcore/dddnetcore.csproj -c Release -o ./publish/dddnetcore
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: dotnet-build
-        path: ./publish
+        path: ./publish/dddnetcore
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,6 +43,21 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dotnet-build
+        path: ./publish/dddnetcore
+
+    - name: Transfer Backend to Remote Server
+      uses: appleboy/scp-action@v0.1.5
+      with:
+        host: ${{ secrets.VM_IP }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        source: ./dddnetcore/*
+        target: ~/apps/healthcare
 
     - name: Transfer Frontend to Remote Server
       uses: appleboy/scp-action@v0.1.5
@@ -53,7 +68,7 @@ jobs:
         source: ./frontend/*
         target: ~/apps/healthcare
 
-    - name: Deploy Frontend
+    - name: Deploy Backend
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.VM_IP }}
