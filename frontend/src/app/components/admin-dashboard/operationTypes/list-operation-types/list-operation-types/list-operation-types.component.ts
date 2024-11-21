@@ -14,6 +14,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { MultiSelectModule } from 'primeng/multiselect';
+
+
 
 
 @Component({
@@ -31,7 +34,8 @@ import { ConfirmationService } from 'primeng/api';
     FormsModule,
     DropdownModule,
     FloatLabelModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    MultiSelectModule
   ],
   providers: [ConfirmationService],
   templateUrl: './list-operation-types.component.html',
@@ -43,6 +47,7 @@ export class ListOperationTypesComponent implements OnInit {
     { label: 'Deactivated', value: false }
   ];
   
+  editDialogVisible: boolean = false;
   operationTypes: any[] = [];  
   specializationsMap: { [key: string]: string } = {};  
   specializationsOptions: { label: string, value: string }[] = [];  
@@ -50,11 +55,22 @@ export class ListOperationTypesComponent implements OnInit {
   statusFilter: boolean = true;  
   specializationFilter: string = '';  
 
+  selectedOperationType: any = {
+    name: '',
+    estimatedTimeDuration: 0,
+    anesthesiaTime: 0,
+    cleaningTime: 0,
+    surgeryTime: 0,
+    specializations: {}
+  };
+
   constructor(private operationTypeService: OperationTypeService,
-              private confirmationService: ConfirmationService
+              private confirmationService: ConfirmationService,
+
   ) {}
 
   ngOnInit(): void {
+    this.loadSpecializations();
     this.loadOperationTypes();  
   }
 
@@ -126,6 +142,39 @@ export class ListOperationTypesComponent implements OnInit {
         console.log('Operation type disable action canceled.');
       }
     });
+  }
+
+  onEdit(item: any): void {
+    this.selectedOperationType = { ...item }; 
+    this.editDialogVisible = true; 
+  }
+
+  saveOperationTypeInfo(selectedOperationType: any) {
+
+    
+     const payload = {
+      name: selectedOperationType.name,
+      estimatedTimeDuration: selectedOperationType.estimatedTimeDuration,
+      anesthesiaTime: selectedOperationType.anesthesiaTime,
+      cleaningTime: selectedOperationType.cleaningTime,
+      surgeryTime: selectedOperationType.surgeryTime,
+      specializations: selectedOperationType.specializations.map((id: string) => ({
+        specializationId: id,
+        specializationName: this.getSpecializationName(id),
+      }))
+    };
+
+
+    console.log('Saving operation type info:', selectedOperationType);
+    
+
+    this.operationTypeService.updateOperationType(selectedOperationType.id, payload).subscribe(
+      () => {
+        this.loadOperationTypes(); 
+        this.editDialogVisible = false; 
+      },
+      (error) => console.error('Erro ao salvar os dados do tipo de operação', error)
+    );
   }
 
   

@@ -87,11 +87,108 @@
                       'color': 'white'
                     }" (click)="confirmDisable(item.id)">
                   </p-button>
+                  <p-button icon="pi pi-pencil" label="Edit" [disabled]="!item.isActive"
+                    [ngClass]="{ 'p-button-danger': false }" [style]="{
+                      'background-color': '#f000099', 
+                      'border-color': '#f000099', 
+                      'color': 'white'
+                    }" (click)="onEdit(item)">
+                  </p-button>
+
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+
+
+        <p-dialog header="Edit Operation Type Information" [(visible)]="editDialogVisible" [responsive]="true"
+          [style]="{ width: '50%', height: '70%' }">
+          <div class="card">
+            <p-dataView [value]="[selectedOperationType]" [rows]="1">
+              <ng-template pTemplate="header">
+                <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                  <div class="col">Field</div>
+                  <div class="col">Value</div>
+                </div>
+              </ng-template>
+
+              <ng-template pTemplate="list" let-operationType>
+                <!-- Name -->
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="name">Name</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="name" [(ngModel)]="selectedOperationType.name" />
+                  </div>
+                </div>
+
+                <!-- Estimated Time Duration -->
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="estimatedTimeDuration">Estimated Time Duration (min)</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="estimatedTimeDuration"
+                      [(ngModel)]="selectedOperationType.estimatedTimeDuration" type="number" />
+                  </div>
+                </div>
+
+                <!-- Anesthesia Time -->
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="anesthesiaTime">Anesthesia Time (min)</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="anesthesiaTime" [(ngModel)]="selectedOperationType.anesthesiaTime"
+                      type="number" />
+                  </div>
+                </div>
+
+                <!-- Cleaning Time -->
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="cleaningTime">Cleaning Time (min)</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="cleaningTime" [(ngModel)]="selectedOperationType.cleaningTime"
+                      type="number" />
+                  </div>
+                </div>
+
+                <!-- Surgery Time -->
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="surgeryTime">Surgery Time (min)</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="surgeryTime" [(ngModel)]="selectedOperationType.surgeryTime" type="number" />
+                  </div>
+                </div>
+
+                <!-- Specializations -->
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="specializations">Specializations</label>
+                  </div>
+                  <div class="col p-2">
+                    <p-multiSelect [(ngModel)]="selectedOperationType.specializations"
+                      [options]="specializationsOptions" optionLabel="label" optionValue="value"
+                      placeholder="Select Specializations" [style]="{ width: '200px', height: '40px' }" [appendTo]="'body'">
+                    </p-multiSelect>
+                  </div>
+                </div>
+              </ng-template>
+            </p-dataView>
+            <div class="flex justify-content-end">
+              <button pButton label="Save" icon="pi pi-check" (click)="saveOperationTypeInfo(selectedOperationType)"
+                class="p-button-primary"></button>
+            </div>
+          </div>
+        </p-dialog>
+
       </p-scrollPanel>
     </ng-template>
   </p-dataView>
