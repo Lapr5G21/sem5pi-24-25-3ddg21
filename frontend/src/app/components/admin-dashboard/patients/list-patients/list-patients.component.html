@@ -58,25 +58,25 @@
     <ng-template pTemplate="list" let-items>
       <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
         <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-          <div class="col">Medical Record Number</div>
-          <div class="col">Status</div>
-          <div class="col">Name</div>
-          <div class="col">Birth Date</div>
-          <div class="col">Gender</div>
-          <div class="col">Email</div>
-          <div class="col">Phone Number</div>
-          <div class="col">Address</div>
-          <div class="col">Medical Record</div>
-          <div class="col">Emergency Contact</div>
-          <div class="col">Actions</div>
+          <div class="col text-center" style="flex: 2;">Medical Record Number</div>
+          <div class="col text-center" style="flex: 1;">Status</div>
+          <div class="col text-center" style="flex: 2;">Name</div>
+          <div class="col text-center" style="flex: 1;">Birth Date</div>
+          <div class="col text-center" style="flex: 1;">Gender</div>
+          <div class="col text-center" style="flex: 2;">Email</div>
+          <div class="col text-center" style="flex: 1;">Phone Number</div>
+          <div class="col text-center" style="flex: 2;">Address</div>
+          <div class="col text-center" style="flex: 1;">Medical Record</div>
+          <div class="col text-center" style="flex: 1;">Emergency Contact</div>
+          <div class="col text-center" style="flex: 1;">Actions</div>
         </div>
 
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let patient of patients; let first = first">
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 2;">
             <span class="font-bold text-900">{{ patient.medicalRecordNumber || 'Not specified' }}</span>
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 1;">
             <p-badge
               [value]="patient.active ? 'Active' : 'Deactivated'"
               [severity]="patient.active ? 'success' : 'danger'"
@@ -84,31 +84,31 @@
             </p-badge>
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 2;">
             {{ patient.fullName || 'Not specified' }}
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 1;">
             {{ patient.birthDate || 'Not specified' }}
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 1;">
             {{ patient.gender || 'Not specified' }}
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 2;">
             {{ patient.email || 'Not specified' }}
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 1;">
             {{ patient.phoneNumber || 'Not specified' }}
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 2;">
             {{ patient.address || 'Not specified' }}
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 1;">
             <p-button
               icon="pi pi-eye"
               label="View"
@@ -117,18 +117,15 @@
             </p-button>
           </div>
 
-          <div class="col p-2">
+          <div class="col p-2 text-center" style="flex: 1;">
             {{ patient.emergencyContact || 'Not specified' }}
           </div>
 
-          <div class="col p-2">
+
+          <div class="col p-2 text-center" style="flex: 1;">
             <div class="flex justify-center gap-2">
-              <p-button 
-                icon="pi pi-pencil"
-                [outlined]="true"
-                [disabled]="!patient.active"
-                [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }" (click)="openEditDialog(patient)">
-              </p-button>
+              <p-button icon="pi pi-pencil" [outlined]="true" [disabled]="!patient.active" (click)="openEditDialog(patient)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
+
 
               <p-button 
                 icon="pi pi-trash"
@@ -142,25 +139,129 @@
               </p-button>
             </div>
           </div>
+
+<!-- Diálogo para editar as informações do Staff -->
+<p-dialog [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
+  <ng-template pTemplate="header">
+    <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">          
+      <div class="col">Edit Patient Information</div>
+    </div>
+  </ng-template>   
+  <div class="card">
+    <p-dataView [value]="[selectedPatient]" [rows]="1">
+      <ng-template pTemplate="header">
+        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+          <div class="col">Field</div>
+          <div class="col">Value</div>
+        </div>
+      </ng-template>
+      
+      <ng-template pTemplate="list" let-patient>
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="firstName">First Name</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="firstName" [(ngModel)]="selectedPatient.firstName" />
+          </div>
+        </div>
+        
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="lastName">Last Name</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="lastName" [(ngModel)]="selectedPatient.lastName" />
+          </div>
+        </div>
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="fullName">Full Name</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="fullName" [(ngModel)]="selectedPatient.fullName" />
+          </div>
+        </div>
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="medicalRecord">Medical Record</label>
+          </div>
+          <div class="col p-2">
+            <button 
+              pButton 
+              label="Edit Medical Record" 
+              class="p-button-primary"
+              icon="pi pi-pencil"
+              (click)="openMedicalRecordDialog()">
+            </button>
+          </div>
+        </div>
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="phoneNumber">Phone Number</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="phoneNumber" [(ngModel)]="selectedPatient.phoneNumber" />
+          </div>
+        </div>
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="email">Email</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="email" [(ngModel)]="selectedPatient.email" />
+          </div>
+        </div>
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+          <div class="col p-2">
+            <label for="address">Address</label>
+          </div>
+          <div class="col p-2">
+            <input pInputText id="address" [(ngModel)]="selectedPatient.address" />
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+    <div class="flex justify-content-end gap-2"  style="margin-top: 30px;">
+      <button pButton label="Save" icon="pi pi-check" (click)="updatePatient(selectedPatient)" class="p-button-primary"></button>
+      <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary" (click)="closeEditDialog()"></button>
+  </div>
+  </div>
+  </p-dialog>
+
         </div>
       </p-scrollPanel>
     </ng-template>
   </p-dataView>
 
-  <!-- Diálogo de Histórico Médico -->
-  <p-dialog header="Medical Record" [(visible)]="medicalHistoryDialogVisible" modal="true" [style]="{ width: '40vw' }">
-    <p>{{ selectedMedicalHistory }}</p>
-  </p-dialog>
+    <!-- Diálogo de Histórico Médico -->
+    <p-dialog [(visible)]="medicalHistoryDialogVisible" modal="true" [style]="{ width: '40vw' }">
+      <ng-template pTemplate="header">
+        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">          
+          <div class="col">Medical Record</div>
+        </div>
+      </ng-template> 
+      <p>{{ selectedMedicalHistory }}</p>
+    </p-dialog>
 
-  <!-- Diálogo para editar -->
-  <p-dialog
-  header="Edit Patient Information"
-  [(visible)]="editDialogVisible"
-  [style]="{ width: '50%' }"
->
-  <edit-patients-modal
-    [patient]="selectedPatient"
-    (close)="closeEditDialog()"
-  ></edit-patients-modal>
-</p-dialog>
+    <p-dialog [(visible)]="medicalRecordDialogVisible" [responsive]= "true" [style]="{ width: '40vw' }">
+      <ng-template pTemplate="header">
+        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">          
+          <div class="col">Edit Medical Record</div>
+        </div>
+      </ng-template>      
+      <div class="card">
+        <h3>Patient: {{ selectedPatient?.fullName || 'Patient' }}</h3>
+        <textarea 
+        [(ngModel)]="selectedPatient.medicalRecord" 
+        placeholder="Enter or update the medical record here" 
+        style="width: 100%; font-family: Arial, sans-serif; overflow: hidden; resize: none;"
+        (input)="adjustTextarea($event)">
+      </textarea>      
+        <div class="flex justify-content-end mt-6 gap-2">
+          <button pButton label="Save" icon="pi pi-check" class="p-button-success" (click)="saveMedicalRecord()"></button>
+          <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary" (click)="closeMedicalRecordDialog()"></button>
+        </div>
+      </div>
+    </p-dialog>
 </div>

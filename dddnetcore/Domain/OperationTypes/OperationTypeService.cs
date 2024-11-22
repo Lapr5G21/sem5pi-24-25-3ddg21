@@ -163,6 +163,21 @@ public async Task<OperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
     {
         operationType.ChangeOperationTypeDuration(new EstimatedTimeDuration(dto.EstimatedTimeDuration));
     }
+    
+    if (dto.AnesthesiaTime > 0) 
+    {
+        operationType.ChangeAnesthesiaTime(new AnesthesiaTime(dto.AnesthesiaTime));
+    }
+    
+    if (dto.SurgeryTime > 0)
+    {
+        operationType.ChangeSurgeryTime(new SurgeryTime(dto.SurgeryTime));
+    }
+    
+    if (dto.CleaningTime > 0)
+    {
+        operationType.ChangeCleaningTime(new CleaningTime(dto.CleaningTime));
+    }
 
     if (dto.Specializations != null && dto.Specializations.Count > 0)
 {
@@ -170,6 +185,7 @@ public async Task<OperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
     {
         var specialization = await _specializationRepository.GetByIdAsync(new SpecializationId(specializationDto.SpecializationId));
 
+        Console.WriteLine(specialization.SpecializationName);
         if (specialization == null)
         {
             throw new BusinessRuleValidationException($"Specialization with ID {specializationDto.SpecializationId} not found");
@@ -180,9 +196,8 @@ public async Task<OperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
 
         if (existingSpecialization != null)
         {
-            continue; 
-        }
-
+            existingSpecialization.ChangeNumberOfStaff(new NumberOfStaff(specializationDto.NumberOfStaff));
+        } else {
         var operationTypeSpecialization = new OperationTypeSpecialization(
             operationType, 
             specialization, 
@@ -192,6 +207,7 @@ public async Task<OperationTypeDto> UpdateAsync(EditOperationTypeDto dto)
         await _operationTypeSpecializationRepo.AddAsync(operationTypeSpecialization);
         
         operationType.Specializations.Add(operationTypeSpecialization);
+    }
     }
 }
         

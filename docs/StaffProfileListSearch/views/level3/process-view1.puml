@@ -1,0 +1,39 @@
+@startuml
+
+autonumber
+participant FE as "Frontend" <<system(C4)>>
+participant BE as "Backend Management" <<system (C4)>>
+participant DB as "Database"
+
+activate FE
+FE -> BE : GET /api/staffs/search{filters}
+activate BE
+
+BE -> DB : searchAsync(name, specialization, \nemail, phonNumber, status)
+
+activate DB 
+
+DB -> BE : staffs 
+
+deactivate DB
+
+FE <- BE : 200 OK (staffs)
+
+deactivate BE
+
+FE -> BE : GET /api/staffs/{id}/availability-slots
+activate BE
+
+BE -> DB : getAvailabilitySlotsAsync(staffId)
+
+activate DB 
+
+DB -> BE : staffs 
+deactivate DB
+
+FE <- BE : 200 OK (availabilitySlots)
+
+deactivate BE
+deactivate FE
+
+@enduml

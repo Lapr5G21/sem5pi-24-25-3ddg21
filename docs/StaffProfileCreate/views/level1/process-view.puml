@@ -5,11 +5,15 @@ participant SYS as "HealthCare System" <<system (C4)>>
 
 activate Admin
 
-Admin -> SYS : create new staff profile
-activate SYS
+Admin --> SYS : asks to add a new staff 
 
-SYS -> Admin : confirms the profile~has been created successfully
+activate SYS 
+SYS --> Admin : displays the form for adding new staff
+deactivate SYS
+
+Admin --> SYS : submits the form with staff details
+activate SYS
+SYS --> Admin : displays confirmation message that the staff was added
 
 deactivate SYS
-deactivate Admin
 @enduml

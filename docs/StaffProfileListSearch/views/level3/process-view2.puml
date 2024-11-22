@@ -1,0 +1,84 @@
+@startuml 
+autonumber
+actor Admin as "Admin"
+participant Frontend as "FrontendComponent <<UI>>"
+participant FrontendService as "FrontendService <<Service>>"
+participant CTRL as "StaffsController"
+participant SERVICE as "StaffService <<service>>"
+participant StaffDtoList as "StaffDtoList"
+participant AvailabilitySlotList as "AvailabilitySlotList"
+database IAvailabilitySlotRepository as "IAvailabilitySlotRepository"
+database IStaffRepository as "IStaffRepository"
+
+activate Admin
+Admin -> Frontend : requests to search for staff profiles by \n eg. name, specialization,  or email.
+
+activate Frontend
+
+Frontend -> FrontendService : searchStaffs(staffFullname, specializationId, \nstaffEmail, staffPhoneNumber, active)
+activate FrontendService
+FrontendService -> CTRL : GET /api/staffs/?staffFullname=...&specializationId=...\n&staffEmail=...&staffPhoneNumber...&active=...
+activate CTRL
+
+CTRL -> SERVICE : searchStaffsAsync(searchStaffDto)
+activate SERVICE
+
+SERVICE -> IStaffRepository : searchAsync(searchStaffDto)
+activate IStaffRepository
+
+IStaffRepository -> IStaffRepository : Filter by fullName,SpecializationId,\nEmail,phoneNumber
+
+IStaffRepository --> SERVICE : filteredStaffs
+deactivate IStaffRepository
+
+SERVICE -> StaffDtoList : create()
+activate StaffDtoList
+
+StaffDtoList --> SERVICE : staffDtoList
+deactivate StaffDtoList 
+
+SERVICE --> CTRL : return staffDtoList
+
+deactivate SERVICE 
+
+CTRL --> FrontendService : 200 OK (staffDtoList)
+deactivate CTRL
+
+FrontendService --> Frontend : 200 OK (staffDtoList)
+deactivate FrontendService 
+
+Frontend -> FrontendService : getAvailabilitySlots(staffId)
+activate FrontendService
+FrontendService -> CTRL : GET /api/staffs/{id}/availability-slots
+
+activate CTRL
+
+CTRL -> SERVICE : getAvailabilitySlots(staffId)
+activate SERVICE
+
+SERVICE -> IAvailabilitySlotRepository : getAvailabilitySlotsAsync(staffId)
+activate IAvailabilitySlotRepository
+
+IAvailabilitySlotRepository --> SERVICE : availabilitySlots
+deactivate IAvailabilitySlotRepository
+
+SERVICE -> AvailabilitySlotList : create()
+activate AvailabilitySlotList
+
+AvailabilitySlotList --> SERVICE : availabilitySlotDtoList
+deactivate AvailabilitySlotList 
+
+SERVICE --> CTRL : return availabilitySlotDtoList
+
+deactivate SERVICE 
+
+CTRL --> FrontendService : 200 OK (availabilitySlotDtoList)
+deactivate CTRL
+
+FrontendService --> Frontend : 200 OK (availabilitySlotDtoList)
+deactivate FrontendService 
+
+Frontend --> Admin : Displays staffs list
+deactivate Frontend 
+deactivate Admin
+@enduml

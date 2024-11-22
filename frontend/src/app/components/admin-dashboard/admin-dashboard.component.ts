@@ -2,10 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
-import { EditStaffsComponent } from './staffs/edit-staffs/edit-staffs.component';
 import { ListStaffsComponent } from './staffs/list-staffs/list-staffs.component';
 import { CreatePatientsComponent } from './patients/create-patients/create-patients.component';
-import { EditPatientsComponent } from './patients/edit-patients/edit-patients.component';
 import { ListPatientsComponent } from './patients/list-patients/list-patients.component';
 import { MenuItem } from 'primeng/api';
 import { MenubarComponent } from '../menubar/menubar.component';
@@ -18,7 +16,7 @@ import { HospitalModelComponent } from '../hospital-model/hospital-model/hospita
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, EditStaffsComponent, CreatePatientsComponent, EditPatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent,HospitalModelComponent],
+  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, CreatePatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent,HospitalModelComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -32,11 +30,9 @@ export class AdminDashboardComponent implements OnInit {
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
-  @ViewChild(EditStaffsComponent) editStaffsComponent!: EditStaffsComponent;
   @ViewChild(ListStaffsComponent) listStaffsComponent!: ListStaffsComponent;
   @ViewChild(ListOperationTypesComponent) listOperationTypesComponent !: ListOperationTypesComponent;
   @ViewChild(CreatePatientsComponent) createPatientsComponent!: CreatePatientsComponent;
-  @ViewChild(EditPatientsComponent) editPatientsComponent!: EditPatientsComponent;
   @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent;

@@ -38,6 +38,16 @@
               optionValue="value"
               placeholder="Select Specialization"
               class="p-dropdown-sm">
+              <ng-template let-option pTemplate="item">
+                <div class="p-d-flex p-ai-center">
+                  <p-checkbox 
+                    [(ngModel)]="option.selected"
+                    [value]="option.value"
+                    binary="true">
+                  </p-checkbox>
+                  <span class="p-ml-2">{{ option.label }}</span>
+                </div>
+              </ng-template>
             </p-dropdown>
             <label for="specializationFilter">Specialization</label>
           </p-floatLabel>
@@ -66,7 +76,7 @@
         </div>
         
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
-          <div class="col" style="flex: 1;">{{ item.staffId || 'Not specified' }}</div>
+          <div class="col font-bold text-900" style="flex: 1;">{{ item.staffId || 'Not specified' }}</div>
           <div class="col" style="flex: 1;">
             <p-badge [value]="item.active ? 'Active' : 'Deactivated'" [severity]="item.active ? 'success' : 'danger'" class="text-sm"></p-badge>
           </div>
@@ -169,10 +179,22 @@
             [options]="specializationsOptions" 
             optionLabel="label" 
             optionValue="value" 
-            placeholder="Select Specialization">
+            placeholder="Select Specialization"
+            multiple="false">
+            
+            <ng-template let-option pTemplate="item">
+              <div class="p-d-flex p-ai-center">
+                <p-checkbox 
+                  [(ngModel)]="option.selected" 
+                  [value]="option.value" 
+                  binary="true">
+                </p-checkbox>
+                <span class="p-ml-2">{{ option.label }}</span>
+              </div>
+            </ng-template>
           </p-dropdown>
         </div>
-      </div>
+      </div>      
     </ng-template>
   </p-dataView>
   <div class="flex justify-content-end">

@@ -1,14 +1,25 @@
-@startuml
-
+@startuml process-view
 autonumber
-participant SYS as "Backend Management" <<system (C4)>>
 
-?o-> SYS : POST /api/staffs
-activate SYS
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
 
-SYS -> SYS : registerStaffProfile(creatingStaffDto)
-<-- SYS : 201 Created
-deactivate SYS
-
-
+activate Admin
+    Admin -> Frontend : asks to add a new staff
+    activate Frontend
+        Frontend --> Admin : asks to insert the details of the staff
+    
+    deactivate Frontend
+    Admin -> Frontend : inserts the details
+    activate Frontend
+    
+        Frontend-> Backend : POST /staffs
+        activate Backend
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+    Frontend --> Admin : displays confirmation message that the staff was added
+    
+    deactivate Frontend
+    deactivate Admin
 @enduml

@@ -66,7 +66,7 @@ export class PatientAccountComponent implements OnInit {
 
   saveChanges(): void {
     if (this.patient) {
-      this.patientService.updatePatient(this.patient.medicalRecordNumber,this.patient).subscribe(
+      this.patientService.updatePatient(this.patient).subscribe(
         () => {
           this.isEditing = false;
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Updated your information successfully!' }); // Toast para sucesso

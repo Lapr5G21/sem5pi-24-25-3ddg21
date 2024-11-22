@@ -24,7 +24,7 @@ export class PatientService {
         return this.http.post(`${this.apiUrl}/patients`, patientData, {headers});
     }
 
-    updatePatient(id: string, patientData: any): Observable<any> {
+    updatePatient(patientData: any): Observable<any> {
       const token = localStorage.getItem('access_token');
     
       const headers = new HttpHeaders({
@@ -33,19 +33,19 @@ export class PatientService {
       });
     
       const payload = {
-        medicalRecordNumber: id,
-        firstName: patientData.FisrtName,
-        lastName: patientData.LastName,
-        fullName: patientData.FullName,
-        medicaLRecord: patientData.MedicalHistory,
-        email: patientData.Email,
-        phoneNumber: patientData.PhoneNumber,
-        address: patientData.Address
+        medicalRecordNumber: patientData.medicalRecordNumber,
+        firstName: patientData.firstName,
+        lastName: patientData.lastName,
+        fullName: patientData.fullName,
+        medicalHistory: patientData.medicalRecord,
+        email: patientData.email,
+        phoneNumber: patientData.phoneNumber,
+        address: patientData.address
       };
     
       console.log('Payload enviado para o backend:', payload);
     
-      return this.http.put(`${this.apiUrl}/patients/${id}`, payload, { headers });
+      return this.http.put(`${this.apiUrl}/patients/${patientData.medicalRecordNumber}`, payload, { headers });
     }
 
     searchPatients(name: string, birthDate: string, gender: string, email: string, phoneNumber: string, mrn: string, isActive: boolean | null): Observable<any[]> {

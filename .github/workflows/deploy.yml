@@ -3,10 +3,9 @@ name: .NET Build, Test & Deploy
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '0 6 * * 6'
+    
+  schedule: 
+   - cron: '0 6 * * 6'
 
 jobs:
   deploy:

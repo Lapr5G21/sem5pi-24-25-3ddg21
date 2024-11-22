@@ -129,7 +129,7 @@ namespace DDDSample1.Domain.Patients
     {
         var patient = await this._patientRepository.GetByIdAsync(new PatientMedicalRecordNumber(dto.MedicalRecordNumber));
 
-        if (patient == null) throw new BusinessRuleValidationException("Pacient not found");
+        if (patient == null) throw new BusinessRuleValidationException("Patient not found");
 
         var oldEmail = patient.Email.ToString();
         var oldPhoneNumber = patient.PhoneNumber.ToString();

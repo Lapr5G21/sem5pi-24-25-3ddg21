@@ -1,24 +1,31 @@
 @startuml
 
 autonumber
-actor Admin as "Admin"
-participant BE as "Backend Management" <<system>>
+participant FE as "Frontend" <<system(C4)>>
+participant BE as "Backend Management" <<system (C4)>>
 participant DB as "Database"
 
-Admin-> BE : POST: api/staffs
+activate FE
+FE-> BE : POST /api/staffs
 activate BE
 
-BE -> DB : addAsync(creatingStaffDTO)
-
-
+BE -> DB : get specialization
 
 activate DB 
 
-DB -> DB : confirms User ID
+DB -> BE : specialization
 
-DB -> DB : confirms User specialization
+deactivate DB 
 
-DB -> DB : save staff
+BE -> DB : get user
+
+activate DB 
+
+DB -> BE : user
+
+deactivate DB 
+
+BE -> DB : save staff
 
 activate DB 
 
@@ -26,8 +33,9 @@ DB -> BE : staff
 
 deactivate DB 
 
-Admin <- BE : 201 Created
+FE <- BE : 201 Created
 
 deactivate BE
+deactivate FE
 
 @enduml

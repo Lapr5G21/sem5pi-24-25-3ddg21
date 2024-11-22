@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OperationTypeService } from '../../../../../services/operation-type-service.service';
-import { Specialization } from '../../../../../domain/operationType-model';  
+import { Specialization, SpecializationDto } from '../../../../../domain/operationType-model';  
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { DataViewModule } from 'primeng/dataview';
@@ -15,6 +15,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 
@@ -35,7 +37,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
     DropdownModule,
     FloatLabelModule,
     ConfirmDialogModule,
-    MultiSelectModule
+    MultiSelectModule,
+    CheckboxModule
   ],
   providers: [ConfirmationService],
   templateUrl: './list-operation-types.component.html',
@@ -53,9 +56,11 @@ export class ListOperationTypesComponent implements OnInit {
   specializationsOptions: { label: string, value: string }[] = [];  
   nameFilter: string = '';
   statusFilter: boolean = true;  
-  specializationFilter: string = '';  
+  specializationFilter: string = '';
+  staffNumbers: { [key: string]: number } = {};  
 
   selectedOperationType: any = {
+    id: '',
     name: '',
     estimatedTimeDuration: 0,
     anesthesiaTime: 0,
@@ -70,16 +75,17 @@ export class ListOperationTypesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadSpecializations();
     this.loadOperationTypes();  
   }
 
   loadOperationTypes(): void {
     const statusBoolean = this.statusFilter;
-    this.operationTypeService.searchOperationTypes(this.nameFilter, this.specializationFilter, statusBoolean).subscribe(
+    const specializationId = this.specializationFilter;
+    console.log(specializationId);
+    this.operationTypeService.searchOperationTypes(this.nameFilter, specializationId, statusBoolean).subscribe(
       (operationTypes) => {
         this.operationTypes = operationTypes;
-        this.loadSpecializations();  
+        this.loadSpecializations();
       },
       (error) => console.error('Error loading operation types', error)
     );
@@ -98,7 +104,7 @@ export class ListOperationTypesComponent implements OnInit {
               this.specializationsMap[specialization.id] = specializationData.specializationName; 
               this.specializationsOptions.push({
                 label: specializationData.specializationName,
-                value: specialization.id
+                value: specializationData.id
               });
             },
             (error) => console.error('Error loading specialization', error)
@@ -113,7 +119,8 @@ export class ListOperationTypesComponent implements OnInit {
   }
 
   onSearch(): void {
-    this.specializationsOptions = [];  
+    this.specializationsOptions = [];
+    this.specializationsMap = {}; 
     this.loadOperationTypes();  
   }
 
@@ -130,6 +137,7 @@ export class ListOperationTypesComponent implements OnInit {
     );
   }
 
+
   confirmDisable(operationTypeId: string): void {
     this.confirmationService.confirm({
       message: 'Are you sure you want to disable this operation type?',
@@ -144,34 +152,59 @@ export class ListOperationTypesComponent implements OnInit {
     });
   }
 
-  onEdit(item: any): void {
-    this.selectedOperationType = { ...item }; 
-    this.editDialogVisible = true; 
+  onEdit(operationType: any): void {
+    this.selectedOperationType = { ...operationType };
+
+  this.selectedOperationType.specializations = this.selectedOperationType.specializations.filter(
+    (spec: any) => spec.id && spec.numberOfStaff !== undefined
+  );
+
+  this.selectedOperationType.specializations.forEach((spec: any) => {
+    if (!this.specializationsMap[spec.id]) return;
+    this.staffNumbers[spec.id] = spec.numberOfStaff || 0;
+  });
+
+  this.editDialogVisible = true;
   }
 
   saveOperationTypeInfo(selectedOperationType: any) {
+    const validSpecializations: SpecializationDto[] = this.selectedOperationType.specializations
+  .filter((spec: any) => spec.id && spec.numberOfStaff > 0)
+  .map((spec: any) => {
+    console.log('Spec ID:', spec.id);
+    console.log('Staff Numbers:', this.staffNumbers);
+    
+    const updatedNumberOfStaff = this.staffNumbers[spec.id] || spec.numberOfStaff;
+
+    console.log('Updated Number of Staff:', updatedNumberOfStaff);
+
+    return {
+      specializationId: spec.id,
+      numberOfStaff: updatedNumberOfStaff
+    };
+  });
+
+console.log('Valid Specializations:', validSpecializations);
 
     
      const payload = {
+      operationTypeId: selectedOperationType.id,
       name: selectedOperationType.name,
       estimatedTimeDuration: selectedOperationType.estimatedTimeDuration,
       anesthesiaTime: selectedOperationType.anesthesiaTime,
-      cleaningTime: selectedOperationType.cleaningTime,
       surgeryTime: selectedOperationType.surgeryTime,
-      specializations: selectedOperationType.specializations.map((id: string) => ({
-        specializationId: id,
-        specializationName: this.getSpecializationName(id),
-      }))
+      cleaningTime: selectedOperationType.cleaningTime,
+      specializations: validSpecializations
     };
 
 
-    console.log('Saving operation type info:', selectedOperationType);
+    console.log('Saving operation type info:', payload);
     
 
     this.operationTypeService.updateOperationType(selectedOperationType.id, payload).subscribe(
       () => {
         this.loadOperationTypes(); 
-        this.editDialogVisible = false; 
+          this.editDialogVisible = false; 
       },
       (error) => console.error('Erro ao salvar os dados do tipo de operação', error)
     );
