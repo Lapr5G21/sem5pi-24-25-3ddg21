@@ -11,7 +11,7 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,AdminDashboardComponent,MenubarComponent,CreateOperationTypesComponent, CreateStaffsComponent, ListStaffsComponent],
+  imports: [RouterOutlet,AdminDashboardComponent,MenubarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

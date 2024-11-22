@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PatientAccountComponent } from './patient-account-component.component';
+import { HttpClientModule } from '@angular/common/http';
 
-describe('PatientAccountComponentComponent', () => {
+describe('PatientAccountComponent', () => {
   let component: PatientAccountComponent;
   let fixture: ComponentFixture<PatientAccountComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PatientAccountComponent]
+      imports: [PatientAccountComponent,HttpClientModule]
     })
     .compileComponents();
 

@@ -93,8 +93,10 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "main": "src/test.ts"
           }
+          
         },
         "cypress-run": {
           "builder": "@cypress/schematic:cypress",
