@@ -17,6 +17,7 @@ namespace DDDSample1.Infrastructure.OperationTypes
         {
             _context=context;
         }
+
            public async Task<IEnumerable<OperationType>> SearchAsync(SearchOperationTypeDto searchDto)
         {
             var query = _context.Set<OperationType>().AsQueryable();
@@ -43,5 +44,6 @@ namespace DDDSample1.Infrastructure.OperationTypes
 
             return await query.ToListAsync();
         }
+
     }
 }
