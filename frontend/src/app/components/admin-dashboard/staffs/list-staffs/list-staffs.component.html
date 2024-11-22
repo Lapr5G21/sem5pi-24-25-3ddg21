@@ -38,6 +38,16 @@
               optionValue="value"
               placeholder="Select Specialization"
               class="p-dropdown-sm">
+              <ng-template let-option pTemplate="item">
+                <div class="p-d-flex p-ai-center">
+                  <p-checkbox 
+                    [(ngModel)]="option.selected"
+                    [value]="option.value"
+                    binary="true">
+                  </p-checkbox>
+                  <span class="p-ml-2">{{ option.label }}</span>
+                </div>
+              </ng-template>
             </p-dropdown>
             <label for="specializationFilter">Specialization</label>
           </p-floatLabel>
@@ -169,10 +179,22 @@
             [options]="specializationsOptions" 
             optionLabel="label" 
             optionValue="value" 
-            placeholder="Select Specialization">
+            placeholder="Select Specialization"
+            multiple="false">
+            
+            <ng-template let-option pTemplate="item">
+              <div class="p-d-flex p-ai-center">
+                <p-checkbox 
+                  [(ngModel)]="option.selected" 
+                  [value]="option.value" 
+                  binary="true">
+                </p-checkbox>
+                <span class="p-ml-2">{{ option.label }}</span>
+              </div>
+            </ng-template>
           </p-dropdown>
         </div>
-      </div>
+      </div>      
     </ng-template>
   </p-dataView>
   <div class="flex justify-content-end">

@@ -15,6 +15,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { CheckboxModule } from 'primeng/checkbox';
 
 
 
@@ -35,7 +37,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
     DropdownModule,
     FloatLabelModule,
     ConfirmDialogModule,
-    MultiSelectModule
+    MultiSelectModule,
+    CheckboxModule
   ],
   providers: [ConfirmationService],
   templateUrl: './list-operation-types.component.html',
@@ -72,16 +75,17 @@ export class ListOperationTypesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadSpecializations();
     this.loadOperationTypes();  
   }
 
   loadOperationTypes(): void {
     const statusBoolean = this.statusFilter;
-    this.operationTypeService.searchOperationTypes(this.nameFilter, this.specializationFilter, statusBoolean).subscribe(
+    const specializationId = this.specializationFilter;
+    console.log(specializationId);
+    this.operationTypeService.searchOperationTypes(this.nameFilter, specializationId, statusBoolean).subscribe(
       (operationTypes) => {
         this.operationTypes = operationTypes;
-        this.loadSpecializations();  
+        this.loadSpecializations();
       },
       (error) => console.error('Error loading operation types', error)
     );
@@ -100,7 +104,7 @@ export class ListOperationTypesComponent implements OnInit {
               this.specializationsMap[specialization.id] = specializationData.specializationName; 
               this.specializationsOptions.push({
                 label: specializationData.specializationName,
-                value: specialization.id
+                value: specializationData.id
               });
             },
             (error) => console.error('Error loading specialization', error)
@@ -115,7 +119,8 @@ export class ListOperationTypesComponent implements OnInit {
   }
 
   onSearch(): void {
-    this.specializationsOptions = [];  
+    this.specializationsOptions = [];
+    this.specializationsMap = {}; 
     this.loadOperationTypes();  
   }
 
@@ -131,6 +136,7 @@ export class ListOperationTypesComponent implements OnInit {
       (error) => console.error('Erro ao desativar o tipo de operação', error)
     );
   }
+
 
   confirmDisable(operationTypeId: string): void {
     this.confirmationService.confirm({

@@ -19,12 +19,29 @@
           </p-floatLabel>
 
           <!-- Filtro de Especialização -->
-          <p-floatLabel class="flex-1">
-            <p-dropdown [(ngModel)]="specializationFilter" [options]="specializationsOptions" optionLabel="label"
-              optionValue="value" placeholder="Select Specialization" class="p-dropdown-sm">
-            </p-dropdown>
-            <label for="specializationFilter">Specialization</label>
-          </p-floatLabel>
+          <p-dropdown 
+          [options]="specializationsOptions" 
+          [(ngModel)]="specializationFilter"
+          optionLabel="label" 
+          optionValue="value" 
+          class="p-dropdown-sm" 
+          placeholder="Select Specializations"
+          multiple="false">
+  
+          <ng-template let-option pTemplate="item">
+          <div class="p-d-flex p-ai-center">
+          <p-checkbox 
+            [(ngModel)]="option.selected" 
+            [value]="option.value" 
+            binary="true">
+          </p-checkbox>
+          <span class="p-ml-2">{{ option.label }}</span>
+       </div>
+      </ng-template>
+    </p-dropdown>
+
+          
+          
 
           <div class="flex items-end">
             <button (click)="onSearch()" class="p-button p-button-sm p-button-primary">Search</button>

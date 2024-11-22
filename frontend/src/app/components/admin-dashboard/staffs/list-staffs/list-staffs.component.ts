@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'list-staffs',
@@ -34,7 +35,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     FloatLabelModule,
     CalendarModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    CheckboxModule
   ],
   templateUrl: './list-staffs.component.html',
   styleUrls: ['./list-staffs.component.scss'],
