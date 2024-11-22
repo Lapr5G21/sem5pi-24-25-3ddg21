@@ -125,18 +125,7 @@
           <div class="col p-2 text-center" style="flex: 1;">
             <div class="flex justify-center gap-2">
               <p-button icon="pi pi-pencil" [outlined]="true" [disabled]="!patient.active" (click)="openEditDialog(patient)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
-
-
-              <p-button 
-                icon="pi pi-trash"
-                [disabled]="!patient.active"
-                [ngClass]="{ 'p-button-danger': true }"
-                [style]="{
-                  'background-color': '#f44336',
-                  'border-color': '#f44336',
-                  'color': 'white'
-                }">
-              </p-button>
+              <app-delete-patients [patient]="patient" (patientDeleted)="patientDeleted()"></app-delete-patients>
             </div>
           </div>
 

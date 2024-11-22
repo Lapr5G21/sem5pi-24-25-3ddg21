@@ -86,5 +86,16 @@ export class PatientService {
         const params = new HttpParams().set('email', email);
         return this.http.get(`${this.apiUrl}/patients/by-email`, { params });
       }
+
+      delete(mrn: string): Observable<any> {
+        
+        const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+          });
+      
+        return this.http.delete(`${this.apiUrl}/patients/${mrn}`,{headers});    
+      }
+      
 }
 

@@ -1,0 +1,18 @@
+<!-- ConfirmDialog para Excluir Paciente -->
+<p-confirmDialog 
+  header="Confirm Delete" 
+  icon="pi pi-exclamation-triangle" 
+  [style]="{ width: '400px' }"
+  [acceptButtonStyleClass]="'p-button-danger center-label'" 
+  [rejectButtonStyleClass]="'p-button-secondary center-label'">
+</p-confirmDialog>
+
+<!-- Botão de Excluir na lista -->
+<p-button 
+  icon="pi pi-trash"
+  [disabled]="!patient.active"
+  class="p-button-danger"
+  (click)="confirmDelete()"
+  [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }">
+</p-button>
+

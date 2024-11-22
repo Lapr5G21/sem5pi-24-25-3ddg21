@@ -16,7 +16,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
+import { DeletePatientsComponent } from '../delete-patients/delete-patients.component';
 
 
 @Component({
@@ -39,7 +39,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
         CalendarModule,
         ToastModule,
         ConfirmDialogModule,
-        PaginatorModule
+        PaginatorModule,
+        DeletePatientsComponent
     ],
     providers:[MessageService, ConfirmationService]
 })
@@ -180,6 +181,9 @@ adjustTextarea(event: Event): void {
   textarea.style.height = `${textarea.scrollHeight}px`; // Ajusta para o tamanho do conteúdo
 }
 
+patientDeleted(){
+  this.loadPatients();
+}
 
   
 }
