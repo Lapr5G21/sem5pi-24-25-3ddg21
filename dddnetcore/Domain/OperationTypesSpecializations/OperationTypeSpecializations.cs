@@ -34,5 +34,9 @@ namespace DDDSample1.Domain.OperationTypesSpecializations
         {
             return Id.GetHashCode();
         }
+
+        public void ChangeNumberOfStaff(NumberOfStaff numberOfStaff){
+            this.NumberOfStaff=numberOfStaff;
+        }
     }
 }   

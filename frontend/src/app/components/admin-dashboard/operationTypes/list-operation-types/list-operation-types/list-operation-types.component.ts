@@ -162,17 +162,32 @@ export class ListOperationTypesComponent implements OnInit {
   }
 
   saveOperationTypeInfo(selectedOperationType: any) {
-    const validSpecializations : SpecializationDto = this.selectedOperationType.specializations.filter(
-      (spec: any) => spec.id && spec.numberOfStaff > 0)
-      .map((spec: any) => ({
-        specializationId: spec.id,
-        numberOfStaff: spec.numberOfStaff,
-    }));
+    const validSpecializations: SpecializationDto[] = this.selectedOperationType.specializations
+  .filter((spec: any) => spec.id && spec.numberOfStaff > 0)
+  .map((spec: any) => {
+    console.log('Spec ID:', spec.id);
+    console.log('Staff Numbers:', this.staffNumbers);
+    
+    const updatedNumberOfStaff = this.staffNumbers[spec.id] || spec.numberOfStaff;
+
+    console.log('Updated Number of Staff:', updatedNumberOfStaff);
+
+    return {
+      specializationId: spec.id,
+      numberOfStaff: updatedNumberOfStaff
+    };
+  });
+
+console.log('Valid Specializations:', validSpecializations);
+
     
      const payload = {
       operationTypeId: selectedOperationType.id,
       name: selectedOperationType.name,
       estimatedTimeDuration: selectedOperationType.estimatedTimeDuration,
+      anesthesiaTime: selectedOperationType.anesthesiaTime,
+      surgeryTime: selectedOperationType.surgeryTime,
+      cleaningTime: selectedOperationType.cleaningTime,
       specializations: validSpecializations
     };
 
