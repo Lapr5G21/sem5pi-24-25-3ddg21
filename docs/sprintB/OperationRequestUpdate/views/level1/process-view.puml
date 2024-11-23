@@ -1,0 +1,26 @@
+@startuml
+
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system>>
+
+activate Doctor
+
+    Doctor -> SYS : asks to update an operation Request
+    
+    activate SYS
+
+        SYS --> Doctor : asks to edit data
+
+    deactivate SYS
+
+    Doctor -> SYS : edit data
+
+    activate SYS 
+        SYS --> Doctor: shows edited data
+        
+    deactivate SYS
+
+deactivate Doctor
+
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml process-view
+autonumber
+
+actor "Doctor" as Doctor
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
+
+activate Doctor
+    Doctor -> Frontend : asks to add a new operation request
+    activate Frontend
+        Frontend --> Doctor : asks to insert the details of the operation request
+    
+    deactivate Frontend
+    Doctor -> Frontend : inserts the details
+    activate Frontend
+    
+        Frontend-> Backend : POST /operationRequests
+        activate Backend
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+    Frontend --> Doctor : displays confirmation message that the operation request was added
+    
+    deactivate Frontend
+    deactivate Doctor
+@enduml

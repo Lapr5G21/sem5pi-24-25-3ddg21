@@ -1,0 +1,49 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Admin as "Admin"
+    participant ComponentUI as "UI Component" <<component (C4)>>
+    participant Component as "Component" <<component (C4)>>
+    participant SRV as "Service" <<component (C4)>>
+    participant HTTP as "HTTP" <<component (C4)>>
+
+  participant BackendManagement as "BackendManagement" <<component (C4)>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to list operation types
+    
+    activate ComponentUI
+
+        ComponentUI -> Component : list operation types
+
+        activate Component
+
+            Component -> SRV : list operation types
+            activate SRV
+
+                SRV -> HTTP : get('/operationTypes/search')
+
+                activate HTTP
+                    HTTP -> BackendManagement : GET /operationTypes/search
+
+                    activate BackendManagement
+                        BackendManagement --> HTTP : 200 (operationTypes)
+                    deactivate BackendManagement
+                    
+                    HTTP --> SRV : operationTypes
+
+                deactivate HTTP
+
+                SRV --> Component : operationTypes
+            deactivate SRV
+
+            Component --> ComponentUI : operationTypes
+        deactivate Component
+
+    Admin <-- ComponentUI : shows operationTypes
+    deactivate ComponentUI
+
+deactivate Admin
+
+@enduml

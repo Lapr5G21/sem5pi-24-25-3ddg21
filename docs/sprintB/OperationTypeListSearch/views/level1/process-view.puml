@@ -1,0 +1,14 @@
+@startuml
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system>>
+
+activate Admin 
+
+Admin --> SYS : Requests to search for operation types by \n eg. Operation name, specializations, status.
+
+activate SYS 
+
+SYS --> Admin : Lists operation types
+
+@enduml

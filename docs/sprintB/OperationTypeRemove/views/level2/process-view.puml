@@ -1,0 +1,23 @@
+@startuml process-view
+autonumber
+
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant BackendManagement as "BackendManagement" <<system (C4)>>
+
+activate Admin
+    Admin -> Frontend : asks to remove operation type
+    activate Frontend
+        Frontend --> Admin : asks to confirm
+    deactivate Frontend
+    Admin -> Frontend : confirms
+    activate Frontend
+        Frontend-> BackendManagement : DELETE /operationTypes/{id}
+        activate BackendManagement
+            Frontend <-- BackendManagement : 200 OK
+        deactivate BackendManagement
+    Frontend --> Admin : shows success message
+    deactivate Frontend
+deactivate Admin
+
+@enduml

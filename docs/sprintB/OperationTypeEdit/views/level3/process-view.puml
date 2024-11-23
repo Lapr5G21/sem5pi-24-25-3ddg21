@@ -1,0 +1,58 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+
+actor Admin as "Admin"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant BackendDataManagement as "Backend Data Management" <<component (C4)>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to update one Operation Type
+    activate ComponentUI
+
+        ComponentUI --> Admin : asks to update data
+    
+    deactivate ComponentUI
+
+    Admin -> ComponentUI : update data
+
+    activate ComponentUI
+
+        ComponentUI -> Component : update Operation Type
+        activate Component
+
+            Component -> Model** : create
+
+            Component -> Service : update Operation Type
+            activate Service
+
+                Service -> HTTP : put('/operationType/{id}')
+
+                activate HTTP
+                    HTTP -> BackendDataManagement : PUT /operationType/{id}
+                    activate BackendDataManagement
+                        BackendDataManagement --> HTTP : 200 (operationType)
+                    deactivate BackendDataManagement
+                    
+                    HTTP --> Service : operationType
+
+                deactivate HTTP
+
+                Service --> Component : operationType
+            deactivate Service
+
+            Component --> ComponentUI : operationType
+        deactivate Component
+
+    Admin <-- ComponentUI : shows updated data
+    deactivate ComponentUI
+
+deactivate Admin
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml PatientProfileCreation(level2)
+
+autonumber
+actor Admin as "Admin"
+participant SYS as "Healthcare System" <<system (C4)>>
+
+Admin-> SYS : POST /api/users/patients
+activate SYS
+
+SYS -> SYS : createPatientProfile(creatingPatientDTO)
+SYS--> Admin : 201 Created
+deactivate SYS
+
+@enduml

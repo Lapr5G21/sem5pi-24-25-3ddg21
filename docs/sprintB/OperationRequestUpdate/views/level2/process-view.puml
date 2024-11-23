@@ -1,0 +1,35 @@
+@startuml
+
+autonumber
+actor Doctor as "Doctor"
+participant Frontend as "Frontend" <<system (C4)>>
+participant SYS as "Backend Management" <<system>>
+
+activate Doctor
+
+    Doctor -> Frontend : asks to update an Operation Request
+
+    activate Frontend
+
+        Frontend --> Doctor : asks to update data
+
+    deactivate Frontend
+
+    Doctor -> Frontend : update data
+
+    activate Frontend
+
+        Frontend-> SYS : PUT /operationRequests/{id}
+        activate SYS
+
+            Frontend <-- SYS : 200 OK
+
+        deactivate SYS
+
+    Frontend --> Doctor : shows updated data
+    
+    deactivate Frontend
+deactivate Doctor
+
+
+@enduml

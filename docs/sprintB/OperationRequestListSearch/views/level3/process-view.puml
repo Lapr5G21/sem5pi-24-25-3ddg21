@@ -1,0 +1,49 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Doctor as "Doctor"
+    participant ComponentUI as "UI Component" <<component (C4)>>
+    participant Component as "Component" <<component (C4)>>
+    participant SRV as "Service" <<component (C4)>>
+    participant HTTP as "HTTP" <<component (C4)>>
+
+  participant BackendManagement as "BackendManagement" <<component (C4)>>
+
+activate Doctor
+
+    Doctor -> ComponentUI : asks to list operation requests
+    
+    activate ComponentUI
+
+        ComponentUI -> Component : list operation requests
+
+        activate Component
+
+            Component -> SRV : list operation requests
+            activate SRV
+
+                SRV -> HTTP : get('/operationRequests/search')
+
+                activate HTTP
+                    HTTP -> BackendManagement : GET /operationRequests/search
+
+                    activate BackendManagement
+                        BackendManagement --> HTTP : 200 (operationRequests)
+                    deactivate BackendManagement
+                    
+                    HTTP --> SRV : operationRequests
+
+                deactivate HTTP
+
+                SRV --> Component : operationRequests
+            deactivate SRV
+
+            Component --> ComponentUI : operationRequests
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows operationRequests
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml

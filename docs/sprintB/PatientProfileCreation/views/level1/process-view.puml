@@ -1,0 +1,18 @@
+@startuml PatientProfileCreation(level1)
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Admin 
+
+Admin --> SYS : asks to create a patient profile
+
+activate SYS 
+
+SYS -> Admin : Confirm profile created
+
+deactivate SYS
+deactivate Admin
+
+
+@enduml

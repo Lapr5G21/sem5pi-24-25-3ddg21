@@ -1,0 +1,39 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant SRV as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant BackendManagement as "BackendManagement" <<component (C4)>>
+
+activate Doctor
+    Doctor -> ComponentUI : asks to remove an operation requisition
+    activate ComponentUI
+        ComponentUI --> Doctor : asks to confirm
+    deactivate ComponentUI
+    Doctor -> ComponentUI : confirms
+    activate ComponentUI
+        ComponentUI -> Component : deactivate operation requisition
+        activate Component     
+            Component -> SRV : deactivate operation requisition
+            activate SRV
+                SRV -> HTTP : delete('/operationRequests')
+                activate HTTP
+                    HTTP -> BackendManagement : DELETE /operationRequests/{id}
+                    activate BackendManagement
+                        BackendManagement --> HTTP : 200 (operationRequest)
+                    deactivate BackendManagement
+                    HTTP --> SRV : operationRequest
+                deactivate HTTP
+                SRV --> Component : operationRequest
+            deactivate SRV
+            Component --> ComponentUI : operationRequest
+        deactivate Component
+    Doctor <-- ComponentUI : shows success message
+    deactivate ComponentUI
+deactivate Doctor
+
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+
+actor Patient as "Patient"
+participant SYS as "HealthCare System" <<system>>
+
+activate Patient
+
+    Patient -> SYS : asks to update my user profile
+    
+    activate SYS
+
+        SYS --> Patient : asks to update data
+
+    deactivate SYS
+
+    Patient -> SYS : update data
+
+    activate SYS 
+        SYS --> Patient: shows updated data
+        
+    deactivate SYS
+
+deactivate Patient
+
+
+@enduml

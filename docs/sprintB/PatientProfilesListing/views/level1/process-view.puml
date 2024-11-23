@@ -1,0 +1,15 @@
+@startuml PatientProfilesListing(level1)
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Admin 
+
+Admin -> SYS : Asks to search for patients by name and/or birthDate \n and/or gender and/or medicalRecordNumber and/or email and/or phoneNumber.
+
+activate SYS 
+
+SYS --> Admin : List patient profiles
+
+
+@enduml

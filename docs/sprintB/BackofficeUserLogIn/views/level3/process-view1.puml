@@ -1,0 +1,24 @@
+@startuml
+
+autonumber
+participant Backoffice as "Backoffice User"
+participant BE as "Backend" <<system (C4)>>
+participant Auth0 as "Auth0" <<external service>>
+participant DB as "Database"
+
+activate Backoffice
+Backoffice -> BE : POST /api/users/login
+activate BE
+
+BE -> Auth0 : POST /oauth/token
+activate Auth0
+
+Auth0 -> BE : return access_token
+deactivate Auth0
+
+BE -> DB : store user session data
+deactivate DB
+Backoffice <-- BE : 201 Logged in
+deactivate BE
+deactivate Backoffice
+@enduml

@@ -1,0 +1,39 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Admin as "Admin"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant SRV as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant BackendManagement as "BackendManagement" <<component (C4)>>
+
+activate Admin
+    Admin -> ComponentUI : asks to remove an operation type
+    activate ComponentUI
+        ComponentUI --> Admin : asks to confirm
+    deactivate ComponentUI
+    Admin -> ComponentUI : confirms
+    activate ComponentUI
+        ComponentUI -> Component : deactivate operation type
+        activate Component     
+            Component -> SRV : deactivate operation type
+            activate SRV
+                SRV -> HTTP : delete('/operationTypes')
+                activate HTTP
+                    HTTP -> BackendManagement : DELETE /operationTypes/{id}
+                    activate BackendManagement
+                        BackendManagement --> HTTP : 200 (operationTypes)
+                    deactivate BackendManagement
+                    HTTP --> SRV : operationType
+                deactivate HTTP
+                SRV --> Component : operationType
+            deactivate SRV
+            Component --> ComponentUI : operationType
+        deactivate Component
+    Admin <-- ComponentUI : shows success message
+    deactivate ComponentUI
+deactivate Admin
+
+@enduml

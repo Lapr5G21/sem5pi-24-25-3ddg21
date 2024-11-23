@@ -1,0 +1,16 @@
+@startuml
+
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system>>
+
+activate Doctor 
+
+Doctor --> SYS : Requests to search for operation requests by \n eg. Patient name, operation Type, priority or status.
+
+
+activate SYS 
+
+SYS --> Doctor : Lists Operations Requests.
+
+
+@enduml

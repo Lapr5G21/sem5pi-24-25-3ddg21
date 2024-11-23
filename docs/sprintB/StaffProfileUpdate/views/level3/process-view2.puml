@@ -1,0 +1,133 @@
+@startuml 
+autonumber
+actor Admin as "Admin"
+participant Frontend as "FrontendComponent <<UI>>"
+participant StaffModel as "Staff <<Model>>"
+participant FrontendService as "FrontendService <<Service>>"
+participant CTRL as "StaffController"
+participant SERVICE as "StaffService <<service>>"
+participant EMAILSERVICE as "EmailService"
+participant Staff as "Staff <<domain>>"
+participant StaffDto as "StaffDto"
+database ILogRepository as "ILogRepository"
+database IStaffRepository as "IStaffRepository"
+database SpecializationRepository as "SpecializationRepository"
+
+
+activate Admin
+
+Admin -> Frontend : Asks to edit a staff
+
+activate Frontend
+Frontend -> Admin : Displays form for input
+deactivate Frontend
+
+Admin -> Frontend : Insers the new info with staff details
+
+activate Frontend 
+
+Frontend ->  StaffModel : create()
+
+Frontend -> FrontendService : updateStaff(staffModel)
+
+activate FrontendService
+FrontendService -> CTRL : PUT /api/staffs/{id}
+activate CTRL
+
+CTRL -> SERVICE : updateAsync(editingStaffDto)
+activate SERVICE
+
+SERVICE -> IStaffRepository : getByIdAsync(editingStaffDto.staffId)
+
+activate IStaffRepository
+
+IStaffRepository --> SERVICE : staff
+
+deactivate IStaffRepository
+
+SERVICE -> SpecializationRepository : GetByIdAsync(new SpecializationId(editingStaffDto.SpecializationId))
+
+activate SpecializationRepository 
+
+SpecializationRepository -> SERVICE : specialization
+
+deactivate SpecializationRepository
+alt specialization == null  
+
+SERVICE -> CTRL : NotFoundException
+
+CTRL -> Frontend : Displays "Specialization Not Found" message
+
+end alt 
+deactivate SpecializationRepository
+
+SERVICE -> Staff : changeStaff(editingStaffDto)
+
+opt oldEmail != staff.email || oldPhoneNumber != staff.phoneNumber
+
+SERVICE -> EMAILSERVICE : sendEmailAsync(staff.Email,content)
+
+activate EMAILSERVICE
+
+EMAILSERVICE --> SERVICE : emailSent
+
+deactivate EMAILSERVICE
+
+end opt
+
+ alt add availabilitySlot
+            Frontend -> FrontendService : addAvailabilitySlot(availabilitySlot)
+
+            FrontendService -> CTRL : POST /api/staffs/{id}/availability-slots
+
+            CTRL -> SERVICE : addAvailabilitySlot(availabilitySlotdTO.staffId, \n availabilitySlot.start, availabilitySlot.end)
+            SERVICE -> Staff : addAvailabilitySlot(availabilitySlotDto)
+            activate Staff
+            Staff --> SERVICE : availabilitySlotDto
+            deactivate Staff 
+        else delete availabilitySlot
+            Frontend -> FrontendService : removeAvailabilitySlot(availabilitySlot)
+            FrontendService -> CTRL : DELETE /api/staffs/{id}/availability-slots/hard
+            CTRL -> SERVICE : removeAvailabilitySlot(availabilitySlotdTO.staffId, \n availabilitySlot.start, availabilitySlot.end)
+            SERVICE -> Staff : removeAvailabilitySlotAsync(availabilitySlotDto)
+            activate Staff
+            Staff --> SERVICE : availabilitySlotDto
+            deactivate Staff 
+ end
+
+SERVICE -> ILogRepository : LogUpdateOperation(LogCategoryType.STAFF_PROFILE,details)
+
+activate ILogRepository
+
+ILogRepository --> SERVICE : log 
+
+deactivate ILogRepository
+
+SERVICE -> ILogRepository : save(log)
+
+activate ILogRepository
+
+ILogRepository --> SERVICE : log 
+
+deactivate ILogRepository
+
+SERVICE -> StaffDto : create(StaffId, StaffFirstName, StaffLastName, \nStaffFullName, StaffLicenseNumber, SpecializationId, StaffEmail, StaffPhoneNumber, UserId)
+
+activate StaffDto
+StaffDto --> SERVICE : staffDto
+deactivate StaffDto
+
+SERVICE --> CTRL : stafftDto
+
+deactivate SERVICE 
+
+CTRL --> FrontendService : 200 OK
+
+deactivate CTRL 
+
+FrontendService --> Frontend : 200 OK
+deactivate FrontendService
+Frontend -> Admin : Displays success notification (201)
+deactivate Admin
+deactivate Frontend
+@enduml

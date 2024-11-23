@@ -1,0 +1,19 @@
+@startuml
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Doctor 
+
+Doctor --> SYS : asks to add a new operation request 
+
+activate SYS 
+SYS --> Doctor : displays the form for adding new operation request
+deactivate SYS
+
+Doctor --> SYS : submits the form with operation request details
+activate SYS
+SYS --> Doctor : displays confirmation message that the operation request was added
+
+deactivate SYS
+
+@enduml

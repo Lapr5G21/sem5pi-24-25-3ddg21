@@ -1,0 +1,19 @@
+@startuml
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Admin
+
+Admin --> SYS : asks to add a new staff 
+
+activate SYS 
+SYS --> Admin : displays the form for adding new staff
+deactivate SYS
+
+Admin --> SYS : submits the form with staff details
+activate SYS
+SYS --> Admin : displays confirmation message that the staff was added
+
+deactivate SYS
+@enduml

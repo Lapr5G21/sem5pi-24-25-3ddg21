@@ -1,0 +1,21 @@
+@startuml
+
+actor "Doctor" as Doctor
+participant HealthCareSystem as "HealthCareSystem" <<system (C4)>>
+
+activate Doctor
+    Doctor -> HealthCareSystem : asks to remove operation requesition
+    activate HealthCareSystem
+
+        HealthCareSystem --> Doctor : asks to confirm
+    deactivate HealthCareSystem
+
+    Doctor -> HealthCareSystem : corfirms
+    activate HealthCareSystem 
+    
+        HealthCareSystem --> Doctor: shows success message
+    deactivate HealthCareSystem
+deactivate Doctor
+
+
+@enduml

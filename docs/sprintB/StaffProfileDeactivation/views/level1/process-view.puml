@@ -1,0 +1,18 @@
+@startuml StaffProfileDeactivation(level1)
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Admin 
+
+Admin --> SYS : asks to deactivate a staff profile
+
+activate SYS 
+
+SYS -> Admin : Confirm staff profile deactivation
+
+deactivate SYS
+deactivate Admin
+
+
+@enduml

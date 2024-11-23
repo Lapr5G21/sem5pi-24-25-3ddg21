@@ -1,0 +1,16 @@
+@startuml
+
+actor Patient as "Patient"
+participant SYS as "Backoffice System" <<system (C4)>>
+
+activate Patient
+
+Patient --> SYS : request login with the credentials
+
+activate SYS
+
+SYS --> Patient : return login confirmation
+
+deactivate SYS
+deactivate Patient
+@enduml

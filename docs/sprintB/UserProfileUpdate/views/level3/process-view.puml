@@ -1,0 +1,59 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+
+actor Patient as "Patient"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant BackendDataManagement as "Backend Data Management" <<component (C4)>>
+
+activate Patient
+
+    Patient -> ComponentUI : asks to update my user profile
+    activate ComponentUI
+
+        ComponentUI --> Patient : asks to update data
+    
+    deactivate ComponentUI
+
+    Patient -> ComponentUI : update data
+
+    activate ComponentUI
+
+        ComponentUI -> Component : update user profile
+        activate Component
+
+            Component -> Model** : create
+
+            Component -> Service : update user profile
+            activate Service
+
+                Service -> HTTP : put('/users/patients/{username}')
+
+                activate HTTP
+                    HTTP -> BackendDataManagement : PUT /users/patients/{username}
+
+                    activate BackendDataManagement
+                        BackendDataManagement --> HTTP : 200 (user)
+                    deactivate BackendDataManagement
+                    
+                    HTTP --> Service : user
+
+                deactivate HTTP
+
+                Service --> Component : user
+            deactivate Service
+
+            Component --> ComponentUI : user
+        deactivate Component
+
+    Patient <-- ComponentUI : shows updated data
+    deactivate ComponentUI
+
+deactivate Patient
+
+@enduml

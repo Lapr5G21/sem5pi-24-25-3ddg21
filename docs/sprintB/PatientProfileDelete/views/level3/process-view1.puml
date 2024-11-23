@@ -1,0 +1,31 @@
+@startuml PatientProfileDelete(level3-1)
+
+autonumber
+actor Admin as "Admin"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+Admin -> BE : DELETE api/patients/{id}/hard
+activate BE
+
+BE -> DB : get patientProfileByMedicalRecordNumber
+
+activate DB 
+
+DB --> BE : patientProfile 
+
+deactivate DB 
+
+BE -> DB : delete patientProfile
+
+activate DB 
+
+DB --> BE : patientProfile 
+
+deactivate DB 
+
+BE --> Admin : 200 Deleted
+
+deactivate BE
+
+@enduml

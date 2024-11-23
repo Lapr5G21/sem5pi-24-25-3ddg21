@@ -1,0 +1,54 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Patient as "Patient"
+
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+
+participant BackendDataManagement as "Backend Data Management" <<component (C4)>>
+
+activate Patient
+
+    Patient -> ComponentUI : asks to register for the healthcare application
+    activate ComponentUI
+
+        ComponentUI -> Component : register for the healthcare application
+        activate Component
+
+            Component -> Model** : create
+            
+            Component -> Service : register for the healthcare application
+            activate Service
+
+                Service -> HTTP : post('/users/patients')
+
+                activate HTTP
+                    HTTP -> BackendDataManagement : POST /users/patients
+
+                    activate BackendDataManagement
+
+                        BackendDataManagement --> HTTP : 201 (user)
+
+                    deactivate BackendDataManagement
+
+                    HTTP --> Service : user
+
+                deactivate HTTP
+
+                Service --> Component : user
+            deactivate Service
+
+            Component --> ComponentUI : user
+        deactivate Component
+
+    Patient <-- ComponentUI : shows success message
+    deactivate ComponentUI
+
+deactivate Patient
+
+@enduml

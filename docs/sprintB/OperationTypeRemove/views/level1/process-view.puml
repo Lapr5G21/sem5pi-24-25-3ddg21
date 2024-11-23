@@ -1,0 +1,21 @@
+@startuml
+
+actor "Admin" as Admin
+participant HealthCareSystem as "HealthCareSystem" <<system (C4)>>
+
+activate Admin
+    Admin -> HealthCareSystem : asks to remove operation type
+    activate HealthCareSystem
+
+        HealthCareSystem --> Admin : asks to confirm
+    deactivate HealthCareSystem
+
+    Admin -> HealthCareSystem : corfirms
+    activate HealthCareSystem 
+    
+    HealthCareSystem --> Admin: shows success message
+    deactivate HealthCareSystem
+deactivate Admin
+
+
+@enduml

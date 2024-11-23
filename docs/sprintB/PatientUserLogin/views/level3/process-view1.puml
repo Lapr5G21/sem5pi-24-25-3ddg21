@@ -1,0 +1,24 @@
+@startuml
+
+autonumber
+participant Patient as "Patient"
+participant BE as "Backend" <<system (C4)>>
+participant Auth0 as "Auth0" <<external service>>
+participant DB as "Database"
+
+activate Patient
+Patient -> BE : POST /api/users/login
+activate BE
+
+BE -> Auth0 : POST /oauth/token
+activate Auth0
+
+Auth0 -> BE : return access_token
+deactivate Auth0
+
+BE -> DB : store user session data
+deactivate DB
+Patient <-- BE : 201 Logged in
+deactivate BE
+deactivate Patient
+@enduml

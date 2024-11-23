@@ -1,0 +1,105 @@
+@startuml 
+autonumber
+actor Admin as "Admin"
+participant Frontend as "FrontendComponent <<UI>>"
+participant StaffModel as "Staff <<Model>>"
+participant FrontendService as "FrontendService <<Service>>"
+participant CTRL as "StaffsController"
+participant SERVICE as "StaffService <<service>>"
+participant Staff as "Staff <<domain>>"
+participant StaffDTO as "StaffDto <<domain>>"
+database UserRepository as "UserRepository"
+database IStaffRepository as "IStaffRepository"
+database SpecializationRepository as "SpecializationRepository"
+database UserRepository as "UserRepository"
+
+activate Admin
+
+Admin -> Frontend : Asks to add new staff
+
+activate Frontend
+Frontend -> Admin : Displays form for input
+deactivate Frontend
+
+Admin -> Frontend : Insers the info with staff details
+
+activate Frontend 
+
+Frontend ->  StaffModel : create()
+
+Frontend -> FrontendService : saveStaff(staffModel)
+
+activate FrontendService
+FrontendService -> CTRL : POST /api/staffs
+
+activate CTRL
+
+CTRL -> SERVICE : addAsync(creatingStaffDTO)
+activate SERVICE
+
+SERVICE -> UserRepository : GetByIdAsync(new Username(creatingStaffDTO.UserId))
+
+activate UserRepository 
+
+UserRepository -> SERVICE : user
+
+deactivate UserRepository
+
+alt user == null  
+
+SERVICE -> CTRL : NotFoundException
+
+CTRL -> Frontend : Displays "User Not Found" message
+end alt 
+
+
+SERVICE -> SpecializationRepository : GetByIdAsync(new SpecializationId(creatingStaffDTO.SpecializationId))
+
+activate SpecializationRepository 
+
+SpecializationRepository -> SERVICE : specialization
+
+deactivate SpecializationRepository
+alt specialization == null  
+
+SERVICE -> CTRL : NotFoundException
+
+CTRL -> Frontend : Displays "Specialization Not Found" message
+
+end alt 
+
+deactivate SpecializationRepository
+
+SERVICE -> Staff : create(creatingStaffDTO.FistName,creatingStaffDTO.LastName,creatingStaffDTO.FullName,\n creatingStaffDTO.LicenseNumber, creatingStaffDTO.SpecializationId, creatingStaffDTO.Email,\ncreatingStaffDTO.PhoneNumber, creatingStaffDTO.StaffAvailabilitySlots,creatingStaffDTO.UserId)
+
+activate Staff 
+
+Staff -> SERVICE : staff
+deactivate Staff
+
+SERVICE -> IStaffRepository : addAsync(staff)
+
+activate IStaffRepository 
+
+IStaffRepository -> SERVICE : staff
+deactivate IStaffRepository
+
+SERVICE -> StaffDTO : create(StaffId, StaffFirstName, StaffLastName, StaffFullName, StaffLicenseNumber, SpecializationId, \nStaffEmail, StaffPhoneNumber, UserId)
+
+activate StaffDTO 
+
+StaffDTO -> SERVICE : staffDto
+deactivate StaffDTO
+
+SERVICE -> CTRL : staffDto
+deactivate SERVICE 
+
+CTRL -> FrontendService : 200 OK
+deactivate CTRL 
+
+FrontendService --> Frontend : 200 OK
+deactivate FrontendService
+Frontend -> Admin : Displays success notification (201 Created)
+deactivate Admin
+deactivate Frontend
+@enduml

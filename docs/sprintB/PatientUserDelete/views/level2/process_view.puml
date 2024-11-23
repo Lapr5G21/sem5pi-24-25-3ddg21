@@ -1,0 +1,33 @@
+@startuml 
+
+autonumber
+actor Patient as "Patient"
+participant Frontend as "Frontend" <<system (C4)>>
+participant BackendDataManagement as "Backend Data Management" <<system (C4)>>
+
+activate Patient
+
+    Patient -> Frontend : asks to request to delete your account
+
+    activate Frontend
+        Frontend --> Patient : asks to confirm request to delete account
+    
+    deactivate Frontend
+
+    Patient -> Frontend : confirms request to delete account
+
+    activate Frontend
+    
+        Frontend-> BackendDataManagement : POST /users/patients/request-delete/{username}
+        activate BackendDataManagement
+
+            Frontend <-- BackendDataManagement : 200 OK
+
+        deactivate BackendDataManagement
+
+    Frontend --> Patient : shows success message
+    
+    deactivate Frontend
+deactivate Patient
+
+@enduml

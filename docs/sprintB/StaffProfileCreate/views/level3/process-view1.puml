@@ -1,0 +1,41 @@
+@startuml
+
+autonumber
+participant FE as "Frontend" <<system(C4)>>
+participant BE as "Backend Management" <<system (C4)>>
+participant DB as "Database"
+
+activate FE
+FE-> BE : POST /api/staffs
+activate BE
+
+BE -> DB : get specialization
+
+activate DB 
+
+DB -> BE : specialization
+
+deactivate DB 
+
+BE -> DB : get user
+
+activate DB 
+
+DB -> BE : user
+
+deactivate DB 
+
+BE -> DB : save staff
+
+activate DB 
+
+DB -> BE : staff 
+
+deactivate DB 
+
+FE <- BE : 201 Created
+
+deactivate BE
+deactivate FE
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+
+autonumber
+actor Admin as "Admin"
+participant Frontend as "Frontend" <<system (C4)>>
+participant SYS as "Backend Management" <<system>>
+
+activate Admin
+
+    Admin -> Frontend : asks to update an Operation Type
+
+    activate Frontend
+
+        Frontend --> Admin : asks to update data
+
+    deactivate Frontend
+
+    Admin -> Frontend : update data
+
+    activate Frontend
+        Frontend-> SYS : PUT /operationtype/{id}
+        activate SYS
+
+            Frontend <-- SYS : 200 OK
+
+        deactivate SYS
+
+    Frontend --> Admin : shows updated data
+    
+    deactivate Frontend
+deactivate Admin
+
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml PatientProfilesListing(level3-1)
+
+autonumber
+actor Admin as "Admin"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+
+Admin -> BE : GET /api/patients{searchVariable}
+activate BE
+
+BE -> DB : get patients(searchVariable)
+
+activate DB 
+
+DB --> BE : patients 
+
+deactivate DB 
+
+BE --> Admin : 200 OK (patients)
+
+deactivate BE
+
+@enduml

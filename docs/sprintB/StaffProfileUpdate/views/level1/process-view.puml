@@ -1,0 +1,19 @@
+@startuml
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Admin 
+
+Admin -> SYS : asks to edit a staff
+
+activate SYS 
+SYS --> Admin : displays the form for edit staff
+deactivate SYS
+
+Admin --> SYS : submits the form with staff edited details
+activate SYS
+
+SYS --> Admin : confirms the staff editing was successfull
+
+@enduml

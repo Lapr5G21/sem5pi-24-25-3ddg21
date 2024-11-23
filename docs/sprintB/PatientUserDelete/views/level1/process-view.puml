@@ -1,0 +1,26 @@
+@startuml 
+
+actor Patient as "Patient"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Patient
+
+Patient -> SYS : asks to request to delete your account
+    
+activate SYS
+
+    SYS --> Patient : asks to confirm request to delete account
+
+    deactivate SYS
+
+    Patient -> SYS : confirms request to delete account
+
+    activate SYS 
+        SYS --> Patient: shows success message
+        
+    deactivate SYS
+
+deactivate Patient
+
+
+@enduml

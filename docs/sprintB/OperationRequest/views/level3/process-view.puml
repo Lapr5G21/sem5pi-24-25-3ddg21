@@ -1,0 +1,61 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+
+participant BackendDataManagement as "Backend Data Management" <<component (C4)>>
+
+activate Doctor
+
+    Doctor -> ComponentUI : asks to add new operation request
+    activate ComponentUI
+
+        ComponentUI -> Doctor : asks to input data
+
+    deactivate ComponentUI
+
+    Doctor -> ComponentUI : input data
+    
+    activate ComponentUI
+    
+        ComponentUI -> Component : add new operation request
+        activate Component
+
+            Component -> Model** : create
+            
+            Component -> Service : add new operation request
+            activate Service
+
+                Service -> HTTP : post('api/operationRequest')
+
+                activate HTTP
+                    HTTP -> BackendDataManagement : POST /operationRequest
+
+                    activate BackendDataManagement
+
+                        BackendDataManagement --> HTTP : 201 (operationRequest)
+
+                    deactivate BackendDataManagement
+
+                    HTTP --> Service : operationRequest
+
+                deactivate HTTP
+
+                Service --> Component : operationRequest
+            deactivate Service
+
+            Component --> ComponentUI : operationRequest
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows success message
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml

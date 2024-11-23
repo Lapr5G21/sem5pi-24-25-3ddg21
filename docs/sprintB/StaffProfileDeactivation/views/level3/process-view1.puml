@@ -1,0 +1,21 @@
+@startuml StaffProfileDeactivation(level3-1)
+
+autonumber
+actor Admin as "Admin"
+participant BE as "Backend Management" <<system>>
+participant DB as "Database"
+
+Admin -> BE : DELETE /api/staffs/{id}
+activate BE
+
+BE -> DB : deactivate staff profile
+activate DB 
+
+DB --> BE : staffProfileDeactivated 
+deactivate DB 
+
+BE --> Admin : 200 Deactivated
+
+deactivate BE
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+
+autonumber
+actor Admin as "Admin"
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
+
+activate Admin
+    Admin -> Frontend : asks to edit a staff
+    activate Frontend
+        Frontend --> Admin : asks to insert the new details of the staff
+    
+    deactivate Frontend
+    Admin -> Frontend : inserts the details
+    activate Frontend
+    
+        Frontend-> Backend : PUT /api/staffs/{id}
+        activate Backend
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+
+        alt add availabilitySlot
+            Frontend-> Backend : POST /api/staffs/{id}/availability-slots
+            activate Backend
+                Frontend <-- Backend : 200 OK
+            deactivate Backend
+        else delete availabilitySlot
+            Frontend-> Backend : DELETE /api/staffs/{id}/availability-slots/hard
+            activate Backend
+                Frontend <-- Backend : 200 OK
+            deactivate Backend
+        end
+
+    Frontend --> Admin : displays confirmation message that the staff was edited
+    
+    deactivate Frontend
+    deactivate Admin
+@enduml

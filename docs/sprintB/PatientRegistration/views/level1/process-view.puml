@@ -1,0 +1,18 @@
+@startuml
+
+actor Patient as "Patient"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Patient 
+
+Patient --> SYS : asks to regist for the healthcare system 
+
+activate SYS 
+SYS --> Patient : displays the registration form 
+
+Patient --> SYS : inputs the details 
+
+SYS --> Patient : confirms the registration
+
+
+@enduml

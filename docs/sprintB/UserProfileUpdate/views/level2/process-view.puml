@@ -1,0 +1,34 @@
+@startuml
+
+autonumber
+actor Patient as "Patient"
+participant Frontend as "Frontend" <<system (C4)>>
+participant BackendDataManagement as "Backend Data Management" <<system (C4)>>
+
+activate Patient
+
+    Patient -> Frontend : asks to update my user profile
+
+    activate Frontend
+
+        Frontend --> Patient : asks to update data
+
+    deactivate Frontend
+
+    Patient -> Frontend : update data
+
+    activate Frontend
+
+        Frontend-> BackendDataManagement : PUT /users/patients/{username}
+        activate BackendDataManagement
+
+            Frontend <-- BackendDataManagement : 200 OK
+
+        deactivate BackendDataManagement
+
+    Frontend --> Patient : shows updated data
+    
+    deactivate Frontend
+deactivate Patient
+
+@enduml

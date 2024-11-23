@@ -1,0 +1,31 @@
+@startuml PatientProfilesListing(level3-2)
+
+autonumber
+actor Admin as "Admin"
+participant CTRL as "PatientsController"
+participant SERVICE as "PatientService <<service>>"
+
+database REPO as "PatientRepository"
+
+activate Admin
+
+Admin -> CTRL : GET /api/patients{searchVariable}
+activate CTRL
+
+CTRL --> SERVICE : getBy(searchVariable)
+activate SERVICE
+
+SERVICE -> REPO : getBy"searchVariable"(searchVariable)
+activate REPO
+
+REPO --> SERVICE : patientsList 
+deactivate REPO
+
+SERVICE --> CTRL : patientsList
+deactivate SERVICE 
+
+CTRL --> Admin : 200 OK (patientsList)
+
+deactivate CTRL 
+deactivate Admin
+@enduml
