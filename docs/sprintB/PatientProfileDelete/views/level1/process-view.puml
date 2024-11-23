@@ -11,7 +11,7 @@ activate Admin
     HealthCareSystem --> Admin : asks to confirm
     deactivate HealthCareSystem
 
-    Admin -> HealthCareSystem : corfirms
+    Admin -> HealthCareSystem : confirms
     activate HealthCareSystem 
     
     HealthCareSystem --> Admin: shows success message

@@ -26,13 +26,11 @@ The global views are available in the views folder.
 
 ### LEVEL 2
 
-![level2_view](views/level1/StaffProfileDeactivation(level2).png)
+![level2_view](views/level2/StaffProfileDeactivation(level2).png)
 
 ### LEVEL 3
 
-![level3_view1](views/level3/StaffProfileDeactivation(level3-1).png)
-
-![level3_view2](views/level3/StaffProfileDeactivation(level3-2).png)
+![level3_view](views/level3/StaffProfileDeactivation(level3).png)
 
 
 ## Observations

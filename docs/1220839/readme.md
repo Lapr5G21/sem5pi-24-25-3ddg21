@@ -2,10 +2,20 @@
 
 ## Developed Tasks
  
-| Sprint | Tarefa                                              |
-|--------|-----------------------------------------------------|
-| **A**  | [US 5.1.8](../PatientProfileCreation/readme.md)     |
-| **A**  | [US 5.1.9](../PatientProfileUpdate/readme.md)       |
-| **A**  | [US 5.1.10](../PatientProfileDelete/readme.md)      |
-| **A**  | [US 5.1.11](../PatientProfilesListing/readme.md)    |
-| **A**  | [US 5.1.14](../StaffProfileDeactivation/readme.md)  |
+| Sprint | Tarefa      |
+|--------|-------------|
+| **A**  | [US 5.1.8]  |
+| **A**  | [US 5.1.9]  |
+| **A**  | [US 5.1.10] |
+| **A**  | [US 5.1.11] |
+| **A**  | [US 5.1.14] |
+| **B**  | [US 6.2.6]  |
+| **B**  | [US 6.2.7]  |
+| **B**  | [US 6.2.8]  |
+| **B**  | [US 6.2.9]  |
+| **B**  | [US 6.2.12] |
+| **B**  | [US 6.4.5]  |
+| **B**  | [US 6.4.7]  |
+| **B**  | [US 6.3.1]  |
+| **B**  | [US 6.5.2]  |
+| **B**  | [US 6.6.1]  |

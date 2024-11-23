@@ -1,4 +1,4 @@
-@startuml PatientProfileDelete(level3)
+@startuml StaffProfileDeactivation(level3)
 
 autonumber
 skinparam DefaultTextAlignment center
@@ -12,7 +12,7 @@ participant BackendManagement as "BackendManagement" <<component (C4)>>
 
 activate Admin
 
-    Admin -> ComponentUI : asks to delete a patient profile
+    Admin -> ComponentUI : asks to deactivate a staff profile
     activate ComponentUI
 
     ComponentUI --> Admin : asks to confirm
@@ -21,28 +21,28 @@ activate Admin
     Admin -> ComponentUI : confirms
     activate ComponentUI
 
-        ComponentUI -> Component : delete patient
+        ComponentUI -> Component : deactivate staff
         activate Component
 
-            Component -> SRV : delete patient
+            Component -> SRV : deactivate staff
             activate SRV
 
-                SRV -> HTTP : delete('patients/{id}')
+                SRV -> HTTP : delete('staffs/{id}')
                 activate HTTP
 
-                    HTTP -> BackendManagement : DELETE /patients/{id}
+                    HTTP -> BackendManagement : DELETE /staffs/{id}
                     activate BackendManagement
 
-                    BackendManagement --> HTTP : 200 (patients)
+                    BackendManagement --> HTTP : 200 (staffs)
                     deactivate BackendManagement
 
-                HTTP --> SRV : patients
+                HTTP --> SRV : staffs
                 deactivate HTTP
 
-            SRV --> Component : patients
+            SRV --> Component : staffs
             deactivate SRV
 
-        Component --> ComponentUI : patients
+        Component --> ComponentUI : staffs
         deactivate Component
 
     Admin <-- ComponentUI : shows success message

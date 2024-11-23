@@ -1,16 +1,30 @@
 @startuml StaffProfileDeactivation(level2)
 
 autonumber
-actor Admin as "Admin"
-participant SYS as "Healthcare System" <<system (C4)>>
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant BackendManagement as "BackendManagement" <<system (C4)>>
 
 activate Admin
+    
+    Admin -> Frontend : asks to deactivate a staff profile
+    activate Frontend
 
-Admin-> SYS : DELETE /api/staffs/{id}
-activate SYS
+    Frontend --> Admin : asks to confirm
+    deactivate Frontend
 
-SYS -> SYS : deactivateStaffProfile(id)
-SYS--> Admin : 200 Deactivated
-deactivate SYS
+    Admin -> Frontend : confirms
+    activate Frontend
+
+        Frontend-> BackendManagement : DELETE /staffs/{id}
+        activate BackendManagement
+
+        Frontend <-- BackendManagement : 200 OK
+        deactivate BackendManagement
+
+    Frontend --> Admin : shows success message
+    deactivate Frontend
+    
+deactivate Admin
 
 @enduml

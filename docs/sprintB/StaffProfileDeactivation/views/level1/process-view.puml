@@ -1,17 +1,22 @@
 @startuml StaffProfileDeactivation(level1)
 
-actor Admin as "Admin"
-participant SYS as "HealthCare System" <<system (C4)>>
+actor "Admin" as Admin
+participant HealthCareSystem as "HealthCareSystem" <<system (C4)>>
 
-activate Admin 
+activate Admin
+    
+    Admin -> HealthCareSystem : asks to deactivate a staff profile
+    activate HealthCareSystem
 
-Admin --> SYS : asks to deactivate a staff profile
+    HealthCareSystem --> Admin : asks to confirm
+    deactivate HealthCareSystem
 
-activate SYS 
-
-SYS -> Admin : Confirm staff profile deactivation
-
-deactivate SYS
+    Admin -> HealthCareSystem : confirms
+    activate HealthCareSystem 
+    
+    HealthCareSystem --> Admin: shows success message
+    deactivate HealthCareSystem
+    
 deactivate Admin
 
 
