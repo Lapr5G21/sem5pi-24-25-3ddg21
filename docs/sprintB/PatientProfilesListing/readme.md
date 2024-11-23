@@ -5,8 +5,7 @@ As an Admin, I want to list/search patient profiles by different attributes, so 
 
 ## 2. Requirements
 
-**US 5.1.11** As an Admin, I want to edit an existing patient profile, so that I can update their
-information when needed.
+**US 5.1.11** As an Admin, I want to list/search patient profiles by different attributes, so that I can view the details, edit, and remove patient profiles.
 
 **Acceptance Criteria:**
 
@@ -35,12 +34,10 @@ The global views are available in the views folder.
 
 ### LEVEL 3
 
-![level3_view1](views/level3/PatientProfilesListing(level3-1).png)
-
-![level3_view2](views/level3/PatientProfilesListing(level3-2).png)
+![level3_view1](views/level3/PatientProfilesListing(level3).png)
 
 
-## 7. Observations
+## 4. Observations
 
 *This section should be used to include any content that does not fit any of the previous sections.*
 

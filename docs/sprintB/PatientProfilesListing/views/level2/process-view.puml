@@ -1,16 +1,24 @@
 @startuml PatientProfilesListing(level2)
 
 autonumber
-actor Admin as "Admin"
-participant SYS as "Backend Management" <<system>>
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant BackendManagement as "Backend Management" <<system (C4)>>
 
-Admin -> SYS : GET /api/patients{searchVariable}
-activate SYS
+activate Admin
 
-SYS -> SYS : searchBy(searchVariable)
+    Admin -> Frontend : asks to list patients
+    activate Frontend
 
-Admin <-- SYS : 200 Ok
-deactivate SYS
+        Frontend -> BackendManagement : GET /patients/search
+        activate BackendManagement
 
+        Frontend <-- BackendManagement : 200 OK
+        deactivate BackendManagement
+
+    Frontend --> Admin : shows patients
+    deactivate Frontend
+    
+deactivate Admin
 
 @enduml

@@ -1,0 +1,48 @@
+@startuml PatientProfilesListing(level3)
+
+autonumber
+skinparam DefaultTextAlignment center
+actor Admin as "Admin"
+
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant SRV as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant BackendManagement as "BackendManagement" <<component (C4)>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to list patients
+    activate ComponentUI
+
+        ComponentUI -> Component : list patients
+        activate Component
+
+            Component -> SRV : list patients
+            activate SRV
+
+                SRV -> HTTP : get('/patients/search')
+                activate HTTP
+
+                    HTTP -> BackendManagement : GET /patients/search
+                    activate BackendManagement
+
+                    BackendManagement --> HTTP : 200 (patients)
+                    deactivate BackendManagement
+                    
+                HTTP --> SRV : patients
+                deactivate HTTP
+
+            SRV --> Component : patients
+            deactivate SRV
+
+        Component --> ComponentUI : patients
+        deactivate Component
+
+    Admin <-- ComponentUI : shows patients
+    deactivate ComponentUI
+
+deactivate Admin
+
+@enduml
