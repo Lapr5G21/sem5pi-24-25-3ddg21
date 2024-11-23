@@ -9,7 +9,7 @@ describe('ListPatientsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListPatientsComponent,HttpClientModule]
+      imports: [ListPatientsComponent]
     })
     .compileComponents();
 

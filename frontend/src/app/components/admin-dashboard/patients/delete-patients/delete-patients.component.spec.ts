@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeletePatientsComponent } from './delete-patients.component';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('DeletePatientsComponent', () => {
   let component: DeletePatientsComponent;

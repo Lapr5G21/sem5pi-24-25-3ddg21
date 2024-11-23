@@ -9,7 +9,7 @@ describe('ListOperationTypesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListOperationTypesComponent,HttpClientModule]
+      imports: [ListOperationTypesComponent]
     })
     .compileComponents();
 

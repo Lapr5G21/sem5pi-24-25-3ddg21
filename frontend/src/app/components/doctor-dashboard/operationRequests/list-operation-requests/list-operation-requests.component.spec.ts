@@ -9,7 +9,7 @@ describe('ListOperationRequestsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListOperationRequestsComponent,HttpClientModule]
+      imports: [ListOperationRequestsComponent]
     })
     .compileComponents();
 

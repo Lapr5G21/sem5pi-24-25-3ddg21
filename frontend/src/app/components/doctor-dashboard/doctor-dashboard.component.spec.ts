@@ -10,7 +10,7 @@ describe('DoctorDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DoctorDashboardComponent, HttpClientModule],
+      imports: [DoctorDashboardComponent],
       providers: [
         { 
           provide: AuthService, 

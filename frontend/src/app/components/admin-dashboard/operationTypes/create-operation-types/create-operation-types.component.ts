@@ -24,7 +24,6 @@ import { ToastModule } from 'primeng/toast';
         TableModule,
         FormsModule,
         CommonModule,
-        HttpClientModule,
         ToastModule
     ],
     providers: [OperationTypeService, MessageService]

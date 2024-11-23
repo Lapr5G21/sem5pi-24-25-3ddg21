@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateOperationRequestsComponent } from './create-operation-requests.component';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('CreateOperationRequestsComponent', () => {
   let component: CreateOperationRequestsComponent;
