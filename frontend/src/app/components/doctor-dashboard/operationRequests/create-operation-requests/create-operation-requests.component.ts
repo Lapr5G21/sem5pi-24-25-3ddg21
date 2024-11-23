@@ -7,11 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { OperationRequestService } from '../../../../services/operation-request.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'create-operation-requests',
   standalone: true,
-  imports: [DialogModule, ToastModule, RadioButtonModule, FormsModule, DropdownModule, CalendarModule],
+  imports: [DialogModule, ToastModule, RadioButtonModule, FormsModule, DropdownModule, CalendarModule,CommonModule],
   templateUrl: './create-operation-requests.component.html',
   styleUrls: ['./create-operation-requests.component.scss'],
   providers: [OperationRequestService,MessageService]
@@ -145,5 +146,14 @@ resetForm() {
   this.status = '';
   this.selectedDoctorId = null;
   this.selectedPatient = null; // Reset selectedPatient
+}
+isFormValid(): boolean {
+  return !!(
+    this.selectedPatient &&
+    this.selectedDoctorId &&
+    this.operationTypeName &&
+    this.priority &&
+    this.deadlinedate
+  );
 }
 }

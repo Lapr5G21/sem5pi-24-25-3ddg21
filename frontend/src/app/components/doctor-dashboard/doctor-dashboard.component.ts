@@ -48,7 +48,7 @@ export class DoctorDashboardComponent implements OnInit {
         icon: '',
         items: [
           {
-            label: 'Request',
+            label: 'CreateRequest',
             icon: 'pi pi-check',
             command: () => this.createOperationRequest()
           },
