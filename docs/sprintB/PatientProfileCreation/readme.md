@@ -32,9 +32,7 @@ The global views are available in the views folder.
 
 ### LEVEL 3
 
-![level3_view1](views/level3/PatientProfileCreation(level3-1).png)
-
-![level3_view2](views/level3/PatientProfileCreation(level3-2).png)
+![level3](views/level3/PatientProfileCreation(level3).png)
 
 
 ## Observations

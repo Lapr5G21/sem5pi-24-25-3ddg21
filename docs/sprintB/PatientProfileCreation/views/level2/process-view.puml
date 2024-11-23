@@ -1,14 +1,31 @@
 @startuml PatientProfileCreation(level2)
 
 autonumber
-actor Admin as "Admin"
-participant SYS as "Healthcare System" <<system (C4)>>
 
-Admin-> SYS : POST /api/users/patients
-activate SYS
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
 
-SYS -> SYS : createPatientProfile(creatingPatientDTO)
-SYS--> Admin : 201 Created
-deactivate SYS
+activate Admin
+
+    Admin -> Frontend : asks to create a new patient profile
+    activate Frontend
+
+        Frontend --> Admin : asks to insert the details of the patient profile
+    
+    deactivate Frontend
+    Admin -> Frontend : inserts the details
+    activate Frontend
+    
+        Frontend-> Backend : POST /patients
+        activate Backend
+
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+
+    Frontend --> Admin : displays confirmation message that the patient profile was created
+    
+    deactivate Frontend
+    deactivate Admin
 
 @enduml

@@ -5,14 +5,18 @@ participant SYS as "HealthCare System" <<system (C4)>>
 
 activate Admin 
 
-Admin --> SYS : asks to create a patient profile
+Admin --> SYS : asks to create a new patient profile 
 
 activate SYS 
-
-SYS -> Admin : Confirm profile created
+SYS --> Admin : displays the form for creating new patient profile
 
 deactivate SYS
-deactivate Admin
+Admin --> SYS : submits the form with patient profile details
+
+activate SYS
+SYS --> Admin : displays confirmation message that the patient profile was created
+
+deactivate SYS
 
 
 @enduml
