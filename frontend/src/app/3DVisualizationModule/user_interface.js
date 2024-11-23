@@ -41,8 +41,8 @@ export default class UserInteraction {
         const directionalLight1 = lights.object.directionalLight1;
         const pointColor1 = { color: "#" + new THREE.Color(directionalLight1.color).getHexString() };
         directionalLight1Folder.addColor(pointColor1, "color").onChange(color => colorCallback(directionalLight1, color));
-        directionalLight1Folder.add(lights.object.directionalLight1, "intensity", 0.0, 2.0, 1.0);
-        directionalLight1Folder.add(lights.object.directionalLight1, "distance", 0.0, 20.0, 0.01);
+        directionalLight1Folder.add(lights.object.directionalLight1, "intensity", 0.1, 2.0, 1.0);
+        directionalLight1Folder.add(lights.object.directionalLight1, "distance", 0.1, 20.0, 0.01);
         directionalLight1Folder.add(lights.object.directionalLight1.position, "x", -10.0, 10.0, 0.01);
         directionalLight1Folder.add(lights.object.directionalLight1.position, "y", 0.0, 20.0, 0.01);
         directionalLight1Folder.add(lights.object.directionalLight1.position, "z", -10.0, 10.0, 0.01);

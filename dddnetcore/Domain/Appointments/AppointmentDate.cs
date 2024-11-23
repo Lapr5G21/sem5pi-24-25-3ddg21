@@ -5,7 +5,7 @@ namespace DDDSample1.Domain.Appointments
 {
     public class AppointmentDate : IValueObject
     {
-        public DateTime Date{get; private set;}
+        public DateTime Date{get; set;}
 
         private AppointmentDate() { }
 

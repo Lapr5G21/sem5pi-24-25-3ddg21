@@ -40,6 +40,7 @@ using DDDSample1.Infraestructure.SurgeryRooms;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Appointments;
 using dddnetcore.Infraestructure.Appointments;
+using DDDSample1.Domain.Hospital;
 
 
 
@@ -191,6 +192,8 @@ public void ConfigureServices(IServiceCollection services)
             services.AddScoped<ILogRepository, LogsRepository>();
 
             services.AddScoped<IAnonimyzedPatientRepository, AnonimyzedPatientRepository>();
+
+            services.AddTransient<HospitalModelService>();
 
         }
     }

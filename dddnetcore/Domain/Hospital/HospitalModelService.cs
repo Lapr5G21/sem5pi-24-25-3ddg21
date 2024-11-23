@@ -20,16 +20,16 @@ public class HospitalModelService
     private readonly string _filePath = Path.Combine(Directory.GetCurrentDirectory(), "./hospital/hospital.json");
     private readonly IAppointmentRepository _appointmentRepository;
 
-    private readonly OperationTypeRepository _operationTypeRepository;
+    private readonly IOperationTypeRepository _operationTypeRepository;
 
     private static readonly Dictionary<int, (int Row, int Col)> roomsMap = new Dictionary<int, (int Row, int Col)>{
-        {1, (3,3)},
-        {2, (3,9)},
-        {3, (9,3)},
-        {4, (9,9)}
+        {1, (2,2)},
+        {2, (2,8)},
+        {3, (8,2)},
+        {4, (8,8)}
     };
 
-    public HospitalModelService(IAppointmentRepository appointmentRepository, OperationTypeRepository operationTypeRepository)
+    public HospitalModelService(IAppointmentRepository appointmentRepository, IOperationTypeRepository operationTypeRepository)
     {
       _appointmentRepository = appointmentRepository;
       _operationTypeRepository = operationTypeRepository;
@@ -64,7 +64,7 @@ public class HospitalModelService
       var hospitalMap = JsonConvert.DeserializeObject<HospitalMap>(jsonContent);
  
       // Get the current time for comparison
-      var currentTime = DateTime.Now;
+      var currentTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
  
       // Iterate over the appointments and modify the map as needed
       foreach (var appointment in appointments)
@@ -72,31 +72,40 @@ public class HospitalModelService
         
         var roomNumber = ParseRoomNumber(appointment.Room?.Id); 
         var status = appointment.Room?.Status;
-        var dateAndTime = appointment.Date;
         var operationRequest = appointment.OperationRequest;
- 
-        if (roomNumber != null && status == SurgeryRoomStatus.AVAILABLE)
+
+        if (roomNumber != null)
         {
+           
           // Get the room from the number
           var room = roomsMap[roomNumber];
  
-          // Calculate the end time of the operation
-          var appointmentStart = DateTime.Parse(dateAndTime.ToString());
-          OperationType operationType =  await _operationTypeRepository.GetByIdAsync(operationRequest.OperationTypeId);
-          double durationMinutes = Convert.ToDouble(operationType.EstimatedTimeDuration);
-
-          var appointmentEnd = appointmentStart.AddMinutes(durationMinutes);
  
+          // Calculate the end time of the operation
+        
+          OperationType operationType =  await _operationTypeRepository.GetByIdAsync(operationRequest.OperationTypeId);
+       
+          var operationStartTime = new DateTimeOffset(appointment.Date.Date).ToUnixTimeMilliseconds();
+          var operationEndTime = new DateTimeOffset(appointment.Date.Date).AddMinutes(operationType.EstimatedTimeDuration.Minutes).ToUnixTimeMilliseconds();
+ 
+          
+          Console.WriteLine("RoomNumber:" + roomNumber);
+          
           // Check if the operation is in progress (now)
-          if (currentTime >= appointmentStart && currentTime <= appointmentEnd)
+          if (currentTime >= operationStartTime && currentTime <= operationEndTime)
           {
-            // Mark the room as occupied on the map (5 = occupied)
-            hospitalMap.Map[room.Row][room.Col] = 5;
+
+            
+            // Mark the room as occupied on the map (8 = occupied)
+            hospitalMap.Map[room.Row][room.Col] = 8;
           }
           else
           {
             // Otherwise, mark the room as free (4 = free)
+            if(hospitalMap.Map[room.Row][room.Col] != 8){
+
             hospitalMap.Map[room.Row][room.Col] = 4;
+            }
           }
         }
       }

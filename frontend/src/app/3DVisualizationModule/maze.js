@@ -82,9 +82,9 @@ export default class Maze {
             this.size = description.size;
 
             // Store the player's initial position and direction
-            this.initialPosition = this.cellToCartesian(description.initialPosition);
-            this.initialDirection = description.initialDirection;
-            this.exitLocation = this.cellToCartesian(description.exitLocation);
+            //this.initialPosition = this.cellToCartesian(description.initialPosition);
+            //this.initialDirection = description.initialDirection;
+            //this.exitLocation = this.cellToCartesian(description.exitLocation);
 
             // Create a group of objects
             this.object = new THREE.Group();
@@ -135,7 +135,7 @@ export default class Maze {
                     }
                     if (cellValue == 4 && this.loadedBed) {
                         const bedObject = this.bed.object.clone();
-                        bedObject.position.set(i - description.size.width / 2.0 + 0.2, 0.1, j - description.size.height / 2.0 + 0.2);
+                        bedObject.position.set(i - description.size.width / 2.0 , 0.1, j - description.size.height / 2.0 );
                         bedObject.scale.set(0.003, 0.003, 0.003); // Adjust scale
                         bedObject.rotateY( -(Math.PI / 2));
                         bedObject.castShadow = true;

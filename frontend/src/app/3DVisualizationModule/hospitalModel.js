@@ -665,8 +665,8 @@ export default class HospitalModel {
                 this.animations = new Animations(this.player.object, this.player.animations);
 
                 // Set the player's position and direction
-                this.player.position = this.maze.initialPosition.clone();
-                this.player.direction = this.maze.initialDirection;
+                //this.player.position = this.maze.initialPosition.clone();
+                //this.player.direction = this.maze.initialDirection;
 
                 // Create the user interface
                 this.userInterface = new UserInterface(this.scene3D, this.renderer, this.lights, this.fog, this.player.object, this.animations);
@@ -681,6 +681,7 @@ export default class HospitalModel {
             this.animations.update(deltaT);
 
             // Update the player
+            /*
             if (!this.animations.actionInProgress) {
                 // Check if the player found the exit
                 if (this.maze.foundExit(this.player.position)) {
@@ -744,16 +745,18 @@ export default class HospitalModel {
                     this.player.object.position.set(this.player.position.x, this.player.position.y, this.player.position.z);
                     this.player.object.rotation.y = direction - this.player.initialDirection;
                 }
+                    
             }
+                */
 
             // Update first-person, third-person and top view cameras parameters (player direction and target)
             this.firstPersonViewCamera.playerDirection = this.player.direction;
             this.thirdPersonViewCamera.playerDirection = this.player.direction;
             this.topViewCamera.playerDirection = this.player.direction;
-            const target = new THREE.Vector3(this.player.position.x, this.player.position.y + this.player.eyeHeight, this.player.position.z);
-            this.firstPersonViewCamera.setTarget(target);
-            this.thirdPersonViewCamera.setTarget(target);
-            this.topViewCamera.setTarget(target);
+            //const target = new THREE.Vector3(this.player.position.x, this.player.position.y + this.player.eyeHeight, this.player.position.z);
+            //this.firstPersonViewCamera.setTarget(target);
+            //this.thirdPersonViewCamera.setTarget(target);
+            //this.topViewCamera.setTarget(target);
 
             // Update statistics
             this.statistics.update();

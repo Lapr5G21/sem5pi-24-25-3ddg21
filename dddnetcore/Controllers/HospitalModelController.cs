@@ -16,19 +16,12 @@ namespace dddnetcore.Controllers
             _hospitalModelService = hospitalModelService;
         }
 
-        //GET: api/hospital
+        //GET: api/hospitalModel
         [HttpGet]
         public async Task<IActionResult> GetHospitalMap()
         {
             var map = await _hospitalModelService.GetHospitalMap();
             return Ok(map);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var result = await _hospitalModelService.GetHospitalMap();
-            return Ok(result);
         }
 
 }

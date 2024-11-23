@@ -22,6 +22,7 @@ export class HospitalModelComponent implements OnInit {
 
   initialize() {
     try {
+      
       // Create the game
       this.hospitalModel = new HospitalModel(
         {},
