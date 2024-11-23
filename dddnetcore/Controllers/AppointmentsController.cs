@@ -20,7 +20,6 @@ namespace DDDSample1.Controllers{
         }
 
         [HttpGet]
-        [Authorize(Policy = "BackofficeRole")]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAll()
         {
             return await _service.GetAllAsync();
@@ -28,7 +27,6 @@ namespace DDDSample1.Controllers{
 
         // GET: api/appointments/{id}
         [HttpGet("{id}")]
-        [Authorize(Policy = "BackofficeRole")]
         public async Task<ActionResult<AppointmentDto>> GetById(Guid id)
         {
             var appointment = await _service.GetByIdAsync(new AppointmentId(id));

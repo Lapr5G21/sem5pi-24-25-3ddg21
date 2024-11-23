@@ -9,6 +9,8 @@ namespace DDDSample1.Domain.Appointments
     {
         public SurgeryRoom Room { get; private set; }
         public OperationRequest OperationRequest { get; private set; }
+        public SurgeryRoomNumber RoomNumber { get;  private set; }
+        public OperationRequestId OperationRequestId { get;  private set; }
         public AppointmentStatus Status { get; private set; }
         public AppointmentDate Date { get; private set; }
 

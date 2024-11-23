@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.OperationTypes;
@@ -40,9 +41,11 @@ namespace DDDSample1.Domain.Appointments
 
             foreach (var appointment in list)
             {
-                var operationRequest = await this._operationRequestRepo.GetByIdAsync(appointment.OperationRequest.Id);
-                var operationType = await this._operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
+                Console.WriteLine("OpId" + appointment.OperationRequestId);
+                Console.WriteLine("RoomNumber" + appointment.RoomNumber.Value);               
+            var operationRequest = await this._operationRequestRepo.GetByIdAsync(appointment.OperationRequestId);
 
+            var operationType = await this._operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
                 listDto.Add(new AppointmentDto
                 {
                     Id = appointment.Id.AsGuid(),

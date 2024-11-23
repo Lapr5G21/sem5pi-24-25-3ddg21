@@ -17,5 +17,36 @@ namespace dddnetcore.Infraestructure.Appointments
         public AppointmentRepository(DDDSample1DbContext context):base(context.Appointments) {
             _context = context;
         }
+        public async Task<List<Appointment>> GetAllAsync()
+        {
+            return await _context.Appointments
+                .Include(a => a.OperationRequest)
+                .Include(a => a.Room)
+                .ToListAsync();
+        }
+
+         public async Task<List<Appointment>> GetByPatientIdAsync(PatientMedicalRecordNumber medicalRecordNumber)
+        {
+            return await _context.Appointments
+                .Include(a => a.OperationRequest)
+                .Include(a => a.Room)
+                .Where(a => a.OperationRequest.PatientMedicalRecordNumber == medicalRecordNumber)
+                .ToListAsync();
+        }
+
+        public async Task<List<Appointment>> GetByStaffIdAsync(StaffId staffId)
+        {
+            return await _context.Appointments
+                .Include(a => a.OperationRequest)
+                .Include(a => a.Room)
+                .Where(a => a.OperationRequest.StaffId == staffId)
+                .ToListAsync();
+        }
+
+        public new async Task<Appointment> GetByIdAsync(AppointmentId id){
+            return await _context.Appointments.Include(a => a.Room)
+            .Include(a => a.OperationRequest)
+            .FirstOrDefaultAsync(a => a.Id == id);
+        }
     }
 }

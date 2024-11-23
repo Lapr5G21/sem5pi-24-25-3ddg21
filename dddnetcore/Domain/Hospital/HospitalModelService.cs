@@ -37,16 +37,14 @@ public class HospitalModelService
 
     public int ParseRoomNumber(SurgeryRoomNumber roomNumber)
 {
-    // Verifica se roomNumber ou Id são nulos para evitar exceções
     if (roomNumber == null || string.IsNullOrEmpty(roomNumber.Id))
         throw new ArgumentException("Room number ID cannot be null or empty.");
 
-    // Usa expressão regular para capturar o primeiro número encontrado na string
     var match = System.Text.RegularExpressions.Regex.Match(roomNumber.Id, @"\d+");
     
     if (match.Success)
     {
-        return int.Parse(match.Value); // Converte o número encontrado para inteiro
+        return int.Parse(match.Value); 
     }
     
     throw new FormatException("No valid number found in the room number ID.");
