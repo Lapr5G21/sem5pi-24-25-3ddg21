@@ -1,16 +1,31 @@
 @startuml PatientProfileDelete(level2)
 
 autonumber
-actor Admin as "Admin"
-participant SYS as "Healthcare System" <<system (C4)>>
+
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant BackendManagement as "BackendManagement" <<system (C4)>>
 
 activate Admin
+    
+    Admin -> Frontend : asks to delete a patient profile
+    activate Frontend
 
-Admin-> SYS : DELETE api/patients/{id}/hard
-activate SYS
+    Frontend --> Admin : asks to confirm
+    deactivate Frontend
 
-SYS -> SYS : deletePatientProfile(medicalRecordNumber)
-SYS--> Admin : 200 Deleted
-deactivate SYS
+    Admin -> Frontend : confirms
+    activate Frontend
+
+        Frontend-> BackendManagement : DELETE /patients/{id}
+        activate BackendManagement
+
+        Frontend <-- BackendManagement : 200 OK
+        deactivate BackendManagement
+
+    Frontend --> Admin : shows success message
+    deactivate Frontend
+    
+deactivate Admin
 
 @enduml

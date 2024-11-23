@@ -1,0 +1,53 @@
+@startuml PatientProfileDelete(level3)
+
+autonumber
+skinparam DefaultTextAlignment center
+actor Admin as "Admin"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant SRV as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant BackendManagement as "BackendManagement" <<component (C4)>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to delete a patient profile
+    activate ComponentUI
+
+    ComponentUI --> Admin : asks to confirm
+    deactivate ComponentUI
+
+    Admin -> ComponentUI : confirms
+    activate ComponentUI
+
+        ComponentUI -> Component : delete patient
+        activate Component
+
+            Component -> SRV : delete patient
+            activate SRV
+
+                SRV -> HTTP : delete('patients/{id}')
+                activate HTTP
+
+                    HTTP -> BackendManagement : DELETE /patients/{id}
+                    activate BackendManagement
+
+                    BackendManagement --> HTTP : 200 (patient)
+                    deactivate BackendManagement
+
+                HTTP --> SRV : patient
+                deactivate HTTP
+
+            SRV --> Component : patient
+            deactivate SRV
+
+        Component --> ComponentUI : patient
+        deactivate Component
+
+    Admin <-- ComponentUI : shows success message
+    deactivate ComponentUI
+    
+deactivate Admin
+
+@enduml
