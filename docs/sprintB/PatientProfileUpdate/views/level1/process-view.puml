@@ -1,13 +1,23 @@
 @startuml PatientProfileUpdate(level1)
 
 actor Admin as "Admin"
-participant SYS as "HealthCare System" <<system (C4)>>
+participant SYS as "HealthCare System" <<system>>
 
-activate Admin 
+activate Admin
 
-Admin --> SYS : asks to edit a patient profile 
-activate SYS 
+    Admin -> SYS : asks to update a patient profile
+    activate SYS
 
-SYS --> Admin : confirms the patient profile editing was successful
+        SYS --> Admin : asks to edit data
+        deactivate SYS
+
+    Admin -> SYS : edit data
+    activate SYS 
+
+        SYS --> Admin: shows edited data    
+    deactivate SYS
+
+deactivate Admin
+
 
 @enduml

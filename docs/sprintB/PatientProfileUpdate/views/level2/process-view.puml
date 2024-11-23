@@ -2,15 +2,30 @@
 
 autonumber
 actor Admin as "Admin"
-participant SYS as "Backend Management" <<system (C4)>>
+participant Frontend as "Frontend" <<system (C4)>>
+participant SYS as "Backend Management" <<system>>
 
 activate Admin
-Admin -> SYS : PUT /api/patients/{id}
-activate SYS
 
-SYS -> SYS : updatePatientProfile(editingPatientDTO)
-SYS --> Admin : 200 Updated
-deactivate SYS
+    Admin -> Frontend : asks to update a patient profile
+    activate Frontend
+
+        Frontend --> Admin : asks to update data
+        deactivate Frontend
+
+    Admin -> Frontend : update data
+    activate Frontend
+
+        Frontend -> SYS : PUT /patient/{id}
+        activate SYS
+
+            Frontend <-- SYS : 200 OK
+            deactivate SYS
+
+    Frontend --> Admin : shows updated data
+    deactivate Frontend
+    
+deactivate Admin
 
 
 @enduml

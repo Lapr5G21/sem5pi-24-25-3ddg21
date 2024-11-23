@@ -1,0 +1,57 @@
+@startuml PatientProfileUpdate(level3-1)
+
+autonumber
+skinparam DefaultTextAlignment center
+
+actor Admin as "Admin"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant BackendDataManagement as "Backend Data Management" <<component (C4)>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to update a patient profile
+    activate ComponentUI
+
+        ComponentUI --> Admin : asks to update data
+        deactivate ComponentUI
+
+    Admin -> ComponentUI : update data
+    activate ComponentUI
+
+        ComponentUI -> Component : update patient
+        activate Component
+
+            Component -> Model** : create
+
+            Component -> Service : update patient
+            activate Service
+
+                Service -> HTTP : put('/patient/{id}')
+                activate HTTP
+
+                    HTTP -> BackendDataManagement : PUT /patient/{id}
+                    activate BackendDataManagement
+
+                    BackendDataManagement --> HTTP : 200 (patient)
+                    deactivate BackendDataManagement
+                    
+                    HTTP --> Service : patient
+                    deactivate HTTP
+
+            Service --> Component : patient
+            deactivate Service
+
+        Component --> ComponentUI : patient
+        deactivate Component
+
+    Admin <-- ComponentUI : shows updated data
+    deactivate ComponentUI
+
+deactivate Admin
+
+@enduml
