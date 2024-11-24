@@ -62,6 +62,11 @@ public class HospitalModelService
       // Read the content of the JSON file
       var jsonContent = System.IO.File.ReadAllText(_filePath);
       var hospitalMap = JsonConvert.DeserializeObject<HospitalMap>(jsonContent);
+
+      hospitalMap.Map[2][2] = 0;
+      hospitalMap.Map[2][8] = 0;
+      hospitalMap.Map[8][2] = 0;
+      hospitalMap.Map[8][8] = 0;
  
       // Get the current time for comparison
       var currentTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
