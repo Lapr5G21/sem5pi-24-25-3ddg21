@@ -30,21 +30,39 @@
             </div>
         </div>
 
-        <div class="flex align-items-center gap-3 mb-5">
+        <!--<div class="flex align-items-center gap-3 mb-5">
             <label for="BirthDate" class="font-semibold w-6rem">Birth Date</label>
             <input 
             pInputText id="BirthDate" 
             [(ngModel)]="BirthDate" 
             class="flex-auto" 
             autocomplete="off" 
-            placeholder="Enter your date of birth"
+            placeholder="dd/mm/yyyy format"
             (ngModelChange)="validateFields()" 
             [ngClass]="{'invalid-border': isSubmitted && !isBirthDateValid}"
             />
           <div *ngIf="isSubmitted && !isBirthDateValid" class="error-text">
             Birth date is required.
         </div>        
-        </div>
+        </div>-->
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="auxBirthDate" class="font-semibold w-6rem">Birth Date</label>
+            <p-calendar 
+              id="auxBirthDate"
+              [(ngModel)]="auxBirthDate"
+              [showIcon]="true"
+              dateFormat="dd/mm/yy"
+              placeholder="Select birth date"
+              appendTo="body"
+              (ngModelChange)="onBirthDateChange($event)"
+              [ngClass]="{'invalid-border': isSubmitted && !isBirthDateValid}">
+            </p-calendar>
+            <div *ngIf="isSubmitted && !isBirthDateValid" class="error-text">
+              Birth date is required.
+            </div>
+          </div>
+          
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="Gender" class="font-semibold w-6rem">Gender</label>
@@ -103,7 +121,7 @@
                 label="Cancel" 
                 [text]="true" 
                 severity="secondary" 
-                (onClick)="visible = false"></p-button>
+                (onClick)="resetForm(); visible = false"></p-button>
             <p-button 
                 label="Save" 
                 [outlined]="true" 

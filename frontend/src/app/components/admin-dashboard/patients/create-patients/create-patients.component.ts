@@ -48,6 +48,7 @@ export class CreatePatientsComponent {
     LastName: string = '';
     FullName: string = '';
     BirthDate: string = '';
+    auxBirthDate: Date | null = null;    
     Gender : string = PatientGender.RatherNotSay; // Usando enum como tipo
     Email: string = '';
     PhoneNumber: string = '';
@@ -142,12 +143,29 @@ export class CreatePatientsComponent {
         this.isAddressValid = !!this.Address;
         this.isEmergencyContactValid = !!this.EmergencyContact;
     }
+
+    dateToString(date: Date): string {
+        if (!date) {
+          return '';
+        }
+        // Converte para o formato yyyy-MM-dd
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Adiciona zero à esquerda
+        const day = String(date.getDate()).padStart(2, '0'); // Adiciona zero à esquerda
+        return `${year}-${month}-${day}`;
+      }
+
+      onBirthDateChange(date: Date): void {
+        this.BirthDate = this.dateToString(date); // Converte para string para manter consistência
+        console.log('Updated Birth Date:', this.BirthDate);
+      }
     
     resetForm() {
         this.FirstName = '';
         this.LastName = '';
         this.FullName = '';
         this.BirthDate = '';
+        this.auxBirthDate = null;
         this.Gender = PatientGender.RatherNotSay;;
         this.Email = '';
         this.PhoneNumber = '';
