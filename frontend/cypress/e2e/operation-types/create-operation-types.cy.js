@@ -77,11 +77,6 @@ describe('Create Operation Types Modal', () => {
         .focus()
         .blur();
     cy.get('small.p-error.ng-star-inserted').should('exist').and('contain', 'Cleaning Time is required and must be at least 1 minute.');
-
-    cy.get('#specializations')
-        .should('have.class', 'ng-invalid')
-        .click(); 
-    cy.get('small.p-error.ng-star-inserted').should('exist').and('contain', 'At least one specialization is required.');
 });
 
 

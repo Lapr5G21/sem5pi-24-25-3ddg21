@@ -127,6 +127,9 @@ loadPacients() {
           console.log('Pedido registrado com sucesso!');
           this.resetForm();
           this.visible = false;
+          setTimeout(() => {
+            window.location.reload();
+        }, 500); 
       },
       (error) => {
           console.error('Erro ao registrar pedido', error);

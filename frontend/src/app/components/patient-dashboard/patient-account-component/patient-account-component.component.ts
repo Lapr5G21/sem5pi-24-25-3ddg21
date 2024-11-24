@@ -12,10 +12,11 @@ import { ConfirmDialog, ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormsModule } from '@angular/forms';  // Add this import
 import { SpinnerModule } from 'primeng/spinner';
 import { ToastModule } from 'primeng/toast';
+import { ProfileMenuComponent } from '../../admin-dashboard/profile-menu-component/profile-menu-component.component';
 
 @Component({
   selector: 'app-patient-account',
-  imports:[PanelModule,CommonModule,ConfirmDialogModule,FormsModule,SpinnerModule,ToastModule],
+  imports:[PanelModule,CommonModule,ConfirmDialogModule,FormsModule,SpinnerModule,ToastModule,ProfileMenuComponent],
   standalone : true,
   templateUrl: './patient-account-component.component.html',
   styleUrls: ['./patient-account-component.component.scss'],
@@ -98,6 +99,10 @@ export class PatientAccountComponent implements OnInit {
       this.userService.deletePatient(this.patient.email).subscribe(
         () => {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Email send to confirm the deletion of the account!' }); // Toast para sucesso
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);           
+        this.userService.logout();
         },
         (err) => {
           this.error = 'Error deleting account';

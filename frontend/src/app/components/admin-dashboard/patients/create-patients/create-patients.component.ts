@@ -117,6 +117,9 @@ export class CreatePatientsComponent {
                 this.resetForm();
                 this.visible = false;
                 this.isSubmitted = false;
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500); 
             },
             (error) => {
                 console.error('Patient Saving Error:', error);

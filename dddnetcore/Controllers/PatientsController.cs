@@ -64,7 +64,6 @@ namespace DDDSample1.Controllers
 
 
         // PUT: api/patients/{id}
-        [Authorize(Policy="AdminRole")]
         [HttpPut("{id}")]
         public async Task<ActionResult<PatientDto>> Update(string id, [FromBody] EditingPatientDto dto)
         {

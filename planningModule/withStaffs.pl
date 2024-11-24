@@ -12,10 +12,8 @@ agenda_staff(d002,20241028,[(850,900,m02),(901,960,m02),(1380,1440,c02)]).
 agenda_staff(d003,20241028,[(720,790,m01),(910,980,m02)]).
 agenda_staff(n001, 20241028, []).
 agenda_staff(n002, 20241028, []).
-%%
 agenda_staff(d004, 20241028, []).
 agenda_staff(n003, 20241028, []).
-%
 agenda_staff(t001, 20241028, []).
 agenda_staff(t002, 20241028, []).
 
@@ -26,13 +24,15 @@ timetable(d002,20241028,(500,1440)).
 timetable(d003,20241028,(520,1320)).
 timetable(n001, 20241028, (480, 1200)).
 timetable(n002, 20241028, (480, 1200)).
-%%
 timetable(d004, 20241028, (480, 1200)).
 timetable(n003, 20241028, (480, 1200)).
-%%
 timetable(t001, 20241028, (480, 1200)).
 timetable(t002, 20241028, (480, 1200)).
 
+
+% Staff responsável pela anestesia
+staff(d004,doctor,anesthesia,[so2,so3,so4]).
+staff(n003,nurse,anesthesia,[so2,so3,so4]).
 
 % Staff responsável pela cirurgia
 staff(d001,doctor,surgeon,[so2,so3,so4]).
@@ -40,18 +40,15 @@ staff(d002,doctor,surgeon,[so2,so3,so4]).
 staff(d003,doctor,surgeon,[so2,so3,so4]).
 staff(n001,nurse,surgeon,[so2,so3,so4]).
 staff(n002,nurse,surgeon,[so2,so3,so4]).
-% Staff responsável pela anestesia
-staff(d004,doctor,anesthesia,[so2,so3,so4]).
-staff(n003,nurse,anesthesia,[so2,so3,so4]).
+
 % Staff responsável pela limpeza
-staff(t001, assistant, cleaning, [so2,so3,so4]).
-staff(t002, assistant, cleaning, [so2,so3,so4]).
+staff(t001, technician, cleaning, [so2,so3,so4]).
+staff(t002, technician, cleaning, [so2,so3,so4]).
 
 
 
 
 %surgery(SurgeryType,TAnesthesia,TSurgery,TCleaning).
-
 surgery(so2,45,60,45).
 surgery(so3,45,90,45).
 surgery(so4,45,75,45).
@@ -90,7 +87,6 @@ assignment_surgery(so100002,t002).
 
 
 
-
 agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
 
 free_agenda0([],[(0,1440)]).
@@ -101,7 +97,7 @@ free_agenda0([(Tin,Tfin,_)|LT],[(0,T1)|LT1]):- T1 is Tin-1,
 free_agenda1([(_,Tfin,_)],[(T1,1440)]):-Tfin\==1440,!,T1 is Tfin+1.
 free_agenda1([(_,_,_)],[]).
 free_agenda1([(_,T,_),(T1,Tfin2,_)|LT],LT1):-Tx is T+1,T1==Tx,!,
-    free_agenda1([(T1,Tfin2,_)|LT],LT1).
+free_agenda1([(T1,Tfin2,_)|LT],LT1).
 free_agenda1([(_,Tfin1,_),(Tin2,Tfin2,_)|LT],[(T1,T2)|LT1]):-T1 is Tfin1+1,T2 is Tin2-1,
     free_agenda1([(Tin2,Tfin2,_)|LT],LT1).
 
@@ -154,11 +150,6 @@ intersect_availability((Ini,Fim),[(Ini1,Fim1)|LD],[(Imax,Fmin)|LI],LA):-
 min_max(I,I1,I,I1):- I<I1,!.
 min_max(I,I1,I1,I).
 
-
-% ========================================================
-
-%%
-
 schedule_all_surgeries(Room,Day):-
     clean_dynamic_data,
     create_dynamic_data(Day),
@@ -167,7 +158,6 @@ schedule_all_surgeries(Room,Day):-
     findall(OpCode,surgery_id(OpCode,_),LOpCode),
     availability_all_surgeries(LOpCode,Room,Day),!.
 
-%%
 
 define_staff_availability() :- findall(_,(agenda_staff1(D,Date,L),free_agenda0(L,LFA),adapt_timetable(D,Date,LFA,LFA2),assertz(availability(D,Date,LFA2))),_).
 
@@ -181,9 +171,6 @@ clean_dynamic_data():-
     retractall(agenda_staff1(_,_,_)),
     retractall(agenda_operation_room1(_,_,_)),
     retractall(availability(_,_,_)).
-
-
-% ========================================================
 
 
 
@@ -206,10 +193,6 @@ availability_all_surgeries([OpCode|LOpCode],Room,Day):-
     availability_all_surgeries(LOpCode,Room,Day).
 
 
-
-% ========================================================
-
-
 calculate_intervals((Start, End), TAnesthesia, TSurgery, TCleaning, MinuteStartAnesthesia, MinuteStartSurgery, MinuteStartCleaning, MinuteEndProcess) :-
 
     MinuteStartAnesthesia = Start,
@@ -221,7 +204,6 @@ calculate_intervals((Start, End), TAnesthesia, TSurgery, TCleaning, MinuteStartA
     MinuteEndProcess =< End.
 
 
-%%
 availability_operation(OpCode,Room,Day,Interval,LDoctorsSurgery,LStaffAnesthesia, LStaffCleaning):-
     surgery_id(OpCode, OpType) , surgery(OpType, TAnesthesia, TSurgery, TCleaning),
     findall(Staff, (assignment_surgery(OpCode, Staff) , staff(Staff,_,surgeon,_)), LDoctorsSurgery),
@@ -236,9 +218,6 @@ availability_operation(OpCode,Room,Day,Interval,LDoctorsSurgery,LStaffAnesthesia
     free_agenda0(LAgenda, LFAgRoom),
 
     find_first_interval(LAnesthesia, LSurgery, LCleaning, LFAgRoom, TAnesthesia, TSurgery, TCleaning, Interval).
-
-%%
-
 
 
 
@@ -354,7 +333,7 @@ update_better_sol(Day,Room,Agenda,LOpCode):-
              write('Analysing for LOpCode='),write(LOpCode),nl,
              write('now: FinTime1='),write(FinTime1),write(' Agenda='),write(Agenda),nl,
 		FinTime1<FinTime,
-             write('best solution updated'),nl,
+             write('Best solution updated'),nl,
                 retract(better_sol(_,_,_,_,_)),
                 findall(Doctor,assignment_surgery(_,Doctor),LDoctors1),
                 remove_equals(LDoctors1,LDoctors),

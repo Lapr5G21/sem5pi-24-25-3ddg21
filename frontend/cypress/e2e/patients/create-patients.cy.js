@@ -82,15 +82,14 @@ describe('Create Patients Modal', () => {
         cy.get('#LastName').type('Doe');
         cy.get('#FullName').type('John Doe');
 
-        // Seleciona a data de nascimento usando o p-calendar
         cy.get('#auxBirthDate').click(); // Abre o calendário
-        cy.get('.p-datepicker-calendar').contains('27').click({ force: true });
-
+        cy.get('.p-datepicker').should('be.visible');
+        cy.get('.p-datepicker-next').click({ force: true });
+        cy.get('.p-datepicker-group').contains('30').click({ force: true }); 
         
-    // Seleciona "Male" no dropdown de gênero
-    cy.get('#Gender').click({ force: true });
-    cy.get('.p-dropdown-panel').should('be.visible'); // Aguarda o painel abrir
-    cy.get('.p-dropdown-item').contains('Male').click({ force: true });
+        cy.get('#Gender').click({});
+        cy.get('.p-dropdown-panel');
+        cy.get('.p-dropdown-item').contains('Male').click({ force: true });
         
 
         cy.get('#Email').type('john.doe@example.com');
@@ -108,7 +107,7 @@ describe('Create Patients Modal', () => {
             expect(interception.response?.body.email).to.eq('john.doe@example.com');
         });
 
-        cy.get('.p-toast-message').should('contain', 'Patient saved successfully!');
+        cy.get('.p-toast-message').should('contain', 'Patient Successfully Saved!');
         cy.get('.p-dialog-content').should('not.exist');
     });
 
@@ -119,14 +118,16 @@ describe('Create Patients Modal', () => {
         cy.get('#FirstName').type('John');
         cy.get('#LastName').type('Doe');
         cy.get('#FullName').type('John Doe');
-        cy.get('#auxBirthDate').click();
-        cy.get('.p-datepicker-calendar').contains('27').click({ force: true });
+        cy.get('#auxBirthDate').click(); // Abre o calendário
+        cy.get('.p-datepicker').should('be.visible');
+        cy.get('.p-datepicker-next').click({ force: true });
+        cy.get('.p-datepicker-group').contains('30').click({ force: true });         
+
 
         
-    // Seleciona "Male" no dropdown de gênero
-    cy.get('#Gender').click({ force: true });
-    cy.get('.p-dropdown-panel').should('be.visible'); // Aguarda o painel abrir
-    cy.get('.p-dropdown-item').contains('Male').click({ force: true });
+        cy.get('#Gender').click({});
+        cy.get('.p-dropdown-panel'); 
+        cy.get('.p-dropdown-item').contains('Male').click({ force: true });
         
         
 

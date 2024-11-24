@@ -140,6 +140,10 @@ export class CreateStaffsComponent implements OnInit {
                     this.resetForm();
                     this.visible = false;
                     this.isSubmitted = false; // Reset ao estado após salvar
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500); 
                 },
                 (error) => {
                     console.error('Erro ao salvar staff:', error);

@@ -110,6 +110,9 @@ export class CreateOperationTypesComponent implements OnInit {
                 });
                 this.resetForm();
                 this.visible = false;
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500); 
             },
             (error) => {
                 console.error('Erro ao salvar tipo de operação:', error);
