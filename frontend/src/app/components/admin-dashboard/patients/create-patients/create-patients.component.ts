@@ -70,7 +70,6 @@ export class CreatePatientsComponent {
     isFullNameValid: boolean = true;
     isEmergencyContactValid: boolean = true;
     isGenderValid: boolean = true;
-    isBirthDateValid: boolean = true;
 
     isSubmitted: boolean = false;
 
@@ -91,7 +90,7 @@ export class CreatePatientsComponent {
 
         console.log('Gender before saving:', this.Gender); 
 
-        if (this.isFirstNameValid && this.isLastNameValid && this.isFullNameValid && this.isBirthDateValid && this.isGenderValid && this.isPhoneNumberValid && this.isEmailValid && this.isAddressValid && this.isEmergencyContactValid) {
+        if (this.isFirstNameValid && this.isLastNameValid && this.isFullNameValid && this.isGenderValid && this.isPhoneNumberValid && this.isEmailValid && this.isAddressValid && this.isEmergencyContactValid) {
                 
             const patient = new CreatePatientDto(
             this.FirstName,
@@ -136,7 +135,6 @@ export class CreatePatientsComponent {
         this.isFirstNameValid = !!this.FirstName;
         this.isLastNameValid = !!this.LastName;
         this.isFullNameValid = !!this.FullName;
-        this.isBirthDateValid = !!this.BirthDate;
         this.isGenderValid = !!this.Gender;
         this.isPhoneNumberValid = !!this.PhoneNumber;
         this.isEmailValid = !!this.Email;
@@ -152,7 +150,7 @@ export class CreatePatientsComponent {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Adiciona zero à esquerda
         const day = String(date.getDate()).padStart(2, '0'); // Adiciona zero à esquerda
-        return `${year}-${month}-${day}`;
+        return `${day}-${month}-${year}`;
       }
 
       onBirthDateChange(date: Date): void {
@@ -174,7 +172,6 @@ export class CreatePatientsComponent {
         this.isFirstNameValid = true;
         this.isLastNameValid = true;
         this.isFullNameValid = true;
-        this.isBirthDateValid = true;
         this.isGenderValid = true;
         this.isPhoneNumberValid = true;
         this.isEmailValid = true;
