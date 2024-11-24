@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http'; // Importa o HttpClientModule
 
 import { OperationRequestService } from './operation-request.service';
 
@@ -8,7 +7,7 @@ describe('OperationRequestService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientModule] 
+      imports: [] 
     });
     service = TestBed.inject(OperationRequestService);
   });
