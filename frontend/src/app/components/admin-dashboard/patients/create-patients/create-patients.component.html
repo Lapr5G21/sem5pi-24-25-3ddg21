@@ -58,6 +58,9 @@
               (ngModelChange)="onBirthDateChange($event)"
               [ngClass]="{'invalid-border': isSubmitted && !isBirthDateValid}">
             </p-calendar>
+            <div *ngIf="isSubmitted && !isBirthDateValid" class="error-text">
+              Birth date is required.
+            </div>
           </div>
           
 
