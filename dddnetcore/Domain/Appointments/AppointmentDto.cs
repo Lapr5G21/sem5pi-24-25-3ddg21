@@ -33,4 +33,11 @@ namespace DDDSample1.Domain.Appointments
         public int AnesthesiaTime { get; set; }
         public int CleaningTime { get; set; }
     }
+
+    public class AppointmentStaffDto
+    {
+        public Guid AppointmentId {get;set;}
+        public int StartTime {get;set;}
+        public int EndTime {get;set;}
+    }
 }

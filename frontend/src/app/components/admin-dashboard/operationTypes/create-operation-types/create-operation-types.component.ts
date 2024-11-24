@@ -34,6 +34,8 @@ export class CreateOperationTypesComponent implements OnInit {
     selectedSpecializations: string[] = [];
     staffNumbers: { [key: string]: number } = {};
 
+    specializationMap: Map<string, string> = new Map();
+
     operationTypeName: string = '';
     estimatedDuration: number | null = null;
     anesthesiaTime: number | null = null;
@@ -56,6 +58,11 @@ export class CreateOperationTypesComponent implements OnInit {
                     label: spec.specializationName,
                     value: spec.id
                 }));
+                this.specializationMap.clear(); 
+                    specializations.forEach(spec => {
+                this.specializationMap.set(spec.id, spec.specializationName);
+            });
+
             },
             (error) => {
                 console.error('Erro ao carregar especializações:', error);
@@ -133,5 +140,4 @@ export class CreateOperationTypesComponent implements OnInit {
                this.cleaningTime != null && 
                this.selectedSpecializations.length > 0;
     }    
-    
 }

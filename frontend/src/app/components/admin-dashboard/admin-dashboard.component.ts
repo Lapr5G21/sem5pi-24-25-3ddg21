@@ -123,6 +123,15 @@ export class AdminDashboardComponent implements OnInit {
         ]
       },
       {
+        label: 'Appointments',
+        icon: 'pi pi-calendar-clock',
+        items: [
+          {
+            label: 'GenerateSchedule',
+          },
+        ]
+      },
+      {
         label: 'Account',
         icon: 'pi pi-user',
         items: [

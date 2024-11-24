@@ -207,5 +207,45 @@ namespace DDDSample1.Controllers
 
             return NotFound(new { message = "Availability slot not found." });
         }
+
+        [HttpGet("operationTypes")]
+        public async Task<IActionResult> GetStaffOperationTypes()
+        {
+        try
+        {
+            var availabilitySlots = await _staffService.GetStaffsOperationTypesAsync();
+
+            return Ok(availabilitySlots);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+        }
+
+        [HttpGet("availabilitySlots")]
+        public async Task<IActionResult> GetAllAvailabilitySlots()
+        {
+        try
+        {
+            var availabilitySlots = await _staffService.GetAllAvailabilitySlots();
+
+            return Ok(availabilitySlots);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+        }
+
+        [HttpGet("appointments")]
+        public async Task<ActionResult<IEnumerable<StaffAppointmentsDto>>> GetStaffAppointments() {
+            try {
+                return await _staffService.GetStaffAppointmentsAsync();
+            } catch(Exception)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred." });
+            }
     }       
+}
 }

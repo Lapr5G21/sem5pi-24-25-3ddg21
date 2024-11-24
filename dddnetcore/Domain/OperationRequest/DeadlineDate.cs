@@ -9,11 +9,6 @@ namespace DDDSample1.Domain.OperationRequests
 
         public DeadlineDate(DateTime value)
         {
-            if (value <= DateTime.Now)
-            {
-                throw new BusinessRuleValidationException("A data limite deve ser no futuro.");
-            }
-
             Value = value;
         }
 
