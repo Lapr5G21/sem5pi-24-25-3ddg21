@@ -1,3 +1,24 @@
 input::placeholder {
     color: rgba(0, 0, 0, 0.4); /* Cor mais suave, você pode ajustar o valor */
 }
+
+.p-field {
+    margin-bottom: 1rem;
+  }
+  
+  .error-text {
+    color: red;
+    font-size: 0.9rem; /* Opcional: ajusta o tamanho */
+    margin-top: 5px; /* Opcional: adiciona espaço acima */
+  }
+
+  .invalid-border {
+    border: 1px solid red; /* Contorno vermelho */
+    border-radius: 4px; /* Bordas arredondadas para harmonizar com o design */
+    padding: 0.4rem; /* Ajuste o espaçamento interno */
+  }
+  
+  
+  
+  
+  

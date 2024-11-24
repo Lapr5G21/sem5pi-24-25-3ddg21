@@ -8,22 +8,42 @@
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="FirstName" class="font-semibold w-6rem">First Name</label>
-            <input pInputText id="FirstName" [(ngModel)]="FirstName" class="flex-auto" autocomplete="off" placeholder="Enter your first name" />
+            <input pInputText id="FirstName" [(ngModel)]="FirstName" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isFirstNameValid}" placeholder="Enter your first name" />
+            <div *ngIf="isSubmitted && !isFirstNameValid" class="error-text">
+                First name is required.
+            </div>
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="LastName" class="font-semibold w-6rem">Last Name</label>
-            <input pInputText id="LastName" [(ngModel)]="LastName" class="flex-auto" autocomplete="off" placeholder="Enter your last name"/>
+            <input pInputText id="LastName" [(ngModel)]="LastName" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isLastNameValid}" placeholder="Enter your last name"/>
+            <div *ngIf="isSubmitted && !isLastNameValid" class="error-text">
+                Last name is required.
+            </div>
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="FullName" class="font-semibold w-6rem">Full Name</label>
-            <input pInputText id="FullName" [(ngModel)]="FullName" class="flex-auto" autocomplete="off" placeholder="Enter your full name"/>
+            <input pInputText id="FullName" [(ngModel)]="FullName" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isFullNameValid}" placeholder="Enter your full name"/>
+            <div *ngIf="isSubmitted && !isFullNameValid" class="error-text">
+                Full name is required.
+            </div>
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="BirthDate" class="font-semibold w-6rem">Birth Date</label>
-            <input pInputText id="BirthDate" [(ngModel)]="BirthDate" class="flex-auto" autocomplete="off" placeholder="Enter your date of birth" />
+            <input 
+            pInputText id="BirthDate" 
+            [(ngModel)]="BirthDate" 
+            class="flex-auto" 
+            autocomplete="off" 
+            placeholder="Enter your date of birth"
+            (ngModelChange)="validateFields()" 
+            [ngClass]="{'invalid-border': isSubmitted && !isBirthDateValid}"
+            />
+          <div *ngIf="isSubmitted && !isBirthDateValid" class="error-text">
+            Birth date is required.
+        </div>        
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
@@ -35,28 +55,46 @@
                 optionLabel="label"
                 optionValue="value"
                 class="flex-auto"
+                required
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isGenderValid}"
                 placeholder="Select Gender">
             </p-dropdown>
+            <div *ngIf="isSubmitted && !isGenderValid" class="error-text">
+                Gender is required.
+            </div>
         </div>        
 
         <div class="flex align-items-center gap-3 mb-5">
             <label for="Email" class="font-semibold w-6rem">Email</label>
-            <input pInputText id="Email" [(ngModel)]="Email" class="flex-auto" autocomplete="off" placeholder="Enter your email" />
+            <input pInputText id="Email" [(ngModel)]="Email" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isEmailValid}" placeholder="Enter your email" />
+            <div *ngIf="isSubmitted && !isEmailValid" class="error-text">
+                Email is required.
+            </div>
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
             <label for="PhoneNumber" class="font-semibold w-6rem">Phone Number</label>
-            <input pInputText id="PhoneNumber" [(ngModel)]="PhoneNumber" class="flex-auto" autocomplete="off" placeholder="Portuguese format (+351)" />
+            <input pInputText id="PhoneNumber" [(ngModel)]="PhoneNumber" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isPhoneNumberValid}" placeholder="Portuguese format (+351)" />
+            <div *ngIf="isSubmitted && !isPhoneNumberValid" class="error-text">
+                Phone number is required.
+            </div>
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
             <label for="Address" class="font-semibold w-6rem">Address</label>
-            <input pInputText id="Address" [(ngModel)]="Address" class="flex-auto" autocomplete="off" placeholder="Enter your address"/>
+            <input pInputText id="Address" [(ngModel)]="Address" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isAddressValid}" placeholder="Enter your address"/>
+            <div *ngIf="isSubmitted && !isAddressValid" class="error-text">
+                Address is required.
+            </div>
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
             <label for="EmergencyContact" class="font-semibold w-6rem">Emergency Contact</label>
-            <input pInputText id="EmergencyContact" [(ngModel)]="EmergencyContact" class="flex-auto" autocomplete="off" placeholder="Portuguese format (+351)"/>
+            <input pInputText id="EmergencyContact" [(ngModel)]="EmergencyContact" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isEmergencyContactValid}" placeholder="Portuguese format (+351)"/>
+            <div *ngIf="isSubmitted && !isEmergencyContactValid" class="error-text">
+                Emergency Contact is required.
+            </div>
         </div>        
 
 
