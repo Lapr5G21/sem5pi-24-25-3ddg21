@@ -32,9 +32,9 @@ surgery_id(so100002,so3).
 surgery_id(so100003,so4).
 surgery_id(so100004,so2).
 surgery_id(so100005,so4).
-surgery_id(so100006,so2).
-surgery_id(so100007,so3).
-surgery_id(so100008,so2).
+%surgery_id(so100006,so2).
+%surgery_id(so100007,so3).
+%surgery_id(so100008,so2).
 %surgery_id(so100009,so2).
 %surgery_id(so100010,so2).
 %surgery_id(so100011,so4).
@@ -48,9 +48,9 @@ assignment_surgery(so100004,d001).
 assignment_surgery(so100004,d002).
 assignment_surgery(so100005,d002).
 assignment_surgery(so100005,d003).
-assignment_surgery(so100006,d001).
-assignment_surgery(so100007,d003).
-assignment_surgery(so100008,d004).
+%assignment_surgery(so100006,d001).
+%assignment_surgery(so100007,d003).
+%assignment_surgery(so100008,d004).
 %assignment_surgery(so100008,d003).
 %assignment_surgery(so100009,d002).
 %assignment_surgery(so100009,d004).
@@ -61,7 +61,7 @@ assignment_surgery(so100008,d004).
  
 agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
  
-% Adding missing predicates for agenda handling
+
 free_agenda0([],[(0,1440)]).
 free_agenda0([(0,Tfin,_)|LT],LT1):-!,free_agenda1([(0,Tfin,_)|LT],LT1).
 free_agenda0([(Tin,Tfin,_)|LT],[(0,T1)|LT1]):- T1 is Tin-1,
@@ -87,7 +87,7 @@ treatfin(FinTime,[(In,_)|_],[]):-FinTime=<In,!.
 treatfin(FinTime,[(In,_)|_],[(In,FinTime)]).
 treatfin(_,[],[]).
  
-% Predicate for handling intersections of agendas
+% Obtem as interseções nas agendas passadas por parametro e retorna a interseção
 intersect_all_agendas([Name],Date,LA):-!,availability(Name,Date,LA).
 intersect_all_agendas([Name|LNames],Date,LI):-
     availability(Name,Date,LA),
@@ -119,17 +119,18 @@ intersect_availability((Ini,Fim),[(Ini1,Fim1)|LD],[(Imax,Fmin)|LI],LA):-
 min_max(I,I1,I,I1):- I<I1,!.
 min_max(I,I1,I1,I).
  
-% Predicate to evaluate final time
+% Obtem o melhor tempo final
 evaluate_final_time([],_,1441).
 evaluate_final_time([(_,Tfin,OpCode)|_],LOpCode,Tfin):-member(OpCode,LOpCode),!.
 evaluate_final_time([_|AgR],LOpCode,Tfin):-evaluate_final_time(AgR,LOpCode,Tfin).
  
-% Predicate to remove duplicates
+% Remove os elementos repetidos
 remove_equals([],[]).
 remove_equals([X|L],L1):-member(X,L),!,remove_equals(L,L1).
 remove_equals([X|L],[X|L1]):-remove_equals(L,L1).
  
-% Predicate to get doctors' agendas
+% Obtem as agendas dos medicos
+
 list_doctors_agenda(_,[],[]).
 list_doctors_agenda(Day,[D|LD],[(D,AgD)|LAgD]):-
     agenda_staff1(D,Day,AgD),
@@ -142,7 +143,7 @@ insert_agenda((TinS,TfinS,OpCode),[(Tin,Tfin,OpCode1)|LA],[(TinS,TfinS,OpCode),(
 insert_agenda((TinS,TfinS,OpCode),[(Tin,Tfin,OpCode1)|LA],[(Tin,Tfin,OpCode1)|LA1]):-
     insert_agenda((TinS,TfinS,OpCode),LA,LA1).
  
-% Predicate to insert into doctors' agendas
+% Predicado para inserir nas agendas dos medicos
 insert_agenda_doctors(_,_,[]).
 insert_agenda_doctors((TinS,TfinS,OpCode),Day,[Doctor|LDoctors]):-
     retract(agenda_staff1(Doctor,Day,Agenda)),
@@ -150,7 +151,7 @@ insert_agenda_doctors((TinS,TfinS,OpCode),Day,[Doctor|LDoctors]):-
     assert(agenda_staff1(Doctor,Day,Agenda1)),
     insert_agenda_doctors((TinS,TfinS,OpCode),Day,LDoctors).
  
-% Predicate for operation availability
+% predicado para obter os espaços para os quais que o medico esta disponivel
 availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
     surgery_id(OpCode,OpType),
     surgery(OpType,_,TSurgery,_),
@@ -161,7 +162,7 @@ availability_operation(OpCode,Room,Day,LPossibilities,LDoctors):-
     intersect_2_agendas(LA,LFAgRoom,LIntAgDoctorsRoom),
     remove_unf_intervals(TSurgery,LIntAgDoctorsRoom,LPossibilities).
  
-% Predicate to remove unfeasible intervals
+% Remove os intervalos na qual não cabe uma cirurgia
 remove_unf_intervals(_,[],[]).
 remove_unf_intervals(TSurgery,[(Tin,Tfin)|LA],[(Tin,Tfin)|LA1]):-
     DT is Tfin-Tin+1,TSurgery=<DT,!,
@@ -169,10 +170,10 @@ remove_unf_intervals(TSurgery,[(Tin,Tfin)|LA],[(Tin,Tfin)|LA1]):-
 remove_unf_intervals(TSurgery,[_|LA],LA1):-
     remove_unf_intervals(TSurgery,LA,LA1).
  
-% Predicate to schedule first interval
+% Marca para o primeiro espaço disponivel
 schedule_first_interval(TSurgery,[(Tin,_)|_],(Tin,TfinS)):-
     TfinS is Tin + TSurgery - 1.
-% New predicate to find earliest available doctor
+% Encontra o primeiro medico disponivel
 find_earliest_available_doctor(OpCode, Day, EarliestDoctor, EarliestTime) :-
     surgery_id(OpCode, OpType),
     surgery(OpType, _, TSurgery, _),
@@ -181,41 +182,41 @@ find_earliest_available_doctor(OpCode, Day, EarliestDoctor, EarliestTime) :-
         member(Doc, Doctors),
         availability(Doc, Day, Availabilities),
         member((Start, End), Availabilities),
-        % Check if there's enough time for the surgery
+        % Compara os tempos para verificar se tem tempo suficiente para a cirurgia
         Duration is End - Start + 1,
         Duration >= TSurgery,
         Time = Start
     ), DoctorTimes),
     sort(DoctorTimes, [(EarliestTime, EarliestDoctor)|_]).
  
-% Modified heuristic scheduling
+% Euristica 1
 schedule_surgery_heuristic(OpCode, Room, Day) :-
     find_earliest_available_doctor(OpCode, Day, EarliestDoctor, StartTime),
     surgery_id(OpCode, OpType),
     surgery(OpType, _, TSurgery, _),
     EndTime is StartTime + TSurgery - 1,
  
-    % Update operation room agenda
+    % Altera a agenda da sala 
     retract(agenda_operation_room1(Room, Day, Agenda)),
     insert_agenda((StartTime, EndTime, OpCode), Agenda, NewAgenda),
     assertz(agenda_operation_room1(Room, Day, NewAgenda)),
  
-    % Update only the earliest doctor's agenda first
+    % Altera apenas a agenda primeiro medico
     insert_agenda_doctors((StartTime, EndTime, OpCode), Day, [EarliestDoctor]),
  
-    % Then update other assigned doctors' agendas if any
+    % Depois marca a agenda dos outros medicos 
     findall(Doc, (assignment_surgery(OpCode, Doc), Doc \= EarliestDoctor), OtherDocs),
     insert_agenda_doctors((StartTime, EndTime, OpCode), Day, OtherDocs).
  
 obtain_heuristic_sol(Room, Day, AgOpRoomBetter, LAgDoctorsBetter, TFinOp) :-
     get_time(Ti),
  
-    % Initialize schedules
+    % Inicia os horarios
     retractall(agenda_staff1(_, _, _)),
     retractall(agenda_operation_room1(_, _, _)),
     retractall(availability(_, _, _)),
  
-    % Set up initial agendas
+    % Inicia as agendas
     findall(_, (
         agenda_staff(D, Day, Agenda),
         assertz(agenda_staff1(D, Day, Agenda))
@@ -224,7 +225,7 @@ obtain_heuristic_sol(Room, Day, AgOpRoomBetter, LAgDoctorsBetter, TFinOp) :-
     agenda_operation_room(Room, Day, Agenda),
     assert(agenda_operation_room1(Room, Day, Agenda)),
  
-    % Calculate initial availabilities
+    % Calcula as disponibilidades
     findall(_, (
         agenda_staff1(D, Day, L),
         free_agenda0(L, LFA),
@@ -232,23 +233,21 @@ obtain_heuristic_sol(Room, Day, AgOpRoomBetter, LAgDoctorsBetter, TFinOp) :-
         assertz(availability(D, Day, LFA2))
     ), _),
  
-    % Get all surgeries
+    
     findall(OpCode, surgery_id(OpCode, _), LOC),
  
-    % Schedule each surgery using the heuristic
+    
     schedule_all_surgeries_heuristic(LOC, Room, Day),
  
-    % Get final schedule
+    
     agenda_operation_room1(Room, Day, FinalAgenda),
     findall(Doctor, assignment_surgery(_, Doctor), LDoctors1),
     remove_equals(LDoctors1, LDoctors),
     list_doctors_agenda(Day, LDoctors, LAgendas),
  
-    % Calculate final time
     reverse(FinalAgenda, ReversedAgenda),
     evaluate_final_time(ReversedAgenda, LOC, FinalTime),
  
-    % Store results
     AgOpRoomBetter = FinalAgenda,
     LAgDoctorsBetter = LAgendas,
     TFinOp = FinalTime,
@@ -256,8 +255,7 @@ obtain_heuristic_sol(Room, Day, AgOpRoomBetter, LAgDoctorsBetter, TFinOp) :-
     get_time(Tf),
     T is Tf-Ti,
  
-    % Output results
-    write('Final Result with Heuristic:'), nl,
+    write('Final Result :'), nl,
     write('Operation Room Schedule = '), write(AgOpRoomBetter), nl,
     write('Doctors Schedules = '), write(LAgDoctorsBetter), nl,
     write('Final Time = '), write(TFinOp), nl,
@@ -268,20 +266,18 @@ schedule_all_surgeries_heuristic([OpCode|Rest], Room, Day) :-
     surgery_id(OpCode, OpType),
     surgery(OpType, _, TSurgery, _),
  
-    % Find earliest available time slot using the heuristic
+    
     availability_operation(OpCode, Room, Day, LPossibilities, _),
     schedule_first_interval(TSurgery, LPossibilities, (TinS, TfinS)),
  
-    % Update schedules
+    
     retract(agenda_operation_room1(Room, Day, Agenda)),
     insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
     assertz(agenda_operation_room1(Room, Day, Agenda1)),
  
-    % Update doctors' schedules
     findall(Doctor, assignment_surgery(OpCode, Doctor), LDoctors),
     insert_agenda_doctors((TinS, TfinS, OpCode), Day, LDoctors),
  
-    % Update availabilities
     retractall(availability(_, Day, _)),
     findall(_, (
         agenda_staff1(D, Day, L),
@@ -290,5 +286,4 @@ schedule_all_surgeries_heuristic([OpCode|Rest], Room, Day) :-
         assertz(availability(D, Day, LFA2))
     ), _),
  
-    % Continue with next surgery
     schedule_all_surgeries_heuristic(Rest, Room, Day).

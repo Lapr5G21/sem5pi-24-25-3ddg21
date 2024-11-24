@@ -54,10 +54,26 @@ interface "VO API" as VOAPI
 
    folder "Enterprise Bussiness Rules"{
     component "Domain Model DDD" as DomainModel <<component>> {
-  }
 
   }
 
+  
+  }
+  }
+
+folder "User Interface" as UI <<component>> {
+  folder "Angular Frontend" as Frontend  {
+    component "Frontend" as Frontend <<component>> {
+  }
+}
+
+  
+}
+
+
+Frontend --( VOAPI
+Frontend --( DTOAPI
+Frontend --( ASAPI
 
 DomainModel -up- VOAPI
 DomainModel -down- MAPI

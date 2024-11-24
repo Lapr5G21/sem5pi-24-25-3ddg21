@@ -1,36 +1,106 @@
-@startuml logical-view
+@startuml logic-view
 top to bottom direction
- 
+
+skinparam nodesep 100
+skinparam ranksep 100
+
 interface "API" as API
-interface "Auth0" as AUTH0
-interface "SMTP Microsoft 365" as SMTP
- 
-component "Heallthcare System" <<component>> {
-  () "DB API" as DBAPI
-  portin " " as PIAPI
-  portout " " as POAUTH0
-  portout " " as POSMTP
- 
-  component "Backend" <<component>> {
-    portin " " as BEPI
-    portout " " as BEPO
-    portout " " as BEPOAUTH0
-    portout " " as BEPOSMTP
+interface "Auth0 API" as A0API
+interface "Database API" as DB_API
+
+component "Backend " as BackendDataManagement <<component>>  {
+  portin " " as P1
+  portin " " as P2
+  portout " " as P3
+
+  Interface "Controller API" as Controller_API
+  Interface "Data Model API" as DataModel_API
+
+  folder "Frameworks and Drivers Layer" {
+    component "Database Driver" as DatabaseDriver <<component>> {
+    }
+    component "Routing" as Routing <<component>> {
+    }
   }
- 
-  component "Database" <<component>> {
-    portin " " as DBPI
+
+  component "DTO" as DTO <<component>> {
   }
- 
+
+  component "Data Model" as DataModel <<component>> {
+  }
+
+  Interface "App Services API" AS ApplicationServiceAPI
+  Interface "Database  API" AS DatabaseDriverAPI
+  Interface "Repo API" AS RepoAPI
+  Interface "DTO API" AS DTOAPI
+  Interface "Model API" AS ModelAPI
+  Interface "VO API" AS VOAPI
+
+  folder "Interface Adapters Layer" {
+    component "Controller" as Controller <<component>> {
+    }
+    component "Repository" as Repository <<component>> {
+    }
+  }
+
+  folder "Application Business Rules" {
+    component "Application Service" as ApplicationService <<component>> {
+    }
+  }
+
+  folder "Business Rules" {
+    component "Domain Model DDD" as DomainModelDDD <<component>> {
+    }
+  }
+
+
+folder "Domain" {
+    component "Services" as DomainModelDDD  {
+    }
+    component "Value Objects" as DomainModelDDD  {
+    }
+    component "Aggregates" as DomainModelDDD  {
+    }
+  }
+
+  
 }
- 
-API -- PIAPI
-POAUTH0 -u-( AUTH0
-BEPO --( DBAPI
-BEPOAUTH0 -- POAUTH0
-BEPI -- PIAPI
-POSMTP --( SMTP
-BEPOSMTP -- POSMTP
-DBAPI -- DBPI
- 
+
+API -- P1
+P2 -u-( DB_API
+P3 --r-( A0API
+
+Routing --- P1
+Routing --( Controller_API
+Routing --( DTOAPI
+
+DatabaseDriver -- DatabaseDriverAPI
+DatabaseDriver -- P2
+DatabaseDriver --( DataModel_API 
+
+Repository -- RepoAPI
+Repository -u-( DatabaseDriverAPI 
+Repository -u-( DataModel_API 
+Repository --( VOAPI
+Repository ---( ModelAPI 
+
+DataModel -- DataModel_API 
+
+Controller --( ApplicationServiceAPI
+Controller -u- Controller_API
+Controller --( DTOAPI
+Controller --( VOAPI
+
+ApplicationService -u- ApplicationServiceAPI
+ApplicationService -- P3
+ApplicationService --( VOAPI
+ApplicationService -u-( RepoAPI 
+ApplicationService --( ModelAPI 
+
+DTO -- DTOAPI
+
+DomainModelDDD -u- ModelAPI 
+DomainModelDDD -u- VOAPI
+
+
 @enduml

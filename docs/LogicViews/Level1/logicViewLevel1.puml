@@ -4,16 +4,19 @@ top to bottom direction
 interface "API" as API
 interface "Auth0" as AUTH0
 interface "SMTP Microsoft 365" as SMTP
+interface "UI" as UI
  
 component "Heallthcare System" <<component>> {
   
     portin " " as BEPI
     portout " " as BEPOAUTH0
     portout " " as BEPOSMTP
+    portout " " as BEPOUI
 }
  
 BEPI -u- API 
 BEPOAUTH0 -l-( AUTH0
 BEPOSMTP --( SMTP
+BEPOUI -- UI
  
 @enduml

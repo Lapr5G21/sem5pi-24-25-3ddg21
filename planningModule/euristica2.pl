@@ -38,8 +38,8 @@ surgery_id(so100006,so2).
 surgery_id(so100007,so3).
 surgery_id(so100008,so2).
 surgery_id(so100009,so2).
-%surgery_id(so100010,so2).
-%surgery_id(so100011,so4).
+surgery_id(so100010,so2).
+surgery_id(so100011,so4).
 %surgery_id(so100012,so2).
 %surgery_id(so100013,so2).
  
@@ -56,8 +56,8 @@ assignment_surgery(so100008,d004).
 assignment_surgery(so100008,d003).
 assignment_surgery(so100009,d002).
 assignment_surgery(so100009,d004).
-%assignment_surgery(so100010,d003).
-%assignment_surgery(so100011,d001).
+assignment_surgery(so100010,d003).
+assignment_surgery(so100011,d001).
 %assignment_surgery(so100012,d001).
 %assignment_surgery(so100013,d004).
  
@@ -240,7 +240,8 @@ update_better_sol2(Day, Room, Agenda, LOpCode):-
     ; true).
 
 calcular_percentagem_maxima(Day, LOpCode, PercentagemMaxima):-
-    findall(Percentagem, (member(OpCode, LOpCode), assignment_surgery(OpCode, Medico), calcular_ocupacao(Medico, Day, Percentagem)), ListaPercentagem),
+    findall(Percentagem, (member(OpCode, LOpCode), assignment_surgery(OpCode, Medico),
+     calcular_ocupacao(Medico, Day, Percentagem)), ListaPercentagem),
     max_list(ListaPercentagem, PercentagemMaxima).
 
 calcular_ocupacao(Medico, Dia, Percentagem):-

@@ -2,29 +2,54 @@
 top to bottom direction
  
 
-skinparam nodesep 80
-skinparam ranksep 80
+skinparam nodesep 100
+skinparam ranksep 100
 
 interface "API" as API
 interface "Auth0" as AUTH0
 interface "SMTP Microsoft 365" as SMTP
+interface "UI" as UI
+
  
 component "Heallthcare System" <<component>> {
  
   portin " " as PIAPI
   portout " " as POAUTH0
   portout " " as POSMTP
+  portout " " as POUI
  
+ interface "Backend API" as BEAPI
+ interface "Planning API" as PAPI
+
+  component "Planning" <<component>> {
+    portout " " as POPLANNING
+  }
+
+  component "Frontend" <<component>> {
+    portout " " as POFE
+  }
+
+  component "Hospital Model" <<component>> {
+    portout " " as POHM
+  }
+
   component "Backend" <<component>> {
     portin " " as BEPI
     portout " " as BEPOAUTH0
     portout " " as BEPOSMTP
   }
  
+ POPLANNING -( BEAPI
+  POFE --( BEAPI
+  BEPI -- BEAPI
+  POHM --( BEAPI
+  BEPI -( PAPI
+  POPLANNING -- PAPI
 
  
 }
  
+POUI -- UI
 API -- PIAPI
 POAUTH0 -l-( AUTH0
 BEPOAUTH0 -- POAUTH0
