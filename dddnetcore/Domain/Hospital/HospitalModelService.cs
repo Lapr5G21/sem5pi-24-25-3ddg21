@@ -98,9 +98,7 @@ public class HospitalModelService
           
           // Check if the operation is in progress (now)
           if (currentTime >= operationStartTime && currentTime <= operationEndTime)
-          {
-
-            
+          {            
             // Mark the room as occupied on the map (8 = occupied)
             hospitalMap.Map[room.Row][room.Col] = 8;
           }

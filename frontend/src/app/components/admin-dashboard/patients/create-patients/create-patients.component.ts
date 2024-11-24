@@ -7,11 +7,12 @@ import { MessageService, SelectItem } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { PatientService } from '../../../../services/patient.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CreatePatientDto, Patient } from '../../../../domain/patient-model';
 import { ToastModule } from 'primeng/toast';
+import { CalendarModule } from 'primeng/calendar';
 
 enum PatientGender {
     Male = 'Male',
@@ -34,7 +35,8 @@ enum PatientGender {
         FormsModule,
         CommonModule,
         HttpClientModule,
-        ToastModule
+        ToastModule,
+        CalendarModule
     ],
     providers: [PatientService, MessageService]
 })
@@ -57,7 +59,19 @@ export class CreatePatientsComponent {
         { label: 'Male', value: PatientGender.Male },
         { label: 'Female', value: PatientGender.Female },
         { label: 'RatherNotSay', value: PatientGender.RatherNotSay }
-    ];    
+    ];
+    
+    isPhoneNumberValid: boolean = true;
+    isEmailValid: boolean = true;
+    isAddressValid: boolean = true;
+    isFirstNameValid: boolean = true;
+    isLastNameValid: boolean = true;
+    isFullNameValid: boolean = true;
+    isEmergencyContactValid: boolean = true;
+    isGenderValid: boolean = true;
+    isBirthDateValid: boolean = true;
+
+    isSubmitted: boolean = false;
 
     constructor(
         private patientService: PatientService,
@@ -71,9 +85,14 @@ export class CreatePatientsComponent {
     }
 
     savePatient() {
+        this.isSubmitted = true;
+        this.validateFields();
+
         console.log('Gender before saving:', this.Gender); 
 
-        const patient = new CreatePatientDto(
+        if (this.isFirstNameValid && this.isLastNameValid && this.isFullNameValid && this.isBirthDateValid && this.isGenderValid && this.isPhoneNumberValid && this.isEmailValid && this.isAddressValid && this.isEmergencyContactValid) {
+                
+            const patient = new CreatePatientDto(
             this.FirstName,
             this.LastName,
             this.FullName,
@@ -96,6 +115,7 @@ export class CreatePatientsComponent {
                 });
                 this.resetForm();
                 this.visible = false;
+                this.isSubmitted = false;
             },
             (error) => {
                 console.error('Patient Saving Error:', error);
@@ -107,7 +127,22 @@ export class CreatePatientsComponent {
             }
         );
     }
+    }
 
+
+    
+    validateFields() {
+        this.isFirstNameValid = !!this.FirstName;
+        this.isLastNameValid = !!this.LastName;
+        this.isFullNameValid = !!this.FullName;
+        this.isBirthDateValid = !!this.BirthDate;
+        this.isGenderValid = !!this.Gender;
+        this.isPhoneNumberValid = !!this.PhoneNumber;
+        this.isEmailValid = !!this.Email;
+        this.isAddressValid = !!this.Address;
+        this.isEmergencyContactValid = !!this.EmergencyContact;
+    }
+    
     resetForm() {
         this.FirstName = '';
         this.LastName = '';
@@ -118,6 +153,17 @@ export class CreatePatientsComponent {
         this.PhoneNumber = '';
         this.Address = '';
         this.EmergencyContact = '';
+        this.isFirstNameValid = true;
+        this.isLastNameValid = true;
+        this.isFullNameValid = true;
+        this.isBirthDateValid = true;
+        this.isGenderValid = true;
+        this.isPhoneNumberValid = true;
+        this.isEmailValid = true;
+        this.isAddressValid = true;
+        this.isEmergencyContactValid = true;
+        this.isSubmitted = false;
+
 
     }
 }

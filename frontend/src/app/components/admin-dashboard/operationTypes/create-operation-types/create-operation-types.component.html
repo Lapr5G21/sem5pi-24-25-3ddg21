@@ -98,7 +98,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-specialization>
                     <tr>
-                        <td>{{ specialization }}</td>
+                        <td>{{ specializationMap.get(specialization) }}</td>
                         <td>
                             <input 
                                 pInputText 

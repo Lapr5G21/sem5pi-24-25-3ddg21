@@ -74,7 +74,6 @@ describe('CreateOperationTypesComponent', () => {
     });
   });
 
-  // Test save operation type when form is invalid
   it('should not call the service to save when the form is invalid', fakeAsync(() => {
     component.operationTypeName = '';
     component.saveOperationType();

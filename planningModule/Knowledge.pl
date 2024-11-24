@@ -1,3 +1,15 @@
+:-module(knowledge, [availability/3, agenda_staff/3, agenda_staff1/3, agenda_operation_room/3, 
+                      agenda_operation_room1/3, better_sol/5, 
+                      timetable/3, staff/4, surgery/4, surgery_id/2,
+                      assignment_surgery/2, free_agenda0/2, free_agenda1/2, 
+                      intersect_all_agendas/3, intersect_2_agendas/3, 
+                      intersect_availability/4, min_max/4,
+                      schedule_all_surgeries/2, availability_all_surgeries/3, 
+                      availability_operation/5, remove_unf_intervals/3, 
+                      schedule_first_interval/3, insert_agenda/3, 
+                      insert_agenda_doctors/3, obtain_better_sol/5, 
+                      obtain_better_sol1/2]).
+
 :- dynamic availability/3.
 :- dynamic agenda_staff/3.
 :- dynamic agenda_staff1/3.

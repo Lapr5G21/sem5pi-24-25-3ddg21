@@ -59,5 +59,11 @@ namespace DDDSample1.Controllers{
                 return StatusCode(500, new { message = "An unexpected error occurred." });
             }
         }
+
+        [HttpGet("staffs")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentStaffs()
+        {
+            return await _service.GetAllAsync();
+        }
     }
 }

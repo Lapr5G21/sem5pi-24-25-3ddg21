@@ -16,10 +16,15 @@ export class HospitalModelComponent implements OnInit {
   hospitalModel: any;
 
   ngOnInit(): void {
+    this.setupPopStateListener(); 
     this.initialize();
     this.animate(); 
   }
 
+  
+  ngOnDestroy() {
+    window.removeEventListener('popstate', this.reloadPage);
+  }
   initialize() {
     try {
       
@@ -50,4 +55,11 @@ export class HospitalModelComponent implements OnInit {
 
   }
 
+  setupPopStateListener() {
+    window.addEventListener('popstate', this.reloadPage);
+  }
+
+  reloadPage = () => {
+      window.location.reload();
+  };
 }

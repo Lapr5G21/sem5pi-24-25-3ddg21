@@ -17,7 +17,15 @@ namespace DDDSample1.Infrastructure.OperationTypes
         {
             _context=context;
         }
+        public async Task<List<OperationType>> GetOperationTypesAsync()
+        {
+            var query = _context.OperationTypes.AsQueryable();
 
+            query = query.Include(o => o.Specializations)
+                        .ThenInclude(ots => ots.Specialization);
+
+            return await query.ToListAsync();
+}
            public async Task<IEnumerable<OperationType>> SearchAsync(SearchOperationTypeDto searchDto)
         {
             var query = _context.Set<OperationType>().AsQueryable();

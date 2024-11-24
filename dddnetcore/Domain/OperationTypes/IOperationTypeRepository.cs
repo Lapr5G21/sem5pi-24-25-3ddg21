@@ -8,5 +8,7 @@ namespace DDDSample1.Domain.OperationTypes
     public interface IOperationTypeRepository: IRepository<OperationType, OperationTypeId>
     {
         public Task<IEnumerable<OperationType>> SearchAsync(SearchOperationTypeDto searchDto);
+        public Task<List<OperationType>> GetOperationTypesAsync();
+
     }
 }

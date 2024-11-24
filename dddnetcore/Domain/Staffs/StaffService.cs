@@ -12,6 +12,9 @@ using System.Linq;
 using DDDSample1.Domain.Emails;
 using DDDSample1.Domain.AuditLogs;
 using DDDSample1.Infrastructure.Staffs;
+using DDDSample1.Domain.OperationTypes;
+using FluentAssertions;
+using DDDSample1.Domain.Appointments;
 
 namespace DDDSample1.Domain.Staffs
 {
@@ -25,8 +28,9 @@ namespace DDDSample1.Domain.Staffs
         private readonly IEmailService _emailService;
         private readonly ILogRepository _logRepository;
         private readonly IAvailabilitySlotRepository _availabilitySlotRepository;
-
-        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository, IEmailService emailService, ILogRepository logRepository,IAvailabilitySlotRepository availabilitySlotRepository)
+        private readonly IOperationTypeRepository _operationTypeRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
+        public StaffService(IUnitOfWork unitOfWork, IStaffRepository staffRepository, IConfiguration configuration, ISpecializationRepository specializationRepository, IUserRepository userRepository, IEmailService emailService, ILogRepository logRepository,IAvailabilitySlotRepository availabilitySlotRepository,IOperationTypeRepository operationTypeRepository,IAppointmentRepository appointmentRepository)
         {
             _unitOfWork = unitOfWork;
             _staffRepository = staffRepository;
@@ -36,6 +40,8 @@ namespace DDDSample1.Domain.Staffs
             _emailService=emailService;
             _logRepository = logRepository;
             _availabilitySlotRepository = availabilitySlotRepository;
+            _operationTypeRepository = operationTypeRepository;
+            _appointmentRepository= appointmentRepository;
         }
 
         public async Task<List<StaffDto>> GetAllAsync()
@@ -334,5 +340,106 @@ public async Task<bool> RemoveAvailabilitySlotAsync(string staffId, DateTime sta
     return isRemoved;
 
     }
-}
+
+    public async Task<List<StaffDtoOpType>> GetStaffsOperationTypesAsync()
+        {
+            var staffs = await this._staffRepository.GetAllAsync();
+            var operationTypes = await this._operationTypeRepository.GetOperationTypesAsync();
+            var result = new List<StaffDtoOpType>();
+
+            foreach (var staff in staffs)
+            {
+                var matchingOperations = operationTypes
+                    .Where(op => op.Specializations
+                    .Any(ots => ots.Specialization.Id == staff.SpecializationId))
+                    .Select(op => op.Name.Name)
+                    .ToList();
+                ;
+
+                var specialization = await _specializationRepository.GetByIdAsync(staff.SpecializationId);
+                var user = await _userRepository.GetByIdAsync(staff.UserId);
+                var staffDto = new StaffDtoOpType
+                {
+                    StaffId = staff.Id.AsString(),
+                    Role = user.Role.ToString(),
+                    Specialization = specialization.SpecializationName.Name,
+                    OperationTypeNames = matchingOperations
+                };
+
+                result.Add(staffDto);
+            }
+
+            return result;
+        }
+
+         public async Task<List<StaffAvailabilitySlotDto>> GetAllAvailabilitySlots()
+        {
+            var slots = await this._availabilitySlotRepository.GetAllAsync();
+            var result = new List<StaffAvailabilitySlotDto>();
+            foreach (var slot in slots)
+{
+            var slotDto = new StaffAvailabilitySlotDto
+            {
+                AvailabilitySlotDto = new AvailabilitySlotDto
+                {
+                    Id = slot.Id.AsString(),
+                    Start = slot.Start,
+                    End = slot.End,
+                    StaffId = slot.StaffId.AsString()
+                }
+             };
+
+            result.Add(slotDto);
+        }
+
+
+            return result;
+        }
+
+        public async Task<List<StaffAppointmentsDto>> GetStaffAppointmentsAsync() {
+            var staffs = await this._staffRepository.GetAllAsync();
+
+            List<StaffAppointmentsDto> staffAppointmentsList = new List<StaffAppointmentsDto>();
+
+            foreach (var staff in staffs)
+            {
+                var appointmentsStaff = await this._appointmentRepository.GetByStaffIdAsync(staff.Id);
+
+                var appointmentsByDay = appointmentsStaff.GroupBy(a => a.Date.Date.Date).ToList();
+
+                foreach (var appointmentsDay in appointmentsByDay)
+                {
+                    var staffAppointmentsDto = new StaffAppointmentsDto
+                    {
+                        StaffID = staff.Id.AsString(),  
+                        Day = appointmentsDay.Key.ToString("yyyyMMdd"), 
+                        AppointmentsStaff = new List<AppointmentStaffDto>()
+                    };
+
+                    foreach (var appointment in appointmentsDay)
+                    {
+                        var operationType = await _operationTypeRepository.GetByIdAsync(appointment.OperationRequest.OperationTypeId);
+
+                        if (operationType != null)
+                        {
+                            var startMinutes = appointment.Date.Date.Hour * 60 + appointment.Date.Date.Minute;
+                            var operationDuration = operationType.EstimatedTimeDuration.Minutes;
+
+                            var appointmentStaffDto = new AppointmentStaffDto
+                            {
+                                AppointmentId = appointment.Id.AsGuid(), 
+                                StartTime = startMinutes,  
+                                EndTime = startMinutes + operationDuration
+                            };
+
+                            staffAppointmentsDto.AppointmentsStaff.Add(appointmentStaffDto);
+                        }
+                    }
+
+                    staffAppointmentsList.Add(staffAppointmentsDto);
+                }
+            }
+            return staffAppointmentsList;
+        }
+    }
 }
