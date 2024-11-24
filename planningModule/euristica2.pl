@@ -39,7 +39,7 @@ surgery_id(so100007,so3).
 surgery_id(so100008,so2).
 surgery_id(so100009,so2).
 surgery_id(so100010,so2).
-surgery_id(so100011,so4).
+%surgery_id(so100011,so4).
 %surgery_id(so100012,so2).
 %surgery_id(so100013,so2).
  
@@ -57,7 +57,7 @@ assignment_surgery(so100008,d003).
 assignment_surgery(so100009,d002).
 assignment_surgery(so100009,d004).
 assignment_surgery(so100010,d003).
-assignment_surgery(so100011,d001).
+%assignment_surgery(so100011,d001).
 %assignment_surgery(so100012,d001).
 %assignment_surgery(so100013,d004).
  
