@@ -60,10 +60,10 @@
         <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
           <div class="col text-center" style="flex: 2;">Medical Record Number</div>
           <div class="col text-center" style="flex: 1;">Status</div>
-          <div class="col text-center" style="flex: 2;">Name</div>
+          <div class="col text-center" style="flex: 1;">Name</div>
           <div class="col text-center" style="flex: 1;">Birth Date</div>
           <div class="col text-center" style="flex: 1;">Gender</div>
-          <div class="col text-center" style="flex: 2;">Email</div>
+          <div class="col text-center" style="flex: 3;">Email</div>
           <div class="col text-center" style="flex: 1;">Phone Number</div>
           <div class="col text-center" style="flex: 2;">Address</div>
           <div class="col text-center" style="flex: 1;">Medical Record</div>
@@ -84,7 +84,7 @@
             </p-badge>
           </div>
 
-          <div class="col p-2 text-center" style="flex: 2;">
+          <div class="col p-2 text-center" style="flex: 1;">
             {{ patient.fullName || 'Not specified' }}
           </div>
 
@@ -96,7 +96,7 @@
             {{ patient.gender || 'Not specified' }}
           </div>
 
-          <div class="col p-2 text-center" style="flex: 2;">
+          <div class="col p-2 text-center" style="flex: 3;">
             {{ patient.email || 'Not specified' }}
           </div>
 
