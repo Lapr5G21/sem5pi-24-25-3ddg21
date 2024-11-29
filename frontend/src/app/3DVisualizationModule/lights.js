@@ -23,6 +23,7 @@ export default class Lights {
 
         this.object.add(this.object.ambientLight);
 
+
         // Create the first point light and turn on shadows for this light
         this.object.directionalLight1 = new THREE.DirectionalLight(this.directionalLight1.color, this.directionalLight1.intensity);
         this.object.directionalLight1.position.set(this.directionalLight1.position.x, this.directionalLight1.position.y, this.directionalLight1.position.z);
@@ -35,10 +36,23 @@ export default class Lights {
         this.object.directionalLight1.shadow.camera.far = 15.0;
         this.object.add(this.object.directionalLight1);
 
+        //Create the spotlight 
+        this.object.spotLight = new THREE.SpotLight(this.spotLight.color, this.spotLight.intensity);
+        this.object.spotLight.position.set(this.spotLight.position.x, this.spotLight.position.y, this.spotLight.position.z); 
+        this.object.spotLight.castShadow = true;
+
+        // Set up shadow properties for this light
+        this.object.spotLight.shadow.mapSize.width = 512;
+        this.object.spotLight.shadow.mapSize.height = 512;
+        this.object.spotLight.shadow.camera.near = 5.0;
+        this.object.spotLight.shadow.camera.far = 15.0;
+        this.object.add(this.object.spotLight);
+
         // Create the second point light and turn on shadows for this light
         this.object.directionalLight2 = new THREE.DirectionalLight(this.directionalLight2.color, this.directionalLight2.intensity);
         this.object.directionalLight2.position.set(this.directionalLight2.position.x, this.directionalLight2.position.y, this.directionalLight2.position.z);
         this.object.directionalLight2.castShadow = true;
+
 
         // Set up shadow properties for this light
         this.object.directionalLight2.shadow.mapSize.width = 512;

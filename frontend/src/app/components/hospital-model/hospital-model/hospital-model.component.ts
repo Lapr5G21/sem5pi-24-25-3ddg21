@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as THREE from 'three';
 import Orientation from '../../../3DVisualizationModule/orientation.js';
 import HospitalModel from "../../../3DVisualizationModule/hospitalModel.js";
+import * as  TWEEN from '@tweenjs/tween.js';
 
 @Component({
   selector: 'app-hospital-model',
@@ -43,6 +44,8 @@ export class HospitalModelComponent implements OnInit {
         
       );
       this.animate();
+      TWEEN.update();
+      
       
     } catch (error) {
       console.error("Error initializing hospital model:", error);

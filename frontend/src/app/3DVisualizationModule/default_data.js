@@ -27,7 +27,7 @@ export const lightsData = {
     ambientLight: { color: 0xffffff, intensity: 1.0 },
     directionalLight1: { color: 0xffffff, intensity: 1.0, position: new THREE.Vector3(5.0, 10.0, 5.0) },
     directionalLight2: { color: 0xffffff, intensity: 1.0, position: new THREE.Vector3(-5.0, 10.0, -5.0) },
-    spotLight: { color: 0xffffff, intensity: 1.0, distance: 0.0, angle: Math.PI / 3.0, penumbra: 0.0, position: new THREE.Vector3(0.0, 0.0, 0.0), direction: 0.0 } // angle and direction expressed in radians
+    spotLight: { color: 0xffffff, intensity: 1.0, position: new THREE.Vector3(0.0, 0.0, 0.0) } // angle and direction expressed in radians
 }
 
 export const fogData = {

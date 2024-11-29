@@ -1,16 +1,7 @@
-// Thumb Raiser - JPP 2021, 2022, 2023
-// 3D modeling
-// 3D models importing
-// Perspective and orthographic projections
-// Viewing
-// Linear and affine transformations
-// Lighting and materials
-// Shadow projection
-// Fog
-// Texture mapping
-// User interaction
+
 
 import * as THREE from "three";
+import * as TWEEN from "@tweenjs/tween.js";
 import Stats from "three/addons/libs/stats.module.js";
 import Orientation from "./orientation.js";
 import { generalData, mazeData, playerData, lightsData, fogData, cameraData } from "./default_data.js";
@@ -23,137 +14,15 @@ import Camera from "./camera.js";
 import Animations from "./animations.js";
 import UserInterface from "./user_interface.js";
 
-/*
- * generalParameters = {
- *  setDevicePixelRatio: Boolean
- * }
- *
- * mazeParameters = {
- *  url: String,
- *  credits: String,
- *  scale: Vector3
- * }
- *
- * playerParameters = {
- *  url: String,
- *  credits: String,
- *  scale: Vector3,
- *  walkingSpeed: Float,
- *  initialDirection: Float,
- *  turningSpeed: Float,
- *  runningFactor: Float,
- *  keyCodes: { fixedView: String, firstPersonView: String, thirdPersonView: String, topView: String, viewMode: String, userInterface: String, miniMap: String, help: String, statistics: String, run: String, left: String, right: String, backward: String, forward: String, jump: String, yes: String, no: String, wave: String, punch: String, thumbsUp: String }
- * }
- *
- * lightsParameters = {
- *  ambientLight: { color: Integer, intensity: Float },
- *  pointLight1: { color: Integer, intensity: Float, range: Float, position: Vector3 },
- *  pointLight2: { color: Integer, intensity: Float, range: Float, position: Vector3 },
- *  spotLight: { color: Integer, intensity: Float, range: Float, angle: Float, penumbra: Float, position: Vector3, direction: Float }
- * }
- *
- * fogParameters = {
- *  enabled: Boolean,
- *  color: Integer,
- *  near: Float,
- *  far: Float
- * }
- *
- * fixedViewCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * firstPersonViewCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * thirdPersonViewCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * topViewCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * miniMapCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- */
+
 
 export default class HospitalModel {
     constructor(generalParameters, mazeParameters, playerParameters, lightsParameters, fogParameters, fixedViewCameraParameters, firstPersonViewCameraParameters, thirdPersonViewCameraParameters, topViewCameraParameters, miniMapCameraParameters) {
         this.generalParameters = merge({}, generalData, generalParameters);
         this.mazeParameters = merge({}, mazeData, mazeParameters);
         this.playerParameters = merge({}, playerData, playerParameters);
+        this.activeViewCamera = new THREE.PerspectiveCamera();
+        this.miniMapCamera = new THREE.PerspectiveCamera();
         this.lightsParameters = merge({}, lightsData, lightsParameters);
         this.fogParameters = merge({}, fogData, fogParameters);
         this.fixedViewCameraParameters = merge({}, cameraData, fixedViewCameraParameters);
@@ -161,6 +30,7 @@ export default class HospitalModel {
         this.thirdPersonViewCameraParameters = merge({}, cameraData, thirdPersonViewCameraParameters);
         this.topViewCameraParameters = merge({}, cameraData, topViewCameraParameters);
         this.miniMapCameraParameters = merge({}, cameraData, miniMapCameraParameters);
+        
 
         // Create a 2D scene (the viewports frames)
         this.scene2D = new THREE.Scene();
@@ -177,6 +47,8 @@ export default class HospitalModel {
 
         // Create a 3D scene (the game itself)
         this.scene3D = new THREE.Scene();
+        this.scene3D.add(this.activeViewCamera);
+        this.scene3D.add(this.spotlight);
 
         // Create the maze
         this.maze = new Maze(this.mazeParameters);
@@ -186,6 +58,7 @@ export default class HospitalModel {
 
         // Create the lights
         this.lights = new Lights(this.lightsParameters);
+        this.spotlight = this.lights.object.spotLight;
 
         // Create the fog
         this.fog = new Fog(this.fogParameters);
@@ -265,6 +138,7 @@ export default class HospitalModel {
 
         // Register the event handler to be called on key down
         document.addEventListener("keydown", event => this.keyChange(event, true));
+        this.renderer.domElement.addEventListener('click', (event) => this.onDocumentMouseClick(event), false);
 
         // Register the event handler to be called on key release
         document.addEventListener("keyup", event => this.keyChange(event, false));
@@ -301,6 +175,13 @@ export default class HospitalModel {
         this.resetAll.addEventListener("click", event => this.buttonClick(event));
 
         this.activeElement = document.activeElement;
+        this.initEventListeners();
+    }
+
+
+    initEventListeners() {
+        // Adicione um listener para detectar cliques
+        this.renderer.domElement.addEventListener('click', (event) => this.onDocumentMouseClick(event), false);
     }
 
     buildHelpPanel() {
@@ -314,7 +195,6 @@ export default class HospitalModel {
         }
         table.rows[i].cells[0].innerHTML = this.maze.credits + "<br>" + this.player.credits;
     }
-
     displayPanel() {
         this.view.options.selectedIndex = ["fixed", "first-person", "third-person", "top"].indexOf(this.activeViewCamera.view);
         this.projection.options.selectedIndex = ["perspective", "orthographic"].indexOf(this.activeViewCamera.projection);
@@ -323,7 +203,6 @@ export default class HospitalModel {
         this.distance.value = this.activeViewCamera.distance.toFixed(1);
         this.zoom.value = this.activeViewCamera.zoom.toFixed(1);
     }
-
     // Set active view camera
     setActiveViewCamera(camera) {
         this.activeViewCamera = camera;
@@ -337,14 +216,12 @@ export default class HospitalModel {
         this.zoom.max = this.activeViewCamera.zoomMax.toFixed(1);
         this.displayPanel();
     }
-
     arrangeViewports(multipleViews) {
         this.fixedViewCamera.setViewport(multipleViews);
         this.firstPersonViewCamera.setViewport(multipleViews);
         this.thirdPersonViewCamera.setViewport(multipleViews);
         this.topViewCamera.setViewport(multipleViews);
     }
-
     pointerIsOverViewport(pointer, viewport) {
         return (
             pointer.x >= viewport.x &&
@@ -353,6 +230,175 @@ export default class HospitalModel {
             pointer.y < viewport.y + viewport.height);
     }
 
+
+    onDocumentMouseClick(event) {
+        event.preventDefault();
+
+        const mouse = new THREE.Vector2();
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        const raycaster = new THREE.Raycaster();
+        if (!this.activeViewCamera) {
+            console.error('activeViewCamera is not defined');
+            return;
+        }
+        raycaster.setFromCamera(mouse, this.activeViewCamera);
+
+        const intersects = raycaster.intersectObjects(this.scene3D.children, true);
+
+        if (intersects.length > 0) {
+            const intersect = intersects[0];
+            const newRoomPosition = intersect.point;
+            const newRoomTarget = new THREE.Vector3(newRoomPosition.x, newRoomPosition.y + 10, newRoomPosition.z); // Ajuste a altura do holofote conforme necessário
+
+            this.onRoomSelect(newRoomPosition, newRoomTarget);
+        }
+    }
+
+    getRoomIdFromMiniMap(mousePosition) {
+        // Supondo que você tenha uma estrutura de dados que mapeia posições no mini-mapa para IDs de salas
+        // Aqui está um exemplo básico de como isso pode ser implementado
+
+        // Converta a posição do mouse para coordenadas do mini-mapa
+        const miniMapBounds = this.miniMapCamera.getViewport();
+        const x = mousePosition.x - miniMapBounds.x;
+        const y = mousePosition.y - miniMapBounds.y;
+
+        // Verifique em qual sala o clique ocorreu
+        for (const room of this.rooms) {
+            if (x >= room.minX && x <= room.maxX && y >= room.minY && y <= room.maxY) {
+                return room.id;
+            }
+        }
+
+        return null; // Retorne null se nenhuma sala foi encontrada
+    }
+
+
+    moveCameraAndSpotlight(camera, spotlight, newPosition, newTarget, duration = 2000) {
+        if (!camera || !spotlight || !newPosition || !newTarget) {
+            console.error('Invalid parameters passed to moveCameraAndSpotlight');
+            return;
+        }
+
+        const cameraStart = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+        const cameraEnd = { x: newPosition.x, y: newPosition.y, z: newPosition.z };
+
+        const spotlightStart = { x: spotlight.position.x, y: spotlight.position.y, z: spotlight.position.z };
+        const spotlightEnd = { x: newTarget.x, y: newTarget.y, z: newTarget.z };
+
+        new TWEEN.Tween(cameraStart)
+            .to(cameraEnd, duration)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(() => {
+                camera.position.set(cameraStart.x, cameraStart.y, cameraStart.z);
+            })
+            .start();
+
+        new TWEEN.Tween(spotlightStart)
+            .to(spotlightEnd, duration)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(() => {
+                spotlight.position.set(spotlightStart.x, spotlightStart.y, spotlightStart.z);
+            })
+            .start();
+    }
+
+    moveToRoom(roomId) {
+        const roomCenters = {
+            1: { x: 2, y: 3, z: 2 },
+            2: { x: 2, y: 3, z: 8 },
+            3: { x: 8, y: 3, z: 2 },
+            4: { x: 8, y: 3, z: 8 }
+        };
+    
+        const targetPosition = roomCenters[roomId];
+        if (!targetPosition) return;
+    
+        const cameraStartPosition = this.camera.position.clone(); // Posição atual da câmera
+    
+        // Defina a duração e outros parâmetros da animação
+        const duration = 1.5; // 1.5 segundos de animação
+    
+        // Criação de tween.js para animar a posição da câmera
+        new TWEEN.Tween(cameraStartPosition)
+            .to(targetPosition, duration * 1000) // Anima até a posição do centro da sala
+            .easing(TWEEN.Easing.Quadratic.Out) // Efeito suave
+            .onUpdate(() => {
+                this.camera.position.copy(cameraStartPosition);
+            })
+            .start();
+    }
+
+    onRoomSelect(newRoomPosition, newRoomTarget) {
+        const camera = this.activeViewCamera; // Supondo que você tenha uma referência à câmera ativa
+        const spotlight = this.spotlight; // Supondo que você tenha uma referência ao holofote
+
+        if (!camera || !spotlight) {
+            console.error('Camera or spotlight is not defined');
+            return;
+        }
+
+        if (!newRoomPosition || !newRoomTarget) {
+            console.error('newRoomPosition or newRoomTarget is not defined');
+            return;
+        }
+
+        this.moveCameraAndSpotlight(camera, spotlight, newRoomPosition, newRoomTarget);
+    }
+
+    render() {
+        requestAnimationFrame(() => this.render());
+
+        TWEEN.update();
+
+        const deltaT = this.clock.getDelta();
+        this.animations.update(deltaT);
+
+        // Atualizar parâmetros das câmeras
+        this.firstPersonViewCamera.playerDirection = this.player.direction;
+        this.thirdPersonViewCamera.playerDirection = this.player.direction;
+        this.topViewCamera.playerDirection = this.player.direction;
+
+        // Atualizar estatísticas
+        this.statistics.update();
+
+        // Renderizar viewport principal
+        this.renderer.clear();
+        if (this.fog.enabled) {
+            this.scene3D.fog = this.fog.object;
+        } else {
+            this.scene3D.fog = null;
+        }
+
+        let cameras;
+        if (this.multipleViewsCheckBox.checked) {
+            cameras = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera];
+        } else {
+            cameras = [this.activeViewCamera];
+        }
+
+        for (const camera of cameras) {
+            this.player.object.visible = (camera != this.firstPersonViewCamera);
+            const viewport = camera.getViewport();
+            this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+            this.renderer.render(this.scene3D, camera);
+            this.renderer.render(this.scene2D, this.camera2D);
+            this.renderer.clearDepth();
+        }
+
+        // Renderizar viewport secundário (mini-mapa)
+        if (this.miniMapCheckBox.checked) {
+            this.scene3D.fog = null;
+            this.player.object.visible = true;
+            const viewport = this.miniMapCamera.getViewport();
+            this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+            this.renderer.render(this.scene3D, this.miniMapCamera);
+            this.renderer.render(this.scene2D, this.camera2D);
+        }
+    }
+    
     getPointedViewport(pointer) {
         let viewport;
         // Check if the pointer is over the mini-map camera viewport
@@ -379,33 +425,28 @@ export default class HospitalModel {
         // No camera viewport is being pointed
         return "none";
     }
-
+    
     setViewMode(multipleViews) { // Single-view mode: false; multiple-views mode: true
         this.multipleViewsCheckBox.checked = multipleViews;
         this.arrangeViewports(this.multipleViewsCheckBox.checked);
     }
-
     setUserInterfaceVisibility(visible) {
         this.userInterfaceCheckBox.checked = visible;
         this.viewsPanel.style.visibility = visible ? "visible" : "hidden";
         this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
         this.userInterface.setVisibility(visible);
     }
-
     setMiniMapVisibility(visible) { // Hidden: false; visible: true
         this.miniMapCheckBox.checked = visible;
     }
-
     setHelpVisibility(visible) { // Hidden: false; visible: true
         this.helpCheckBox.checked = visible;
         this.helpPanel.style.visibility = visible ? "visible" : "hidden";
     }
-
     setStatisticsVisibility(visible) { // Hidden: false; visible: true
         this.statisticsCheckBox.checked = visible;
         this.statistics.dom.style.visibility = visible ? "visible" : "hidden";
     }
-
     windowResize() {
         this.fixedViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
         this.firstPersonViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
@@ -414,7 +455,6 @@ export default class HospitalModel {
         this.miniMapCamera.updateWindowSize(window.innerWidth, window.innerHeight);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
-
     keyChange(event, state) {
         // Allow digit and arrow keys to be used when entering numbers
         if (["horizontal", "vertical", "distance", "zoom"].indexOf(event.target.id) < 0) {
@@ -487,31 +527,89 @@ export default class HospitalModel {
             }
         }
     }
-
     mouseDown(event) {
         if (event.buttons == 1 || event.buttons == 2) { // Primary or secondary button down
-            // Store current mouse position in window coordinates (mouse coordinate system: origin in the top-left corner; window coordinate system: origin in the bottom-left corner)
+            // Store current mouse position in window coordinates
             this.mousePosition = new THREE.Vector2(event.clientX, window.innerHeight - event.clientY - 1);
             // Select the camera whose view is being pointed
             const cameraView = this.getPointedViewport(this.mousePosition);
+    
             if (cameraView != "none") {
                 if (cameraView == "mini-map") { // Mini-map camera selected
                     if (event.buttons == 1) { // Primary button down
-                        this.dragMiniMap = true;
+                        // Detect room click on mini-map
+                        const roomId = this.getRoomIdFromMiniMap(this.mousePosition);
+                        if (roomId) {
+                            this.moveToRoom(roomId); // Move camera to the room
+                        } else {
+                            this.dragMiniMap = true; // Enable dragging if no room is clicked
+                        }
                     }
-                }
-                else { // One of the remaining cameras selected
+                } else { // One of the remaining cameras selected
                     const cameraIndex = ["fixed", "first-person", "third-person", "top"].indexOf(cameraView);
                     this.view.options.selectedIndex = cameraIndex;
                     this.setActiveViewCamera([this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera][cameraIndex]);
                     if (event.buttons == 1) { // Primary button down
                         this.changeCameraDistance = true;
-                    }
-                    else { // Secondary button down
+                    } else { // Secondary button down
                         this.changeCameraOrientation = true;
                     }
                 }
             }
+        }
+    }
+
+    getRoomIdFromPosition(position) {
+        const roomCenters = {
+            1: { x: 2, z: 2 },
+            2: { x: 2, z: 8 },
+            3: { x: 8, z: 2 },
+            4: { x: 8, z: 8 }
+        };
+    
+        // Iterar sobre os centros das salas e verificar se a posição clicada está perto o suficiente
+        for (const [id, center] of Object.entries(roomCenters)) {
+            const distance = Math.sqrt((center.x - position.x) ** 2 + (center.z - position.z) ** 2);
+            if (distance < 1.5) { // Tolerância para detectar o clique dentro da sala
+                return parseInt(id);
+            }
+        }
+    
+        return null; // Não clicou em uma sala
+    }
+
+    moveToRoom(roomId) {
+        // Coordenadas das salas
+        const roomCenters = {
+            1: { x: 2, z: 2 },
+            2: { x: 2, z: 8 },
+            3: { x: 8, z: 2 },
+            4: { x: 8, z: 8 }
+        };
+    
+        // Coordenadas atuais da câmera e do spotlight
+        const currentCameraPosition = { x: this.activeViewCamera.position.x, z: this.activeViewCamera.position.z };
+        const targetPosition = roomCenters[roomId];
+        
+        // Câmera - Animação de Transição
+        new TWEEN.Tween(currentCameraPosition)
+            .to({ x: targetPosition.x, z: targetPosition.z }, 1000) // 1000 ms (1 segundo)
+            .easing(TWEEN.Easing.Quadratic.InOut) // Transição suave
+            .onUpdate(() => {
+                this.activeViewCamera.setPosition(new THREE.Vector3(currentCameraPosition.x, this.activeViewCamera.position.y, currentCameraPosition.z));
+            })
+            .start();
+    
+        // Spotlight (se aplicável)
+        if (this.spotlight) {
+            const currentSpotlightPosition = { x: this.spotlight.position.x, z: this.spotlight.position.z };
+            new TWEEN.Tween(currentSpotlightPosition)
+                .to({ x: targetPosition.x, z: targetPosition.z }, 1000)
+                .easing(TWEEN.Easing.Quadratic.InOut)
+                .onUpdate(() => {
+                    this.spotlight.position.set(currentSpotlightPosition.x, this.spotlight.position.y, currentSpotlightPosition.z);
+                })
+                .start();
         }
     }
 
@@ -544,7 +642,6 @@ export default class HospitalModel {
             }
         }
     }
-
     mouseUp(event) {
         // Reset mouse move action
         this.dragMiniMap = false;
@@ -630,7 +727,6 @@ export default class HospitalModel {
         }
         this.displayPanel();
     }
-
     finalSequence() {
         // Disable the fog
         this.fog.enabled = false;
@@ -649,7 +745,6 @@ export default class HospitalModel {
     collision(position) {
         return this.maze.distanceToWestWall(position) < this.player.radius || this.maze.distanceToEastWall(position) < this.player.radius || this.maze.distanceToNorthWall(position) < this.player.radius || this.maze.distanceToSouthWall(position) < this.player.radius;
     }
-
     update() {
         if (!this.gameRunning) {
             if (this.maze.loaded && this.player.loaded) { // If all resources have been loaded
@@ -679,76 +774,6 @@ export default class HospitalModel {
             // Update the model animations
             const deltaT = this.clock.getDelta();
             this.animations.update(deltaT);
-
-            // Update the player
-            /*
-            if (!this.animations.actionInProgress) {
-                // Check if the player found the exit
-                if (this.maze.foundExit(this.player.position)) {
-                    this.finalSequence();
-                }
-                else {
-                    let coveredDistance = this.player.walkingSpeed * deltaT;
-                    let directionIncrement = this.player.turningSpeed * deltaT;
-                    if (this.player.keyStates.run) {
-                        coveredDistance *= this.player.runningFactor;
-                        directionIncrement *= this.player.runningFactor;
-                    }
-                    if (this.player.keyStates.left) {
-                        this.player.direction += directionIncrement;
-                    }
-                    else if (this.player.keyStates.right) {
-                        this.player.direction -= directionIncrement;
-                    }
-                    const direction = THREE.MathUtils.degToRad(this.player.direction);
-                    if (this.player.keyStates.backward) {
-                        const newPosition = new THREE.Vector3(-coveredDistance * Math.sin(direction), 0.0, -coveredDistance * Math.cos(direction)).add(this.player.position);
-                        if (this.collision(newPosition)) {
-                            this.animations.fadeToAction("Death", 0.2);
-                        }
-                        else {
-                            this.animations.fadeToAction(this.player.keyStates.run ? "Running" : "Walking", 0.2);
-                            this.player.position = newPosition;
-                        }
-                    }
-                    else if (this.player.keyStates.forward) {
-                        const newPosition = new THREE.Vector3(coveredDistance * Math.sin(direction), 0.0, coveredDistance * Math.cos(direction)).add(this.player.position);
-                        if (this.collision(newPosition)) {
-                            this.animations.fadeToAction("Death", 0.2);
-                        }
-                        else {
-                            this.animations.fadeToAction(this.player.keyStates.run ? "Running" : "Walking", 0.2);
-                            this.player.position = newPosition;
-                        }
-                    }
-                    else if (this.player.keyStates.jump) {
-                        this.animations.fadeToAction("Jump", 0.2);
-                    }
-                    else if (this.player.keyStates.yes) {
-                        this.animations.fadeToAction("Yes", 0.2);
-                    }
-                    else if (this.player.keyStates.no) {
-                        this.animations.fadeToAction("No", 0.2);
-                    }
-                    else if (this.player.keyStates.wave) {
-                        this.animations.fadeToAction("Wave", 0.2);
-                    }
-                    else if (this.player.keyStates.punch) {
-                        this.animations.fadeToAction("Punch", 0.2);
-                    }
-                    else if (this.player.keyStates.thumbsUp) {
-                        this.animations.fadeToAction("ThumbsUp", 0.2);
-                    }
-                    else {
-                        this.animations.fadeToAction("Idle", this.animations.activeName != "Death" ? 0.2 : 0.6);
-                    }
-                    this.player.object.position.set(this.player.position.x, this.player.position.y, this.player.position.z);
-                    this.player.object.rotation.y = direction - this.player.initialDirection;
-                }
-                    
-            }
-                */
-
             // Update first-person, third-person and top view cameras parameters (player direction and target)
             this.firstPersonViewCamera.playerDirection = this.player.direction;
             this.thirdPersonViewCamera.playerDirection = this.player.direction;
@@ -757,13 +782,11 @@ export default class HospitalModel {
             //this.firstPersonViewCamera.setTarget(target);
             //this.thirdPersonViewCamera.setTarget(target);
             //this.topViewCamera.setTarget(target);
-
             // Update statistics
             this.statistics.update();
-
             // Render primary viewport(s)
+            
             this.renderer.clear();
-
             if (this.fog.enabled) {
                 this.scene3D.fog = this.fog.object;
             }
@@ -785,7 +808,6 @@ export default class HospitalModel {
                 this.renderer.render(this.scene2D, this.camera2D);
                 this.renderer.clearDepth();
             }
-
             // Render secondary viewport (mini-map)
             if (this.miniMapCheckBox.checked) {
                 this.scene3D.fog = null;
@@ -797,4 +819,5 @@ export default class HospitalModel {
             }
         }
     }
+
 }

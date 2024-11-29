@@ -246,4 +246,5 @@ export default class Camera {
     updateZoom(zoomIncrement) {
         this.setZoom(this.zoom + zoomIncrement);
     }
+    
 }
