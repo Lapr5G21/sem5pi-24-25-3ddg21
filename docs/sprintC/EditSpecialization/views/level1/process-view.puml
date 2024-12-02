@@ -1,0 +1,26 @@
+@startuml
+
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system>>
+
+activate Admin
+
+    Admin -> SYS : asks to update a specialization
+    
+    activate SYS
+
+        SYS --> Admin : asks to edit data
+
+    deactivate SYS
+
+    Admin -> SYS : edit data
+
+    activate SYS 
+        SYS --> Admin: shows edited data
+        
+    deactivate SYS
+
+deactivate Admin
+
+
+@enduml
