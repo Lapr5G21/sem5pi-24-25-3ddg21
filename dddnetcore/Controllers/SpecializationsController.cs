@@ -21,6 +21,7 @@ namespace DDDSample1.Controllers
 
         // GET: api/specializations
         [HttpGet]
+        [Authorize(Policy="AdminRole")]
         public async Task<ActionResult<IEnumerable<SpecializationDto>>> GetAll()
         {
             var specializations = await _service.GetAllAsync();
@@ -28,6 +29,7 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/specializations/{id}
+        [Authorize(Policy="AdminRole")]
         [HttpGet("{id}")]
         public async Task<ActionResult<SpecializationDto>> GetById(string id)
         {
@@ -56,6 +58,7 @@ namespace DDDSample1.Controllers
         }
 
         // PUT: api/specializations/{id}
+        [Authorize(Policy="AdminRole")]
         [HttpPut("{id}")]
         public async Task<ActionResult<SpecializationDto>> Update(string id, [FromBody] SpecializationDto dto)
         {
@@ -81,22 +84,9 @@ namespace DDDSample1.Controllers
             }
         }
 
-        // DELETE: api/specializations/{id}
+        // DELETE: api/operationTypeSpecializations/{id}
+        [Authorize(Policy="AdminRole")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<SpecializationDto>> SoftDelete(string id)
-        {
-            var specialization = await _service.InactivateAsync(new SpecializationId(id));
-
-            if (specialization == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(specialization);
-        }
-
-        // DELETE: api/operationTypeSpecializations/{id}/hard
-        [HttpDelete("{id}/hard")]
         public async Task<ActionResult<SpecializationDto>> HardDelete(string id)
         {
             try

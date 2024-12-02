@@ -12,11 +12,13 @@ import { CommonModule } from '@angular/common';
 import { ProfileMenuComponent } from './profile-menu-component/profile-menu-component.component';
 import { ListOperationTypesComponent } from './operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 import { HospitalModelComponent } from '../hospital-model/hospital-model/hospital-model.component';
+import { CreateSpecializationsComponent } from './specialization/create-specializations/create-specializations.component';
+import { ListSpecializationsComponent } from './specialization/list-specializations/list-specializations.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, CreatePatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent,HospitalModelComponent],
+  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, CreatePatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent,HospitalModelComponent,CreateSpecializationsComponent,ListSpecializationsComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -27,6 +29,7 @@ export class AdminDashboardComponent implements OnInit {
   showStaffsList : boolean = false;
   showPatientsList : boolean = false;
   showHospitalModel: boolean = false;
+  showSpecializationList: boolean = false;
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
@@ -36,6 +39,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent;
+  @ViewChild(CreateSpecializationsComponent) createSpecializationsComponent!: CreateSpecializationsComponent;
 
   constructor(private router: Router) {}
 
@@ -48,6 +52,7 @@ export class AdminDashboardComponent implements OnInit {
           this.showOperationTypesList=false;
         this.showStaffsList=false;
         this.showPatientsList=false;
+        this.showSpecializationList=false;
         }
       },
       {
@@ -64,6 +69,28 @@ export class AdminDashboardComponent implements OnInit {
             icon: 'pi pi-list',
             command: () => {
               this.showOperationTypesList = true;
+              this.showStaffsList = false;
+              this.showPatientsList = false;
+              this.showSpecializationList = false;
+            }          
+          }
+        ]
+      },
+      {
+        label: 'Specializations',
+        icon: '',
+        items: [
+          {
+            label: 'Create Specialization',
+            icon: 'pi pi-check',
+            command: () => this.createSpecialization()
+          },
+          {
+            label: 'List Specializations',
+            icon: 'pi pi-list',
+            command: () => {
+              this.showSpecializationList = true;
+              this.showOperationTypesList = false;
               this.showStaffsList = false;
               this.showPatientsList = false;
             }          
@@ -86,6 +113,7 @@ export class AdminDashboardComponent implements OnInit {
               this.showStaffsList = true;
               this.showOperationTypesList=false;
               this.showPatientsList=false;
+              this.showSpecializationList = false;
             }   
           }
         ]
@@ -106,6 +134,7 @@ export class AdminDashboardComponent implements OnInit {
               this.showPatientsList = true;
               this.showOperationTypesList=false;
               this.showStaffsList=false;
+              this.showSpecializationList = false;
             }
           }
         ]
@@ -152,6 +181,10 @@ export class AdminDashboardComponent implements OnInit {
 
   createOperationType() {
     this.createOperationTypesComponent.showDialog(); 
+  }
+
+  createSpecialization() {
+    this.createSpecializationsComponent.showDialog(); 
   }
 
   listOperationTypes() {

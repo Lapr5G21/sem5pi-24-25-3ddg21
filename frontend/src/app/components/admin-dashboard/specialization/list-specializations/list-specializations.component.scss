@@ -1,0 +1,13 @@
+/* Add this to your component's stylesheet */
+.disable-button {
+    background-color: red;
+    border-color: red;
+    color: white;
+    margin-left: 10px; /* To add space between the buttons */
+  }
+  
+  .disable-button:hover {
+    background-color: darkred; /* Darker red on hover */
+    border-color: darkred;
+  }
+  

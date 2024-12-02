@@ -305,32 +305,6 @@ export default class HospitalModel {
             .start();
     }
 
-    moveToRoom(roomId) {
-        const roomCenters = {
-            1: { x: 2, y: 3, z: 2 },
-            2: { x: 2, y: 3, z: 8 },
-            3: { x: 8, y: 3, z: 2 },
-            4: { x: 8, y: 3, z: 8 }
-        };
-    
-        const targetPosition = roomCenters[roomId];
-        if (!targetPosition) return;
-    
-        const cameraStartPosition = this.camera.position.clone(); // Posição atual da câmera
-    
-        // Defina a duração e outros parâmetros da animação
-        const duration = 1.5; // 1.5 segundos de animação
-    
-        // Criação de tween.js para animar a posição da câmera
-        new TWEEN.Tween(cameraStartPosition)
-            .to(targetPosition, duration * 1000) // Anima até a posição do centro da sala
-            .easing(TWEEN.Easing.Quadratic.Out) // Efeito suave
-            .onUpdate(() => {
-                this.camera.position.copy(cameraStartPosition);
-            })
-            .start();
-    }
-
     onRoomSelect(newRoomPosition, newRoomTarget) {
         const camera = this.activeViewCamera; // Supondo que você tenha uma referência à câmera ativa
         const spotlight = this.spotlight; // Supondo que você tenha uma referência ao holofote

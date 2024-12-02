@@ -24,3 +24,9 @@ export class Specialization {
         public specializationName: string
     ) {}
 }
+
+export class CreatingSpecializationDto{
+    constructor(
+        public specializationName : string
+    ){}
+}

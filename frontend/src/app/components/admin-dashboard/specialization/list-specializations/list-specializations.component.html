@@ -1,0 +1,30 @@
+<p-table [value]="specializations">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-specialization>
+      <tr>
+        <td>{{ specialization.specializationName }}</td>
+        <td>
+          <button pButton icon="pi pi-pencil" label="Edit" (click)="onEdit(specialization)" style="margin-right: 10px;"></button>
+          <button pButton icon="pi pi-times" label="Remove" (click)="confirmRemove(specialization.id)" class="disable-button"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  
+  <p-dialog header="Edit Specialization" [(visible)]="editDialogVisible" [modal]="true">
+    <div class="p-field">
+      <label for="specializationName">Specialization Name</label>
+      <input pInputText id="specializationName" [(ngModel)]="selectedSpecialization.specializationName" />
+    </div>
+    <p-footer>
+      <button pButton label="Save" icon="pi pi-check" (click)="saveSpecializationInfo(selectedSpecialization)"></button>
+      <button pButton label="Cancel" icon="pi pi-times" (click)="editDialogVisible = false"></button>
+    </p-footer>
+  </p-dialog>
+  <p-confirmDialog></p-confirmDialog>
+  <p-toast></p-toast>

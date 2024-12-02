@@ -17,6 +17,7 @@ import { ConfirmationService } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { CheckboxModule } from 'primeng/checkbox';
+import { AdminDashboardComponent } from '../../../admin-dashboard.component';
 
 
 
@@ -38,7 +39,7 @@ import { CheckboxModule } from 'primeng/checkbox';
     FloatLabelModule,
     ConfirmDialogModule,
     MultiSelectModule,
-    CheckboxModule
+    CheckboxModule,
   ],
   providers: [ConfirmationService],
   templateUrl: './list-operation-types.component.html',

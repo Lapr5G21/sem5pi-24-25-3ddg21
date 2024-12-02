@@ -24,7 +24,7 @@ export const routes: Routes = [
 
     // Admin Dashboard 
     { path: 'adminDashboard/home', component: AdminDashboardComponent },
-    { path: 'adminDashboard/operationtypes/create', component: CreateOperationTypesComponent },
+    { path: 'adminDashboard/operationtypes', component: ListOperationTypesComponent },
     { path: 'adminDashboard/operationtypes/list', component: ListOperationTypesComponent },
     { path: 'adminDashboard/staffs/create', component: CreateStaffsComponent },
     { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },

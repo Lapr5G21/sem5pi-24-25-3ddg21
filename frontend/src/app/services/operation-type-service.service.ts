@@ -12,11 +12,19 @@ export class OperationTypeService {
     constructor(private http: HttpClient) {}
 
     getSpecializations(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/specializations`);
+      const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+          });
+        return this.http.get<any[]>(`${this.apiUrl}/specializations`,{headers});
     }
 
     getSpecializationById(id: string): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/specializations/${id}`);
+      const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+          });
+        return this.http.get<any>(`${this.apiUrl}/specializations/${id}`,{headers});
     }
 
     getOperationTypes(): Observable<any[]> {
