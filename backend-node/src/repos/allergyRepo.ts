@@ -8,7 +8,7 @@ import { RoleMap } from "../mappers/RoleMap";
 import { Document, FilterQuery, Model } from 'mongoose';
 import { IRolePersistence } from '../dataschema/IRolePersistence';
 import { IAllergyPersistence } from '../dataschema/IAllergyPersistence';
-import { Allergy } from '../domain/Allergies/Allergy';
+import { Allergy } from '../domain/Allergies/allergy';
 import { AllergyId } from '../domain/Allergies/allergyId';
 import { AllergyMap } from '../mappers/AllergyMap';
 import IAllergyRepo from '../services/IRepos/IAllergyRepo';
