@@ -4,6 +4,7 @@ import mongooseLoader from './mongoose';
 import Logger from './logger';
 
 import config from '../../config';
+import path from 'path';
 
 export default async ({ expressApp }) => {
   const mongoConnection = await mongooseLoader();
@@ -21,6 +22,11 @@ export default async ({ expressApp }) => {
     schema: '../persistence/schemas/roleSchema',
   };
 
+  const allergySchema = {
+    name: 'allergySchema',
+    schema: '../persistence/schemas/allergySchema',
+  };
+
   const roleController = {
     name: config.controllers.role.name,
     path: config.controllers.role.path
@@ -36,26 +42,48 @@ export default async ({ expressApp }) => {
     path: config.repos.user.path
   }
 
+  const allergyRepo = {
+    name: config.repos.allergy.name,
+    path: config.repos.allergy.path
+  }
+
   const roleService = {
     name: config.services.role.name,
     path: config.services.role.path
   }
 
+ const allergyController = {
+    name: config.controllers.allergy.name,
+    path: config.controllers.allergy.path
+ }
+
+
+  const allergyService = {
+    name: config.services.allergy.name,
+    path: config.services.allergy.path
+  }
+
+
   await dependencyInjectorLoader({
     mongoConnection,
     schemas: [
       userSchema,
-      roleSchema
+      roleSchema,
+      allergySchema
     ],
     controllers: [
-      roleController
+      roleController,
+      allergyController
+
     ],
     repos: [
       roleRepo,
-      userRepo
+      userRepo,
+      allergyRepo
     ],
     services: [
-      roleService
+      roleService,
+      allergyService
     ]
   });
   Logger.info('✌️ Schemas, Controllers, Repositories, Services, etc. loaded');
