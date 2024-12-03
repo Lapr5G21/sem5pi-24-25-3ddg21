@@ -3,10 +3,16 @@ import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
 import { Result } from "../../core/logic/Result";
 import IAllergyDTO from "../../dto/IAllergyDTO";
 import { AllergyId } from "./allergyId";
+import { AllergyCode } from "./allergyCode";
+import { AllergyDescription } from "./allergyDescription";
+import { Guard } from "../../core/logic/Guard";
+
 
 
 interface AllergyProps {
   name: string;
+  code: AllergyCode;
+  description: AllergyDescription;
 }
 
 export class Allergy extends AggregateRoot<AllergyProps> {
@@ -26,23 +32,45 @@ export class Allergy extends AggregateRoot<AllergyProps> {
       set name ( value: string) {
         this.props.name = value;
       }
+
+      get code (): AllergyCode {
+        return this.props.code;
+      }
+
+      set code ( value: AllergyCode) {
+        this.props.code = value;
+      }
+
+      get description (): AllergyDescription {
+        return this.props.description;
+      }
+
+      set description ( value: AllergyDescription) {
+        this.props.description = value;
+      }
+
       private constructor (props: AllergyProps, id?: UniqueEntityID) {
         super(props, id);
       }
     
-      public static create (AllergyDTO: IAllergyDTO, id?: UniqueEntityID): Result<Allergy> {
-        const name = AllergyDTO.name;
+      public static create (props: AllergyProps, id?: UniqueEntityID): Result<Allergy> {
+
+        const guardedProps = [
+          { argument: props.name, argumentName: 'name' },
+          { argument: props.code, argumentName: 'code' },
+          { argument: props.description, argumentName: 'description' }
+        ];
+
+        const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
     
-        if (!!name === false || name.length === 0) {
-          return Result.fail<Allergy>('Must provide an allergy name')
-        } else {
-          const allergy = new Allergy({ name: name }, id);
-          return Result.ok<Allergy>( allergy )
+        if (!guardResult.succeeded) {
+          return Result.fail<Allergy>(guardResult.message)
+        }   else {
+          const allergy = new Allergy({
+            ...props
+          }, id);
+    
+          return Result.ok<Allergy>(allergy);
         }
       }
-
-
-
-
-
-}
+    }

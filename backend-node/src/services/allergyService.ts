@@ -60,6 +60,8 @@ export default class AllergyService implements IAllergyService {
       }
       else {
         allergy.name = allergyDTO.name;
+        allergy.code = allergyDTO.code;
+        allergy.description = allergyDTO.description;
         await this.allergyRepo.save(allergy);
 
         const allergyDTOResult = AllergyMap.toDTO( allergy ) as IAllergyDTO;
