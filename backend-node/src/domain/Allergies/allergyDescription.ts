@@ -9,11 +9,11 @@ interface AllergyDescriptionProps{
 
 export class AllergyDescription extends ValueObject<AllergyDescriptionProps> {
 
-    get description (): string {
+    get value (): string {
         return this.props.description;
     }   
 
-    private constructor (props: AllergyDescriptionProps) {
+    public constructor (props: AllergyDescriptionProps) {
         super(props);
     }
 

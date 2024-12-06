@@ -14,6 +14,9 @@ export default class AllergyRepo implements IAllergyRepo {
     @Inject('allergySchema') private allergySchema : Model<IAllergyPersistence & Document>,
   ) {}
 
+
+  
+
   private createBaseQuery (): any {
     return {
       where: {},
@@ -33,23 +36,33 @@ export default class AllergyRepo implements IAllergyRepo {
   public async save (allergy: Allergy): Promise<Allergy> {
     const query = { domainId: allergy.id.toString()}; 
 
-    const allergyDocument = await this.allergySchema.findOne( query );
+    let allergyDocument = await this.allergySchema.findOne( query );
 
     try {
       if (allergyDocument === null ) {
         const rawAllergy: any = AllergyMap.toPersistence(allergy);
-
         const allergyCreated = await this.allergySchema.create(rawAllergy);
 
         return AllergyMap.toDomain(allergyCreated);
       } else {
-        allergyDocument.name = allergy.name;
-        await allergyDocument.save();
+        allergyDocument.name = allergy.name.toString();
+        allergyDocument.code = allergy.code.toString();
+        allergyDocument.description = allergy.description.toString();
 
-        return allergy;
+        await allergyDocument.save();
+        return AllergyMap.toDomain(allergyDocument);
       }
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async getAll(): Promise<Allergy[]> {
+    try {
+      const allergyDocuments = await this.allergySchema.find({}).exec();
+      return allergyDocuments.map(doc => AllergyMap.toDomain(doc)); 
+    } catch (err) {
+      throw new Error(`Error fetching allergies: ${err.message}`);
     }
   }
 

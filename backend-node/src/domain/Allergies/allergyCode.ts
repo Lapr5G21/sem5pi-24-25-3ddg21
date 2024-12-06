@@ -13,7 +13,7 @@ export class AllergyCode extends ValueObject<AllergyCodeProps> {
         return this.props.code;
     }   
 
-    private constructor (props: AllergyCodeProps) {
+    public constructor (props: AllergyCodeProps) {
         super(props);
     }
 

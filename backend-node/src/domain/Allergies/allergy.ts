@@ -1,16 +1,16 @@
 import { AggregateRoot } from "../../core/domain/AggregateRoot";
 import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
 import { Result } from "../../core/logic/Result";
-import IAllergyDTO from "../../dto/IAllergyDTO";
 import { AllergyId } from "./allergyId";
 import { AllergyCode } from "./allergyCode";
 import { AllergyDescription } from "./allergyDescription";
 import { Guard } from "../../core/logic/Guard";
-
+import { AllergyName } from "./allergyName";
+import IAllergyDTO from "../../dto/IAllergyDTO";
 
 
 interface AllergyProps {
-  name: string;
+  name: AllergyName;
   code: AllergyCode;
   description: AllergyDescription;
 }
@@ -25,11 +25,11 @@ export class Allergy extends AggregateRoot<AllergyProps> {
         return new AllergyId(this.allergyId.toValue());
       }
     
-      get name (): string {
+      get name (): AllergyName {
         return this.props.name;
       }
     
-      set name ( value: string) {
+      set name ( value: AllergyName) {
         this.props.name = value;
       }
 
@@ -58,14 +58,15 @@ export class Allergy extends AggregateRoot<AllergyProps> {
         const guardedProps = [
           { argument: props.name, argumentName: 'name' },
           { argument: props.code, argumentName: 'code' },
-          { argument: props.description, argumentName: 'description' }
+          { argument: props.description, argumentName: 'description' },
         ];
-
+    
         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
     
         if (!guardResult.succeeded) {
           return Result.fail<Allergy>(guardResult.message)
-        }   else {
+        }     
+        else {
           const allergy = new Allergy({
             ...props
           }, id);
@@ -73,4 +74,4 @@ export class Allergy extends AggregateRoot<AllergyProps> {
           return Result.ok<Allergy>(allergy);
         }
       }
-    }
+}

@@ -4,17 +4,19 @@ import { Document, Model } from 'mongoose';
 import { IRolePersistence } from '../dataschema/IRolePersistence';
 
 import { UniqueEntityID } from "../core/domain/UniqueEntityID";
-import { Allergy } from "../domain/Allergies/Allergy";
+import { Allergy } from "../domain/Allergies/allergy";
 import IAllergyDTO from "../dto/IAllergyDTO";
 import { IAllergyPersistence } from "../dataschema/IAllergyPersistence";
 
 export class AllergyMap extends Mapper<Allergy> {
   
-  public static toDTO( allergy: Allergy): IAllergyDTO {
+  public static toDTO( allergy: any): IAllergyDTO {
     return {
-      id: allergy.id.toString(),
+      id: allergy.id,
       name: allergy.name,
-    } as IAllergyDTO;
+      code:allergy.code,
+      description: allergy.description
+    };
   }
 
   public static toDomain (allergy: any | Model<IAllergyPersistence & Document> ): Allergy {
@@ -30,8 +32,9 @@ export class AllergyMap extends Mapper<Allergy> {
 
   public static toPersistence (allergy: Allergy): any {
     return {
-      domainId: allergy.id.toString(),
-      name: allergy.name
-    }
+      name: allergy.name.value,
+      code: allergy.code.value,
+      description: allergy.description.value
+    };
   }
 }
