@@ -6,14 +6,23 @@ import { Container } from 'typedi';
 import config from "../../../config";
 import IAllergyController from '../../controllers/IControllers/IAllergyController';
 
+
 const route = Router();
 
 export default (app: Router) => {
   app.use('/allergies', route);
 
-  const ctrl = Container.get(config.controllers.allergy.name) as IAllergyController;
+  const ctrl = Container.get<IAllergyController>(config.controllers.allergy.name);
 
-  route.get('', (req, res, next) => ctrl.getAllergies(req, res, next) );
+  route.get('/', ctrl.getAllAllergies);
+
+  route.get('/:id',
+    celebrate({
+      params: Joi.object({
+        id: Joi.string().required(),
+      }),
+    }),
+    (req, res, next) => ctrl.getAllergy(req, res, next));
 
   route.post('',
     celebrate({
@@ -23,8 +32,7 @@ export default (app: Router) => {
         description: Joi.string().required()
       }),
     }),
-    (req, res, next) => ctrl.createAllergy(req, res, next) 
-  );
+    (req, res, next) => ctrl.createAllergy(req, res, next));
 
   route.put('/allergies/:id',
     celebrate({
@@ -37,6 +45,5 @@ export default (app: Router) => {
         id: Joi.string().required(),
       }),
     }),
-    (req, res, next) => ctrl.updateAllergy(req, res, next) 
-  );
+    (req, res, next) => ctrl.updateAllergy(req, res, next));
 };

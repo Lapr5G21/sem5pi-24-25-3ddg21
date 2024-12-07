@@ -5,6 +5,7 @@ import { AllergyId } from '../domain/Allergies/allergyId';
 import { AllergyMap } from '../mappers/AllergyMap';
 import IAllergyRepo from '../services/IRepos/IAllergyRepo';
 import { Allergy } from '../domain/Allergies/allergy';
+import mongoose from '../loaders/mongoose';
 
 @Service()
 export default class AllergyRepo implements IAllergyRepo {
@@ -13,9 +14,6 @@ export default class AllergyRepo implements IAllergyRepo {
   constructor(
     @Inject('allergySchema') private allergySchema : Model<IAllergyPersistence & Document>,
   ) {}
-
-
-  
 
   private createBaseQuery (): any {
     return {
