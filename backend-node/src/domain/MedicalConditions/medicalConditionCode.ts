@@ -3,28 +3,28 @@ import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
 
 
-interface AllergyCodeProps{
+interface MedicalConditionCodeProps{
     code: string;
 }
 
-export class AllergyCode extends ValueObject<AllergyCodeProps> {
+export class MedicalConditionCode extends ValueObject<MedicalConditionCodeProps> {
 
     get value (): string {
         return this.props.code;
     }   
 
-    public constructor (props: AllergyCodeProps) {
+    public constructor (props: MedicalConditionCodeProps) {
         super(props);
     }
 
-    public static create (props: AllergyCodeProps): Result<AllergyCode> {
+    public static create (props: MedicalConditionCodeProps): Result<MedicalConditionCode> {
         const propsResult = Guard.againstNullOrUndefined(props.code, 'code');
     
         if (!propsResult.succeeded) {
-          return Result.fail<AllergyCode>(propsResult.message);
+          return Result.fail<MedicalConditionCode>(propsResult.message);
         } else {
     
-          return Result.ok<AllergyCode>(new AllergyCode({
+          return Result.ok<MedicalConditionCode>(new MedicalConditionCode({
             code: props.code,
             
           }));

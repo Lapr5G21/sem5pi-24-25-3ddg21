@@ -2,6 +2,8 @@ import { Router } from 'express';
 import auth from './routes/userRoute';
 import user from './routes/userRoute';
 import role from './routes/roleRoute';
+import allergyRoute from './routes/allergyRoute';
+import medicalConditionRoute from './routes/medicalConditionRoute';
 
 export default () => {
 	const app = Router();
@@ -9,6 +11,8 @@ export default () => {
 	auth(app);
 	user(app);
 	role(app);
+	allergyRoute(app);
+	medicalConditionRoute(app);
 	
 	return app
 }

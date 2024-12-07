@@ -6,27 +6,44 @@ import { Container } from 'typedi';
 import config from "../../../config";
 import IAllergyController from '../../controllers/IControllers/IAllergyController';
 
+
 const route = Router();
 
 export default (app: Router) => {
   app.use('/allergies', route);
 
-  const ctrl = Container.get(config.controllers.allergy.name) as IAllergyController;
+  const ctrl = Container.get<IAllergyController>(config.controllers.allergy.name);
+
+  route.get('/', ctrl.getAllAllergies);
+
+  route.get('/:id',
+    celebrate({
+      params: Joi.object({
+        id: Joi.string().required(),
+      }),
+    }),
+    (req, res, next) => ctrl.getAllergy(req, res, next));
 
   route.post('',
     celebrate({
       body: Joi.object({
-        name: Joi.string().required()
-      })
-    }),
-    (req, res, next) => ctrl.createAllergy(req, res, next) );
-
-  route.put('',
-    celebrate({
-      body: Joi.object({
-        id: Joi.string().required(),
-        name: Joi.string().required()
+        name: Joi.string().required(),
+        code: Joi.string().required(),
+        description: Joi.string().required()
       }),
     }),
-    (req, res, next) => ctrl.updateAllergy(req, res, next) );
+    (req, res, next) => ctrl.createAllergy(req, res, next));
+
+  route.put('/allergies/:id',
+    celebrate({
+      body: Joi.object({
+        name: Joi.string().required(),
+        code: Joi.string().required(),
+        description: Joi.string().required()
+      }),
+      params: Joi.object({
+        id: Joi.string().required(),
+      }),
+    }),
+    (req, res, next) => ctrl.updateAllergy(req, res, next));
 };
