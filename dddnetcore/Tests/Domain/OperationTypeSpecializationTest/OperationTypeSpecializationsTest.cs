@@ -15,7 +15,8 @@ public class OperationTypeSpecializationTests
         var operationType = new OperationType(new OperationTypeName("ACL Surgery"), new EstimatedTimeDuration(60), 
             new AnesthesiaTime(30), new CleaningTime(15), new SurgeryTime(45));
         
-        var specialization = new Specialization(new SpecializationName("General Surgery"));
+        var specialization =new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
+
         var numberOfStaff = new NumberOfStaff(5);
 
         var operationTypeSpecialization = new OperationTypeSpecialization(operationType, specialization, numberOfStaff);
@@ -32,7 +33,8 @@ public class OperationTypeSpecializationTests
         var operationType = new OperationType(new OperationTypeName("Appendectomy"), new EstimatedTimeDuration(60), 
             new AnesthesiaTime(30), new CleaningTime(15), new SurgeryTime(45));
         
-        var specialization = new Specialization(new SpecializationName("General Surgery"));
+        var specialization = new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
+
         var numberOfStaff = new NumberOfStaff(5);
         
         var staffSpecialization1 = new OperationTypeSpecialization(operationType, specialization, numberOfStaff);
@@ -51,7 +53,8 @@ public class OperationTypeSpecializationTests
         var operationType2 = new OperationType(new OperationTypeName("ACL Surgery"), new EstimatedTimeDuration(70), 
             new AnesthesiaTime(25), new CleaningTime(20), new SurgeryTime(50));
         
-        var specialization = new Specialization(new SpecializationName("General Surgery"));
+        var specialization = new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
+
         var numberOfStaff = new NumberOfStaff(5);
         
         var staffSpecialization1 = new OperationTypeSpecialization(operationType1, specialization, numberOfStaff);
@@ -66,7 +69,8 @@ public class OperationTypeSpecializationTests
         var operationType = new OperationType(new OperationTypeName("Appendectomy"), new EstimatedTimeDuration(60), 
             new AnesthesiaTime(30), new CleaningTime(15), new SurgeryTime(45));
         
-        var specialization = new Specialization(new SpecializationName("General Surgery"));
+        var specialization = new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
+
         var numberOfStaff = new NumberOfStaff(5);
         
         var staffSpecialization1 = new OperationTypeSpecialization(operationType, specialization, numberOfStaff);

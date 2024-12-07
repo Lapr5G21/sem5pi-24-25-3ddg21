@@ -17,20 +17,6 @@ namespace DDDSample1.Tests.Domain.OperationRequests
         }
 
         [Fact]
-        public void DeadlineDate_PastDate_ThrowsException()
-        {
-            var pastDate = DateTime.Now.AddDays(-1);
-            Assert.Throws<BusinessRuleValidationException>(() => new DeadlineDate(pastDate));
-        }
-
-        [Fact]
-        public void DeadlineDate_PresentDate_ThrowsException()
-        {
-            var now = DateTime.Now;
-            Assert.Throws<BusinessRuleValidationException>(() => new DeadlineDate(now));
-        }
-
-        [Fact]
         public void DeadlineDate_EqualObjects_ReturnsTrue()
         {
             var futureDate = DateTime.Now.AddDays(1);

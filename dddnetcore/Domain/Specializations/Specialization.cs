@@ -9,6 +9,8 @@ namespace DDDSample1.Domain.Specializations
     {
      
         public SpecializationName SpecializationName{ get;  private set; }
+        public SpecializationCode SpecializationCode{get; private set;}
+        public SpecializationDescription SpecializationDescription{get; private set;}
 
         public List<OperationTypeSpecialization> OperationTypes { get; private set; } = new List<OperationTypeSpecialization>();
 
@@ -16,10 +18,12 @@ namespace DDDSample1.Domain.Specializations
         {
         }
 
-        public Specialization(SpecializationName specializationName)
+        public Specialization(SpecializationName specializationName,SpecializationCode specializationCode,SpecializationDescription specializationDescription)
         {
             this.Id = new SpecializationId(Guid.NewGuid());
             this.SpecializationName = specializationName;
+            this.SpecializationCode=specializationCode;
+            this.SpecializationDescription=specializationDescription;
         }
 
         
@@ -27,6 +31,15 @@ namespace DDDSample1.Domain.Specializations
         public void ChangeSpecializationName(SpecializationName name)
         {
             this.SpecializationName = name;
+        }
+
+        public void ChangeSpecializationCode(SpecializationCode code)
+        {
+            this.SpecializationCode = code;
+        }
+
+        public void UpdateSpecializationDescription(SpecializationDescription specializationDescription){
+            this.SpecializationDescription=specializationDescription;
         }
     }
 }

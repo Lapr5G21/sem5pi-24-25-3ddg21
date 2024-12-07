@@ -57,14 +57,15 @@ namespace DDDSample1.Tests.Domain.OperationTypes
                 new OperationTypeSpecialization
                 (
                     operationTypes[0],
-                    new Specialization(new SpecializationName("Surgery")),
+                    new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription("")),
                     new NumberOfStaff(5)
                 )
             };
 
             var specializations = new List<Specialization>
             {
-                new Specialization(new SpecializationName("Surgery"))
+                new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription("")),
+
             };
 
             _mockOperationTypeRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(operationTypes);
@@ -105,13 +106,15 @@ namespace DDDSample1.Tests.Domain.OperationTypes
             {
                 new OperationTypeSpecialization(
              operationType,
-            new Specialization(new SpecializationName("Surgery")),
+            new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription("")),
+
             new NumberOfStaff(5))
             };
 
             var specializations = new List<Specialization>
             {
-                new Specialization(new SpecializationName("Surgery"))
+                new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription("")),
+
             };
 
             _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(operationType.Id)).ReturnsAsync(operationType);
@@ -156,7 +159,7 @@ public async Task AddAsyncValidDto()
         }
     };
 
-    var specialization = new Specialization(new SpecializationName("Cardiology Specialization"));
+    var specialization = new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
 
     _mockSpecializationRepo.Setup(repo => repo.GetByIdAsync(It.IsAny<SpecializationId>()))
         .ReturnsAsync(specialization); 
@@ -219,7 +222,8 @@ public async Task AddAsyncValidDto()
     _mockOperationTypeRepo.Setup(repo => repo.GetByIdAsync(existingOperationType.Id))
         .ReturnsAsync(existingOperationType);
 
-    var specialization = new Specialization( new SpecializationName("Cardiology Specialization"));
+    var specialization = new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
+
 
     _mockSpecializationRepo.Setup(repo => repo.GetByIdAsync(specialization.Id))
         .ReturnsAsync(specialization);
@@ -308,7 +312,7 @@ public async Task AddAsyncValidDto()
                                           new CleaningTime(15),
                                           new SurgeryTime(90));
 
-    var specialization = new Specialization(new SpecializationName("Cardiology Specialization"));
+    var specialization = new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
     var searchDto = new SearchOperationTypeDto { SpecializationId = specialization.Id.AsGuid() };
     var operationTypeSpecialization = new OperationTypeSpecialization(operationType, specialization, new NumberOfStaff(2));
 

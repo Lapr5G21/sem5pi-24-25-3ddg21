@@ -5,6 +5,8 @@ using Moq;
 using Xunit;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
+using DDDSample1.Domain.Staffs;
+using DDDSample1.Domain.OperationTypesSpecializations;
 
 namespace DDDSample1.Tests.Domain.Specializations
 {
@@ -12,13 +14,18 @@ namespace DDDSample1.Tests.Domain.Specializations
     {
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
         private readonly Mock<ISpecializationRepository> _mockRepo;
+        private readonly Mock<IStaffRepository> _mockRepo1;
+        private readonly Mock<IOperationTypeSpecializationRepository> _mockRepo2;
+
         private readonly SpecializationService _service;
 
         public SpecializationServiceTests()
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockRepo = new Mock<ISpecializationRepository>();
-            _service = new SpecializationService(_mockUnitOfWork.Object, _mockRepo.Object);
+            _mockRepo1= new  Mock<IStaffRepository>();
+            _mockRepo2 = new Mock<IOperationTypeSpecializationRepository>();
+            _service = new SpecializationService(_mockUnitOfWork.Object, _mockRepo.Object,_mockRepo2.Object,_mockRepo1.Object);
         }
 
         [Fact]
@@ -26,8 +33,8 @@ namespace DDDSample1.Tests.Domain.Specializations
         {
             var specializations = new List<Specialization>
             {
-                new Specialization(new SpecializationName("Cardiology")),
-                new Specialization(new SpecializationName("Neurology"))
+                new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription("")),
+                new Specialization(new SpecializationName("Neurology"), new SpecializationCode("CD"), new SpecializationDescription(""))
             };
             _mockRepo.Setup(repo => repo.GetAllAsync()).ReturnsAsync(specializations);
 
@@ -43,7 +50,7 @@ namespace DDDSample1.Tests.Domain.Specializations
         public async Task GetByIdAsyncTest()
         {
             var specializationId = new SpecializationId(Guid.NewGuid());
-            var specialization = new Specialization(new SpecializationName("Cardiology"));
+            var specialization = new Specialization(new SpecializationName("Cardiology"), new SpecializationCode("CD"), new SpecializationDescription(""));
             _mockRepo.Setup(repo => repo.GetByIdAsync(specializationId)).ReturnsAsync(specialization);
 
             var result = await _service.GetByIdAsync(specializationId);

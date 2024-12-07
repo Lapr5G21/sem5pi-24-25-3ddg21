@@ -21,12 +21,16 @@ export class SpecializationDto {
 export class Specialization {
     constructor(
         public id: string,
-        public specializationName: string
+        public specializationName: string,
+        public specializationCode : string,
+        public specializationDescription: string
     ) {}
 }
 
 export class CreatingSpecializationDto{
     constructor(
-        public specializationName : string
+        public specializationName : string,
+        public specializationCode : string,
+        public specializationDescription: string
     ){}
 }

@@ -31,23 +31,30 @@ export class AuthCallbackComponent implements OnInit {
               const roles = user?.['https://healthcaresystem.com/roles'] ?? [];
               localStorage.setItem('role', roles);
               var email;
-              if(user?.email){
+              if(user?.email && user.email_verified){
                 localStorage.setItem('email',user.email.toString());
+                localStorage.setItem('emailVerified',user.email_verified.toString())
+              } else {
+                if(user?.email)
+                localStorage.setItem('email',user.email.toString());
+                localStorage.setItem('emailVerified',"false");
               }
 
               if (user && user['https://healthcaresystem.com/isNewUser']) {
                 this.registerUserInBackend(user);
               }
 
-              if (Array.isArray(roles) && roles.includes('Admin')) {  
+              if (Array.isArray(roles) && roles.includes('Admin') && localStorage.getItem('emailVerified')=="true") {  
                 console.log('Navigating to /adminDashboard/home');
                 this.router.navigate(['/adminDashboard/home']);
-              } else  if(Array.isArray(roles) && roles.includes('Patient')){
+              } else  if(Array.isArray(roles) && roles.includes('Patient') && localStorage.getItem('emailVerified')=="true"){
                 console.log('Navigating to /patientDashboard/home');
                 this.router.navigate(['/patientDashboard/home']);
-              } else if (Array.isArray(roles) && roles.includes('Doctor')){
+              } else if (Array.isArray(roles) && roles.includes('Doctor') && localStorage.getItem('emailVerified')=="true"){
                 console.log('Navigating to /doctorDashboard/home');
                 this.router.navigate(['/doctorDashboard/home']);
+              } else {
+                this.userService.logout();
               }
             });
           } else {

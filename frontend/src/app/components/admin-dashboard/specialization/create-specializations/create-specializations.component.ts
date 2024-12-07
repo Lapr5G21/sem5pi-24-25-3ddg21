@@ -25,6 +25,8 @@ export class CreateSpecializationsComponent {
 ) {}
 
   specializationName: string = '';
+  specializationCode: string = '';
+  specializationDescription: string = '';
   visible: boolean = false;
   
   showDialog() {
@@ -33,7 +35,9 @@ export class CreateSpecializationsComponent {
 
   createSpecialization() {
     const createSpecializationDto = new CreatingSpecializationDto(
-      this.specializationName
+      this.specializationName,
+      this.specializationCode,
+      this.specializationDescription
     );
 
     const payload = JSON.stringify(createSpecializationDto);

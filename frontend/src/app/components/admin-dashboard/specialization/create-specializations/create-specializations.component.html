@@ -6,6 +6,7 @@
         [style]="{ width: '30rem' }">
         <span class="p-text-secondary block mb-5">Insert info:</span>
 
+        <!-- Specialization Name -->
         <div class="flex align-items-center gap-3 mb-3">
             <label for="specializationName" class="font-semibold w-6rem">Name</label>
             <input pInputText 
@@ -16,6 +17,32 @@
                    required 
                    #specializationNameInput="ngModel" />
             <small *ngIf="specializationNameInput.invalid && specializationNameInput.touched" class="p-error">Name is required.</small>
+        </div>
+
+        <!-- Specialization Code -->
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="specializationCode" class="font-semibold w-6rem">Code</label>
+            <input pInputText 
+                   id="specializationCode" 
+                   [(ngModel)]="specializationCode" 
+                   class="flex-auto" 
+                   autocomplete="off" 
+                   required 
+                   #specializationCodeInput="ngModel" />
+            <small *ngIf="specializationCodeInput.invalid && specializationCodeInput.touched" class="p-error">Code is required.</small>
+        </div>
+
+        <!-- Specialization Description (Required) -->
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="specializationDescription" class="font-semibold w-6rem">Description</label>
+            <textarea 
+                id="specializationDescription" 
+                [(ngModel)]="specializationDescription" 
+                class="flex-auto" 
+                rows="4" 
+                placeholder="Insert the description here..." 
+                #specializationDescriptionInput="ngModel">
+            </textarea>
         </div>
 
         <ng-template pTemplate="footer">
@@ -29,7 +56,7 @@
                 [outlined]="true" 
                 severity="primary" 
                 (onClick)="createSpecialization()" 
-                [disabled]="!specializationName"></p-button>
+                [disabled]="!specializationName || !specializationCode"></p-button>
         </ng-template>
     </p-dialog>
 

@@ -12,8 +12,9 @@ namespace DDDSample1.Tests.Domain.Specializations
         public void ValidConstructorTest()
         {
             var validName = new SpecializationName("Cardiology");
-
-            var specialization = new Specialization(validName);
+            var validCode = new SpecializationCode("CD");
+            var validDesc = new SpecializationDescription("");
+            var specialization = new Specialization(validName,validCode,validDesc);
 
             Assert.Equal(validName, specialization.SpecializationName);
         }
@@ -22,7 +23,9 @@ namespace DDDSample1.Tests.Domain.Specializations
         public void ChangeSpecializationNameTest()
         {
             var initialName = new SpecializationName("Cardiology");
-            var specialization = new Specialization(initialName);
+            var validCode = new SpecializationCode("CD");
+            var validDesc = new SpecializationDescription("");
+            var specialization = new Specialization(initialName,validCode,validDesc);
             var newName = new SpecializationName("Neurology");
 
             specialization.ChangeSpecializationName(newName);

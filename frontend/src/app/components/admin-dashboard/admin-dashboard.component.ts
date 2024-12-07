@@ -76,6 +76,7 @@ export class AdminDashboardComponent implements OnInit {
           }
         ]
       },
+      
       {
         label: 'Specializations',
         icon: '',

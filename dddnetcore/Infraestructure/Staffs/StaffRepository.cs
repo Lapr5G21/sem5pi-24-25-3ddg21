@@ -18,6 +18,12 @@ namespace DDDSample1.Infrastructure.Staffs
             _context = context;
         }
 
+        public async Task<IEnumerable<Staff>> CheckSpecializationIsAtributtedToStaff(Specialization specialization)
+        {
+            return await _context.Staffs.Where(s => s.SpecializationId == specialization.Id).ToListAsync();
+
+        }
+
         public async Task<IEnumerable<Staff>> SearchAsync(StaffSearchDto searchDto)
         {
         var staffs = await _context.Staffs.AsNoTracking().ToListAsync();

@@ -16,9 +16,10 @@ export class UserService {
 
   logout() {
     this.auth0.logout();
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem('access_token');
     localStorage.removeItem('role');
-    this.loginDto = null;
+    localStorage.removeItem('email');
+    localStorage.removeItem('emailVerified');
   }
 
   registerUserOnBackend(): Observable<any> {

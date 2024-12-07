@@ -43,6 +43,8 @@ export class ListSpecializationsComponent implements OnInit {
   selectedSpecialization: Specialization = {
     id: '',
     specializationName: '',
+    specializationCode: '',
+    specializationDescription: ''
   };
 
   constructor(private specializationService: SpecializationsService,
@@ -123,5 +125,12 @@ export class ListSpecializationsComponent implements OnInit {
       (error) => console.error('Error loading specializations', error)
     );
   }
+
+  adjustTextarea(event: Event): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
+  
 
 }
