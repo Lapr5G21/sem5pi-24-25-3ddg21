@@ -2,6 +2,8 @@ using System;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.SurgeryRooms;
+using System.Collections.Generic;
+using DDDSample1.Domain.AppointmentsTeams;
 
 namespace DDDSample1.Domain.Appointments
 {
@@ -13,6 +15,8 @@ namespace DDDSample1.Domain.Appointments
         public OperationRequestId OperationRequestId { get;  private set; }
         public AppointmentStatus Status { get; private set; }
         public AppointmentDate Date { get; private set; }
+        public ICollection<AppointmentStaff> AppointmentTeam {get; private set;} = new List<AppointmentStaff>();
+
 
         private Appointment() { }
 
@@ -61,5 +65,15 @@ namespace DDDSample1.Domain.Appointments
                 throw new InvalidOperationException("Only scheduled appointments can be rescheduled.");
             this.Date = newDate;
         }
-    }
+
+        public override string ToString()
+        {
+            return $"Appointment [Id: {Id}, " +
+                   $"Room: {Room?.Id?.Value ?? "N/A"}, " +
+                   $"RoomNumber: {RoomNumber?.Value ?? "N/A"}, " +
+                   $"OperationRequestId: {OperationRequestId?.Value ?? "N/A"}, " +
+                   $"Status: {Status}, " +
+                   $"Date: {Date.Date.ToString("yyyy-MM-dd HH:mm") ?? "N/A"}]";
+        }
+}
 }

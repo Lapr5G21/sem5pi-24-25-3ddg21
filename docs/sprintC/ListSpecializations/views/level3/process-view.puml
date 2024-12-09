@@ -1,0 +1,70 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Admin as "Admin"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+participant SpecializationsController as "SpecializationController" <<component (C4)>>
+participant SpecializationService as "SpecializationService" <<component (C4)>>
+participant Specialization as "Specialization" <<domain>>
+participant SpecializationRepo as "Specialization Repository" <<persistence>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to list
+    activate ComponentUI
+    
+        ComponentUI -> Component : get specializations
+        activate Component
+            
+            Component -> Service : get specializations
+            activate Service
+
+                Service -> HTTP : get('api/specializations')
+
+                activate HTTP
+                    HTTP -> SpecializationsController : GET /specializations
+
+                    activate SpecializationsController
+
+                    SpecializationsController -> SpecializationService : getAll()
+
+                    activate SpecializationService 
+
+                    SpecializationService -> SpecializationRepo : getAll()
+
+                    activate SpecializationRepo
+
+                    SpecializationRepo --> SpecializationService : allSpecializations
+
+                    deactivate SpecializationRepo
+
+                    SpecializationService -> SpecializationService : toDto(specializations)
+
+                    SpecializationService --> SpecializationsController : listSpecializationsDto
+
+                    deactivate SpecializationService
+
+                    SpecializationsController --> HTTP : 201 (specializations)
+
+                    deactivate SpecializationsController
+
+                    HTTP --> Service : specializations
+
+                deactivate HTTP
+
+                Service --> Component : specializations
+            deactivate Service
+
+            Component --> ComponentUI : specializations
+        deactivate Component
+
+    Admin <-- ComponentUI : shows success message
+    deactivate ComponentUI
+
+deactivate Admin
+
+@enduml
