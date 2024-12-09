@@ -4,13 +4,10 @@ import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
 import { Allergy } from "../Allergies/allergy";
 import { MedicalCondition } from "../MedicalConditions/medicalCondition";
+import { MedicalRecordId } from "./medicalRecordId";
 import { PatientMedicalRecordNumber } from "./patientMedicalRecordNumber";
-import { PatientName } from "./patientName";
-
-
 
 interface MedicalRecordProps {
-  patientName: PatientName;
   patientMedicalRecordNumber: PatientMedicalRecordNumber;
   allergies: Allergy[];
   medicalConditions: MedicalCondition[];
@@ -23,13 +20,10 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
         return this._id;
       }
     
-        get patientName (): PatientName {
-            return this.props.patientName;
-        }
 
-        set patientName (value: PatientName) {
-            this.props.patientName = value;
-        }
+      get medicalRecordId (): MedicalRecordId {
+        return new MedicalRecordId(this.medicalRecordId.toValue());
+      }
 
         get patientMedicalRecordNumber (): PatientMedicalRecordNumber {
             return this.props.patientMedicalRecordNumber;
@@ -70,7 +64,6 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
       public static create (props: MedicalRecordProps, id?: UniqueEntityID): Result<MedicalRecord> {
 
         const guardedProps = [
-          { argument: props.patientName, argumentName: 'patientName' },
           { argument: props.patientMedicalRecordNumber, argumentName: 'patientMedicalRecordNumber' },
           { argument: props.allergies, argumentName: 'allergies' },
           { argument: props.medicalConditions, argumentName: 'medicalConditions' },
