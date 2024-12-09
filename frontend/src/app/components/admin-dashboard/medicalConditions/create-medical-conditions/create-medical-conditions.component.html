@@ -1,0 +1,87 @@
+<div class="card flex justify-content-center">
+    <p-dialog 
+        header="Add Staff" 
+        [(visible)]="visible" 
+        [modal]="true" 
+        [style]="{ width: '30rem' }">
+
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="medicalConditionName" class="font-semibold w-6rem">Name</label>
+            <input 
+                pInputText 
+                id="medicalConditionName" 
+                [(ngModel)]="medicalConditionName" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isNameValid}" />
+        </div>
+        <div *ngIf="isSubmitted && !isNameValid" class="error-text">
+            Name is required.
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="medicalConditionCode" class="font-semibold w-6rem">Code</label>
+            <input 
+                pInputText 
+                id="medicalConditionCode" 
+                [(ngModel)]="medicalConditionCode" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isCodeValid}" />
+        </div>
+        <div *ngIf="isSubmitted && !isCodeValid" class="error-text">
+            Code is required.
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="medicalConditionDescription" class="font-semibold w-6rem">Description</label>
+            <input 
+                pInputText 
+                id="medicalConditionDescription" 
+                [(ngModel)]="medicalConditionDescription" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isDescriptionValid}" />
+        </div>
+        <div *ngIf="isSubmitted && !isDescriptionValid" class="error-text">
+            Description is required.
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="medicalConditionSymptoms" class="font-semibold w-6rem">Symptoms</label>
+            <input 
+                pInputText 
+                id="medicalConditionSymptoms" 
+                [(ngModel)]="medicalConditionSymptoms" 
+                class="flex-auto" 
+                autocomplete="off" 
+                required 
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isSymptomsValid}" />
+        </div>
+        <div *ngIf="isSubmitted && !isSymptomsValid" class="error-text">
+            Symptoms are required.
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button 
+                label="Cancel" 
+                [text]="true" 
+                severity="secondary" 
+                (onClick)="resetForm(); visible = false"></p-button>
+            <p-button 
+                label="Save" 
+                [outlined]="true" 
+                severity="primary" 
+                (onClick)="saveMedicalCondition()"></p-button>
+        </ng-template>
+    </p-dialog>
+
+    <!-- Toast Notifications -->
+    <p-toast></p-toast>
+</div>

@@ -14,21 +14,35 @@ export default class MedicalConditionController implements IMedicalConditionCont
       @Inject(config.services.medicalCondition.name) private medicalConditionServiceInstance : IMedicalConditionService
   ) {}
 
-   // api/medicalConditions
-   getMedicalConditions(req: Request, res: Response, next: NextFunction) {
+  public async getMedicalCondition(req: Request, res: Response, next: NextFunction) {
+  
+    try {
+      const medicalCondition = await this.medicalConditionServiceInstance.getMedicalCondition(req.params.id);
+
+      if (medicalCondition === null) {
+        return res.status(404).send("Medical condition not found or error in retrieving medical condition");
+      }
+      return res.json(medicalCondition).status(200);
+    }
+    catch (err) {
+      res.status(500).json({ message: err.message }); 
+    }
+  };
+
+  // api/medicalConditions
+  public async getAllMedicalConditions(req: Request, res: Response, next: NextFunction) {
     try {
      
-      const medicalConditions = this.medicalConditionServiceInstance.getMedicalConditions();
+      const medicalConditions = await this.medicalConditionServiceInstance.getMedicalConditions();
 
       if ( medicalConditions === null ) {
         return res.status(404).send("Failed to retrieve medical conditions");
       }
 
       return res.json(medicalConditions).status(200);
-
     }
-    catch (e) {
-      return next(e);
+    catch (err) {
+      res.status(500).json({ message: err.message }); 
     }
   };
 

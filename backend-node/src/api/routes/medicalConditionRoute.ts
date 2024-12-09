@@ -11,9 +11,17 @@ const route = Router();
 export default (app: Router) => {
   app.use('/medicalConditions', route);
 
-  const ctrl = Container.get(config.controllers.medicalCondition.name) as IMedicalConditionController;
+  const ctrl = Container.get<IMedicalConditionController>(config.controllers.medicalCondition.name);
 
-  route.get('', (req, res, next) => ctrl.getMedicalConditions(req, res, next) );
+  route.get('/', ctrl.getAllMedicalConditions);
+
+  route.get('/:id',
+    celebrate({
+      params: Joi.object({
+        id: Joi.string().required(),
+      }),
+    }),
+    (req, res, next) => ctrl.getMedicalCondition(req, res, next));
 
   route.post('',
     celebrate({
@@ -24,8 +32,7 @@ export default (app: Router) => {
         symptoms: Joi.string().required()
       }),
     }),
-    (req, res, next) => ctrl.createMedicalCondition(req, res, next) 
-  );
+    (req, res, next) => ctrl.createMedicalCondition(req, res, next));
 
   route.put('/medicalConditions/:id',
     celebrate({
@@ -39,6 +46,5 @@ export default (app: Router) => {
         id: Joi.string().required(),
       }),
     }),
-    (req, res, next) => ctrl.updateMedicalCondition(req, res, next) 
-  );
+    (req, res, next) => ctrl.updateMedicalCondition(req, res, next));
 };

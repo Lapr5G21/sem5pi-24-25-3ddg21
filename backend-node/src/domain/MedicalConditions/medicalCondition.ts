@@ -59,7 +59,7 @@ export class MedicalCondition extends AggregateRoot<MedicalConditionProps> {
         this.props.symptoms = value;
       }
 
-      private constructor (props: MedicalConditionProps, id?: UniqueEntityID) {
+      public constructor (props: MedicalConditionProps, id?: UniqueEntityID) {
         super(props, id);
       }
     

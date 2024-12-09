@@ -5,6 +5,7 @@ import { MedicalConditionId } from '../domain/MedicalConditions/medicalCondition
 import { MedicalConditionMap } from '../mappers/MedicalConditionMap';
 import IMedicalConditionRepo from '../services/IRepos/IMedicalConditionRepo';
 import { MedicalCondition } from '../domain/MedicalConditions/medicalCondition';
+import mongoose from '../loaders/mongoose';
 
 @Service()
 export default class MedicalConditionRepo implements IMedicalConditionRepo {
