@@ -14,4 +14,4 @@ const MedicalConditionSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model<IMedicalConditionPersistence & mongoose.Document>('MedicalCondition', MedicalConditionSchema);
+export default MedicalConditionSchema;

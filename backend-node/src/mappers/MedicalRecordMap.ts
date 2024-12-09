@@ -9,6 +9,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
   
   public static toDTO( medicalRecord: any): IMedicalRecordDTO {
     return {
+      DomainId: medicalRecord._id,
       patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber,
       allergies: medicalRecord.allergies,
       medicalConditions:medicalRecord.medicalConditions,
