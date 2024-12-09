@@ -4,7 +4,7 @@ using DDDSample1.Domain.Staffs;
 using DDDSample1.Domain.Appointments;
 using DDDSample1.Domain.Shared;
 
-namespace DDDSample1.Domain.AppointmentsTeams {
+namespace DDDSample1.Domain.AppointmentsStaffs {
     
   public class AppointmentStaffId : EntityId {
 

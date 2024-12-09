@@ -12,9 +12,12 @@ namespace dddnetcore.Infraestructure.Appointments
         public void Configure(EntityTypeBuilder<Appointment> builder) {
             builder.HasKey(b => b.Id);
             builder.HasOne(b => b.OperationRequest).WithOne().HasForeignKey<Appointment>("OperationRequestId").IsRequired();
+            builder.HasIndex(b => b.OperationRequestId).IsUnique();
             builder.HasOne(b => b.Room).WithMany().HasForeignKey(b => b.RoomNumber);
             builder.Property(b => b.Status).HasConversion<string>().IsRequired();
             builder.Property(b => b.Date).HasConversion(b=> b.Date, b => new AppointmentDate(b)).IsRequired();
+            builder.HasMany(b => b.AppointmentTeam).WithOne(b => b.Appointment).HasForeignKey("AppointmentId").OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

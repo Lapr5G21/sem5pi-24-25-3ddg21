@@ -3,7 +3,7 @@ using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.SurgeryRooms;
 using System.Collections.Generic;
-using DDDSample1.Domain.AppointmentsTeams;
+using DDDSample1.Domain.AppointmentsStaffs;
 
 namespace DDDSample1.Domain.Appointments
 {

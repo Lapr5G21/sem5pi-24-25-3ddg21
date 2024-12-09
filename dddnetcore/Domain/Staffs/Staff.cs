@@ -4,6 +4,7 @@ using System.Linq;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.Users;
+using DDDSample1.Domain.AppointmentsStaffs;
 
 namespace DDDSample1.Domain.Staffs
 {
@@ -18,6 +19,8 @@ namespace DDDSample1.Domain.Staffs
         public StaffPhoneNumber StaffPhoneNumber { get; private set; }
         public List<AvailabilitySlot> AvailabilitySlots { get; private set; } = new List<AvailabilitySlot>();
         public Username UserId { get; private set; }
+        public ICollection<AppointmentStaff> AppointmentTeam {get; private set;} = new List<AppointmentStaff>();
+
         public bool Active { get; private set; }
 
         private Staff()

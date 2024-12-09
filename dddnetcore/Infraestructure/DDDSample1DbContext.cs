@@ -24,6 +24,8 @@ using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infraestructure.SurgeryRooms;
 using DDDSample1.Domain.Appointments;
 using dddnetcore.Infraestructure.Appointments;
+using DDDSample1.Domain.AppointmentsStaffs;
+using dddnetcore.Infraestructure.AppointmentsStaffs;
 
 namespace DDDSample1.Infrastructure
 {
@@ -53,6 +55,8 @@ namespace DDDSample1.Infrastructure
         public DbSet<AvailabilitySlot> AvailabilitySlots { get; set; }
         public DbSet<SurgeryRoom> SurgeryRooms { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentStaff> AppointmentsStaffs { get; set; }
+
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
 
@@ -75,6 +79,8 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new AvailabilitySlotEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new SurgeryRoomEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AppointmentStaffEntityTypeConfiguration());
+
         }
     }
 }
