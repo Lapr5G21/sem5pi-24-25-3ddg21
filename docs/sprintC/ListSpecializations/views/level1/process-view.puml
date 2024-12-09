@@ -1,0 +1,14 @@
+@startuml
+actor Admin as "Admin"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Admin 
+
+Admin --> SYS : asks to list specializations 
+
+activate SYS 
+SYS --> Admin : displays all specializations
+deactivate SYS
+
+
+@enduml

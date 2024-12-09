@@ -1,0 +1,20 @@
+@startuml process-view
+autonumber
+
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
+
+activate Admin
+    Admin -> Frontend : asks to delete specialization
+    activate Frontend
+    
+        Frontend-> Backend : DELETE /specializations/id
+        activate Backend
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+    Frontend --> Admin : displays success message
+
+    deactivate Frontend
+    deactivate Admin
+@enduml
