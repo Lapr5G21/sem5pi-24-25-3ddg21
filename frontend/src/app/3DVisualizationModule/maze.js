@@ -3,7 +3,6 @@ import Ground from "./ground.js";
 import Wall from "./wall.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import TWEEN, { Group, Tween } from '@tweenjs/tween.js';
-
 /*
  * parameters = {
  *  url: String,
@@ -34,6 +33,12 @@ export default class Maze {
             this.camera = camera;
             this.renderer = renderer;
             this.scene3D = scene3D;
+
+            this.spotlight = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 2, 0.5, 1);
+            this.spotlight.position.set(0, 10, 0);
+            this.spotlight.target = new THREE.Object3D();
+            this.scene3D.add(this.spotlight);
+            this.scene3D.add(this.spotlight.target);
 
         
             const loadBedPromise = new Promise((resolve, reject) => {
@@ -195,7 +200,7 @@ export default class Maze {
                         bedObject.receiveShadow = true;
 
                         const boxTable = this.createBoxTable(bedObject, 2.5);
-                        boxTable.name = `Bed_${i}_${j}`;
+                        boxTable.name = `Patient_${i}_${j}`;
                         this.object.add(boxTable);
                         console.log(boxTable);
                         this.object.add(bedObject);
@@ -286,7 +291,6 @@ export default class Maze {
     }    
 
     onMouseClick = (event) => {
-    
         const rect = this.renderer.domElement.getBoundingClientRect();
         this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -301,68 +305,91 @@ export default class Maze {
             if (clickedObject.name && clickedObject.name.includes("Bed")) {
                 const tablePosition = clickedObject.position;
                 console.log("Selected operating table:", clickedObject.name, "Position:", tablePosition);
-    
-                this.moveCameraToRoom(tablePosition, this.camera);
+                this.moveCameraToRoom(tablePosition, this.camera,false);
+            } else if (clickedObject.name && clickedObject.name.includes("Patient")) {
+                const patientPosition = clickedObject.position;
+                console.log("Selected patient:", clickedObject.name, "Position:", patientPosition);
+                this.moveCameraToRoom(patientPosition, this.camera, true); 
             } else {
-                console.log("The clicked object is not a surgical table.");
+                console.log("The clicked object is not a surgical table or a patient.");
             }
         } else {
             console.log("No objects were clicked.");
         }
     };
-
-    moveCameraToRoom(position, camera) {
+    
+    // Função para mover a câmera para o local e ativar o spotlight se necessário
+    moveCameraToRoom(position, camera,activateSpotlightFlag) {
+        console.log(activateSpotlightFlag);
         const [row, column] = this.cartesianToCell(position);
-
+    
         const centerX = (column - this.size.width / 2.0 + 0.5) * this.scale.x;
         const centerZ = (row - this.size.height / 2.0 + 0.5) * this.scale.z;
-
+    
         const cameraHeight = 5.0;
-
+    
         const startPosition = {
             x: camera.object.position.x,
             y: camera.object.position.y,
             z: camera.object.position.z,
         };
-
-
+    
         const endPosition = {
             x: centerX,
             y: cameraHeight,
             z: centerZ,
         };
-
+    
         const lookAtTarget = new THREE.Vector3(centerX, 0, centerZ);
-
-        
-        var tween = new Tween(startPosition,true)
-        .to(endPosition, 1500)
-        .easing(TWEEN.Easing.Quadratic.InOut)
-        .onUpdate(() => {
-            camera.object.position.set(
-                startPosition.x, 
-                startPosition.y, 
-                startPosition.z
-            );
-            camera.object.lookAt(lookAtTarget);
-        })
-        .onComplete(() => {
-            camera.object.position.set(
-                endPosition.x, 
-                endPosition.y, 
-                endPosition.z
-            );
-            camera.object.lookAt(lookAtTarget);
-        })
-        .start();
-
-    tween.update();
-
+    
+        var tween = new Tween(startPosition, true)
+            .to(endPosition, 1500)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate(() => {
+                camera.object.position.set(
+                    startPosition.x,
+                    startPosition.y,
+                    startPosition.z
+                );
+                camera.object.lookAt(lookAtTarget);
+            })
+            .onComplete(() => {
+                camera.object.position.set(
+                    endPosition.x,
+                    endPosition.y,
+                    endPosition.z
+                );
+                camera.object.lookAt(lookAtTarget);
+                if (activateSpotlightFlag) {
+                    console.log("1");
+                    this.activateSpotlight(position);
+                }
+            })
+            .start();
+    
+        tween.update();
     }
 
+    activateSpotlight(position) {
+        this.spotlight.position.set(position.x, position.y+5, position.z); 
+        
+        this.spotlight.target.position.set(position.x, position.y, position.z); 
+        
+        this.spotlight.color.set(0xADD8E6); // Cor amarela
+        
+        this.spotlight.intensity = 20; // Ajuste a intensidade conforme necessário
+
+        this.spotlight.angle = Math.PI / 6; // Ângulo de 30 graus, você pode ajustar esse valor
+
+        this.spotlight.distance = 10; // Ajuste a distância, por exemplo, 10 unidades
+    
+    
+        
+        console.log("Spotlight ativado para o paciente na posição:", position);
+    }
 
     // Convert cell [row, column] coordinates to cartesian (x, y, z) coordinates
-    cellToCartesian(position) {
+    cellToCartesian(position){
         return new THREE.Vector3((position[1] - this.size.width / 2.0 + 0.5) * this.scale.x, 0.0, (position[0] - this.size.height / 2.0 + 0.5) * this.scale.z)
     }
 
