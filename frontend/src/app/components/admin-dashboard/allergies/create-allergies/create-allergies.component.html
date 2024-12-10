@@ -1,0 +1,65 @@
+<div class="card flex justify-content-center">
+    <p-dialog 
+        header="Create Allergy" 
+        [(visible)]="visible" 
+        [modal]="true" 
+        [style]="{ width: '30rem' }">
+        <span class="p-text-secondary block mb-5">Insert info:</span>
+
+        <!-- Allergy Name -->
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="allergyName" class="font-semibold w-6rem">Name</label>
+            <input pInputText 
+                   id="allergyName" 
+                   [(ngModel)]="allergyName" 
+                   class="flex-auto" 
+                   autocomplete="off" 
+                   required 
+                   #allergyNameInput="ngModel" />
+            <small *ngIf="allergyNameInput.invalid && allergyNameInput.touched" class="p-error">Name is required.</small>
+        </div>
+
+        <!-- Allergy Code -->
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="allergyCode" class="font-semibold w-6rem">Code</label>
+            <input pInputText 
+                   id="allergyCode" 
+                   [(ngModel)]="allergyCode" 
+                   class="flex-auto" 
+                   autocomplete="off" 
+                   required 
+                   #allergyCodeInput="ngModel" />
+            <small *ngIf="allergyCodeInput.invalid && allergyCodeInput.touched" class="p-error">Code is required.</small>
+        </div>
+
+        <!-- Allergy Description (Required) -->
+        <div class="flex align-items-center gap-3 mb-3">
+            <label for="allergyDescription" class="font-semibold w-6rem">Description</label>
+            <textarea 
+                id="allergyDescription" 
+                [(ngModel)]="allergyDescription" 
+                class="flex-auto" 
+                rows="4" 
+                placeholder="Insert the description here..." 
+                #allergyDescriptionInput="ngModel">
+            </textarea>
+        </div>
+
+        <ng-template pTemplate="footer">
+            <p-button 
+                label="Cancel" 
+                [text]="true" 
+                severity="secondary" 
+                (onClick)="visible = false"></p-button>
+            <p-button 
+                label="Create" 
+                [outlined]="true" 
+                severity="primary" 
+                (onClick)="createAllergy()" 
+                [disabled]="!allergyName || !allergyCode"></p-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-toast></p-toast>
+</div>
+
