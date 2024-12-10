@@ -17,5 +17,4 @@ export class MedicalConditionService {
       });
     return this.http.post(`${this.apiUrl}/medicalConditons`, medicalConditonData,{headers});
   }
-
 }

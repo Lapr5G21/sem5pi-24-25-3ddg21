@@ -2,15 +2,15 @@ import { AggregateRoot } from "../../core/domain/AggregateRoot";
 import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
 import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
-import { Allergy } from "../Allergies/allergy";
-import { MedicalCondition } from "../MedicalConditions/medicalCondition";
+import { AllergyId } from "../Allergies/allergyId";
+import { MedicalConditionId } from "../MedicalConditions/medicalConditionId";
 import { MedicalRecordId } from "./medicalRecordId";
 import { PatientMedicalRecordNumber } from "./patientMedicalRecordNumber";
 
 interface MedicalRecordProps {
   patientMedicalRecordNumber: PatientMedicalRecordNumber;
-  allergies: Allergy[];
-  medicalConditions: MedicalCondition[];
+  allergies: AllergyId[];
+  medicalConditions: MedicalConditionId[];
   medicalHistory: string[];
 }
 
@@ -33,19 +33,19 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
             this.props.patientMedicalRecordNumber = value;
         }
 
-        get allergies (): Allergy[] {
+        get allergies (): AllergyId[] {
             return this.props.allergies;
         }
 
-        set allergies (value: Allergy[]) {
+        set allergies (value: AllergyId[]) {
             this.props.allergies = value;
         }
 
-        get medicalConditions (): MedicalCondition[] {
+        get medicalConditions (): MedicalConditionId[] {
             return this.props.medicalConditions;
         }
 
-        set medicalConditions (value: MedicalCondition[]) {
+        set medicalConditions (value: MedicalConditionId[]) {
             this.props.medicalConditions = value;
         }
 

@@ -16,7 +16,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
-  selector: 'app-list-allergies',
+  selector: 'list-allergies',
   standalone: true,
   imports: [TableModule,
     DialogModule,
@@ -31,7 +31,8 @@ import { ToastModule } from 'primeng/toast';
     ConfirmDialogModule,
     ToastModule],
   templateUrl: './list-allergies.component.html',
-  styleUrl: './list-allergies.component.scss'
+  styleUrl: './list-allergies.component.scss',
+  providers: [ConfirmationService, MessageService]
 })
 export class ListAllergiesComponent implements OnInit {
   editDialogVisible: boolean = false;

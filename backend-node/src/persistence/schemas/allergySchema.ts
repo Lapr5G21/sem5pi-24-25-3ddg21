@@ -13,4 +13,4 @@ const AllergySchema = new mongoose.Schema(
   }
 );
 
-export default AllergySchema;
+export default mongoose.model<IAllergyPersistence & mongoose.Document>('Allergy', AllergySchema);

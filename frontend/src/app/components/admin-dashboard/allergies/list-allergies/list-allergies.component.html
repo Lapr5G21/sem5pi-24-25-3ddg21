@@ -15,10 +15,10 @@
       <td>{{ allergy.allergyCode }}</td>
       <td>{{ allergy.allergyDescription }}</td>
       <td>
-          pButton 
+          <button 
           icon="pi pi-times" 
           label="Remove" 
-          (click)="confirmRemove(specialization.id)" 
+          (click)="confirmRemove(allergy.allergyCode)" 
           class="p-button-sm p-button-rounded p-button-danger"></button>
       </td>
     </tr>

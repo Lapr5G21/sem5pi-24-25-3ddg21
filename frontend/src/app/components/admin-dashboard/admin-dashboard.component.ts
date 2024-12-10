@@ -15,11 +15,27 @@ import { HospitalModelComponent } from '../hospital-model/hospital-model/hospita
 import { CreateSpecializationsComponent } from './specialization/create-specializations/create-specializations.component';
 import { ListSpecializationsComponent } from './specialization/list-specializations/list-specializations.component';
 import { CreateAllergiesComponent } from './allergies/create-allergies/create-allergies.component';
+import { ListAllergiesComponent } from './allergies/list-allergies/list-allergies.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, CreatePatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent,HospitalModelComponent,CreateSpecializationsComponent,ListSpecializationsComponent],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    CreateOperationTypesComponent,
+    CreateStaffsComponent,
+    CreatePatientsComponent, 
+    ListPatientsComponent, 
+    MenubarComponent,
+    ProfileMenuComponent,
+    ListOperationTypesComponent,
+    ListStaffsComponent,
+    HospitalModelComponent,
+    CreateSpecializationsComponent,
+    ListSpecializationsComponent,
+    ListAllergiesComponent, 
+    CreateAllergiesComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -44,6 +60,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent;
   @ViewChild(CreateSpecializationsComponent) createSpecializationsComponent!: CreateSpecializationsComponent;
   @ViewChild(CreateAllergiesComponent) createAllergyComponent!: CreateAllergiesComponent;
+  @ViewChild(ListAllergiesComponent) listAllergiesComponent!: ListAllergiesComponent;
 
   constructor(private router: Router) {}
 
@@ -53,7 +70,7 @@ export class AdminDashboardComponent implements OnInit {
         label: 'Home',
         icon: 'pi pi-home',
         command: () => {
-          this.showOperationTypesList=false;
+        this.showOperationTypesList=false;
         this.showStaffsList=false;
         this.showPatientsList=false;
         this.showSpecializationList=false;
