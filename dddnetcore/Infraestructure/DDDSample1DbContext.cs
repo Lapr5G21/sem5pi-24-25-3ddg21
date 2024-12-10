@@ -26,6 +26,8 @@ using DDDSample1.Domain.Appointments;
 using dddnetcore.Infraestructure.Appointments;
 using DDDSample1.Domain.AppointmentsStaffs;
 using dddnetcore.Infraestructure.AppointmentsStaffs;
+using DDDSample1.Domain.RoomTypes;
+using DDDSample1.Infraestructure.RoomTypes;
 
 namespace DDDSample1.Infrastructure
 {
@@ -56,6 +58,7 @@ namespace DDDSample1.Infrastructure
         public DbSet<SurgeryRoom> SurgeryRooms { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentStaff> AppointmentsStaffs { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
 
         public DDDSample1DbContext(DbContextOptions options) : base(options)
         {
@@ -80,6 +83,8 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new SurgeryRoomEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AppointmentStaffEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoomTypeEntityTypeConfiguration());
+
 
         }
     }

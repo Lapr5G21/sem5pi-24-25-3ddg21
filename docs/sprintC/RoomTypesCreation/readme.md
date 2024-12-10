@@ -14,9 +14,11 @@ available medical procedures in the system.
 
 - 7.2.10.1 - Admins can input details such an internal code, a designation and an optional longer description. It also indicates if it the room type is suitable for surgeries or not
 
-- 7.2.10.2 - Internal code must be 8 characters long, no spaces, only letters, numbers, and dashes ("-") are allowed. it must be unique designation, free text, alphanumeric, 100 characters max.
+- 7.2.10.2 - Internal code must be 8 characters long, no spaces, only letters, numbers, and dashes ("-") are allowed.
 
-- 7.2.10.3 - The room type is stored securely in the system.
+- 7.2.10.3 - Designation is a free text, alphanumeric, 100 characters max.
+
+- 7.2.10.4 - The room type is stored securely in the system.
 
 ## 3. Views
 
