@@ -2,6 +2,7 @@ import * as THREE from "three";
 import Ground from "./ground.js";
 import Wall from "./wall.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import TWEEN, { Group, Tween } from '@tweenjs/tween.js';
 
 /*
  * parameters = {
@@ -13,7 +14,7 @@ import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 export default class Maze {
 
-    constructor(parameters) {
+    constructor(parameters, camera, renderer, scene3D) {
 
         this.bed  = null;
         this.patient = null;
@@ -27,8 +28,14 @@ export default class Maze {
         this.onLoad = function (description) {
 
             const loader = new GLTFLoader();
+
+            this.raycaster = new THREE.Raycaster();
+            this.mouse = new THREE.Vector2();
+            this.camera = camera;
+            this.renderer = renderer;
+            this.scene3D = scene3D;
+
         
-            // Promises para carregar os modelos
             const loadBedPromise = new Promise((resolve, reject) => {
                 loader.load("./models/gltf/hospital_bed.glb", (glb) => {
                     this.bed = { object: glb.scene };
@@ -134,14 +141,20 @@ export default class Maze {
                         this.object.add(wallObject);
                     }
                     if (cellValue == 4 && this.loadedBed) {
-                        const bedObject = this.bed.object.clone();
-                        bedObject.position.set(i - description.size.width / 2.0 , 0.1, j - description.size.height / 2.0 );
-                        bedObject.scale.set(0.003, 0.003, 0.003); // Adjust scale
-                        bedObject.rotateY( -(Math.PI / 2));
-                        bedObject.castShadow = true;
-                        bedObject.receiveShadow = true;
-                        this.object.add(bedObject);
+                    const bedObject = this.bed.object.clone();
+                    bedObject.position.set(i - description.size.width / 2.0, 0.1, j - description.size.height / 2.0);
+                    bedObject.scale.set(0.003, 0.003, 0.003); // Ajuste da escala
+                    bedObject.rotateY(-(Math.PI / 2));
+                    bedObject.castShadow = true;
+                    bedObject.receiveShadow = true;
+
+                    const boxTable = this.createBoxTable(bedObject, 2.5);
+                    boxTable.name = `Bed_${i}_${j}`;
+                    this.object.add(boxTable);
+                    console.log(boxTable);
+                    this.object.add(bedObject);
                     }
+
                     if (cellValue == 5 && this.loadedPatient) {
                         // Adiciona o paciente
                         const patientObject = this.patient.object.clone();
@@ -174,13 +187,17 @@ export default class Maze {
                     }
 
                     if (cellValue == 8 && this.loadedBed && this.loadedPatient) {
-                        // Criar cama e patient
                         const bedObject = this.bed.object.clone();
                         bedObject.position.set(i - description.size.width / 2.0 + 0.2, 0.1, j - description.size.height / 2.0 + 0.2);
                         bedObject.scale.set(0.0025, 0.0025, 0.0025); // Adjust scale
                         bedObject.rotateY( -(Math.PI / 2));
                         bedObject.castShadow = true;
                         bedObject.receiveShadow = true;
+
+                        const boxTable = this.createBoxTable(bedObject, 2.5);
+                        boxTable.name = `Bed_${i}_${j}`;
+                        this.object.add(boxTable);
+                        console.log(boxTable);
                         this.object.add(bedObject);
                         const patientObject = this.patient.object.clone();
                         patientObject.position.set(i - description.size.width / 2.0 + 0.1, 0.6, j - description.size.height / 2.0 + 0.2);
@@ -233,11 +250,116 @@ export default class Maze {
 
             // onProgress callback
             xhr => this.onProgress(this.url, xhr),
-
             // onError callback
-            error => this.onError(this.url, error)
+            error => this.onError(this.url, error),
+
+            window.addEventListener('click', this.onMouseClick)
         );
     }
+
+    createBoxTable(table, increaseFactor = 1) {
+        const box = new THREE.Box3().setFromObject(table);
+    
+        // Get the size and center of the current box
+        const size = new THREE.Vector3();
+        const center = new THREE.Vector3();
+        box.getSize(size);
+        box.getCenter(center);
+    
+        // New Height
+        const adjustedHeight = size.y * increaseFactor;
+    
+        // Create new geometry
+        const geometry = new THREE.BoxGeometry(size.x, adjustedHeight, size.z);
+        const material = new THREE.LineBasicMaterial({
+            color: 0x808080,
+            transparent: true,
+            opacity: 0,
+        });
+        const boxMesh = new THREE.Mesh(geometry, material);
+    
+        // Adjust the position of the box to remain aligned
+        boxMesh.position.copy(center);
+        boxMesh.position.y += (adjustedHeight - size.y) / 2;
+    
+        return boxMesh;
+    }    
+
+    onMouseClick = (event) => {
+    
+        const rect = this.renderer.domElement.getBoundingClientRect();
+        this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+        this.raycaster.setFromCamera(this.mouse, this.camera.object);
+        const intersects = this.raycaster.intersectObjects(this.scene3D.children, true);
+    
+        if (intersects.length > 0) {
+            const clickedObject = intersects[0].object;
+            console.log("Object clicked:", clickedObject.name);
+    
+            if (clickedObject.name && clickedObject.name.includes("Bed")) {
+                const tablePosition = clickedObject.position;
+                console.log("Selected operating table:", clickedObject.name, "Position:", tablePosition);
+    
+                this.moveCameraToRoom(tablePosition, this.camera);
+            } else {
+                console.log("The clicked object is not a surgical table.");
+            }
+        } else {
+            console.log("No objects were clicked.");
+        }
+    };
+
+    moveCameraToRoom(position, camera) {
+        const [row, column] = this.cartesianToCell(position);
+
+        const centerX = (column - this.size.width / 2.0 + 0.5) * this.scale.x;
+        const centerZ = (row - this.size.height / 2.0 + 0.5) * this.scale.z;
+
+        const cameraHeight = 5.0;
+
+        const startPosition = {
+            x: camera.object.position.x,
+            y: camera.object.position.y,
+            z: camera.object.position.z,
+        };
+
+
+        const endPosition = {
+            x: centerX,
+            y: cameraHeight,
+            z: centerZ,
+        };
+
+        const lookAtTarget = new THREE.Vector3(centerX, 0, centerZ);
+
+        
+        var tween = new Tween(startPosition,true)
+        .to(endPosition, 1500)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(() => {
+            camera.object.position.set(
+                startPosition.x, 
+                startPosition.y, 
+                startPosition.z
+            );
+            camera.object.lookAt(lookAtTarget);
+        })
+        .onComplete(() => {
+            camera.object.position.set(
+                endPosition.x, 
+                endPosition.y, 
+                endPosition.z
+            );
+            camera.object.lookAt(lookAtTarget);
+        })
+        .start();
+
+    tween.update();
+
+    }
+
 
     // Convert cell [row, column] coordinates to cartesian (x, y, z) coordinates
     cellToCartesian(position) {
@@ -286,4 +408,5 @@ export default class Maze {
     foundExit(position) {
         return Math.abs(position.x - this.exitLocation.x) < 0.5 * this.scale.x && Math.abs(position.z - this.exitLocation.z) < 0.5 * this.scale.z
     };
+    
 }

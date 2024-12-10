@@ -18,8 +18,8 @@ export class HospitalModelComponent implements OnInit {
 
   ngOnInit(): void {
     this.setupPopStateListener(); 
-    this.initialize();
-    this.animate(); 
+    this.initialize()
+    this.animate();      
   }
 
   
@@ -43,9 +43,7 @@ export class HospitalModelComponent implements OnInit {
         { view: "mini-map", multipleViewsViewport: new THREE.Vector4(0.99, 0.02, 0.3, 0.3), initialOrientation: new Orientation(180.0, -90.0), initialZoom: 0.64 } // Mini-msp view camera parameters
         
       );
-      this.animate();
-      TWEEN.update();
-      
+      this.animate();      
       
     } catch (error) {
       console.error("Error initializing hospital model:", error);
@@ -54,6 +52,7 @@ export class HospitalModelComponent implements OnInit {
 
   animate() {
     requestAnimationFrame(() => this.animate());
+    TWEEN.update();
     this.hospitalModel.update();
 
   }

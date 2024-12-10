@@ -1,7 +1,7 @@
 
 
 import * as THREE from "three";
-import * as TWEEN from "@tweenjs/tween.js";
+import TWEEN from '@tweenjs/tween.js';
 import Stats from "three/addons/libs/stats.module.js";
 import Orientation from "./orientation.js";
 import { generalData, mazeData, playerData, lightsData, fogData, cameraData } from "./default_data.js";
@@ -35,6 +35,22 @@ export default class HospitalModel {
         // Create a 2D scene (the viewports frames)
         this.scene2D = new THREE.Scene();
 
+        this.fixedViewCamera = new Camera(this.fixedViewCameraParameters, window.innerWidth, window.innerHeight);
+        this.firstPersonViewCamera = new Camera(this.firstPersonViewCameraParameters, window.innerWidth, window.innerHeight);
+        this.thirdPersonViewCamera = new Camera(this.thirdPersonViewCameraParameters, window.innerWidth, window.innerHeight);
+        this.topViewCamera = new Camera(this.topViewCameraParameters, window.innerWidth, window.innerHeight);
+        // Create a renderer and turn on shadows in the renderer
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        if (this.generalParameters.setDevicePixelRatio) {
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+        }
+        this.renderer.autoClear = false;
+        /* To-do #30 - Turn on shadows in the renderer and filter shadow maps using the Percentage-Closer Filtering (PCF) algorithm*/
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(this.renderer.domElement);
+
         // Create a square
         let points = [new THREE.Vector3(0.0, 0.0, 0.0), new THREE.Vector3(1.0, 0.0, 0.0), new THREE.Vector3(1.0, 1.0, 0.0), new THREE.Vector3(0.0, 1.0, 0.0)];
         let geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -48,13 +64,13 @@ export default class HospitalModel {
         // Create a 3D scene (the game itself)
         this.scene3D = new THREE.Scene();
         this.scene3D.add(this.activeViewCamera);
-        this.scene3D.add(this.spotlight);
 
         // Create the maze
-        this.maze = new Maze(this.mazeParameters);
+        this.maze = new Maze(this.mazeParameters, this.fixedViewCamera, this.renderer, this.scene3D);
 
         // Create the player
         this.player = new Player(this.playerParameters);
+        this.mouse = new THREE.Vector2();
 
         // Create the lights
         this.lights = new Lights(this.lightsParameters);
@@ -63,12 +79,6 @@ export default class HospitalModel {
         // Create the fog
         this.fog = new Fog(this.fogParameters);
 
-        // Create the cameras corresponding to the four different views: fixed view, first-person view, third-person view and top view
-        this.fixedViewCamera = new Camera(this.fixedViewCameraParameters, window.innerWidth, window.innerHeight);
-        this.firstPersonViewCamera = new Camera(this.firstPersonViewCameraParameters, window.innerWidth, window.innerHeight);
-        this.thirdPersonViewCamera = new Camera(this.thirdPersonViewCameraParameters, window.innerWidth, window.innerHeight);
-        this.topViewCamera = new Camera(this.topViewCameraParameters, window.innerWidth, window.innerHeight);
-
         // Create the mini-map camera
         this.miniMapCamera = new Camera(this.miniMapCameraParameters, window.innerWidth, window.innerHeight);
 
@@ -76,17 +86,6 @@ export default class HospitalModel {
         this.statistics = new Stats();
         this.statistics.dom.style.visibility = "hidden";
         document.body.appendChild(this.statistics.dom);
-
-        // Create a renderer and turn on shadows in the renderer
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        if (this.generalParameters.setDevicePixelRatio) {
-            this.renderer.setPixelRatio(window.devicePixelRatio);
-        }
-        this.renderer.autoClear = false;
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this.renderer.domElement);
 
         // Set the mouse move action (none)
         this.dragMiniMap = false;
@@ -229,7 +228,6 @@ export default class HospitalModel {
             pointer.y >= viewport.y &&
             pointer.y < viewport.y + viewport.height);
     }
-
 
     onDocumentMouseClick(event) {
         event.preventDefault();
