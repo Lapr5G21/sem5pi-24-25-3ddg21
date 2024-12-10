@@ -137,12 +137,13 @@ namespace DDDSample1.Domain.Appointments
             var operationRequest = await _operationRequestRepo.GetByIdAsync(new OperationRequestId(dto.OperationRequestId)) ??
                                    throw new NullReferenceException("Operation Request not found: " + dto.OperationRequestId);
 
+            
+            var operationType = await this._operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
+            
             var appointment = new Appointment(surgeryRoom, operationRequest, new AppointmentDate(dto.Date));
 
             await this._repo.AddAsync(appointment);
             await this._unitOfWork.CommitAsync();
-
-            var operationType = await this._operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
 
             return new AppointmentDto
                 {

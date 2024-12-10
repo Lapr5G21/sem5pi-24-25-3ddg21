@@ -1,0 +1,20 @@
+@startuml AppointmentCreation(level1)
+
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Doctor 
+Doctor --> SYS : asks to create a new type of room
+
+activate SYS 
+SYS --> Doctor : displays the form for creating new type of room
+deactivate SYS
+
+Doctor --> SYS : submits the form with room type details
+
+activate SYS
+SYS --> Doctor : displays confirmation message that the type of room was added
+
+deactivate SYS
+
+@enduml
