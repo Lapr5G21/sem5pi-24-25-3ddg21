@@ -32,12 +32,12 @@ import { DropdownModule } from 'primeng/dropdown';
   ],
   providers: [MedicalConditionService, MessageService]
 })
-export class CreateMedicalConditionsComponent implements OnInit {
+export class CreateMedicalConditionsComponent {
   visible: boolean = false;
-  medicalConditionName: string = '';
-  medicalConditionCode: string = '';
-  medicalConditionDescription: string = '';
-  medicalConditionSymptoms: string = '';
+  name: string = '';
+  code: string = '';
+  description: string = '';
+  symptoms: string = '';
 
   isNameValid: boolean = true;
   isCodeValid: boolean = true;
@@ -51,8 +51,6 @@ export class CreateMedicalConditionsComponent implements OnInit {
     private messageService: MessageService
 ) {}
 
-ngOnInit() {}
-
     showDialog() {
         this.visible = true;
     }
@@ -64,10 +62,10 @@ ngOnInit() {}
       if (this.isNameValid && this.isCodeValid && this.isDescriptionValid && this.isSymptomsValid) {
 
           const medicalCondition = new CreateMedicalConditionDto(
-              this.medicalConditionName,
-              this.medicalConditionCode,
-              this.medicalConditionDescription,
-              this.medicalConditionSymptoms
+              this.name,
+              this.code,
+              this.description,
+              this.symptoms
           );
 
           console.log('Payload:', JSON.stringify(medicalCondition));
@@ -100,17 +98,17 @@ ngOnInit() {}
   }
   
   validateFields() {
-      this.isNameValid = !!this.medicalConditionName;
-      this.isCodeValid = !!this.medicalConditionCode;
-      this.isDescriptionValid = !!this.medicalConditionDescription;
-      this.isSymptomsValid = !!this.medicalConditionSymptoms;
+      this.isNameValid = !!this.name;
+      this.isCodeValid = !!this.code;
+      this.isDescriptionValid = !!this.description;
+      this.isSymptomsValid = !!this.symptoms;
   }
 
   resetForm() {
-      this.medicalConditionName = '';
-      this.medicalConditionCode = '';
-      this.medicalConditionDescription = '';
-      this.medicalConditionSymptoms = '';
+      this.name = '';
+      this.code = '';
+      this.description = '';
+      this.symptoms = '';
       this.isSubmitted = false;
       this.isNameValid = true;
       this.isCodeValid = true;
