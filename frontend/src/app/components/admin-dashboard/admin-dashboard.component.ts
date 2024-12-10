@@ -14,6 +14,7 @@ import { ListOperationTypesComponent } from './operationTypes/list-operation-typ
 import { HospitalModelComponent } from '../hospital-model/hospital-model/hospital-model.component';
 import { CreateSpecializationsComponent } from './specialization/create-specializations/create-specializations.component';
 import { ListSpecializationsComponent } from './specialization/list-specializations/list-specializations.component';
+import { CreateAllergiesComponent } from './allergies/create-allergies/create-allergies.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -30,6 +31,8 @@ export class AdminDashboardComponent implements OnInit {
   showPatientsList : boolean = false;
   showHospitalModel: boolean = false;
   showSpecializationList: boolean = false;
+  showAllergiesList: boolean = false; 
+
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
   @ViewChild(CreateStaffsComponent) createStaffsComponent!: CreateStaffsComponent;
@@ -40,6 +43,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent;
   @ViewChild(CreateSpecializationsComponent) createSpecializationsComponent!: CreateSpecializationsComponent;
+  @ViewChild(CreateAllergiesComponent) createAllergyComponent!: CreateAllergiesComponent;
 
   constructor(private router: Router) {}
 
@@ -91,6 +95,27 @@ export class AdminDashboardComponent implements OnInit {
             icon: 'pi pi-list',
             command: () => {
               this.showSpecializationList = true;
+              this.showOperationTypesList = false;
+              this.showStaffsList = false;
+              this.showPatientsList = false;
+            }          
+          }
+        ]
+      },
+      {
+        label: 'Allergies',
+        icon: '',
+        items: [
+          {
+            label: 'Create Allergy',
+            icon: 'pi pi-check',
+            command: () => this.createAllergy()
+          },
+          {
+            label: 'List Allergies',
+            icon: 'pi pi-list',
+            command: () => {
+              this.showAllergiesList = true;
               this.showOperationTypesList = false;
               this.showStaffsList = false;
               this.showPatientsList = false;
@@ -180,6 +205,11 @@ export class AdminDashboardComponent implements OnInit {
     ];
   }
 
+
+  createAllergy(){
+    this.createAllergyComponent.showDialog();
+  }
+  
   createOperationType() {
     this.createOperationTypesComponent.showDialog(); 
   }

@@ -1,0 +1,29 @@
+<p-table 
+  [value]="allergies" 
+  scrollHeight="400px"
+  [responsiveLayout]="'scroll'">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Code</th>
+      <th>Description</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-allergy>
+    <tr>
+      <td>{{ allergy.allergyName }}</td>
+      <td>{{ allergy.allergyCode }}</td>
+      <td>{{ allergy.allergyDescription }}</td>
+      <td>
+          pButton 
+          icon="pi pi-times" 
+          label="Remove" 
+          (click)="confirmRemove(specialization.id)" 
+          class="p-button-sm p-button-rounded p-button-danger"></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
