@@ -41,16 +41,10 @@ export class ListAllergiesComponent implements OnInit {
   allergies: Allergy[] = [];
   filteredAllergies: Allergy[] = [];
 
-  filters = {
-    name: '',
-    code: ''
-  };
+  nameFilter: string = '';
+  codeFilter: string = '';
 
-  selectedAllergy: Allergy = {
-    name: '',
-    code: '',
-    description: ''
-  };
+  selectedAllergy: any = {};
 
   constructor(private allergyService: AllergyService,
               private confirmationService: ConfirmationService, private messageService : MessageService) {}
@@ -63,26 +57,31 @@ export class ListAllergiesComponent implements OnInit {
     this.allergyService.getAllergies().subscribe(
       (allergies) => {
         this.allergies = allergies;
-        this.filteredAllergies = [...allergies]; // Inicializar com todos os dados
+        this.filteredAllergies = [...this.allergies];
       },
       (error) => console.error('Error loading allergies', error)
     );
   }
 
-  applyFilters(): void {
-    this.filteredAllergies = this.allergies.filter((allergy) => {
-      const matchesName = allergy.name
-        .toLowerCase()
-        .includes(this.filters.name.toLowerCase());
-      const matchesCode = allergy.code
-        .toLowerCase()
-        .includes(this.filters.code.toLowerCase());
-      return matchesName && matchesCode;
-    });
-  }
-  
   onSearch(): void {
-    this.loadAllergies();
+    if (!this.nameFilter && !this.codeFilter) {
+      this.filteredAllergies = [...this.allergies];
+    } else {
+
+      this.filteredAllergies = this.allergies.filter(item => {
+        const matchesName = item.name.toLowerCase() === this.nameFilter.toLowerCase(); 
+        const matchesCode = item.code.toLowerCase() === this.codeFilter.toLowerCase(); 
+        return matchesName || matchesCode;
+      });
+    }
+    
+    if (this.filteredAllergies.length === 0) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'No Results',
+        detail: 'No allergies found matching the criteria.',
+      });
+    }
   }
 
   onRemove(allergyCode: string): void {

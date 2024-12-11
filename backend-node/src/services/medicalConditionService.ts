@@ -11,6 +11,7 @@ import { MedicalConditionDescription } from '../domain/MedicalConditions/medical
 import { MedicalConditionName } from '../domain/MedicalConditions/medicalConditionName';
 import { MedicalConditionSymptoms } from '../domain/MedicalConditions/medicalConditionSymptoms';
 import mongoose from 'mongoose';
+import ISearchMedicalConditionDTO from "../dto/ISearchMedicalConditionDTO";
 
 @Service()
 export default class MedicalConditionService implements IMedicalConditionService {
@@ -73,32 +74,68 @@ export default class MedicalConditionService implements IMedicalConditionService
     }
   }
 
+  public async searchMedicalConditions(searchDTO: ISearchMedicalConditionDTO): Promise<Result<IMedicalConditionDTO[]>> {
+    try {
+      const medicalConditions = await this.medicalConditionRepo.searchMedicalConditions(searchDTO);
+      
+      if (medicalConditions.length === 0) {
+        console.log("No medical conditions found in service.");
+        return Result.fail<IMedicalConditionDTO[]>(`No medical conditions found for the given search parameters.`);
+      }
+  
+      const medicalConditionsDTO = medicalConditions.map(medicalCondition =>
+        MedicalConditionMap.toDTO(medicalCondition) as IMedicalConditionDTO
+      );
+    
+      return Result.ok<IMedicalConditionDTO[]>(medicalConditionsDTO);
+    } catch (e) {
+      console.error("Error during search in service:", e);
+      return Result.fail<IMedicalConditionDTO[]>(`Error searching medical conditions: ${e.message}`);
+    }
+  }
+  
+  
+  
+
   public async updateMedicalCondition(medicalConditionDTO: IMedicalConditionDTO): Promise<Result<IMedicalConditionDTO>> {
     try {
+      // Tenta encontrar a condição médica pelo ID fornecido no DTO
       const medicalCondition = await this.medicalConditionRepo.findByDomainId(medicalConditionDTO.id);
-
+  
+      // Caso a condição não seja encontrada, retorna um erro
       if (medicalCondition === null) {
         return Result.fail<IMedicalConditionDTO>("Medical Condition not found");
       }
-      else {
-        const name  = MedicalConditionName.create( { name: medicalConditionDTO.name } ) ;
-        const code = MedicalConditionCode.create( { code : medicalConditionDTO.code } );
-        const description = MedicalConditionDescription.create( { description : medicalConditionDTO.description } );
-        const symptoms = MedicalConditionSymptoms.create( { symptoms : medicalConditionDTO.description } );
-
-        medicalCondition.name = name.getValue();
-        medicalCondition.code = code.getValue();
-        medicalCondition.description = description.getValue();
-        medicalCondition.symptoms = symptoms.getValue();
-
-        await this.medicalConditionRepo.save(medicalCondition);
-
-        const medicalConditionDTOResult = MedicalConditionMap.toDTO( medicalCondition ) as IMedicalConditionDTO;
-        return Result.ok<IMedicalConditionDTO>( medicalConditionDTOResult )
-        }
+  
+      // Criação das instâncias específicas para os valores
+      const nameOrError = MedicalConditionName.create({ name: medicalConditionDTO.name });
+      const codeOrError = MedicalConditionCode.create({ code: medicalConditionDTO.code });
+      const descriptionOrError = MedicalConditionDescription.create({ description: medicalConditionDTO.description });
+      const symptomsOrError = MedicalConditionSymptoms.create({ symptoms: medicalConditionDTO.symptoms });
+  
+      // Verifica se algum erro ocorreu ao criar as instâncias
+      if (nameOrError.isFailure || codeOrError.isFailure || descriptionOrError.isFailure || symptomsOrError.isFailure) {
+        return Result.fail<IMedicalConditionDTO>("Invalid data provided");
+      }
+  
+      // Atualiza os valores da entidade com os novos objetos
+      medicalCondition.name = nameOrError.getValue();
+      medicalCondition.code = codeOrError.getValue();
+      medicalCondition.description = descriptionOrError.getValue();
+      medicalCondition.symptoms = symptomsOrError.getValue();
+  
+      // Salva a entidade atualizada
+      await this.medicalConditionRepo.save(medicalCondition);
+  
+      // Converte para DTO e retorna o resultado
+      const medicalConditionDTOResult = MedicalConditionMap.toDTO(medicalCondition) as IMedicalConditionDTO;
+      return Result.ok<IMedicalConditionDTO>(medicalConditionDTOResult);
     } catch (e) {
-      throw e;
+      // Em caso de erro, loga e retorna falha
+      console.error("Error during update:", e);
+      return Result.fail<IMedicalConditionDTO>(`Error updating medical condition: ${e.message}`);
     }
   }
-
+  
+  
 }

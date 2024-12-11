@@ -9,4 +9,12 @@ export class CreateMedicalConditionDto {
     ) {}
 }
 
-
+export class MedicalCondition {
+    constructor(
+        public id: string,
+        public name: string,
+        public code: string,
+        public description: string,
+        public symptoms: string,
+    ) {}
+}

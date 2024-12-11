@@ -12,11 +12,12 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { CalendarModule } from 'primeng/calendar';
-import { Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { CheckboxModule } from 'primeng/checkbox';
+import { MedicalCondition } from '../../../../domain/medical-condition-model';
+
 
 @Component({
   selector: 'list-medical-conditions',
@@ -46,31 +47,51 @@ export class ListMedicalConditionsComponent implements OnInit {
   nameFilter: string = '';
   codeFilter: string = '';
 
-  medicalConditions: any[] = [];
+  medicalConditions: MedicalCondition[] = [];
 
   editDialogVisible: boolean = false;
   selectedMedicalCondition: any = {}; 
+  filteredMedicalConditions: MedicalCondition[] = [];
 
-  constructor(private medicalConditionService: MedicalConditionService, private router: Router, private messageService : MessageService,  private confirmationService: ConfirmationService,
+  constructor(private medicalConditionService: MedicalConditionService, private messageService : MessageService,  private confirmationService: ConfirmationService,
   ) {}
 
   ngOnInit(): void {
     this.loadMedicalConditions();  
   }
 
-  loadMedicalConditions() {
+  loadMedicalConditions(): void {
     
-    this.medicalConditionService.searchMedicalConditions(this.nameFilter, this.codeFilter).subscribe(
+    this.medicalConditionService.getMedicalConditions().subscribe(
         (medicalConditions) => {
-            console.log(medicalConditions);
             this.medicalConditions = medicalConditions;   
+            this.filteredMedicalConditions = [...this.medicalConditions];
         },
         (error) => console.error('Error loading medical conditions', error)
     );
   }
 
-  onSearch(): void { 
-    this.loadMedicalConditions();  
+  onSearch(): void {
+    // Verifica se os filtros estão vazios. Se estiverem, mostra a lista completa
+    if (!this.nameFilter && !this.codeFilter) {
+      this.filteredMedicalConditions = [...this.medicalConditions]; // Exibe a lista completa sem filtro
+    } else {
+      // Filtra a lista de condições médicas com base no nome e no código exato
+      this.filteredMedicalConditions = this.medicalConditions.filter(item => {
+        const matchesName = item.name.toLowerCase() === this.nameFilter.toLowerCase(); // Comparação exata do nome
+        const matchesCode = item.code.toLowerCase() === this.codeFilter.toLowerCase(); // Comparação exata do código
+        return matchesName || matchesCode; // Incluir itens que correspondem ao nome ou ao código exato
+      });
+    }
+
+    // Verifica se nenhuma condição médica foi encontrada após o filtro
+    if (this.filteredMedicalConditions.length === 0) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'No Results',
+        detail: 'No medical conditions found matching the criteria.',
+      });
+    }
   }
 
   openEditDialog(item: any) {
@@ -79,7 +100,7 @@ export class ListMedicalConditionsComponent implements OnInit {
     
   }
 
-  saveMedicalConditionInfo(selectedMedicalCondition: any) {
+  saveMedicalConditionInfo(selectedMedicalCondition: MedicalCondition) {
     console.log('Saving medical condition info:', selectedMedicalCondition);
     
     this.medicalConditionService.updateMedicalCondition(selectedMedicalCondition.id, selectedMedicalCondition).subscribe({

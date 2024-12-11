@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MedicalConditionService {
-  private apiUrl = 'https://localhost:4000/api';
+  private apiUrl = 'http://localhost:4000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -60,6 +60,6 @@ export class MedicalConditionService {
   
     console.log('Payload enviado para o backend:', payload);
   
-    return this.http.put(`${this.apiUrl}/medicalConditions/${id}`, payload, { headers });
+    return this.http.put(`${this.apiUrl}/medicalConditions`, payload, { headers });
   }
 }
