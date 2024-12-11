@@ -13,7 +13,7 @@ export default (app: Router) => {
 
   const ctrl = Container.get<IMedicalConditionController>(config.controllers.medicalCondition.name);
 
-  route.get('/', ctrl.getAllMedicalConditions);
+  route.get('/', (req, res, next) => ctrl.getAllMedicalConditions(req, res, next));
 
   route.get('/:id',
     celebrate({

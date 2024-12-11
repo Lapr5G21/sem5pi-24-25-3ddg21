@@ -32,19 +32,21 @@ export default class MedicalConditionController implements IMedicalConditionCont
   // api/medicalConditions
   public async getAllMedicalConditions(req: Request, res: Response, next: NextFunction) {
     try {
-     
-      const medicalConditions = await this.medicalConditionServiceInstance.getMedicalConditions();
+      const result = await this.medicalConditionServiceInstance.getMedicalConditions();
 
-      if ( medicalConditions === null ) {
-        return res.status(404).send("Failed to retrieve medical conditions");
+      if (result.isFailure) {
+        return res.status(404).json({ message: "Failed to retrieve medical conditions" });
       }
 
-      return res.json(medicalConditions).status(200);
+      const medicalConditionsDTO = result.getValue();
+
+      return res.status(200).json(medicalConditionsDTO);
+    } catch (err) {
+      
+      return res.status(500).json({ message: err.message });
     }
-    catch (err) {
-      res.status(500).json({ message: err.message }); 
-    }
-  };
+  }
+
 
   // api/medicalConditions
   public async createMedicalCondition(req: Request, res: Response, next: NextFunction) {
