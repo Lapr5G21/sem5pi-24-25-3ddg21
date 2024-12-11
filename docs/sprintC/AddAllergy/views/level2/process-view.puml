@@ -1,0 +1,25 @@
+@startuml process-view
+autonumber
+
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
+
+activate Admin
+    Admin -> Frontend : asks to add a new allergy
+    activate Frontend
+        Frontend --> Admin : asks to insert the details of the allergy
+    
+    deactivate Frontend
+    Admin -> Frontend : inserts the details
+    activate Frontend
+    
+        Frontend-> Backend : POST /allergy
+        activate Backend
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+    Frontend --> Admin : displays confirmation message that the allergy was added
+    
+    deactivate Frontend
+    deactivate Admin
+@enduml

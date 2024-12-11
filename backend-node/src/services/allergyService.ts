@@ -60,7 +60,7 @@ export default class AllergyService implements IAllergyService {
     }
   }
 
-  public async getAllergies(): Promise<Result<IAllergyDTO[]>> {
+  public async getAllAllergies(): Promise<Result<IAllergyDTO[]>> {
     try {
       const allergies = await this.allergyRepo.getAll();
 

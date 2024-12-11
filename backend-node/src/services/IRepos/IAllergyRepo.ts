@@ -1,6 +1,7 @@
 import { Repo } from "../../core/infra/Repo";
 import { Allergy } from "../../domain/Allergies/allergy";
 import { AllergyId } from "../../domain/Allergies/allergyId";
+import IAllergyDTO from "../../dto/IAllergyDTO";
 
 export default interface IAllergyRepo extends Repo<Allergy> {
   save(allergy: Allergy): Promise<Allergy>;

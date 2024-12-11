@@ -19,6 +19,10 @@ export class AllergyCode extends ValueObject<AllergyCodeProps> {
 
     public static create (props: AllergyCodeProps): Result<AllergyCode> {
         const propsResult = Guard.againstNullOrUndefined(props.code, 'code');
+
+        if ( props.code.length > 7 && props.code.length < 6) {
+            return Result.fail<AllergyCode>("Allergy code must be 6 or 7 characters long");
+        }
     
         if (!propsResult.succeeded) {
           return Result.fail<AllergyCode>(propsResult.message);
