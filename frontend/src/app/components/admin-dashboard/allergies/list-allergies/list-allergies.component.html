@@ -1,29 +1,65 @@
-<p-table 
-  [value]="allergies" 
-  scrollHeight="400px"
-  [responsiveLayout]="'scroll'">
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Name</th>
-      <th>Code</th>
-      <th>Description</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-allergy>
-    <tr>
-      <td>{{ allergy.allergyName }}</td>
-      <td>{{ allergy.allergyCode }}</td>
-      <td>{{ allergy.allergyDescription }}</td>
-      <td>
-          <button 
-          icon="pi pi-times" 
-          label="Remove" 
-          (click)="confirmRemove(allergy.allergyCode)" 
-          class="p-button-sm p-button-rounded p-button-danger"></button>
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+
+
+<!-- DataView -->
+<div class="card">
+  <p-dataView [value]="filteredAllergies" [rows]="5" [paginator]="true">
+    <ng-template pTemplate="header">
+      <div class="flex justify-between mt-2 mb-2">
+        <div class="flex gap-4">
+          <p-floatLabel class="flex-1">
+            <input 
+              pInputText 
+              id="nameFilter" 
+              [(ngModel)]="filters.name" 
+              placeholder="Search by name" 
+              class="p-inputtext-sm" 
+              (input)="applyFilters()" />
+            <label for="nameFilter">Name</label>
+          </p-floatLabel>
+
+          <p-floatLabel class="flex-1">
+            <input 
+              pInputText 
+              id="codeFilter" 
+              [(ngModel)]="filters.code" 
+              placeholder="Search by code" 
+              class="p-inputtext-sm" 
+              (input)="applyFilters()" />
+            <label for="codeFilter">Code</label>
+          </p-floatLabel>
+
+          <div class="flex items-end">
+            <button (click)="applyFilters()" class="p-button p-button-sm p-button-primary">Search</button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="list" let-items>
+      <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
+        <div class="grid grid-nogutter text-center font-bold bg-primary text-white">
+          <div class="col" style="flex: 2;">Name</div>
+          <div class="col" style="flex: 2;">Code</div>
+          <div class="col" style="flex: 4;">Description</div>
+        </div>
+        
+        <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
+          <div class="col" style="flex: 2;">{{ item.name || 'Not specified' }}</div>
+          <div class="col" style="flex: 1;">{{ item.code || 'Not specified' }}</div>
+          <div class="col" style="flex: 4;">{{ item.description || 'Not specified' }}</div>
+          <div class="col" style="flex: 1;">
+            <p-button 
+              icon="pi pi-trash" 
+              label="Delete" 
+              class="p-button-danger"
+              [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }">
+            </p-button>
+          </div>
+        </div>
+      </p-scrollPanel>
+    </ng-template>
+  </p-dataView>
+</div>
 
 <p-confirmDialog></p-confirmDialog>
 <p-toast></p-toast>

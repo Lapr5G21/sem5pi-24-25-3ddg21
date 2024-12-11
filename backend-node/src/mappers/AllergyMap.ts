@@ -1,7 +1,6 @@
 import { Mapper } from "../core/infra/Mapper";
 
 import { Document, Model } from 'mongoose';
-import { IRolePersistence } from '../dataschema/IRolePersistence';
 
 import { UniqueEntityID } from "../core/domain/UniqueEntityID";
 import { Allergy } from "../domain/Allergies/allergy";
@@ -11,11 +10,14 @@ import { IAllergyPersistence } from "../dataschema/IAllergyPersistence";
 export class AllergyMap extends Mapper<Allergy> {
   
   public static toDTO( allergy: any): IAllergyDTO {
+
+    const rawData = allergy.props?._doc || allergy.props || allergy;
+
     return {
-      id: allergy.id,
-      name: allergy.name,
-      code:allergy.code,
-      description: allergy.description
+      id: rawData.id,
+      name: rawData.name || null,
+      code: rawData.code || null,
+      description: rawData.description || null
     };
   }
 

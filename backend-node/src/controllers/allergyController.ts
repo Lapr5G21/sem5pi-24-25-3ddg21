@@ -31,17 +31,20 @@ export default class AllergyController implements IAllergyController  {
   };
 
 
-  // api/allergies
+  
   public async getAllAllergies(req: Request, res: Response, next: NextFunction) {
     try {
      
-      const allergies = await this.AllergyService.getAllAllergies() as Result<IAllergyDTO[]>;
+
+      const allergies = await this.AllergyService.getAllAllergies();
      
-      if ( allergies === null ) {
-        return res.status(404).send("Failed to retrieve allergies");
+      if ( allergies.isFailure ) {
+        return res.status(404).json({message:"Failed to retrieve allergies"});
       }
 
-      return res.json(allergies).status(200);
+      const allergiesDTO = allergies.getValue();
+
+      return res.status(200).json(allergiesDTO);
     }
     catch (err) {
       res.status(500).json({ message: err.message }); 
@@ -50,7 +53,7 @@ export default class AllergyController implements IAllergyController  {
 
 
 
-  // api/allergies
+  
   public async createAllergy(req: Request, res: Response, next: NextFunction) {
     try {
       const allergyOrError = await this.AllergyService.createAllergy(req.body as IAllergyDTO) as Result<IAllergyDTO>;
@@ -67,12 +70,32 @@ export default class AllergyController implements IAllergyController  {
     }
   };
 
-  // api/allergies/:id
+  public async deleteAllergy(req: Request, res: Response, next: NextFunction) {
+    console.log("DELETE request received for allergy:", req.params.code);
+    try {
+      const allergyOrError = await this.AllergyService.deleteAllergy(req.params.code) as Result<IAllergyDTO>;
+
+      if (allergyOrError.isFailure) {
+        console.log("Allergy not found");
+        return res.status(404).json({ message: "Allergy not found" });
+    }
+
+      const allergyDTO = allergyOrError.getValue();
+
+      return res.status(200).json( allergyDTO );
+    }
+    catch (e) {
+      console.error("Error deleting allergy:", e);
+        return next(e);
+    }
+  };
+
+  
   public async updateAllergy(req: Request, res: Response, next: NextFunction) {
     try {
 
       const { id, name, code, description } = req.body;
-      console.log(`ID: ${req.params.id}`); // Log para verificar o ID
+      console.log(`ID: ${req.params.id}`); 
       console.log(`Name: ${name}, Code: ${code}, Description: ${description}`);
 
       const allergyOrError = await this.AllergyService.updateAllergy({ id, name, code, description }) as Result<IAllergyDTO>;

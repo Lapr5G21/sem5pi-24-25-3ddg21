@@ -14,6 +14,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ToastModule } from 'primeng/toast';
+import { DataViewModule } from 'primeng/dataview';
 
 @Component({
   selector: 'list-allergies',
@@ -29,7 +30,8 @@ import { ToastModule } from 'primeng/toast';
     DropdownModule,
     FloatLabelModule,
     ConfirmDialogModule,
-    ToastModule],
+    ToastModule,
+    DataViewModule],
   templateUrl: './list-allergies.component.html',
   styleUrl: './list-allergies.component.scss',
   providers: [ConfirmationService, MessageService]
@@ -37,6 +39,12 @@ import { ToastModule } from 'primeng/toast';
 export class ListAllergiesComponent implements OnInit {
   editDialogVisible: boolean = false;
   allergies: Allergy[] = [];
+  filteredAllergies: Allergy[] = [];
+
+  filters = {
+    name: '',
+    code: ''
+  };
 
   selectedAllergy: Allergy = {
     name: '',
@@ -55,11 +63,24 @@ export class ListAllergiesComponent implements OnInit {
     this.allergyService.getAllergies().subscribe(
       (allergies) => {
         this.allergies = allergies;
+        this.filteredAllergies = [...allergies]; // Inicializar com todos os dados
       },
       (error) => console.error('Error loading allergies', error)
     );
   }
 
+  applyFilters(): void {
+    this.filteredAllergies = this.allergies.filter((allergy) => {
+      const matchesName = allergy.name
+        .toLowerCase()
+        .includes(this.filters.name.toLowerCase());
+      const matchesCode = allergy.code
+        .toLowerCase()
+        .includes(this.filters.code.toLowerCase());
+      return matchesName && matchesCode;
+    });
+  }
+  
   onSearch(): void {
     this.loadAllergies();
   }
