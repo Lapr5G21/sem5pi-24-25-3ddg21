@@ -318,7 +318,6 @@ export default class Maze {
         }
     };
     
-    // Função para mover a câmera para o local e ativar o spotlight se necessário
     moveCameraToRoom(position, camera,activateSpotlightFlag) {
         console.log(activateSpotlightFlag);
         const [row, column] = this.cartesianToCell(position);
@@ -361,7 +360,6 @@ export default class Maze {
                 );
                 camera.object.lookAt(lookAtTarget);
                 if (activateSpotlightFlag) {
-                    console.log("1");
                     this.activateSpotlight(position);
                 }
             })
