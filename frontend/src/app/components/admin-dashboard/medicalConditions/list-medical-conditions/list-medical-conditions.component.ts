@@ -72,19 +72,16 @@ export class ListMedicalConditionsComponent implements OnInit {
   }
 
   onSearch(): void {
-    // Verifica se os filtros estão vazios. Se estiverem, mostra a lista completa
     if (!this.nameFilter && !this.codeFilter) {
-      this.filteredMedicalConditions = [...this.medicalConditions]; // Exibe a lista completa sem filtro
+      this.filteredMedicalConditions = [...this.medicalConditions];
     } else {
-      // Filtra a lista de condições médicas com base no nome e no código exato
       this.filteredMedicalConditions = this.medicalConditions.filter(item => {
-        const matchesName = item.name.toLowerCase() === this.nameFilter.toLowerCase(); // Comparação exata do nome
-        const matchesCode = item.code.toLowerCase() === this.codeFilter.toLowerCase(); // Comparação exata do código
-        return matchesName || matchesCode; // Incluir itens que correspondem ao nome ou ao código exato
+        const matchesName = item.name.toLowerCase() === this.nameFilter.toLowerCase();
+        const matchesCode = item.code.toLowerCase() === this.codeFilter.toLowerCase();
+        return matchesName || matchesCode;
       });
     }
 
-    // Verifica se nenhuma condição médica foi encontrada após o filtro
     if (this.filteredMedicalConditions.length === 0) {
       this.messageService.add({
         severity: 'info',
@@ -105,7 +102,7 @@ export class ListMedicalConditionsComponent implements OnInit {
     
     this.medicalConditionService.updateMedicalCondition(selectedMedicalCondition.id, selectedMedicalCondition).subscribe({
       next: (response) => {
-        console.log('Medical condition info atualizado com sucesso:', response);
+        console.log('Medical condition info updated successfully:', response);
         
         this.messageService.add({
           severity: 'success',
@@ -116,7 +113,7 @@ export class ListMedicalConditionsComponent implements OnInit {
         this.editDialogVisible = false; 
       },
       error: (error) => {
-        console.error('Erro ao atualizar medical condition info:', error);
+        console.error('Failed to update medical condition info:', error);
         
         this.messageService.add({
           severity: 'error',
@@ -125,10 +122,43 @@ export class ListMedicalConditionsComponent implements OnInit {
         });
       },
       complete: () => {
-        console.log('Processo de atualização de medical condition concluído.');
+        console.log('Update medical condition proccess complete.');
         this.loadMedicalConditions();
       }
     });
   }
   
+  onRemove(id: string): void {
+    this.medicalConditionService.removeMedicalCondition(id).subscribe(
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Deleted',
+          detail: 'Medical condition deleted successfully!'
+        });
+        this.loadMedicalConditions();
+      },
+      (error) => {
+        console.error('Error deleting medical condition:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete medical condition.'
+        });
+      }
+  )}
+
+  confirmRemove(id: string): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this medical condition?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.onRemove(id);
+      },
+      reject: () => {
+        console.log('Medical condition deletition action canceled.');
+      }
+    });
+  }
 }

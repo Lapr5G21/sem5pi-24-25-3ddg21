@@ -34,7 +34,6 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
 
   public async save(medicalCondition: MedicalCondition): Promise<MedicalCondition> {
     const query = { domainId: medicalCondition.id.toString() };
-  
     try {
       // Procura pela condição médica existente no banco de dados
       let medicalConditionDocument = await this.medicalConditionSchema.findOne(query);
@@ -42,29 +41,33 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
       if (medicalConditionDocument === null) {
         // Caso não exista, cria uma nova entrada
         const rawMedicalCondition = MedicalConditionMap.toPersistence(medicalCondition);
+  
+        // Cria a nova condição médica no banco
         const medicalConditionCreated = await this.medicalConditionSchema.create(rawMedicalCondition);
   
         // Retorna a entidade convertida para domínio
         return MedicalConditionMap.toDomain(medicalConditionCreated);
       } else {
-        // Atualiza os campos existentes
-        medicalConditionDocument.name = medicalCondition.name.toString();
-        medicalConditionDocument.code = medicalCondition.code.toString();
-        medicalConditionDocument.description = medicalCondition.description.toString();
-        medicalConditionDocument.symptoms = medicalCondition.symptoms.toString();
-  
+
+        // Atualiza os campos no documento existente
+        medicalConditionDocument.name = medicalCondition.props.name.value;
+        medicalConditionDocument.code = medicalCondition.props.code.value;
+        medicalConditionDocument.description = medicalCondition.props.description.value;
+        medicalConditionDocument.symptoms = medicalCondition.props.symptoms.value;
+
         // Salva as alterações no banco
         await medicalConditionDocument.save();
   
-        // Retorna a entidade atualizada
+        // Retorna a entidade atualizada convertida para o domínio
         return MedicalConditionMap.toDomain(medicalConditionDocument);
       }
     } catch (err) {
-      // Tratamento de erro com mensagem clara
+      // Tratamento de erro com mensagem clara e detalhada
       console.error("Error saving medical condition:", err);
       throw new Error(`Could not save medical condition: ${err.message}`);
     }
   }
+  
   
 
   public async getAll(): Promise<MedicalCondition[]> {
@@ -76,17 +79,22 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
     }
   }
 
-  public async findByDomainId (medicalConditionId: MedicalConditionId | string): Promise<MedicalCondition> {
-    const query = { domainId: medicalConditionId};
-    const medicalConditionRecord = await this.medicalConditionSchema.findOne( query as FilterQuery<IMedicalConditionPersistence & Document> );
-
-    if( medicalConditionRecord != null) {
-      return MedicalConditionMap.toDomain(medicalConditionRecord);
-    }
-    else
+  public async findByDomainId(medicalConditionId: MedicalConditionId | string): Promise<MedicalCondition> {
+    try {
+      const query = { domainId: medicalConditionId.toString() };
+      const medicalConditionRecord = await this.medicalConditionSchema.findOne(query as FilterQuery<IMedicalConditionPersistence & Document>);
+  
+      if (medicalConditionRecord != null) {
+        return MedicalConditionMap.toDomain(medicalConditionRecord);
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error finding medical condition:', error);
       return null;
+    }
   }
-
+  
   public async searchMedicalConditions(searchDto: ISearchMedicalConditionDTO): Promise<MedicalCondition[]> {
     try {    
       const filters: FilterQuery<IMedicalConditionPersistence & Document> = {};
@@ -123,11 +131,8 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
     }
   }
   
-  
-  
-  
-  
-  
-  
-  
+  public async delete (medicalCondition: MedicalCondition): Promise<any> {
+    const query = { domainId: medicalCondition.id.toString() };
+    await this.medicalConditionSchema.deleteOne(query);
+  }
 }

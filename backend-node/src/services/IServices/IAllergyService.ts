@@ -7,5 +7,5 @@ export default interface IAllergyService  {
   updateAllergy(allergyDTO: IAllergyDTO): Promise<Result<IAllergyDTO>>;
   getAllergy (allergyId: string): Promise<Result<IAllergyDTO>>;
   getAllAllergies(): Promise<Result<IAllergyDTO[]>>;
-  deleteAllergy(allergyCode: string): Promise<Result<IAllergyDTO>>;
+  deleteAllergy(id: string): Promise<Result<IAllergyDTO>>;
 }

@@ -57,5 +57,8 @@ export default (app: Router) => {
       }),
       (req, res, next) => ctrl.updateMedicalCondition(req, res, next)
     );
+
+    route.delete('/:id/delete', (req, res, next) => ctrl.deleteMedicalCondition(req, res, next));
+
 }    
     

@@ -44,9 +44,9 @@
                 <p-button 
                 
                 icon="pi pi-trash" 
-                label="Disable" 
+                label="Delete" 
                 class="p-button-danger" 
-                
+                (click)="onRemove(item.id)"
                 [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }">
               </p-button>
             

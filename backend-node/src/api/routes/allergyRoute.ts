@@ -47,5 +47,5 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.updateAllergy(req, res, next));
 
-    route.delete('/api/allergies/:code/delete', (req, res, next) => ctrl.deleteAllergy(req, res, next));
+    route.delete('/:code/delete', (req, res, next) => ctrl.deleteAllergy(req, res, next));
 };

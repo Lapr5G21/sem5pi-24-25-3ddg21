@@ -104,14 +104,32 @@ export default class MedicalConditionController implements IMedicalConditionCont
       const medicalConditionOrError = await this.medicalConditionServiceInstance.updateMedicalCondition(req.body as IMedicalConditionDTO) as Result<IMedicalConditionDTO>;
   
       if (medicalConditionOrError.isFailure) {
-        return res.status(404).send(); // Resposta vazia com status 404
+        return res.status(404).send();
       }
   
       const medicalConditionDTO = medicalConditionOrError.getValue();
-      return res.status(201).json(medicalConditionDTO); // Alterado para status 201 para manter a consistência
+      return res.status(201).json(medicalConditionDTO);
     } catch (e) {
       return next(e);
     }
   };
   
+  public async deleteMedicalCondition(req: Request, res: Response, next: NextFunction) {
+    try {
+      const medicalConditionOrError = await this.medicalConditionServiceInstance.deleteMedicalCondition(req.params.id) as Result<IMedicalConditionDTO>;
+
+      if (medicalConditionOrError.isFailure) {
+        return res.status(404).json({ message: "Medical condition not found" });
+    }
+
+      const allergyDTO = medicalConditionOrError.getValue();
+
+      return res.status(200).json( allergyDTO );
+    }
+    catch (e) {
+      console.error("Error deleting medical condition:", e);
+        return next(e);
+    }
+  };
+
 }

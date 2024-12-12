@@ -22,8 +22,8 @@ export class MedicalConditionService {
     return this.http.post(`${this.apiUrl}/medicalConditions`, medicalConditonData);
   }
 
-  removeMedicalCondition(medicalConditionCode: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/medicalConditions/${medicalConditionCode}/delete`);
+  removeMedicalCondition(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/medicalConditions/${id}/delete`);
   }
 
   searchMedicalConditions(name: string, code: string): Observable<any[]> {

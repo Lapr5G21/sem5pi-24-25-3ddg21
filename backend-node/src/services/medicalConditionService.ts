@@ -97,45 +97,73 @@ export default class MedicalConditionService implements IMedicalConditionService
   
   
 
-  public async updateMedicalCondition(medicalConditionDTO: IMedicalConditionDTO): Promise<Result<IMedicalConditionDTO>> {
-    try {
-      // Tenta encontrar a condição médica pelo ID fornecido no DTO
-      const medicalCondition = await this.medicalConditionRepo.findByDomainId(medicalConditionDTO.id);
-  
-      // Caso a condição não seja encontrada, retorna um erro
-      if (medicalCondition === null) {
-        return Result.fail<IMedicalConditionDTO>("Medical Condition not found");
-      }
-  
-      // Criação das instâncias específicas para os valores
-      const nameOrError = MedicalConditionName.create({ name: medicalConditionDTO.name });
-      const codeOrError = MedicalConditionCode.create({ code: medicalConditionDTO.code });
-      const descriptionOrError = MedicalConditionDescription.create({ description: medicalConditionDTO.description });
-      const symptomsOrError = MedicalConditionSymptoms.create({ symptoms: medicalConditionDTO.symptoms });
-  
-      // Verifica se algum erro ocorreu ao criar as instâncias
-      if (nameOrError.isFailure || codeOrError.isFailure || descriptionOrError.isFailure || symptomsOrError.isFailure) {
-        return Result.fail<IMedicalConditionDTO>("Invalid data provided");
-      }
-  
-      // Atualiza os valores da entidade com os novos objetos
-      medicalCondition.name = nameOrError.getValue();
-      medicalCondition.code = codeOrError.getValue();
-      medicalCondition.description = descriptionOrError.getValue();
-      medicalCondition.symptoms = symptomsOrError.getValue();
-  
-      // Salva a entidade atualizada
-      await this.medicalConditionRepo.save(medicalCondition);
-  
-      // Converte para DTO e retorna o resultado
-      const medicalConditionDTOResult = MedicalConditionMap.toDTO(medicalCondition) as IMedicalConditionDTO;
-      return Result.ok<IMedicalConditionDTO>(medicalConditionDTOResult);
-    } catch (e) {
-      // Em caso de erro, loga e retorna falha
-      console.error("Error during update:", e);
-      return Result.fail<IMedicalConditionDTO>(`Error updating medical condition: ${e.message}`);
+ public async updateMedicalCondition(medicalConditionDTO: IMedicalConditionDTO): Promise<Result<IMedicalConditionDTO>> {
+  try {
+    const medicalCondition = await this.medicalConditionRepo.findByDomainId(medicalConditionDTO.id);
+
+    if (medicalCondition === null) {
+      return Result.fail<IMedicalConditionDTO>("Medical Condition not found");
     }
+    console.log("Objeto", medicalCondition);
+
+    const medicalConditionDTOOld = MedicalConditionMap.toDTO(medicalCondition.props);
+
+    const nameOrError = 
+      medicalConditionDTOOld.name !== medicalConditionDTO.name
+        ? MedicalConditionName.create({ name: medicalConditionDTO.name })
+        : Result.ok<MedicalConditionName>(medicalCondition.props.name);
+
+    const codeOrError = 
+      medicalConditionDTOOld.code !== medicalConditionDTO.code
+        ? MedicalConditionCode.create({ code: medicalConditionDTO.code })
+        : Result.ok<MedicalConditionCode>(medicalCondition.props.code);
+
+    const descriptionOrError = 
+      medicalConditionDTOOld.description !== medicalConditionDTO.description
+        ? MedicalConditionDescription.create({ description: medicalConditionDTO.description })
+        : Result.ok<MedicalConditionDescription>(medicalCondition.props.description);
+
+    const symptomsOrError = 
+      medicalConditionDTOOld.symptoms !== medicalConditionDTO.symptoms
+        ? MedicalConditionSymptoms.create({ symptoms: medicalConditionDTO.symptoms })
+        : Result.ok<MedicalConditionSymptoms>(medicalCondition.props.symptoms);
+
+    if (nameOrError.isFailure || codeOrError.isFailure || descriptionOrError.isFailure || symptomsOrError.isFailure) {
+      return Result.fail<IMedicalConditionDTO>("Invalid data provided");
+    }
+
+    if (nameOrError.isSuccess) medicalCondition.props.name = nameOrError.getValue();
+    if (codeOrError.isSuccess) medicalCondition.props.code = codeOrError.getValue();
+    if (descriptionOrError.isSuccess) medicalCondition.props.description = descriptionOrError.getValue();
+    if (symptomsOrError.isSuccess) medicalCondition.props.symptoms = symptomsOrError.getValue();
+
+    await this.medicalConditionRepo.save(medicalCondition);
+
+    const medicalConditionDTOResult = MedicalConditionMap.toDTO(medicalCondition.props) as IMedicalConditionDTO;
+    return Result.ok<IMedicalConditionDTO>(medicalConditionDTOResult);
+  } catch (e) {
+    console.error("Error during update:", e);
+    return Result.fail<IMedicalConditionDTO>(`Error updating medical condition: ${e.message}`);
   }
+}
+
+public async deleteMedicalCondition(id: string): Promise<Result<IMedicalConditionDTO>> {
+  try {
+    const allergy = await this.medicalConditionRepo.findByDomainId(id);
+
+    if (allergy === null) {
+      return Result.fail<IMedicalConditionDTO>("Medical condition not found");
+    }
+    else {
+      await this.medicalConditionRepo.delete(allergy);
+
+      const allergyDTOResult = MedicalConditionMap.toDTO( allergy ) as IMedicalConditionDTO;
+      return Result.ok<IMedicalConditionDTO>( allergyDTOResult )
+      }
+  } catch (e) {
+    throw e;
+  }
+} 
   
   
 }

@@ -71,12 +71,10 @@ export default class AllergyController implements IAllergyController  {
   };
 
   public async deleteAllergy(req: Request, res: Response, next: NextFunction) {
-    console.log("DELETE request received for allergy:", req.params.code);
     try {
-      const allergyOrError = await this.AllergyService.deleteAllergy(req.params.code) as Result<IAllergyDTO>;
+      const allergyOrError = await this.AllergyService.deleteAllergy(req.params.id) as Result<IAllergyDTO>;
 
       if (allergyOrError.isFailure) {
-        console.log("Allergy not found");
         return res.status(404).json({ message: "Allergy not found" });
     }
 
