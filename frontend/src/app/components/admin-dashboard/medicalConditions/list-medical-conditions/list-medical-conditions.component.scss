@@ -1,0 +1,17 @@
+::ng-deep .p-button.p-button-danger {
+    background-color: #f44336 !important;
+    border-color: #f44336 !important;
+    color: #fff !important;
+  }
+  
+  ::ng-deep .p-button.p-button-danger:hover {
+    background-color: #e53935 !important;
+    border-color: #e53935 !important;
+  }
+  
+  .col{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem;
+  }

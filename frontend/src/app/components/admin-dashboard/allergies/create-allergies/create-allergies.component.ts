@@ -11,11 +11,12 @@ import { FormsModule } from '@angular/forms';
 
 
 @Component({
-  selector: 'app-create-allergies',
+  selector: 'create-allergies',
   standalone: true,
   imports: [DialogModule,CommonModule,ToastModule,ButtonModule,InputTextModule,FormsModule],
   templateUrl: './create-allergies.component.html',
-  styleUrl: './create-allergies.component.scss'
+  styleUrl: './create-allergies.component.scss',
+  providers : [AllergyService,MessageService]
 })
 export class CreateAllergiesComponent {
 

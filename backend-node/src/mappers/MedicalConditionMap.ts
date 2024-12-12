@@ -10,13 +10,21 @@ import { IMedicalConditionPersistence } from "../dataschema/IMedicalConditionPer
 
 export class MedicalConditionMap extends Mapper<MedicalCondition> {
   
-  public static toDTO( medicalCondition: any): IMedicalConditionDTO {
+  public static toDTO(medicalCondition: any): IMedicalConditionDTO {
+    
+    const rawData = medicalCondition.props?._doc || medicalCondition.props || medicalCondition;
+  
+    if (!rawData) {
+      console.error("Invalid medicalCondition object structure:", medicalCondition);
+      return null;
+    }
+  
     return {
-      id: medicalCondition.id,
-      name: medicalCondition.name,
-      code:medicalCondition.code,
-      description: medicalCondition.description,
-      symptoms: medicalCondition.symptoms
+      id: rawData.domainId || medicalCondition._id?.toString() || null,
+      name: rawData.name || null,
+      code: rawData.code || null,
+      description: rawData.description || null,
+      symptoms: rawData.symptoms || null,
     };
   }
 

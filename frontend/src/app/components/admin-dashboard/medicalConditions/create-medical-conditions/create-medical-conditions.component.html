@@ -1,16 +1,16 @@
 <div class="card flex justify-content-center">
     <p-dialog 
-        header="Add Staff" 
+        header="Add Medical Condition" 
         [(visible)]="visible" 
         [modal]="true" 
         [style]="{ width: '30rem' }">
 
         <div class="flex align-items-center gap-3 mb-3">
-            <label for="medicalConditionName" class="font-semibold w-6rem">Name</label>
+            <label for="name" class="font-semibold w-6rem">Name</label>
             <input 
                 pInputText 
-                id="medicalConditionName" 
-                [(ngModel)]="medicalConditionName" 
+                id="name" 
+                [(ngModel)]="name" 
                 class="flex-auto" 
                 autocomplete="off" 
                 required 
@@ -22,11 +22,11 @@
         </div>
         
         <div class="flex align-items-center gap-3 mb-3">
-            <label for="medicalConditionCode" class="font-semibold w-6rem">Code</label>
+            <label for="code" class="font-semibold w-6rem">Code</label>
             <input 
                 pInputText 
-                id="medicalConditionCode" 
-                [(ngModel)]="medicalConditionCode" 
+                id="code" 
+                [(ngModel)]="code" 
                 class="flex-auto" 
                 autocomplete="off" 
                 required 
@@ -38,32 +38,34 @@
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
-            <label for="medicalConditionDescription" class="font-semibold w-6rem">Description</label>
-            <input 
-                pInputText 
-                id="medicalConditionDescription" 
-                [(ngModel)]="medicalConditionDescription" 
+            <label for="description" class="font-semibold w-6rem">Description</label>
+            <textarea 
+                id="description" 
+                [(ngModel)]="description" 
                 class="flex-auto" 
-                autocomplete="off" 
-                required 
-                (ngModelChange)="validateFields()" 
-                [ngClass]="{'invalid-border': isSubmitted && !isDescriptionValid}" />
+                rows="4" 
+                placeholder="Insert the description here..." 
+                #allergyDescriptionInput="ngModel"
+                (ngModelChange)="validateFields()"
+                [ngClass]="{'invalid-border': isSubmitted && !isDescriptionValid}" >
+            </textarea>
         </div>
         <div *ngIf="isSubmitted && !isDescriptionValid" class="error-text">
             Description is required.
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
-            <label for="medicalConditionSymptoms" class="font-semibold w-6rem">Symptoms</label>
-            <input 
-                pInputText 
-                id="medicalConditionSymptoms" 
-                [(ngModel)]="medicalConditionSymptoms" 
+            <label for="symptoms" class="font-semibold w-6rem">Symptoms</label>
+            <textarea 
+                id="symptoms" 
+                [(ngModel)]="symptoms" 
                 class="flex-auto" 
-                autocomplete="off" 
-                required 
-                (ngModelChange)="validateFields()" 
-                [ngClass]="{'invalid-border': isSubmitted && !isSymptomsValid}" />
+                rows="4" 
+                placeholder="Insert the symptoms here..." 
+                #allergyDescriptionInput="ngModel"
+                (ngModelChange)="validateFields()"
+                [ngClass]="{'invalid-border': isSubmitted && !isSymptomsValid}" >
+            </textarea>
         </div>
         <div *ngIf="isSubmitted && !isSymptomsValid" class="error-text">
             Symptoms are required.

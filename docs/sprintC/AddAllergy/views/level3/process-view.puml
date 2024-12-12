@@ -1,0 +1,83 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Admin as "Admin"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+participant AllergiesController as "AllergiesController" <<component (C4)>>
+participant AllergiesService as "AllergiesService" <<component (C4)>>
+participant Allergy as "Allergy" <<domain>>
+participant AllergyRepo as "Allergy Repository" <<persistence>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to add new allergy
+    activate ComponentUI
+
+        ComponentUI -> Admin : asks to input data
+
+    deactivate ComponentUI
+
+    Admin -> ComponentUI : input data
+    
+    activate ComponentUI
+    
+        ComponentUI -> Component : add new allergy
+        activate Component
+
+            Component -> Service** : create
+            
+            Component -> Service : add new allergy
+            activate Service
+
+                Service -> HTTP : post('api/allergies')
+
+                activate HTTP
+                    HTTP -> AllergiesController : POST /Allergys
+
+                    activate AllergiesController
+
+                    AllergiesController -> AllergiesService : createAllergy(IAllergyDto.name, IAllergyDto.code,\n IAllergyDto.description)
+
+                    activate AllergiesService 
+
+                    AllergiesService -> Allergy : createAllergy(AllergyProps))
+
+
+
+                    AllergiesService -> AllergyRepo : save(AllergyProps)
+
+                    activate AllergyRepo
+
+                    AllergyRepo --> AllergiesService : allergy
+
+                    deactivate AllergyRepo
+
+                    AllergiesService -> AllergiesService : toDto(allergy)
+
+                    AllergiesService --> AllergiesController : IAllergyDto
+
+                    deactivate AllergiesService
+
+                    AllergiesController --> HTTP : 201 (allergy)
+
+                    deactivate AllergiesController
+
+                    HTTP --> Service : allergy
+
+                deactivate HTTP
+
+                Service --> Component : allergy
+            deactivate Service
+
+            Component --> ComponentUI : allergy
+        deactivate Component
+
+    Admin <-- ComponentUI : shows creation success message
+    deactivate ComponentUI
+
+deactivate Admin
+
+@enduml

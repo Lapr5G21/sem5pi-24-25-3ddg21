@@ -5,6 +5,11 @@
     <create-staffs-modal></create-staffs-modal>
     <create-patients-modal></create-patients-modal>
     <app-create-specializations></app-create-specializations>
+    <create-allergies></create-allergies>
+    <app-create-medical-conditions></app-create-medical-conditions>
+    <div *ngIf="showAllergiesList">
+        <list-allergies></list-allergies>
+    </div>
     <div *ngIf="showHospitalModel">
         <app-hospital-model></app-hospital-model>
     </div>
@@ -20,6 +25,10 @@
 
     <div *ngIf="showSpecializationList">
         <list-specializations></list-specializations>
+    </div>
+
+    <div *ngIf="showMedicalConditionsList">
+        <list-medical-conditions></list-medical-conditions>
     </div>
     <app-profile-menu></app-profile-menu>
 </div>

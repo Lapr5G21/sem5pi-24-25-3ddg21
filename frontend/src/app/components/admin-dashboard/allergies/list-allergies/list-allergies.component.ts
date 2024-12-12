@@ -14,9 +14,10 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ToastModule } from 'primeng/toast';
+import { DataViewModule } from 'primeng/dataview';
 
 @Component({
-  selector: 'app-list-allergies',
+  selector: 'list-allergies',
   standalone: true,
   imports: [TableModule,
     DialogModule,
@@ -29,19 +30,21 @@ import { ToastModule } from 'primeng/toast';
     DropdownModule,
     FloatLabelModule,
     ConfirmDialogModule,
-    ToastModule],
+    ToastModule,
+    DataViewModule],
   templateUrl: './list-allergies.component.html',
-  styleUrl: './list-allergies.component.scss'
+  styleUrl: './list-allergies.component.scss',
+  providers: [ConfirmationService, MessageService]
 })
 export class ListAllergiesComponent implements OnInit {
   editDialogVisible: boolean = false;
   allergies: Allergy[] = [];
+  filteredAllergies: Allergy[] = [];
 
-  selectedAllergy: Allergy = {
-    name: '',
-    code: '',
-    description: ''
-  };
+  nameFilter: string = '';
+  codeFilter: string = '';
+
+  selectedAllergy: any = {};
 
   constructor(private allergyService: AllergyService,
               private confirmationService: ConfirmationService, private messageService : MessageService) {}
@@ -54,13 +57,31 @@ export class ListAllergiesComponent implements OnInit {
     this.allergyService.getAllergies().subscribe(
       (allergies) => {
         this.allergies = allergies;
+        this.filteredAllergies = [...this.allergies];
       },
       (error) => console.error('Error loading allergies', error)
     );
   }
 
   onSearch(): void {
-    this.loadAllergies();
+    if (!this.nameFilter && !this.codeFilter) {
+      this.filteredAllergies = [...this.allergies];
+    } else {
+
+      this.filteredAllergies = this.allergies.filter(item => {
+        const matchesName = item.name.toLowerCase() === this.nameFilter.toLowerCase(); 
+        const matchesCode = item.code.toLowerCase() === this.codeFilter.toLowerCase(); 
+        return matchesName || matchesCode;
+      });
+    }
+    
+    if (this.filteredAllergies.length === 0) {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'No Results',
+        detail: 'No allergies found matching the criteria.',
+      });
+    }
   }
 
   onRemove(allergyCode: string): void {

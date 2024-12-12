@@ -44,6 +44,24 @@ export default class AllergyService implements IAllergyService {
     }
   }
 
+  public async deleteAllergy(allergyId: string): Promise<Result<IAllergyDTO>> {
+    try {
+      const allergy = await this.allergyRepo.findByDomainId(allergyId);
+
+      if (allergy === null) {
+        return Result.fail<IAllergyDTO>("Allergy not found");
+      }
+      else {
+        await this.allergyRepo.delete(allergy);
+
+        const allergyDTOResult = AllergyMap.toDTO( allergy ) as IAllergyDTO;
+        return Result.ok<IAllergyDTO>( allergyDTOResult )
+        }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   public async getAllergy( allergyId: string): Promise<Result<IAllergyDTO>> {
     try {
       const allergy = await this.allergyRepo.findByDomainId(allergyId);
@@ -60,7 +78,7 @@ export default class AllergyService implements IAllergyService {
     }
   }
 
-  public async getAllergies(): Promise<Result<IAllergyDTO[]>> {
+  public async getAllAllergies(): Promise<Result<IAllergyDTO[]>> {
     try {
       const allergies = await this.allergyRepo.getAll();
 

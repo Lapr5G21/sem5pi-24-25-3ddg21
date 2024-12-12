@@ -4,6 +4,7 @@ import { CreateOperationRequestsComponent } from './components/doctor-dashboard/
 import { CreateOperationTypesComponent } from './components/admin-dashboard/operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './components/admin-dashboard/staffs/create-staffs/create-staffs.component';
 import { CreatePatientsComponent } from './components/admin-dashboard/patients/create-patients/create-patients.component';
+import { CreateMedicalConditionsComponent } from './components/admin-dashboard/medicalConditions/create-medical-conditions/create-medical-conditions.component';
 import { ListStaffsComponent } from './components/admin-dashboard/staffs/list-staffs/list-staffs.component';
 import { ListPatientsComponent } from './components/admin-dashboard/patients/list-patients/list-patients.component';
 import { MenubarComponent } from './components/menubar/menubar.component';
@@ -30,6 +31,7 @@ export const routes: Routes = [
     { path: 'adminDashboard/staffs/list', component: ListStaffsComponent },
     { path: 'adminDashboard/patients/create', component: CreatePatientsComponent },
     { path: 'adminDashboard/patients/list', component: ListPatientsComponent },
+    { path: 'adminDashboard/medicalConditions/create', component: CreateMedicalConditionsComponent },
     { path: 'adminDashboard/3DModule', component: HospitalModelComponent },
 
     // Doctor Dashboard 

@@ -15,11 +15,32 @@ import { HospitalModelComponent } from '../hospital-model/hospital-model/hospita
 import { CreateSpecializationsComponent } from './specialization/create-specializations/create-specializations.component';
 import { ListSpecializationsComponent } from './specialization/list-specializations/list-specializations.component';
 import { CreateAllergiesComponent } from './allergies/create-allergies/create-allergies.component';
+import { ListAllergiesComponent } from './allergies/list-allergies/list-allergies.component';
+import { CreateMedicalConditionsComponent } from './medicalConditions/create-medical-conditions/create-medical-conditions.component';
+import { ListMedicalConditionsComponent } from './medicalConditions/list-medical-conditions/list-medical-conditions.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, CommonModule,CreateOperationTypesComponent, CreateStaffsComponent, CreatePatientsComponent, ListPatientsComponent, MenubarComponent,ProfileMenuComponent,ListOperationTypesComponent,ListStaffsComponent,HospitalModelComponent,CreateSpecializationsComponent,ListSpecializationsComponent],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    CreateOperationTypesComponent,
+    CreateStaffsComponent,
+    CreatePatientsComponent, 
+    ListPatientsComponent, 
+    MenubarComponent,
+    ProfileMenuComponent,
+    ListOperationTypesComponent,
+    ListStaffsComponent,
+    HospitalModelComponent,
+    CreateSpecializationsComponent,
+    ListSpecializationsComponent,
+    ListAllergiesComponent, 
+    CreateAllergiesComponent,
+    CreateMedicalConditionsComponent,
+    ListMedicalConditionsComponent
+  ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
@@ -31,7 +52,8 @@ export class AdminDashboardComponent implements OnInit {
   showPatientsList : boolean = false;
   showHospitalModel: boolean = false;
   showSpecializationList: boolean = false;
-  showAllergiesList: boolean = false; 
+  showAllergiesList: boolean = false;
+  showMedicalConditionsList: boolean = false; 
 
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
@@ -44,6 +66,9 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent;
   @ViewChild(CreateSpecializationsComponent) createSpecializationsComponent!: CreateSpecializationsComponent;
   @ViewChild(CreateAllergiesComponent) createAllergyComponent!: CreateAllergiesComponent;
+  @ViewChild(ListAllergiesComponent) listAllergiesComponent!: ListAllergiesComponent;
+  @ViewChild(CreateMedicalConditionsComponent) createMedicalConditionsComponent!: CreateMedicalConditionsComponent;
+  @ViewChild(ListMedicalConditionsComponent) listMedicalConditionsComponent!: ListMedicalConditionsComponent;
 
   constructor(private router: Router) {}
 
@@ -53,7 +78,7 @@ export class AdminDashboardComponent implements OnInit {
         label: 'Home',
         icon: 'pi pi-home',
         command: () => {
-          this.showOperationTypesList=false;
+        this.showOperationTypesList=false;
         this.showStaffsList=false;
         this.showPatientsList=false;
         this.showSpecializationList=false;
@@ -76,6 +101,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showStaffsList = false;
               this.showPatientsList = false;
               this.showSpecializationList = false;
+              this.showAllergiesList = false;
+              this.showMedicalConditionsList = false;
             }          
           }
         ]
@@ -98,6 +125,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showOperationTypesList = false;
               this.showStaffsList = false;
               this.showPatientsList = false;
+              this.showAllergiesList = false;
+              this.showMedicalConditionsList = false;
             }          
           }
         ]
@@ -119,6 +148,31 @@ export class AdminDashboardComponent implements OnInit {
               this.showOperationTypesList = false;
               this.showStaffsList = false;
               this.showPatientsList = false;
+              this.showMedicalConditionsList = false;
+            }          
+          }
+        ]
+      },
+      
+      {
+        label: 'Medical Conditions',
+        icon: '',
+        items: [
+          {
+            label: 'Create Medical Conditions',
+            icon: 'pi pi-check',
+            command: () => this.createMedicalConditions()
+          },
+          {
+            label: 'List Medical Conditions',
+            icon: 'pi pi-list',
+            command: () => {
+              this.showSpecializationList = false;
+              this.showOperationTypesList = false;
+              this.showStaffsList = false;
+              this.showPatientsList = false;
+              this.showMedicalConditionsList = true;
+              this.showAllergiesList = false;
             }          
           }
         ]
@@ -140,6 +194,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showOperationTypesList=false;
               this.showPatientsList=false;
               this.showSpecializationList = false;
+              this.showAllergiesList = false;
+              this.showMedicalConditionsList = false;
             }   
           }
         ]
@@ -161,6 +217,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showOperationTypesList=false;
               this.showStaffsList=false;
               this.showSpecializationList = false;
+              this.showAllergiesList = false;
+              this.showMedicalConditionsList = false;
             }
           }
         ]
@@ -224,6 +282,10 @@ export class AdminDashboardComponent implements OnInit {
 
   createStaffs() {
     this.createStaffsComponent.showDialog(); 
+  }
+
+  createMedicalConditions() {
+    this.createMedicalConditionsComponent.showDialog(); 
   }
 
   listStaffs() {

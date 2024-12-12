@@ -2,11 +2,19 @@
 
 export class CreateMedicalConditionDto {
     constructor(
-        public medicalConditionName: string,
-        public medicalConditionCode: string,
-        public medicalConditionDescription: string,
-        public medicalConditionSymptoms: string,
+        public name: string,
+        public code: string,
+        public description: string,
+        public symptoms: string,
     ) {}
 }
 
-
+export class MedicalCondition {
+    constructor(
+        public id: string,
+        public name: string,
+        public code: string,
+        public description: string,
+        public symptoms: string,
+    ) {}
+}

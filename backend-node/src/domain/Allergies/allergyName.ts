@@ -20,6 +20,10 @@ export class AllergyName extends ValueObject<AllergyNameProps> {
     public static create (props: AllergyNameProps): Result<AllergyName> {
         const propsResult = Guard.againstNullOrUndefined(props.name, 'name');
     
+    if ( props.name.length > 60){
+            return Result.fail<AllergyName>("Allergy name its too long");
+    }
+
         if (!propsResult.succeeded) {
           return Result.fail<AllergyName>(propsResult.message);
         } else {

@@ -316,6 +316,30 @@ namespace DDDNetCore.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("DDDSample1.Domain.RoomTypes.RoomType", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("SurgerySuitability")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Designation")
+                        .IsUnique();
+
+                    b.ToTable("RoomTypes");
+                });
+
             modelBuilder.Entity("DDDSample1.Domain.Specializations.Specialization", b =>
                 {
                     b.Property<string>("Id")

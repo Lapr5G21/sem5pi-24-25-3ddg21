@@ -14,7 +14,7 @@ export default (app: Router) => {
 
   const ctrl = Container.get<IAllergyController>(config.controllers.allergy.name);
 
-  route.get('/', ctrl.getAllAllergies);
+  route.get('/', (req, res, next) => ctrl.getAllAllergies(req, res, next));
 
   route.get('/:id',
     celebrate({
@@ -46,4 +46,6 @@ export default (app: Router) => {
       }),
     }),
     (req, res, next) => ctrl.updateAllergy(req, res, next));
+
+    route.delete('/api/allergies/:code/delete', (req, res, next) => ctrl.deleteAllergy(req, res, next));
 };
