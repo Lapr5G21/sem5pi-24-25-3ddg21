@@ -65,20 +65,25 @@ export default class AllergyRepo implements IAllergyRepo {
   }
 
   public async findByDomainId(allergyId: AllergyId | string): Promise<Allergy> {
-    console.log("Searching for allergy with domainId:", allergyId);
-    const query = { domainId: allergyId };
+    
+    try {
+        
+    const query = { domainId: allergyId.toString() };
     const allergyRecord = await this.allergySchema.findOne(query as FilterQuery<IAllergyPersistence & Document>);
 
-    if (allergyRecord) {
-        console.log("Allergy found:", allergyRecord);
+    if (allergyRecord != null) {
         return AllergyMap.toDomain(allergyRecord);
     } else {
-        console.log("No allergy found for domainId:", allergyId);
         return null;
     }
+  } catch (error) {
+    console.error('Error fetching allergy:', error);
+    return null;
+  }
 }
 
-  public async delete (allergy: Allergy): Promise<any> {
+
+public async delete (allergy: Allergy): Promise<any> {
     const query = { domainId: allergy.id.toString() };
     await this.allergySchema.deleteOne(query);
   }

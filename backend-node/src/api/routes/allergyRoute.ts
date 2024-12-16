@@ -34,7 +34,7 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.createAllergy(req, res, next));
 
-  route.put('/allergies/:id',
+  route.put('',
     celebrate({
       body: Joi.object({
         name: Joi.string().required(),
@@ -47,5 +47,5 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.updateAllergy(req, res, next));
 
-    route.delete('/:code/delete', (req, res, next) => ctrl.deleteAllergy(req, res, next));
+    route.delete('/:id/delete', (req, res, next) => ctrl.deleteAllergy(req, res, next));
 };

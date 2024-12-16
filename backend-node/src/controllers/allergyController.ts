@@ -12,13 +12,13 @@ import { Console } from 'console';
 @Service()
 export default class AllergyController implements IAllergyController  {
   constructor(
-    @Inject(config.services.allergy.name) private AllergyService : IAllergyService
+    @Inject(config.services.allergy.name) private allergyServiceInstance : IAllergyService
 ) {}
       
   public async getAllergy(req: Request, res: Response, next: NextFunction) {
   
     try {
-      const allergy = await this.AllergyService.getAllergy(req.params.id);
+      const allergy = await this.allergyServiceInstance.getAllergy(req.params.id);
 
       if (allergy === null) {
         return res.status(404).send("Allergy not found or error in retrieving allergy");
@@ -36,7 +36,7 @@ export default class AllergyController implements IAllergyController  {
     try {
      
 
-      const allergies = await this.AllergyService.getAllAllergies();
+      const allergies = await this.allergyServiceInstance.getAllAllergies();
      
       if ( allergies.isFailure ) {
         return res.status(404).json({message:"Failed to retrieve allergies"});
@@ -56,7 +56,7 @@ export default class AllergyController implements IAllergyController  {
   
   public async createAllergy(req: Request, res: Response, next: NextFunction) {
     try {
-      const allergyOrError = await this.AllergyService.createAllergy(req.body as IAllergyDTO) as Result<IAllergyDTO>;
+      const allergyOrError = await this.allergyServiceInstance.createAllergy(req.body as IAllergyDTO) as Result<IAllergyDTO>;
         
       if (allergyOrError.isFailure) {
         return res.status(402).send("Error creating allergy");
@@ -72,10 +72,10 @@ export default class AllergyController implements IAllergyController  {
 
   public async deleteAllergy(req: Request, res: Response, next: NextFunction) {
     try {
-      const allergyOrError = await this.AllergyService.deleteAllergy(req.params.id) as Result<IAllergyDTO>;
+      const allergyOrError = await this.allergyServiceInstance.deleteAllergy(req.params.id) as Result<IAllergyDTO>;
 
       if (allergyOrError.isFailure) {
-        return res.status(404).json({ message: "Allergy not found" });
+        return res.status(404).json({ message: "Morreu aqui" });
     }
 
       const allergyDTO = allergyOrError.getValue();
@@ -91,20 +91,16 @@ export default class AllergyController implements IAllergyController  {
   
   public async updateAllergy(req: Request, res: Response, next: NextFunction) {
     try {
-
-      const { id, name, code, description } = req.body;
-      console.log(`ID: ${req.params.id}`); 
-      console.log(`Name: ${name}, Code: ${code}, Description: ${description}`);
-
-      const allergyOrError = await this.AllergyService.updateAllergy({ id, name, code, description }) as Result<IAllergyDTO>;
+      console.log("Request body: ", req.body);
+      const allergyOrError = await this.allergyServiceInstance.updateAllergy(req.body as IAllergyDTO) as Result<IAllergyDTO>;
 
       if (allergyOrError.isFailure) {
-        console.error("Failed to update allergy:", allergyOrError.error); 
+        
         return res.status(404).send("Allergy not found");
       }
 
       const allergyDTO = allergyOrError.getValue();
-      return res.status(200).json( allergyDTO );
+      return res.status(201).json( allergyDTO );
     }
     catch (e) {
       console.error("Error:", e);

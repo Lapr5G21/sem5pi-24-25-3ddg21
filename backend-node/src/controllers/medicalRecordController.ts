@@ -15,6 +15,8 @@ export default class MedicalRecordController implements IMedicalRecordController
       @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance : IMedicalRecordService
   ) {}
 
+  
+  
 
   public async getMedicalRecord(req: Request, res: Response, next: NextFunction) {
   
@@ -36,15 +38,16 @@ export default class MedicalRecordController implements IMedicalRecordController
   public async getAllMedicalRecords(req: Request, res: Response, next: NextFunction) {
     try {
      
-      const medicalRecords = await this.medicalRecordServiceInstance.getMedicalRecords();
+      const result = await this.medicalRecordServiceInstance.getAllMedicalRecords();
 
-      if ( medicalRecords === null ) {
-        return res.status(404).send("Failed to retrieve allergies");
+      if ( result === null ) {
+        return res.status(404).send("Failed to retrieve medical records");
       }
 
-      return res.json(medicalRecords).status(200);
-    }
-    catch (err) {
+      const medicalRecordsDTO = result.getValue();
+
+      return res.json(medicalRecordsDTO).status(200);
+    } catch (err) {
       res.status(500).json({ message: err.message }); 
     }
   };
@@ -57,7 +60,7 @@ export default class MedicalRecordController implements IMedicalRecordController
       const medicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
         
       if (medicalRecordOrError.isFailure) {
-        return res.status(402).send("Error creating allergy");
+        return res.status(402).send("Error creating medicalRecord");
       }
 
       const medicalRecordDTO = medicalRecordOrError.getValue();
@@ -69,25 +72,20 @@ export default class MedicalRecordController implements IMedicalRecordController
   };
 
   // api/medicalRecords/:id
-  public async updateMedicaRecord(req: Request, res: Response, next: NextFunction) {
+  public async updateMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
 
-      const { id, name, code, description } = req.body;
-      console.log(`ID: ${req.params.id}`); // Log para verificar o ID
-      console.log(`Name: ${name}, Code: ${code}, Description: ${description}`);
-
-      const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord({ id, name, code, description }) as Result<IMedicalRecordDTO>;
+      const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
       if (medicalRecordOrError.isFailure) {
-        console.error("Failed to update medical record:", medicalRecordOrError.error); 
+        
         return res.status(404).send("Medical Record not found");
       }
 
       const medicalRecordDTO = medicalRecordOrError.getValue();
-      return res.status(200).json( medicalRecordDTO );
+      return res.status(201).json( medicalRecordDTO );
     }
     catch (e) {
-      console.error("Error:", e);
       return next(e);
     }
   };

@@ -104,6 +104,43 @@ export class ListAllergiesComponent implements OnInit {
       }
   )}
 
+
+  openEditDialog(item: any) {
+    this.selectedAllergy = { ...item };
+    this.editDialogVisible = true;
+    
+  }
+  saveAllergyInfo(selectedAllergy: Allergy) {
+      console.log('Saving allergy info:', selectedAllergy);
+      
+      this.allergyService.updateAllergy(selectedAllergy.id, selectedAllergy).subscribe({
+        next: (response) => {
+          console.log('Saving allergy info updated successfully:', response);
+          
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Saving allergy info updated successfully!',
+          });
+          
+          this.editDialogVisible = false; 
+        },
+        error: (error) => {
+          console.error('Failed to update allergy info:', error);
+          
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update allergy info.',
+          });
+        },
+        complete: () => {
+          console.log('Update allergy proccess complete.');
+          this.loadAllergies();
+        }
+      });
+    }
+
   confirmRemove(allergyCode: string): void {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete this allergy?',

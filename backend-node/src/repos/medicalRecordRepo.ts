@@ -32,27 +32,32 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   public async save (medicalRecord: MedicalRecord): Promise<MedicalRecord> {
     const query = { domainId: medicalRecord.id.toString()}; 
 
-    let medicalRecordDocument = await this.medicalRecordSchema.findOne( query );
+    
 
     try {
+
+      let medicalRecordDocument = await this.medicalRecordSchema.findOne( query );
+
       if (medicalRecordDocument === null ) {
+
+
         const rawMedicalRecord: any = MedicalRecordMap.toPersistence(medicalRecord);
+
         const medicalRecordCreated = await this.medicalRecordSchema.create(rawMedicalRecord);
 
         return MedicalRecordMap.toDomain(medicalRecordCreated);
       } else {
 
-        medicalRecordDocument.domainId = medicalRecord.id.toString();
-        medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.patientMedicalRecordNumber.toString();
-        medicalRecordDocument.allergies = medicalRecord.allergies.map(a => a.toString());
-        medicalRecordDocument.medicalConditions = medicalRecord.medicalConditions.map(a => a.toString());
-        medicalRecordDocument.medicalHistory = medicalRecord.medicalHistory.map(a => a.toString());
+        medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
+        medicalRecordDocument.allergiesID = medicalRecord.props.allergiesID.map(a => a.toString());
+        medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditionsID.map(a => a.toString());
+        
 
         await medicalRecordDocument.save();
         return MedicalRecordMap.toDomain(medicalRecordDocument);
       }
     } catch (err) {
-      throw err;
+      throw new Error(`Could not save medical record: ${err.message}`);
     }
   }
 
@@ -66,7 +71,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   }
 
   public async findByDomainId (medicalRecordId: MedicalRecordId | string): Promise<MedicalRecord> {
-    const query = { domainId: medicalRecordId};
+    const query = { domainId: medicalRecordId.toString() };
     const medicalRecordRecord = await this.medicalRecordSchema.findOne( query as FilterQuery<IMedicalRecordPersistence & Document> );
 
     if( medicalRecordRecord != null) {
@@ -74,5 +79,13 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
     }
     else
       return null;
+  } catch (error) {
+    console.error('Error finding medical record:', error);
+    return null;
   }
+
+  public async delete (medicalRecord: MedicalRecord): Promise<any> {
+      const query = { domainId: medicalRecord.id.toString() };
+      await this.medicalRecordSchema.deleteOne(query);
+    }
 }

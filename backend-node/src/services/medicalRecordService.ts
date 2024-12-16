@@ -1,14 +1,6 @@
 import { Service, Inject } from 'typedi';
 import config from "../../config";
 import { Result } from "../core/logic/Result";
-import IAllergyService from './IServices/IAllergyService';
-import IAllergyRepo from './IRepos/IAllergyRepo';
-import IAllergyDTO from '../dto/IAllergyDTO';
-import { AllergyMap } from '../mappers/AllergyMap';
-import { Allergy } from '../domain/Allergies/allergy';
-import { AllergyCode } from '../domain/Allergies/allergyCode';
-import { AllergyDescription } from '../domain/Allergies/allergyDescription';
-import { AllergyName } from '../domain/Allergies/allergyName';
 import mongoose from 'mongoose';
 import IMedicalRecordService from './IServices/IMedicalRecordService';
 import IMedicalRecordRepo from './IRepos/IMedicalRecordRepo';
@@ -16,7 +8,6 @@ import IMedicalRecordDTO from '../dto/IMedicalRecordDTO';
 import { PatientMedicalRecordNumber } from '../domain/MedicalRecord/patientMedicalRecordNumber';
 import { MedicalRecordMap } from '../mappers/MedicalRecordMap';
 import { MedicalRecord } from '../domain/MedicalRecord/medicalRecord';
-import { MedicalConditionMap } from '../mappers/MedicalConditionMap';
 
 @Service()
 export default class MedicalRecordService implements IMedicalRecordService {
@@ -28,11 +19,10 @@ export default class MedicalRecordService implements IMedicalRecordService {
     try {
 
       const medicalRecordProps = {
+        patientMedicalRecordNumber: PatientMedicalRecordNumber.create({medicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber}).getValue(),
+        allergiesID: medicalRecordDTO.allergiesID, 
+        medicalConditionsID: medicalRecordDTO.medicalConditionsID, 
         domainId: new mongoose.Types.ObjectId().toString(),
-        patientMedicalRecordNumber: PatientMedicalRecordNumber.create({ medicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber.toString() }).getValue(),
-        allergies: medicalRecordDTO.allergies.map(a => AllergyMap.toDomain(a)),
-        medicalConditions: medicalRecordDTO.medicalConditions.map(mc => MedicalConditionMap.toDomain(mc)),
-        medicalHistory: medicalRecordDTO.medicalHistory.map(mh => mh.toString())
       };
       
       const medicalRecordOrError = await MedicalRecord.create(medicalRecordProps);
@@ -82,7 +72,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
   public async updateMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
-      const medicalRecord = await this.medicalRecordRepo.findByDomainId(medicalRecordDTO.DomainId);
+      const medicalRecord = await this.medicalRecordRepo.findByDomainId(medicalRecordDTO.id);
 
       if (medicalRecord === null) {
         return Result.fail<IMedicalRecordDTO>("Medical Record not found");

@@ -47,6 +47,7 @@
           <div class="col" style="flex: 1;">{{ item.code || 'Not specified' }}</div>
           <div class="col text-container" style="flex: 4;">{{ item.description || 'Not specified' }}</div>
           <div class="col" style="flex: 1;">
+            <p-button icon="pi pi-pencil" [outlined]="true" (click)="openEditDialog(item)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
             <p-button 
               icon="pi pi-trash" 
               label="Delete" 
@@ -55,6 +56,49 @@
             </p-button>
           </div>
         </div>
+        <p-dialog header="Edit Allergy Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
+          <div class="card">
+            <p-dataView [value]="[selectedAllergy]" [rows]="1">
+              <ng-template pTemplate="header">
+                <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                  <div class="col">Field</div>
+                  <div class="col">Value</div>
+                </div>
+              </ng-template>
+              
+              <ng-template pTemplate="list" let-staff>
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="name">Name</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="name" [(ngModel)]="selectedAllergy.name" />
+                  </div>
+                </div>
+                
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="code">Code</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="code" [(ngModel)]="selectedAllergy.code" />
+                  </div>
+                </div>
+                <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                  <div class="col p-2">
+                    <label for="description">Description</label>
+                  </div>
+                  <div class="col p-2">
+                    <input pInputText id="description" [(ngModel)]="selectedAllergy.description" />
+                  </div>
+                </div>   
+              </ng-template>
+            </p-dataView>
+            <div class="flex justify-content-end">
+              <button pButton label="Save" icon="pi pi-check" (click)="saveAllergyInfo(selectedAllergy)" class="p-button-primary"></button>
+            </div>
+          </div>
+          </p-dialog>
       </p-scrollPanel>
     </ng-template>
   </p-dataView>

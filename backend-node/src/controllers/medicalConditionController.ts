@@ -122,9 +122,9 @@ export default class MedicalConditionController implements IMedicalConditionCont
         return res.status(404).json({ message: "Medical condition not found" });
     }
 
-      const allergyDTO = medicalConditionOrError.getValue();
+      const medicalConditionDTO = medicalConditionOrError.getValue();
 
-      return res.status(200).json( allergyDTO );
+      return res.status(200).json( medicalConditionDTO );
     }
     catch (e) {
       console.error("Error deleting medical condition:", e);

@@ -44,9 +44,9 @@ export default class AllergyService implements IAllergyService {
     }
   }
 
-  public async deleteAllergy(allergyId: string): Promise<Result<IAllergyDTO>> {
+  public async deleteAllergy(id: string): Promise<Result<IAllergyDTO>> {
     try {
-      const allergy = await this.allergyRepo.findByDomainId(allergyId);
+      const allergy = await this.allergyRepo.findByDomainId(id);
 
       if (allergy === null) {
         return Result.fail<IAllergyDTO>("Allergy not found");
@@ -93,26 +93,47 @@ export default class AllergyService implements IAllergyService {
   public async updateAllergy(allergyDTO: IAllergyDTO): Promise<Result<IAllergyDTO>> {
     try {
       const allergy = await this.allergyRepo.findByDomainId(allergyDTO.id);
-
+  
       if (allergy === null) {
-        return Result.fail<IAllergyDTO>("Allergy not found");
+        return Result.fail<IAllergyDTO>("allergy not found");
       }
-      else {
-        const name  = AllergyName.create( { name: allergyDTO.name } ) ;
-        const code = AllergyCode.create( { code : allergyDTO.code } );
-        const description = AllergyDescription.create( { description : allergyDTO.description } );
+      console.log("Objeto", allergy);
+  
+      const allerdyDTOId = AllergyMap.toDTO(allergy.props);
+  
+      const nameOrError = 
+      allerdyDTOId.name !== allergyDTO.name
+          ? AllergyName.create({ name: allergyDTO.name })
+          : Result.ok<AllergyName>(allergy.props.name);
+  
+      const codeOrError = 
+      allerdyDTOId.code !== allergyDTO.code
+          ? AllergyCode.create({ code: allergyDTO.code })
+          : Result.ok<AllergyCode>(allergy.props.code);
+  
+      const descriptionOrError = 
+      allerdyDTOId.description !== allergyDTO.description
+          ? AllergyDescription.create({ description: allergyDTO.description })
+          : Result.ok<AllergyDescription>(allergy.props.description);
+  
+      if (nameOrError.isFailure || codeOrError.isFailure || descriptionOrError.isFailure) {
+        return Result.fail<IAllergyDTO>("Invalid data provided");
+      }
+  
+      if (nameOrError.isSuccess) allergy.props.name = nameOrError.getValue();
+      if (codeOrError.isSuccess) allergy.props.code = codeOrError.getValue();
+      if (descriptionOrError.isSuccess) allergy.props.description = descriptionOrError.getValue();
+  
+      console.log("Objeto", allergy);
 
-        allergy.name = name.getValue();
-        allergy.code = code.getValue();
-        allergy.description = description.getValue();
-
-        await this.allergyRepo.save(allergy);
-
-        const allergyDTOResult = AllergyMap.toDTO( allergy ) as IAllergyDTO;
-        return Result.ok<IAllergyDTO>( allergyDTOResult )
-        }
+      await this.allergyRepo.save(allergy);
+  
+      const allergyDTOResult = AllergyMap.toDTO(allergy.props) as IAllergyDTO;
+      console.log("Objeto depois do toDTO", allergyDTOResult);
+      return Result.ok<IAllergyDTO>(allergyDTOResult);
     } catch (e) {
-      throw e;
+      console.error("Error during update:", e);
+      return Result.fail<IAllergyDTO>(`Error updating allergy: ${e.message}`);
     }
   }
 

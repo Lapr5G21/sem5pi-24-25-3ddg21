@@ -8,19 +8,27 @@ import { IMedicalRecordPersistence } from "../dataschema/IMedicalRecordPersisten
 export class MedicalRecordMap extends Mapper<MedicalRecord> {
   
   public static toDTO( medicalRecord: any): IMedicalRecordDTO {
+
+    const rawData = medicalRecord.props?._doc || medicalRecord.props || medicalRecord;
+
+
+    if (!rawData) {
+      console.error("Invalid medicalCondition object structure:", medicalRecord);
+      return null;
+    } 
+
     return {
-      DomainId: medicalRecord._id,
-      patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber,
-      allergies: medicalRecord.allergies,
-      medicalConditions:medicalRecord.medicalConditions,
-      medicalHistory: medicalRecord.medicalHistory
+      id: rawData.domainId || medicalRecord._id?.toString() || null,
+      patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,
+      allergiesID: rawData.allergiesID || null,
+      medicalConditionsID: rawData.medicalConditionsID || null,
     };
   }
 
-  public static toDomain (allergy: any | Model<IMedicalRecordPersistence & Document> ): MedicalRecord {
+  public static toDomain (medicalRecord: any | Model<IMedicalRecordPersistence & Document> ): MedicalRecord {
     const medicalRecordOrError = MedicalRecord.create(
-      allergy,
-      new UniqueEntityID(allergy.domainId)
+      medicalRecord,
+      new UniqueEntityID(medicalRecord.domainId)
     );
 
     medicalRecordOrError.isFailure ? console.log(medicalRecordOrError.error) : '';
@@ -30,10 +38,10 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
 
   public static toPersistence (medicalRecord: MedicalRecord): any {
     return {
-      name: medicalRecord.patientMedicalRecordNumber.value,
-      code: medicalRecord.allergies,
-      description: medicalRecord.medicalConditions,
-      medicalHistory: medicalRecord.medicalHistory
+      id : medicalRecord.id.toString(),
+      patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber.value,
+      allergies: medicalRecord.allergiesID,
+      medicalConditions: medicalRecord.medicalConditionsID,
     };
   }
 }

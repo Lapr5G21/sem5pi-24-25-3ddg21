@@ -25,7 +25,8 @@ export default (app: Router) => {
   route.post('',
     celebrate({
       body: Joi.object({
-        
+        patientMedicalRecordNumber: Joi.string().required(),
+        medicalRecordId: Joi.string().required(),
       }),
     }),
     (req, res, next) => ctrl.createMedicalRecord(req, res, next));

@@ -149,16 +149,16 @@ export default class MedicalConditionService implements IMedicalConditionService
 
 public async deleteMedicalCondition(id: string): Promise<Result<IMedicalConditionDTO>> {
   try {
-    const allergy = await this.medicalConditionRepo.findByDomainId(id);
+    const medicalCondition = await this.medicalConditionRepo.findByDomainId(id);
 
-    if (allergy === null) {
+    if (medicalCondition === null) {
       return Result.fail<IMedicalConditionDTO>("Medical condition not found");
     }
     else {
-      await this.medicalConditionRepo.delete(allergy);
+      await this.medicalConditionRepo.delete(medicalCondition);
 
-      const allergyDTOResult = MedicalConditionMap.toDTO( allergy ) as IMedicalConditionDTO;
-      return Result.ok<IMedicalConditionDTO>( allergyDTOResult )
+      const medicalConditionDTOResult = MedicalConditionMap.toDTO( medicalCondition ) as IMedicalConditionDTO;
+      return Result.ok<IMedicalConditionDTO>( medicalConditionDTOResult )
       }
   } catch (e) {
     throw e;
