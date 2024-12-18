@@ -3,8 +3,6 @@ import { Inject, Service } from 'typedi';
 import config from "../../config";
 
 import { Result } from "../core/logic/Result";
-import IAllergyDTO from '../dto/IAllergyDTO';
-import IAllergyService from '../services/IServices/IAllergyService';
 import IMedicalRecordController from './IControllers/IMedicalRecordController';
 import IMedicalRecordService from '../services/IServices/IMedicalRecordService';
 import IMedicalRecordDTO from '../dto/IMedicalRecordDTO';
@@ -14,9 +12,6 @@ export default class MedicalRecordController implements IMedicalRecordController
   constructor(
       @Inject(config.services.medicalRecord.name) private medicalRecordServiceInstance : IMedicalRecordService
   ) {}
-
-  
-  
 
   public async getMedicalRecord(req: Request, res: Response, next: NextFunction) {
   
@@ -38,12 +33,13 @@ export default class MedicalRecordController implements IMedicalRecordController
   public async getAllMedicalRecords(req: Request, res: Response, next: NextFunction) {
     try {
      
+      console.log('Entering getAllMedicalRecords controller');
       const result = await this.medicalRecordServiceInstance.getAllMedicalRecords();
 
       if ( result === null ) {
         return res.status(404).send("Failed to retrieve medical records");
       }
-
+      
       const medicalRecordsDTO = result.getValue();
 
       return res.json(medicalRecordsDTO).status(200);
@@ -67,6 +63,7 @@ export default class MedicalRecordController implements IMedicalRecordController
       return res.json( medicalRecordDTO ).status(201);
     }
     catch (e) {
+      console.error('Error creating medical record:', e); 
       return next(e);
     }
   };

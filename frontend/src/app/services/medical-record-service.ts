@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { MedicalRecord } from '../domain/medical-record-model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class MedicalRecordService {
 
 
   getMedicalRecord(): Observable<any[]> {
-      return this.http.get<any[]>(`${this.apiUrl}/allergies`);
+      return this.http.get<any[]>(`${this.apiUrl}/medicalRecords`);
     }
 
     updateMedicalRecord(medicalRecordId: string,medicalRecordData: any): Observable<any> {

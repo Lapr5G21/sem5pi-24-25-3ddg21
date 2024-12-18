@@ -31,9 +31,6 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
 
   public async save (medicalRecord: MedicalRecord): Promise<MedicalRecord> {
     const query = { domainId: medicalRecord.id.toString()}; 
-
-    
-
     try {
 
       let medicalRecordDocument = await this.medicalRecordSchema.findOne( query );
@@ -64,6 +61,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   public async getAll(): Promise<MedicalRecord[]> {
     try {
       const medicalRecordDocuments = await this.medicalRecordSchema.find({}).exec();
+      console.log("repo:", medicalRecordDocuments);
       return medicalRecordDocuments.map(doc => MedicalRecordMap.toDomain(doc)); 
     } catch (err) {
       throw new Error(`Error fetching medical records: ${err.message}`);

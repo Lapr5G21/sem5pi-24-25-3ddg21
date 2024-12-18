@@ -68,6 +68,7 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
             ...props
           }, id);
     
+          console.log("Dentro do create:",medicalRecord)
           return Result.ok<MedicalRecord>(medicalRecord);
         }
       }

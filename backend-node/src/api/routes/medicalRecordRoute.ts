@@ -12,7 +12,7 @@ export default (app: Router) => {
 
   const ctrl = Container.get<IMedicalRecordController>(config.controllers.medicalRecord.name);
 
-  route.get('/', ctrl.getAllMedicalRecords);
+  route.get('', (req,res,next) => ctrl.getAllMedicalRecords(req, res, next));
 
   route.get('/:id',
     celebrate({
@@ -22,14 +22,9 @@ export default (app: Router) => {
     }),
     (req, res, next) => ctrl.getMedicalRecord(req, res, next));
 
-  route.post('',
-    celebrate({
-      body: Joi.object({
-        patientMedicalRecordNumber: Joi.string().required(),
-        medicalRecordId: Joi.string().required(),
-      }),
-    }),
-    (req, res, next) => ctrl.createMedicalRecord(req, res, next));
+    route.post('',
+      (req, res, next) => ctrl.createMedicalRecord(req, res, next)
+    );
 
   route.put('/medicalRecords/:id',
     celebrate({

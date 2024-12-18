@@ -19,6 +19,7 @@ export class MedicalConditionMap extends Mapper<MedicalCondition> {
       return null;
     }
   
+    
     return {
       id: rawData.domainId || medicalCondition._id?.toString() || null,
       name: rawData.name || null,

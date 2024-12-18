@@ -9,8 +9,12 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
   
   public static toDTO( medicalRecord: any): IMedicalRecordDTO {
 
-    const rawData = medicalRecord.props?._doc || medicalRecord.props || medicalRecord;
+    if (!medicalRecord) {
+      console.error("MedicalRecord is null or undefined aqui.");
+      return null;
+    }
 
+    const rawData = medicalRecord._doc || medicalRecord;
 
     if (!rawData) {
       console.error("Invalid medicalCondition object structure:", medicalRecord);
@@ -20,12 +24,15 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
     return {
       id: rawData.domainId || medicalRecord._id?.toString() || null,
       patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,
-      allergiesID: rawData.allergiesID || null,
-      medicalConditionsID: rawData.medicalConditionsID || null,
+      allergiesID: rawData.allergiesID || [],
+      medicalConditionsID: rawData.medicalConditionsID || [],
     };
   }
 
   public static toDomain (medicalRecord: any | Model<IMedicalRecordPersistence & Document> ): MedicalRecord {
+
+    console.log("todomain",medicalRecord );
+
     const medicalRecordOrError = MedicalRecord.create(
       medicalRecord,
       new UniqueEntityID(medicalRecord.domainId)
@@ -33,6 +40,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
 
     medicalRecordOrError.isFailure ? console.log(medicalRecordOrError.error) : '';
 
+    console.log( " toDomain : ", medicalRecordOrError );
     return medicalRecordOrError.isSuccess ? medicalRecordOrError.getValue() : null;
   }
 

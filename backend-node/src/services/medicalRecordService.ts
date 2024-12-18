@@ -59,11 +59,18 @@ export default class MedicalRecordService implements IMedicalRecordService {
   }
 
   public async getAllMedicalRecords(): Promise<Result<IMedicalRecordDTO[]>> {
+    
     try {
+      console.log('Entering getAllMedicalRecords service');
       const medicalRecords = await this.medicalRecordRepo.getAll();
 
-      const  medicalRecordsDTO = medicalRecords.map( medicalRecords => MedicalRecordMap.toDTO( medicalRecords ) as IMedicalRecordDTO );
+      console.log('medicalRecords:', medicalRecords);
 
+      const  medicalRecordsDTO = medicalRecords.map( medicalRecord => MedicalRecordMap.toDTO( medicalRecord ) as IMedicalRecordDTO );
+
+      
+
+      console.log('medicalRecordsDTO:', medicalRecordsDTO);
       return Result.ok<IMedicalRecordDTO[]>( medicalRecordsDTO );
     } catch (e) {
       throw e;

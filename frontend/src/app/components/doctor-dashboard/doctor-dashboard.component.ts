@@ -44,11 +44,22 @@ export class DoctorDashboardComponent implements OnInit {
         command: () => this.goHome()
       },
       {
-        label: 'OperationRequests',
+        label: 'Medical Records',
+        icon: 'pi pi-file',
+        items:[
+          
+          {
+            label: 'Search/List',
+            icon: 'pi pi-list',
+            command: () => this.listMedicalRecords()
+          } ]
+      },
+      {
+        label: 'Operation Requests',
         icon: '',
         items: [
           {
-            label: 'CreateRequest',
+            label: 'Create Request',
             icon: 'pi pi-check',
             command: () => this.createOperationRequest()
           },
@@ -97,6 +108,10 @@ export class DoctorDashboardComponent implements OnInit {
 
   createOperationRequest() {
     this.createOperationRequestsComponent.showDialog();
+  }
+
+  listMedicalRecords() {
+    this.router.navigate(['doctorDashboard/medicalRecords']);
   }
 
   listOperationRequests() {
