@@ -37,15 +37,14 @@ export default (app: Router) => {
   route.put('',
     celebrate({
       body: Joi.object({
+        id: Joi.string().required(),
         name: Joi.string().required(),
         code: Joi.string().required(),
         description: Joi.string().required()
       }),
-      params: Joi.object({
-        id: Joi.string().required(),
-      }),
     }),
-    (req, res, next) => ctrl.updateAllergy(req, res, next));
+    (req, res, next) => ctrl.updateAllergy(req, res, next)
+  );
 
     route.delete('/:id/delete', (req, res, next) => ctrl.deleteAllergy(req, res, next));
 };

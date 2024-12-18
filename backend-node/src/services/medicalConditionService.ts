@@ -108,6 +108,8 @@ export default class MedicalConditionService implements IMedicalConditionService
 
     const medicalConditionDTOOld = MedicalConditionMap.toDTO(medicalCondition.props);
 
+    console.log("Objeto", medicalConditionDTOOld);
+
     const nameOrError = 
       medicalConditionDTOOld.name !== medicalConditionDTO.name
         ? MedicalConditionName.create({ name: medicalConditionDTO.name })
@@ -137,6 +139,7 @@ export default class MedicalConditionService implements IMedicalConditionService
     if (descriptionOrError.isSuccess) medicalCondition.props.description = descriptionOrError.getValue();
     if (symptomsOrError.isSuccess) medicalCondition.props.symptoms = symptomsOrError.getValue();
 
+  console.log("medical condition FINALLLLLLLLLLLLLv", medicalCondition);
     await this.medicalConditionRepo.save(medicalCondition);
 
     const medicalConditionDTOResult = MedicalConditionMap.toDTO(medicalCondition.props) as IMedicalConditionDTO;

@@ -13,6 +13,7 @@ export class AllergyMap extends Mapper<Allergy> {
 
     const rawData = allergy.props?._doc || allergy.props || allergy;
 
+    
     if (!rawData) {
       console.error("Invalid allergy object structure:", allergy);
       return null;

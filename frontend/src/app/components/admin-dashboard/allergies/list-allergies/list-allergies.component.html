@@ -48,12 +48,6 @@
           <div class="col text-container" style="flex: 4;">{{ item.description || 'Not specified' }}</div>
           <div class="col" style="flex: 1;">
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="openEditDialog(item)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
-            <p-button 
-              icon="pi pi-trash" 
-              label="Delete" 
-              class="p-button-danger"
-              [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }">
-            </p-button>
           </div>
         </div>
         <p-dialog header="Edit Allergy Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">

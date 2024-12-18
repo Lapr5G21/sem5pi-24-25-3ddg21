@@ -43,11 +43,12 @@ export default class AllergyRepo implements IAllergyRepo {
 
         return AllergyMap.toDomain(allergyCreated);
       } else {
-        allergyDocument.name = allergy.name.toString();
-        allergyDocument.code = allergy.code.toString();
-        allergyDocument.description = allergy.description.toString();
+        allergyDocument.name = allergy.props.name.value;
+        allergyDocument.code = allergy.props.code.value;
+        allergyDocument.description = allergy.props.description.value;
 
         await allergyDocument.save();
+        
         return AllergyMap.toDomain(allergyDocument);
       }
     } catch (err) {
@@ -69,7 +70,11 @@ export default class AllergyRepo implements IAllergyRepo {
     try {
         
     const query = { domainId: allergyId.toString() };
+
+    console.log('Query:', query);
     const allergyRecord = await this.allergySchema.findOne(query as FilterQuery<IAllergyPersistence & Document>);
+
+    console.log('AllergyRecord:', allergyRecord);
 
     if (allergyRecord != null) {
         return AllergyMap.toDomain(allergyRecord);

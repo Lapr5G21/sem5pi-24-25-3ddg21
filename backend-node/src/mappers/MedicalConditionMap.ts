@@ -14,6 +14,8 @@ export class MedicalConditionMap extends Mapper<MedicalCondition> {
     
     const rawData = medicalCondition.props?._doc || medicalCondition.props || medicalCondition;
   
+console.log('rawData', rawData);
+
     if (!rawData) {
       console.error("Invalid medicalCondition object structure:", medicalCondition);
       return null;

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const AllergySchema = new mongoose.Schema(
   {
     domainId: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId() },
-    name: { type: String, unique: true },
+    name: { type: String, unique: false },
     code: { type: String, unique: true },
     description: { type: String, unique: false },
   },

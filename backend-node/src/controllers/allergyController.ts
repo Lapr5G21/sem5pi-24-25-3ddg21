@@ -88,14 +88,13 @@ export default class AllergyController implements IAllergyController  {
     }
   };
 
-  
+  // api/allergies/:id
   public async updateAllergy(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("Request body: ", req.body);
+      
       const allergyOrError = await this.allergyServiceInstance.updateAllergy(req.body as IAllergyDTO) as Result<IAllergyDTO>;
 
       if (allergyOrError.isFailure) {
-        
         return res.status(404).send("Allergy not found");
       }
 
