@@ -82,7 +82,6 @@ export class ListOperationTypesComponent implements OnInit {
   loadOperationTypes(): void {
     const statusBoolean = this.statusFilter;
     const specializationId = this.specializationFilter;
-    console.log(specializationId);
     this.operationTypeService.searchOperationTypes(this.nameFilter, specializationId, statusBoolean).subscribe(
       (operationTypes) => {
         this.operationTypes = operationTypes;

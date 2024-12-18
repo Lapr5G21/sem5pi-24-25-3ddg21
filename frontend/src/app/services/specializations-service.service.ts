@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreatingSpecializationDto, Specialization, SpecializationDto } from '../domain/operationType-model';
@@ -51,6 +51,24 @@ export class SpecializationsService {
     });
 
     return this.http.put(`${this.apiUrl}/specializations/${specialization.id}`,specialization,{headers});
+  }
+
+  searchSpecializations(name: string, code: string, description: string): Observable<any[]> {
+    let params = new HttpParams();
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`  
+      }); 
+    if (name) {
+      params = params.append('name', name);
+    }
+    if (code) {
+      params = params.append('code', code);
+    }
+    if (description) {
+      params = params.append('description', description);
+    }
+    return this.http.get<any[]>(`${this.apiUrl}/specializations/search`, { params,headers});
   }
 
   }

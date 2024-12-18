@@ -164,5 +164,39 @@ namespace DDDSample1.Domain.Specializations
             }
             return false;
         }
+
+        public async Task<IEnumerable<SpecializationDto>> SearchSpecializationsAsync(SearchSpecializationDto searchDto)
+        {
+            var specializations = await _repo.GetAllAsync();
+
+            IEnumerable<Specialization> filteredSpecializations = specializations;
+
+            if (!string.IsNullOrEmpty(searchDto.Name))
+            {
+                filteredSpecializations = filteredSpecializations
+                    .Where(o => o.SpecializationName.ToString().IndexOf(searchDto.Name, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Code))
+            {
+                filteredSpecializations = filteredSpecializations
+                    .Where(o => o.SpecializationCode.ToString()
+                    .Equals(searchDto.Code, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Description))
+            {
+                filteredSpecializations = filteredSpecializations
+                    .Where(o => o.SpecializationDescription.ToString().IndexOf(searchDto.Description, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            return filteredSpecializations.Select(o => new SpecializationDto
+            {
+                Id = o.Id.AsGuid(),
+                SpecializationName = o.SpecializationName.ToString(),
+                SpecializationCode = o.SpecializationCode.ToString(),
+                SpecializationDescription = o.SpecializationDescription.ToString()
+            }).ToList();
+        }
     }
 }

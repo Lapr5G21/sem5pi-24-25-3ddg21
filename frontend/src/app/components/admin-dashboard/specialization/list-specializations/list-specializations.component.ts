@@ -39,6 +39,9 @@ import { ToastModule } from 'primeng/toast';
 export class ListSpecializationsComponent implements OnInit {
   editDialogVisible: boolean = false;
   specializations: Specialization[] = [];
+  filterName: string = '';
+  filterCode: string = '';
+  filterDescription: string = '';
 
   selectedSpecialization: Specialization = {
     id: '',
@@ -55,7 +58,7 @@ export class ListSpecializationsComponent implements OnInit {
   }
 
   loadSpecializations(): void {
-    this.specializationService.getSpecializations().subscribe(
+    this.specializationService.searchSpecializations(this.filterName,this.filterCode,this.filterDescription).subscribe(
       (specializations) => {
         this.specializations = specializations;
       },

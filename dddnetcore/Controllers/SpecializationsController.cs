@@ -105,5 +105,27 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [Authorize(Policy="AdminRole")]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchSpecializations([FromQuery] string name, [FromQuery] string code, [FromQuery] string description)
+        {      
+            try
+            {
+                var searchDto = new SearchSpecializationDto
+            {
+                Name = name,
+                Code = code,
+                Description = description
+            };
+
+            var specializations = await _service.SearchSpecializationsAsync(searchDto);
+            return Ok(specializations);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred while searching: {ex.Message}");
+            }
+        }
     }
 }

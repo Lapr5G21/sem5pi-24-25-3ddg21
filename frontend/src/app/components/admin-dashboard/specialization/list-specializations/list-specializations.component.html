@@ -1,3 +1,48 @@
+<div class="p-fluid" style="margin-bottom: 1rem;"></div>
+  <div class="p-grid p-align-center" style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    <div class="p-col" style="flex: 1;">
+      <label for="filterName">Name</label>
+      <input 
+        pInputText 
+        id="filterName" 
+        [(ngModel)]="filterName" 
+        placeholder="Filter by Name" 
+        style="width: 100%;" />
+    </div>
+
+    <div class="p-col" style="flex: 1;">
+      <label for="filterCode">Code</label>
+      <input 
+        pInputText 
+        id="filterCode" 
+        [(ngModel)]="filterCode" 
+        placeholder="Filter by Code" 
+        style="width: 100%;" />
+    </div>
+
+    <div class="p-col" style="flex: 1;">
+      <label for="filterDescription">Description</label>
+      <input 
+        pInputText 
+        id="filterDescription" 
+        [(ngModel)]="filterDescription" 
+        placeholder="Filter by Description" 
+        style="width: 100%;" />
+    </div>
+  </div>
+
+  <!-- Botão de Pesquisa -->
+  <div class="p-grid p-align-center" style="margin-top: 1rem;">
+    <div class="p-col">
+      <button 
+        pButton 
+        label="Search" 
+        icon="pi pi-search" 
+        class="p-button-outlined" 
+        (click)="onSearch()"></button>
+    </div>
+  </div>
+
 <p-table 
   [value]="specializations" 
   scrollHeight="400px"
@@ -22,7 +67,7 @@
           label="Edit" 
           (click)="onEdit(specialization)" 
           class="p-button-sm p-button-rounded p-button-primary" 
-          style="margin-right: 10px ;"></button>
+          style="margin-right: 10px;"></button>
         <button 
           pButton 
           icon="pi pi-times" 
