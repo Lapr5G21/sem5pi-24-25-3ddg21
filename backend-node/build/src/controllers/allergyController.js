@@ -77,9 +77,9 @@ let AllergyController = class AllergyController {
         }
     }
     ;
+    // api/allergies/:id
     async updateAllergy(req, res, next) {
         try {
-            console.log("Request body: ", req.body);
             const allergyOrError = await this.allergyServiceInstance.updateAllergy(req.body);
             if (allergyOrError.isFailure) {
                 return res.status(404).send("Allergy not found");

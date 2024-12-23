@@ -42,8 +42,8 @@ let MedicalRecordRepo = class MedicalRecordRepo {
             }
             else {
                 medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
-                medicalRecordDocument.allergiesID = medicalRecord.props.allergies.map(a => a.toString());
-                medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditions.map(a => a.toString());
+                medicalRecordDocument.allergiesID = medicalRecord.props.allergiesID.map(a => a.toString());
+                medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditionsID.map(a => a.toString());
                 await medicalRecordDocument.save();
                 return MedicalRecordMap_1.MedicalRecordMap.toDomain(medicalRecordDocument);
             }
@@ -55,6 +55,7 @@ let MedicalRecordRepo = class MedicalRecordRepo {
     async getAll() {
         try {
             const medicalRecordDocuments = await this.medicalRecordSchema.find({}).exec();
+            console.log("repo:", medicalRecordDocuments);
             return medicalRecordDocuments.map(doc => MedicalRecordMap_1.MedicalRecordMap.toDomain(doc));
         }
         catch (err) {

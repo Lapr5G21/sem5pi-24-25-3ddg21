@@ -18,17 +18,17 @@ class MedicalRecord extends AggregateRoot_1.AggregateRoot {
     set patientMedicalRecordNumber(value) {
         this.props.patientMedicalRecordNumber = value;
     }
-    get allergies() {
-        return this.props.allergies;
+    get allergiesID() {
+        return this.props.allergiesID;
     }
-    set allergies(value) {
-        this.props.allergies = value;
+    set allergiesID(value) {
+        this.props.allergiesID = value;
     }
-    get medicalConditions() {
-        return this.props.medicalConditions;
+    get medicalConditionsID() {
+        return this.props.medicalConditionsID;
     }
-    set medicalConditions(value) {
-        this.props.medicalConditions = value;
+    set medicalConditionsID(value) {
+        this.props.medicalConditionsID = value;
     }
     constructor(props, id) {
         super(props, id);
@@ -36,8 +36,8 @@ class MedicalRecord extends AggregateRoot_1.AggregateRoot {
     static create(props, id) {
         const guardedProps = [
             { argument: props.patientMedicalRecordNumber, argumentName: 'patientMedicalRecordNumber' },
-            { argument: props.allergies, argumentName: 'allergies' },
-            { argument: props.medicalConditions, argumentName: 'medicalConditions' },
+            { argument: props.allergiesID, argumentName: 'allergiesID' },
+            { argument: props.medicalConditionsID, argumentName: 'medicalConditionsID' },
         ];
         const guardResult = Guard_1.Guard.againstNullOrUndefinedBulk(guardedProps);
         if (!guardResult.succeeded) {
@@ -45,6 +45,7 @@ class MedicalRecord extends AggregateRoot_1.AggregateRoot {
         }
         else {
             const medicalRecord = new MedicalRecord(Object.assign({}, props), id);
+            console.log("Dentro do create:", medicalRecord);
             return Result_1.Result.ok(medicalRecord);
         }
     }

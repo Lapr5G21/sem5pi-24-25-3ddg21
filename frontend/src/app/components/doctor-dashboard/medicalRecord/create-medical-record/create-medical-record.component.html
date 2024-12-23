@@ -1,0 +1,75 @@
+<div class="card flex justify-content-center">
+    <p-dialog header="Create Medical Record" [(visible)]="visible" [modal]="true"
+        [style]="{ width: '50rem', height: 'auto' }">
+
+        <!-- Select Patient -->
+        <div class="mb-4">
+            <label for="patientDropdown" class="p-text-secondary block">Select Patient:</label>
+            <div class="card flex justify-content-center">
+                <p-dropdown 
+                    id="patientDropdown"
+                    [options]="patient"  
+                    [(ngModel)]="selectedPatient"
+                    [checkmark]="true" 
+                    optionLabel="label" 
+                    [showClear]="true"
+                    placeholder="Select a Patient"
+                    [style]="{width:'25rem'}" 
+                    [ngModelOptions]="{standalone: true}"
+                    #patientInput="ngModel"
+                    required>
+                </p-dropdown>
+                <small *ngIf="patientInput.invalid && (patientInput.dirty || patientInput.touched)" class="p-error">
+                    Patient is required.
+                </small>
+            </div>
+        </div>
+
+        <!-- Select Allergies (Multiple) -->
+        <div class="mb-4">
+            <label for="allergyMultiSelect" class="p-text-secondary block">Select Allergies:</label>
+            <div class="card flex justify-content-center">
+                <p-multiSelect 
+                    id="allergyMultiSelect"
+                    [options]="selectedAllergies" 
+                    [(ngModel)]="selectedAllergiesId"
+                    optionLabel="label"
+                    placeholder="Select Allergies" 
+                    [style]="{width:'25rem'}"
+                    [ngModelOptions]="{standalone: true}">
+                </p-multiSelect>
+            </div>
+        </div>
+
+        <!-- Select Medical Conditions (Multiple) -->
+        <div class="mb-4">
+            <label for="medicalConditionMultiSelect" class="p-text-secondary block">Select Medical Conditions:</label>
+            <div class="card flex justify-content-center">
+                <p-multiSelect 
+                    id="medicalConditionMultiSelect"
+                    [options]="selectedMedicalConditions" 
+                    [(ngModel)]="selectedMedicalConditionsId"
+                    optionLabel="label"
+                    placeholder="Select Medical Conditions" 
+                    [style]="{width:'25rem'}"
+                    [ngModelOptions]="{standalone: true}">
+                </p-multiSelect>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <ng-template pTemplate="footer">
+            <div class="flex justify-content-end gap-2">
+                <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="visible = false"></p-button>
+                <p-button 
+                    label="Save" 
+                    [outlined]="true" 
+                    severity="primary" 
+                    (onClick)="saveMedicalRecord()"
+                    [disabled]="!isFormValid()"></p-button>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+    <p-toast></p-toast>
+</div>

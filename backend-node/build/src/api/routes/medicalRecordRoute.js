@@ -11,18 +11,13 @@ const route = (0, express_1.Router)();
 exports.default = (app) => {
     app.use('/medicalRecords', route);
     const ctrl = typedi_1.Container.get(config_1.default.controllers.medicalRecord.name);
-    route.get('/', ctrl.getAllMedicalRecords);
+    route.get('', (req, res, next) => ctrl.getAllMedicalRecords(req, res, next));
     route.get('/:id', (0, celebrate_1.celebrate)({
         params: celebrate_1.Joi.object({
             id: celebrate_1.Joi.string().required(),
         }),
     }), (req, res, next) => ctrl.getMedicalRecord(req, res, next));
-    route.post('', (0, celebrate_1.celebrate)({
-        body: celebrate_1.Joi.object({
-            patientMedicalRecordNumber: celebrate_1.Joi.string().required(),
-            medicalRecordId: celebrate_1.Joi.string().required(),
-        }),
-    }), (req, res, next) => ctrl.createMedicalRecord(req, res, next));
+    route.post('', (req, res, next) => ctrl.createMedicalRecord(req, res, next));
     route.put('/medicalRecords/:id', (0, celebrate_1.celebrate)({
         body: celebrate_1.Joi.object({
             name: celebrate_1.Joi.string().required(),

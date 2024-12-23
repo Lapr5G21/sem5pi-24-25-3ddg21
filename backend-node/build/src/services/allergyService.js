@@ -96,7 +96,6 @@ let AllergyService = class AllergyService {
             if (allergy === null) {
                 return Result_1.Result.fail("allergy not found");
             }
-            console.log("Objeto", allergy);
             const allerdyDTOId = AllergyMap_1.AllergyMap.toDTO(allergy.props);
             const nameOrError = allerdyDTOId.name !== allergyDTO.name
                 ? allergyName_1.AllergyName.create({ name: allergyDTO.name })
@@ -110,16 +109,18 @@ let AllergyService = class AllergyService {
             if (nameOrError.isFailure || codeOrError.isFailure || descriptionOrError.isFailure) {
                 return Result_1.Result.fail("Invalid data provided");
             }
-            if (nameOrError.isSuccess)
+            if (nameOrError.isSuccess) {
                 allergy.props.name = nameOrError.getValue();
-            if (codeOrError.isSuccess)
+            }
+            if (codeOrError.isSuccess) {
                 allergy.props.code = codeOrError.getValue();
-            if (descriptionOrError.isSuccess)
+            }
+            if (descriptionOrError.isSuccess) {
                 allergy.props.description = descriptionOrError.getValue();
-            console.log("Objeto", allergy);
+            }
+            console.log("Allergy FINALLLLLLLLLv ", allergy);
             await this.allergyRepo.save(allergy);
             const allergyDTOResult = AllergyMap_1.AllergyMap.toDTO(allergy.props);
-            console.log("Objeto depois do toDTO", allergyDTOResult);
             return Result_1.Result.ok(allergyDTOResult);
         }
         catch (e) {

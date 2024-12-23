@@ -18,12 +18,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const config_1 = __importDefault(require("../../config"));
 const Result_1 = require("../core/logic/Result");
-const AllergyMap_1 = require("../mappers/AllergyMap");
 const mongoose_1 = __importDefault(require("mongoose"));
 const patientMedicalRecordNumber_1 = require("../domain/MedicalRecord/patientMedicalRecordNumber");
 const MedicalRecordMap_1 = require("../mappers/MedicalRecordMap");
 const medicalRecord_1 = require("../domain/MedicalRecord/medicalRecord");
-const MedicalConditionMap_1 = require("../mappers/MedicalConditionMap");
 let MedicalRecordService = class MedicalRecordService {
     constructor(medicalRecordRepo) {
         this.medicalRecordRepo = medicalRecordRepo;
@@ -32,8 +30,8 @@ let MedicalRecordService = class MedicalRecordService {
         try {
             const medicalRecordProps = {
                 patientMedicalRecordNumber: patientMedicalRecordNumber_1.PatientMedicalRecordNumber.create({ medicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber }).getValue(),
-                allergies: medicalRecordDTO.allergiesID.map(a => AllergyMap_1.AllergyMap.toDomain(a)),
-                medicalConditions: medicalRecordDTO.medicalConditionsID.map(mc => MedicalConditionMap_1.MedicalConditionMap.toDomain(mc)),
+                allergiesID: medicalRecordDTO.allergiesID,
+                medicalConditionsID: medicalRecordDTO.medicalConditionsID,
                 domainId: new mongoose_1.default.Types.ObjectId().toString(),
             };
             const medicalRecordOrError = await medicalRecord_1.MedicalRecord.create(medicalRecordProps);
@@ -66,8 +64,11 @@ let MedicalRecordService = class MedicalRecordService {
     }
     async getAllMedicalRecords() {
         try {
+            console.log('Entering getAllMedicalRecords service');
             const medicalRecords = await this.medicalRecordRepo.getAll();
-            const medicalRecordsDTO = medicalRecords.map(medicalRecords => MedicalRecordMap_1.MedicalRecordMap.toDTO(medicalRecords));
+            console.log('medicalRecords:', medicalRecords);
+            const medicalRecordsDTO = medicalRecords.map(medicalRecord => MedicalRecordMap_1.MedicalRecordMap.toDTO(medicalRecord));
+            console.log('medicalRecordsDTO:', medicalRecordsDTO);
             return Result_1.Result.ok(medicalRecordsDTO);
         }
         catch (e) {

@@ -66,13 +66,12 @@ export class ListMedicalRecordComponent implements OnInit {
   loadMedicalRecords(): void {
     this.medicalRecordService.getMedicalRecord().subscribe({
       next: (records) => {
-        console.log('Medical Records Data:', records);
         this.medicalRecords = records.map((record) => ({
           ...record,
-          allergies: record.allergies || [], 
-          medicalConditions: record.medicalConditions || [], 
+          patientMedicalRecordNumber: record.patientMedicalRecordNumber || '',
+          allergiesID: record.allergies || [], 
+          medicalConditionsID: record.medicalConditions || [], 
         }));
-        console.log('Medical Records that got:', records);
         this.filteredMedicalRecords = records;
       },
       error: (error) => console.error('Error loading medical records', error),

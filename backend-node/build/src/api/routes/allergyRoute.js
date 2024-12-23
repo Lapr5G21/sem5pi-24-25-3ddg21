@@ -26,12 +26,10 @@ exports.default = (app) => {
     }), (req, res, next) => ctrl.createAllergy(req, res, next));
     route.put('', (0, celebrate_1.celebrate)({
         body: celebrate_1.Joi.object({
+            id: celebrate_1.Joi.string().required(),
             name: celebrate_1.Joi.string().required(),
             code: celebrate_1.Joi.string().required(),
             description: celebrate_1.Joi.string().required()
-        }),
-        params: celebrate_1.Joi.object({
-            id: celebrate_1.Joi.string().required(),
         }),
     }), (req, res, next) => ctrl.updateAllergy(req, res, next));
     route.delete('/:id/delete', (req, res, next) => ctrl.deleteAllergy(req, res, next));

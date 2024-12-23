@@ -41,9 +41,9 @@ let AllergyRepo = class AllergyRepo {
                 return AllergyMap_1.AllergyMap.toDomain(allergyCreated);
             }
             else {
-                allergyDocument.name = allergy.name.toString();
-                allergyDocument.code = allergy.code.toString();
-                allergyDocument.description = allergy.description.toString();
+                allergyDocument.name = allergy.props.name.value;
+                allergyDocument.code = allergy.props.code.value;
+                allergyDocument.description = allergy.props.description.value;
                 await allergyDocument.save();
                 return AllergyMap_1.AllergyMap.toDomain(allergyDocument);
             }
@@ -64,7 +64,9 @@ let AllergyRepo = class AllergyRepo {
     async findByDomainId(allergyId) {
         try {
             const query = { domainId: allergyId.toString() };
+            console.log('Query:', query);
             const allergyRecord = await this.allergySchema.findOne(query);
+            console.log('AllergyRecord:', allergyRecord);
             if (allergyRecord != null) {
                 return AllergyMap_1.AllergyMap.toDomain(allergyRecord);
             }

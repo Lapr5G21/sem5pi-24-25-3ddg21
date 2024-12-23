@@ -2,16 +2,16 @@
   <p-dataView #dv [value]="filteredMedicalRecords" [rows]="10" [paginator]="true">
     <ng-template pTemplate="header">
       <div class="flex justify-between mt-2 mb-2">
-        <div class="flex gap-4">
-          <p-floatLabel class="flex-1">
+        <div class="flex gap-4 w-full">
+          <p-floatLabel style="flex: 1;">
             <input
               pInputText
               id="recordNumberFilter"
               [(ngModel)]="recordNumberFilter"
               placeholder="Search by Patient Medical Record Number"
-              class="p-inputtext-sm"
+              class="p-inputtext-sm w-full"
             />
-            <label for="recordNumberFilter">Patient Medical Record Number</label>
+            <label for="recordNumberFilter">Medical Record Number</label>
           </p-floatLabel>
 
           <div class="flex items-end">

@@ -8,6 +8,7 @@ class MedicalConditionMap extends Mapper_1.Mapper {
     static toDTO(medicalCondition) {
         var _a, _b;
         const rawData = ((_a = medicalCondition.props) === null || _a === void 0 ? void 0 : _a._doc) || medicalCondition.props || medicalCondition;
+        console.log('rawData', rawData);
         if (!rawData) {
             console.error("Invalid medicalCondition object structure:", medicalCondition);
             return null;

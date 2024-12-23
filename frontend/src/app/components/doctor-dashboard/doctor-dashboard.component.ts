@@ -2,12 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { MenubarComponent } from '../menubar/menubar.component';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { CreateOperationRequestsComponent } from './operationRequests/create-operation-requests/create-operation-requests.component';
 import { ListOperationRequestsComponent } from './operationRequests/list-operation-requests/list-operation-requests.component';
 import { CommonModule } from '@angular/common';
 import { HospitalModelComponent } from '../hospital-model/hospital-model/hospital-model.component';
 import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/profile-menu-component.component';
+import { CreateMedicalRecordComponent } from './medicalRecord/create-medical-record/create-medical-record.component';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -15,6 +16,7 @@ import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/
   imports: [
     RouterOutlet,
     MenubarComponent,
+    CreateMedicalRecordComponent,
     CreateOperationRequestsComponent,
     ListOperationRequestsComponent,
     CommonModule,
@@ -22,7 +24,8 @@ import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/
     ProfileMenuComponent
   ],
   templateUrl: './doctor-dashboard.component.html',
-  styleUrls: ['./doctor-dashboard.component.scss']
+  styleUrls: ['./doctor-dashboard.component.scss'],
+  providers: [MessageService]
 })
 export class DoctorDashboardComponent implements OnInit {
   
@@ -31,6 +34,7 @@ export class DoctorDashboardComponent implements OnInit {
   showHospitalModel: boolean = false;
 
   @ViewChild(CreateOperationRequestsComponent) createOperationRequestsComponent!: CreateOperationRequestsComponent;
+  @ViewChild(CreateMedicalRecordComponent) createMedicalRecordComponent!: CreateMedicalRecordComponent;
   @ViewChild(ListOperationRequestsComponent) listOperationRequestsComponent!: ListOperationRequestsComponent;
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent
   @ViewChild(ProfileMenuComponent) profileMenuComponent!: ProfileMenuComponent
@@ -47,7 +51,11 @@ export class DoctorDashboardComponent implements OnInit {
         label: 'Medical Records',
         icon: 'pi pi-file',
         items:[
-          
+          {
+            label: 'Create Medical Record',
+            icon: 'pi pi-check',
+            command: () => this.createMedicalRecord()
+          },
           {
             label: 'Search/List',
             icon: 'pi pi-list',
@@ -104,6 +112,10 @@ export class DoctorDashboardComponent implements OnInit {
     this.showOperationRequestsList = false; 
     this.showHospitalModel = false;
     this.router.navigate(['/doctorDashboard/home']); 
+  }
+
+  createMedicalRecord() {
+    this.createMedicalRecordComponent.showDialog();
   }
 
   createOperationRequest() {

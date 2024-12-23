@@ -24,4 +24,8 @@ export class MedicalRecordService {
             });
             return this.http.put(`${this.apiUrl}/medicalRecords/${medicalRecordId}`, medicalRecordData, { headers });
         }
+
+        saveMedicalRecord(medicalRecordData: any): Observable<any> {
+          return this.http.post(`${this.apiUrl}/medicalRecords`, medicalRecordData);
+        }      
 }

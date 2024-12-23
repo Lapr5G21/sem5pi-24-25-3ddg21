@@ -37,6 +37,7 @@ let MedicalRecordController = class MedicalRecordController {
     // api/medicalRecords
     async getAllMedicalRecords(req, res, next) {
         try {
+            console.log('Entering getAllMedicalRecords controller');
             const result = await this.medicalRecordServiceInstance.getAllMedicalRecords();
             if (result === null) {
                 return res.status(404).send("Failed to retrieve medical records");
@@ -60,6 +61,7 @@ let MedicalRecordController = class MedicalRecordController {
             return res.json(medicalRecordDTO).status(201);
         }
         catch (e) {
+            console.error('Error creating medical record:', e);
             return next(e);
         }
     }
