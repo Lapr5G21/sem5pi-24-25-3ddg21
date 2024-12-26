@@ -13,7 +13,11 @@ import TWEEN, { Group, Tween } from '@tweenjs/tween.js';
 
 export default class Maze {
 
+
     constructor(parameters, camera, renderer, scene3D) {
+            
+        // Variáveis globais para controlar o overlay e a sala selecionada
+        this.overlayVisible = false; // Controla a visibilidade do overlay
 
         this.bed  = null;
         this.patient = null;
@@ -258,7 +262,15 @@ export default class Maze {
             // onError callback
             error => this.onError(this.url, error),
 
-            window.addEventListener('click', this.onMouseClick)
+            window.addEventListener('click', this.onMouseClick),
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'i') {
+                    console.log("Tecla 'i' pressionada");  // Verifique se o log aparece
+                    // Verifica se há uma sala selecionada antes de exibir o overlay
+                        toggleOverlay(); // Exibe ou oculta o overlay
+                    }
+            })
+            
         );
     }
 
@@ -306,10 +318,22 @@ export default class Maze {
                 const tablePosition = clickedObject.position;
                 console.log("Selected operating table:", clickedObject.name, "Position:", tablePosition);
                 this.moveCameraToRoom(tablePosition, this.camera,false);
+            
+                // Armazena a sala selecionada
+            let selectedRoom = clickedObject.name; // Aqui você pode associar o nome do paciente à sala
+            console.log("Sala selecionada:", selectedRoom);  // Verifique se o log aparece
+            updateOverlayContent(selectedRoom); // Atualiza o conteúdo do overlay
+
             } else if (clickedObject.name && clickedObject.name.includes("Patient")) {
                 const patientPosition = clickedObject.position;
                 console.log("Selected patient:", clickedObject.name, "Position:", patientPosition);
-                this.moveCameraToRoom(patientPosition, this.camera, true); 
+                this.moveCameraToRoom(patientPosition, this.camera, true);
+                
+            // Armazena a sala selecionada
+            selectedRoom = clickedObject.name; // Aqui você pode associar o nome do paciente à sala
+            console.log("Sala selecionada:", selectedRoom);  // Verifique se o log aparece
+            updateOverlayContent(); // Atualiza o conteúdo do overlay
+
             } else {
                 console.log("The clicked object is not a surgical table or a patient.");
             }
@@ -385,6 +409,25 @@ export default class Maze {
         
         console.log("Spotlight ativado para o paciente na posição:", position);
     }
+
+    toggleOverlay() {
+        overlayVisible = !overlayVisible;
+        const overlayElement = document.getElementById("overlay");
+        if (overlayVisible) {
+            overlayElement.style.display = "block";  // Exibe o overlay
+        } else {
+            overlayElement.style.display = "none";  // Esconde o overlay
+        }
+    }
+    
+
+// Método para atualizar as informações do overlay
+updateOverlayContent(selectedRoom) {
+    const roomInfo = document.getElementById('room-info');
+    if (roomInfo && selectedRoom) {
+        roomInfo.textContent = `You are in room: ${selectedRoom}`; // Exemplo de conteúdo
+    }
+}
 
     // Convert cell [row, column] coordinates to cartesian (x, y, z) coordinates
     cellToCartesian(position){

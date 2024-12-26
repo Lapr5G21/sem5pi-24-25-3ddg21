@@ -9,9 +9,6 @@ namespace DDDSample1.Domain.RoomTypes
 
         public RoomTypeDescription(string description)
         {
-            if (string.IsNullOrWhiteSpace(description))
-                throw new BusinessRuleValidationException("Room type description cannot be null or empty.");
-
             this.Value = description;
         }
 

@@ -18,6 +18,7 @@ import { CreateAllergiesComponent } from './allergies/create-allergies/create-al
 import { ListAllergiesComponent } from './allergies/list-allergies/list-allergies.component';
 import { CreateMedicalConditionsComponent } from './medicalConditions/create-medical-conditions/create-medical-conditions.component';
 import { ListMedicalConditionsComponent } from './medicalConditions/list-medical-conditions/list-medical-conditions.component';
+import { CreateRoomTypesComponent } from './roomTypes/create-room-types/create-room-types.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -39,7 +40,8 @@ import { ListMedicalConditionsComponent } from './medicalConditions/list-medical
     ListAllergiesComponent, 
     CreateAllergiesComponent,
     CreateMedicalConditionsComponent,
-    ListMedicalConditionsComponent
+    ListMedicalConditionsComponent,
+    CreateRoomTypesComponent
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
@@ -69,6 +71,8 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(ListAllergiesComponent) listAllergiesComponent!: ListAllergiesComponent;
   @ViewChild(CreateMedicalConditionsComponent) createMedicalConditionsComponent!: CreateMedicalConditionsComponent;
   @ViewChild(ListMedicalConditionsComponent) listMedicalConditionsComponent!: ListMedicalConditionsComponent;
+  @ViewChild(CreateRoomTypesComponent) createRoomTypesComponent!: CreateRoomTypesComponent;
+
 
   constructor(private router: Router) {}
 
@@ -245,6 +249,17 @@ export class AdminDashboardComponent implements OnInit {
         ]
       },
       {
+        label: 'Room Types',
+        icon: '',
+        items: [
+          {
+            label: 'Create Room Type',
+            icon: 'pi pi-check',
+            command: () => this.createRoomType()
+          },
+        ]
+      },
+      {
         label: 'Account',
         icon: 'pi pi-user',
         items: [
@@ -298,6 +313,10 @@ export class AdminDashboardComponent implements OnInit {
 
   listPatients() {
     this.router.navigate(['adminDashboard/patients/list']);
+  }
+
+  createRoomType() {
+    this.createRoomTypesComponent.showDialog(); 
   }
 
   logout() {

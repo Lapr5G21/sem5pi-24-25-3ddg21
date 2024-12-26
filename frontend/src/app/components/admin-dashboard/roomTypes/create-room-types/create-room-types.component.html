@@ -1,0 +1,66 @@
+<div class="card flex justify-content-center">
+    <p-dialog 
+        header="Create Room Type" 
+        [(visible)]="visible" 
+        [modal]="true" 
+        [style]="{ width: '30rem' }">
+        <span class="p-text-secondary block mb-5">Insert info :</span>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="Code" class="font-semibold w-6rem">Internal Code</label>
+            <input pInputText id="Code" [(ngModel)]="Code" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isCodeValid}" placeholder="8 characters long, no spaces, only letters, numbers, and dashes" />
+            <div *ngIf="isSubmitted && !isCodeValid" class="error-text">
+                Code is required.
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="Designation" class="font-semibold w-6rem">Designation</label>
+            <input pInputText id="Designation" [(ngModel)]="Designation" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isDesignationValid}" placeholder="Free text, alphanumeric, 100 characters max"/>
+            <div *ngIf="isSubmitted && !isDesignationValid" class="error-text">
+                Designation is required.
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="Description" class="font-semibold w-6rem">Description</label>
+            <textarea
+            id="Description" 
+            [(ngModel)]="Description"  
+            placeholder="Enter or update the description here" 
+            style="width: 100%; font-family: Arial, sans-serif; overflow: hidden; resize: none;"
+            (input)="adjustTextarea($event)">
+          </textarea> 
+        </div>
+        
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="SurgerySuitability" class="font-semibold w-6rem">Surgery Suitable</label>
+            <p-dropdown
+                id="SurgerySuitability" 
+                [options]="surgerySuitabilityOptions" 
+                [(ngModel)]="SurgerySuitability" 
+                optionLabel="label" 
+                placeholder="Select (Yes or No)" 
+                class="flex-auto">
+            </p-dropdown>
+        </div>
+
+
+        <ng-template pTemplate="footer">
+            <p-button 
+                label="Cancel" 
+                [text]="true" 
+                severity="secondary" 
+                (onClick)="resetForm(); visible = false"></p-button>
+            <p-button 
+                label="Save" 
+                [outlined]="true" 
+                severity="primary" 
+                (onClick)="saveRoomType()"></p-button>
+        </ng-template>
+    </p-dialog>
+
+    <!-- Toast Notifications -->
+    <p-toast></p-toast>
+</div>
+

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
-using DDDSample1.Domain.RoomTypes;
 
 namespace DDDSample1.Domain.RoomTypes
 {
@@ -33,6 +32,24 @@ namespace DDDSample1.Domain.RoomTypes
             var list = await _repo.GetAllAsync();
             return list.Select(MapToDto).ToList();
         }
+
+        public async Task<RoomTypeDto> AddAsync(CreatingRoomTypeDto dto)
+        {
+            var roomType = new RoomType(
+                new RoomTypeCode(dto.Code),
+                new RoomTypeDesignation(dto.Designation), 
+                new RoomTypeDescription(dto.Description), 
+                new RoomTypeSurgerySuitability(dto.IsSuitableForSurgery));
+
+            await this._repo.AddAsync(roomType);
+
+            await this._unitOfWork.CommitAsync();
+
+            var resultDto = MapToDto(roomType);
+
+            return resultDto;
+            
+            }
 
         // Método de mapeamento de RoomType para RoomTypeDto
         private RoomTypeDto MapToDto(RoomType roomType)

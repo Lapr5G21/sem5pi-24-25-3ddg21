@@ -10,10 +10,7 @@ namespace DDDSample1.Infraestructure.RoomTypes
 {
     public class RoomTypeRepository : BaseRepository<RoomType, RoomTypeCode>, IRoomTypeRepository
     {
-        private readonly DDDSample1DbContext _context;
-
         public RoomTypeRepository(DDDSample1DbContext context):base(context.RoomTypes) {
-            _context = context;
         }       
     }
 }

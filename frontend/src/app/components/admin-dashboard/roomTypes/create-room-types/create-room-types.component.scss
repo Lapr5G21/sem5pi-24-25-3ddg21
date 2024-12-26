@@ -1,0 +1,14 @@
+textarea {
+    border: 2px solid #2196F3; /* Contorno azul */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-family: Arial, sans-serif; /* Tipo de letra Arial */
+    font-size: 14px; /* Tamanho da fonte */
+    padding: 10px; /* Espaçamento interno */
+    color: #333; /* Cor do texto */
+    outline: none; /* Remove o contorno padrão ao focar */
+  }
+  
+  textarea:focus {
+    border-color: #1565C0; /* Azul mais escuro ao focar */
+    box-shadow: 0 0 5px #2196F3; /* Efeito de brilho ao redor */
+  }
