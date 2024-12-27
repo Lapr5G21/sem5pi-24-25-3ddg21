@@ -17,7 +17,6 @@ namespace DDDSample1.Infraestructure.SurgeryRooms
             builder.Property(b => b.MaintenanceSlots).HasConversion(b => b.MaintenanceSlots, b => new SurgeryRoomMaintenanceSlots(b)).IsRequired();
             builder.Property(b => b.Equipment).HasConversion(b => b.Equipment, b => new SurgeryRoomEquipment(b)).IsRequired();
             builder.Property(b => b.Status).HasConversion<string>().IsRequired();
-            builder.Property(b => b.RoomType).HasConversion<string>().IsRequired();
-        }
+            builder.HasOne(b => b.RoomType).WithMany().HasForeignKey("RoomTypeCode").IsRequired();        }
     }
 }

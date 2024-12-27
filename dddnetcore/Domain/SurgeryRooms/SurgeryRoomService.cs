@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.RoomTypes;
+using DDDSample1.Domain.SurgeryRooms;
 
 namespace DDDSample1.Domain.SurgeryRooms
 {
@@ -10,11 +12,13 @@ namespace DDDSample1.Domain.SurgeryRooms
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISurgeryRoomRepository _repo;
+        private readonly IRoomTypeRepository _roomTypeRepo;
 
-        public SurgeryRoomService(IUnitOfWork unitOfWork, ISurgeryRoomRepository repo)
+        public SurgeryRoomService(IUnitOfWork unitOfWork, ISurgeryRoomRepository repo, IRoomTypeRepository roomTypeRepo)
         {
             _unitOfWork = unitOfWork;
             _repo = repo;
+            _roomTypeRepo = roomTypeRepo;
         }
 
         public async Task<SurgeryRoomDto> GetByIdAsync(SurgeryRoomNumber id)
@@ -34,7 +38,7 @@ namespace DDDSample1.Domain.SurgeryRooms
         public async Task<SurgeryRoomDto> AddAsync(CreatingSurgeryRoomDto dto)
         {
 
-                var roomType = Enum.Parse<SurgeryRoomType>(dto.RoomType);
+               var roomType = await this._roomTypeRepo.GetByIdAsync(new RoomTypeCode(dto.RoomTypeCode)) ?? throw new NullReferenceException($"Room Type Not Found With That Code");
 
                 var status = Enum.Parse<SurgeryRoomStatus>(dto.Status);
 
@@ -61,7 +65,7 @@ namespace DDDSample1.Domain.SurgeryRooms
             return new SurgeryRoomDto
             {
                 Id = surgeryRoom.Id.Value,
-                RoomType = surgeryRoom.RoomType.ToString(),
+                RoomType = new RoomTypeDto{Code = surgeryRoom.RoomType.Id.Value, Designation = surgeryRoom.RoomType.Designation.Value, Description = surgeryRoom.RoomType.Description?.Value, IsSuitableForSurgery = surgeryRoom.RoomType.SurgerySuitability.IsSuitableForSurgery},
                 RoomCapacity = surgeryRoom.RoomCapacity.Capacity, 
                 MaintenanceSlots = surgeryRoom.MaintenanceSlots.MaintenanceSlots,
                 Equipment = surgeryRoom.Equipment.Equipment.ToString(),

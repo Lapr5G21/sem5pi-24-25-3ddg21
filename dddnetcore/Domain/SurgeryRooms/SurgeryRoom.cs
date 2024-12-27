@@ -1,10 +1,13 @@
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.RoomTypes;
+
 
 namespace DDDSample1.Domain.SurgeryRooms
 {
     public class SurgeryRoom : Entity<SurgeryRoomNumber>, IAggregateRoot {
     
-        public SurgeryRoomType RoomType {get; private set;}
+        public RoomType RoomType {get; private set;}
+        public RoomTypeCode RoomTypeCode {get; private set;}
         public SurgeryRoomCapacity RoomCapacity {get; private set;}
         public SurgeryRoomMaintenanceSlots MaintenanceSlots {get; private set;}
         public SurgeryRoomEquipment Equipment {get; private set;}
@@ -15,7 +18,7 @@ namespace DDDSample1.Domain.SurgeryRooms
 
         public SurgeryRoom(
             SurgeryRoomNumber roomNumber,
-            SurgeryRoomType roomType,
+            RoomType roomType,
             SurgeryRoomCapacity roomCapacity,
             SurgeryRoomMaintenanceSlots maintenanceSlots,
             SurgeryRoomEquipment equipment,

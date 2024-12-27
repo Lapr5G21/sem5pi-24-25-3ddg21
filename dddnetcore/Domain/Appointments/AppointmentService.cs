@@ -7,6 +7,7 @@ using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.SurgeryRooms;
+using DDDSample1.Domain.RoomTypes;
 using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Domain.Appointments
@@ -52,7 +53,7 @@ namespace DDDSample1.Domain.Appointments
                     SurgeryRoomDto = new SurgeryRoomDto
                     {
                         Id= appointment.Room.Id.Value,
-                        RoomType = appointment.Room.RoomType.ToString(),
+                        RoomType = new RoomTypeDto{Code = appointment.Room.RoomType.Id.Value, Designation = appointment.Room.RoomType.Designation.Value, Description = appointment.Room.RoomType.Description?.Value, IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery},
                         RoomCapacity = appointment.Room.RoomCapacity.Capacity,
                         Status = appointment.Room.Status.ToString(),
                         MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
@@ -100,7 +101,7 @@ namespace DDDSample1.Domain.Appointments
                     SurgeryRoomDto = new SurgeryRoomDto
                     {
                         Id= appointment.Room.Id.Value,
-                        RoomType = appointment.Room.RoomType.ToString(),
+                        RoomType = new RoomTypeDto{Code = appointment.Room.RoomType.Id.Value, Designation = appointment.Room.RoomType.Designation.Value, Description = appointment.Room.RoomType.Description?.Value, IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery},
                         RoomCapacity = appointment.Room.RoomCapacity.Capacity,
                         Status = appointment.Room.Status.ToString(),
                         MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
@@ -151,7 +152,7 @@ namespace DDDSample1.Domain.Appointments
                     SurgeryRoomDto = new SurgeryRoomDto
                     {
                         Id= appointment.Room.Id.Value,
-                        RoomType = appointment.Room.RoomType.ToString(),
+                        RoomType = new RoomTypeDto{Code = appointment.Room.RoomType.Id.Value, Designation = appointment.Room.RoomType.Designation.Value, Description = appointment.Room.RoomType.Description?.Value, IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery},
                         RoomCapacity = appointment.Room.RoomCapacity.Capacity,
                         Status = appointment.Room.Status.ToString(),
                         MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
