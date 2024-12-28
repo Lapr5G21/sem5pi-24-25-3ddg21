@@ -19,6 +19,8 @@ import { ListAllergiesComponent } from './allergies/list-allergies/list-allergie
 import { CreateMedicalConditionsComponent } from './medicalConditions/create-medical-conditions/create-medical-conditions.component';
 import { ListMedicalConditionsComponent } from './medicalConditions/list-medical-conditions/list-medical-conditions.component';
 import { CreateRoomTypesComponent } from './roomTypes/create-room-types/create-room-types.component';
+import { CreateSurgeryRoomsComponent } from './surgeryRooms/create-surgery-rooms/create-surgery-rooms.component';
+
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -41,7 +43,8 @@ import { CreateRoomTypesComponent } from './roomTypes/create-room-types/create-r
     CreateAllergiesComponent,
     CreateMedicalConditionsComponent,
     ListMedicalConditionsComponent,
-    CreateRoomTypesComponent
+    CreateRoomTypesComponent,
+    CreateSurgeryRoomsComponent
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
@@ -72,6 +75,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(CreateMedicalConditionsComponent) createMedicalConditionsComponent!: CreateMedicalConditionsComponent;
   @ViewChild(ListMedicalConditionsComponent) listMedicalConditionsComponent!: ListMedicalConditionsComponent;
   @ViewChild(CreateRoomTypesComponent) createRoomTypesComponent!: CreateRoomTypesComponent;
+  @ViewChild(CreateSurgeryRoomsComponent) createSurgeryRoomsComponent!: CreateSurgeryRoomsComponent;
 
 
   constructor(private router: Router) {}
@@ -260,6 +264,17 @@ export class AdminDashboardComponent implements OnInit {
         ]
       },
       {
+        label: 'Surgery Rooms',
+        icon: '',
+        items: [
+          {
+            label: 'Create Surgery Room',
+            icon: 'pi pi-check',
+            command: () => this.createSurgeryRoom()
+          },
+        ]
+      },
+      {
         label: 'Account',
         icon: 'pi pi-user',
         items: [
@@ -317,6 +332,10 @@ export class AdminDashboardComponent implements OnInit {
 
   createRoomType() {
     this.createRoomTypesComponent.showDialog(); 
+  }
+
+  createSurgeryRoom() {
+    this.createSurgeryRoomsComponent.showDialog(); 
   }
 
   logout() {

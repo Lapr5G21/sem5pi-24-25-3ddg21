@@ -5,22 +5,22 @@ import { Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
-export class RoomTypeService {
+export class SurgeryRoomService {
     private apiUrl = 'https://localhost:5001/api';
 
     constructor(private http: HttpClient) {}
 
-    getRoomTypes(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}/roomTypes`);
+    getRooms(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/surgeryRooms`);
     }
 
-    saveRoomType(roomTypeData: any): Observable<any> {
+    saveSurgeryRoom(surgeryRoomData: any): Observable<any> {
         const token = localStorage.getItem('access_token');
         const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`  
           });
           
-        return this.http.post(`${this.apiUrl}/roomTypes`, roomTypeData, {headers});
+        return this.http.post(`${this.apiUrl}/surgeryRooms`, surgeryRoomData, {headers});
     }
       
 }

@@ -1,0 +1,89 @@
+<div class="card flex justify-content-center">
+    <p-dialog 
+        header="Create Surgery Room" 
+        [(visible)]="visible" 
+        [modal]="true" 
+        [style]="{ width: '30rem' }">
+        <span class="p-text-secondary block mb-5">Insert info :</span>
+
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="Number" class="font-semibold w-6rem">Number</label>
+            <input pInputText id="Number" [(ngModel)]="Number" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isNumberValid}" placeholder="Insert surgery room number"/>
+            <div *ngIf="isSubmitted && !isNumberValid" class="error-text">
+                Number is required.
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="RoomTypeCode" class="font-semibold w-6rem">Room Type Code</label>
+            <input pInputText id="RoomTypeCode" [(ngModel)]="RoomTypeCode" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isRoomTypeCodeValid}" placeholder="8 characters long, no spaces, only letters, numbers, and dashes"/>
+            <div *ngIf="isSubmitted && !isRoomTypeCodeValid" class="error-text">
+                Room Type Code is required.
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="Capacity" class="font-semibold w-6rem">Capacity</label>
+            <input pInputText id="Capacity" [(ngModel)]="Capacity" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isCapacityValid}" placeholder="Insert surgery room capacity" />
+            <div *ngIf="isSubmitted && !isCapacityValid" class="error-text">
+                Capacity is required.
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="MaintenanceSlots" class="font-semibold w-6rem">Maintenance Slots</label>
+            <input pInputText id="MaintenanceSlots" [(ngModel)]="MaintenanceSlots" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isMaintenanceSlotsValid}" placeholder="Insert maintenance slots"/>
+            <div *ngIf="isSubmitted && !isMaintenanceSlotsValid" class="error-text">
+                Maintenance Slots is required.
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="Equipment" class="font-semibold w-6rem">Equipment</label>
+            <input pInputText id="Equipment" [(ngModel)]="Equipment" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isEquipmentValid}" placeholder="Insert equipment"/>
+            <div *ngIf="isSubmitted && !isEquipmentValid" class="error-text">
+                Equipment is required.
+            </div>
+        </div>
+
+        <div class="flex align-items-center gap-3 mb-5">
+            <label for="Status" class="font-semibold w-6rem">Status</label>
+            <p-dropdown 
+                id="Status"
+                [options]="StatusOptions"
+                [(ngModel)]="Status"
+                optionLabel="label"
+                optionValue="value"
+                class="flex-auto"
+                required
+                (ngModelChange)="validateFields()" 
+                [ngClass]="{'invalid-border': isSubmitted && !isStatusValid}"
+                placeholder="Select Status">
+            </p-dropdown>
+            <div *ngIf="isSubmitted && !isStatusValid" class="error-text">
+                Status is required.
+            </div>
+        </div> 
+
+
+
+
+        <ng-template pTemplate="footer">
+            <p-button 
+                label="Cancel" 
+                [text]="true" 
+                severity="secondary" 
+                (onClick)="resetForm(); visible = false"></p-button>
+            <p-button 
+                label="Save" 
+                [outlined]="true" 
+                severity="primary" 
+                (onClick)="saveSurgeryRoom()"></p-button>
+        </ng-template>
+    </p-dialog>
+
+    <!-- Toast Notifications -->
+    <p-toast></p-toast>
+</div>
+
