@@ -53,5 +53,79 @@ namespace DDDSample1.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred." });
             }
         }
+    
+
+        // PUT: api/surgeryRooms/{id}
+        [HttpPut("{id}")]
+        public async Task<ActionResult<SurgeryRoomDto>> Update(string id, [FromBody] EditingSurgeryRoomDto dto)
+        {
+            Console.WriteLine(id);
+            if (id != dto.Id)
+            {
+                return BadRequest("ID mismatch.");
+            }
+
+            try
+            {
+                var updatedSurgeryRoom = await _service.UpdateAsync(dto);
+
+                if (updatedSurgeryRoom == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(updatedSurgeryRoom);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
+        // DELETE: api/surgeryRooms/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<SurgeryRoomDto>> HardDelete(string id)
+        {
+            try
+            {
+                var deletedSurgeryRoom = await _service.DeleteAsync(new SurgeryRoomNumber(id));
+
+                if (deletedSurgeryRoom == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(deletedSurgeryRoom);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
+        [HttpGet("search")]
+            public async Task<IActionResult> SearchRooms([FromQuery] string id, [FromQuery] string roomTypeCode, [FromQuery] string maintenanceSlots, [FromQuery] string equipment, [FromQuery] string status)
+            {      
+                try
+                {
+                    var searchDto = new SearchSurgeryRoomDto
+                {
+                    Id = id,
+                    RoomTypeCode = roomTypeCode,
+                    MaintenanceSlots = maintenanceSlots,
+                    Equipment = equipment,
+                    Status = status,
+                };
+
+                var rooms = await _service.SearchRoomsAsync(searchDto);
+                return Ok(rooms);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"An error occurred while searching: {ex.Message}");
+                }
+            }
     }
 }

@@ -60,6 +60,103 @@ namespace DDDSample1.Domain.SurgeryRooms
                 return resultDto;
             }
 
+    public async Task<SurgeryRoomDto> UpdateAsync(EditingSurgeryRoomDto dto)
+    {
+        var surgeryRoom = await this._repo.GetByIdAsync(new SurgeryRoomNumber(dto.Id));
+
+        if (surgeryRoom == null) throw new BusinessRuleValidationException("Surgery Room not found");
+
+        var newRoomType = await this._roomTypeRepo.GetByIdAsync(new RoomTypeCode(dto.RoomTypeCode));
+
+
+        //patient.ChangeFirstName(new PatientFirstName(dto.FirstName));
+        surgeryRoom.UpdateRoomType(newRoomType);
+        surgeryRoom.UpdateEquipment(new SurgeryRoomEquipment(dto.Equipment));
+        surgeryRoom.UpdateMaintenanceSlots(new SurgeryRoomMaintenanceSlots(dto.MaintenanceSlots));
+        surgeryRoom.UpdateRoomCapacity(new SurgeryRoomCapacity(dto.RoomCapacity));
+
+    await this._unitOfWork.CommitAsync();
+
+    var resultDto = MapToDto(surgeryRoom);
+
+    return resultDto;
+    
+    }
+
+
+    public async Task<SurgeryRoomDto> DeleteAsync(SurgeryRoomNumber id)
+        {
+            var surgeryRoom = await this._repo.GetByIdAsync(id);
+            if (surgeryRoom == null) throw new BusinessRuleValidationException("Surgery Room not found");
+
+            this._repo.Remove(surgeryRoom);
+            await this._unitOfWork.CommitAsync();
+            
+            return new SurgeryRoomDto
+            {
+                Id = surgeryRoom.Id.Value,
+                RoomType = new RoomTypeDto{Code = surgeryRoom.RoomType.Id.Value, Designation = surgeryRoom.RoomType.Designation.Value, Description = surgeryRoom.RoomType.Description?.Value, IsSuitableForSurgery = surgeryRoom.RoomType.SurgerySuitability.IsSuitableForSurgery},
+                RoomCapacity = surgeryRoom.RoomCapacity.Capacity, 
+                MaintenanceSlots = surgeryRoom.MaintenanceSlots.MaintenanceSlots,
+                Equipment = surgeryRoom.Equipment.Equipment.ToString(),
+                Status = surgeryRoom.Status.ToString()
+            };
+    }
+
+
+
+    public async Task<IEnumerable<SurgeryRoomDto>> SearchRoomsAsync(SearchSurgeryRoomDto searchDto)
+        {
+            var rooms = await _repo.GetAllAsync();
+
+            IEnumerable<SurgeryRoom> filteredRooms = rooms.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(searchDto.Id))
+            {
+                filteredRooms = filteredRooms.Where(o => o.Id != null && o.Id.ToString().Contains(searchDto.Id));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.RoomTypeCode))
+            {
+                filteredRooms = filteredRooms.Where(o => o.RoomTypeCode != null && o.RoomTypeCode.ToString().Contains(searchDto.RoomTypeCode));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.MaintenanceSlots))
+            {
+                filteredRooms = filteredRooms.Where(o => o.MaintenanceSlots != null && o.MaintenanceSlots.ToString().Contains(searchDto.MaintenanceSlots));
+            }
+
+            if (!string.IsNullOrEmpty(searchDto.Equipment))
+            {
+                filteredRooms = filteredRooms.Where(o => o.Equipment != null && o.Equipment.ToString().Contains(searchDto.Equipment));
+            }
+
+
+            if (!string.IsNullOrEmpty(searchDto.Status?.ToString()))
+            {
+                filteredRooms = filteredRooms.Where(o=> o.Status.ToString().Contains(searchDto.Status.ToString()));
+            }
+
+            return filteredRooms.Select(o => new SurgeryRoomDto
+            
+                {
+                Id = o.Id?.Value.ToString() ?? "N/A",
+                RoomType = o.RoomType != null ? new RoomTypeDto
+                {
+                Code = o.RoomType.Id.Value ?? "N/A",
+                Designation = o.RoomType.Designation.Value ?? "N/A",
+                Description = o.RoomType.Description.Value ?? "N/A"
+                } : null,
+                RoomCapacity = o.RoomCapacity.Capacity,
+                MaintenanceSlots = o.MaintenanceSlots.MaintenanceSlots ?? "N/A",
+                Equipment = o.Equipment.Equipment ?? "N/A",
+                Status = o.Status.ToString() ?? "N/A"
+                }).ToList();
+        }
+     
+
+
+
         private SurgeryRoomDto MapToDto(SurgeryRoom surgeryRoom)
         {
             return new SurgeryRoomDto

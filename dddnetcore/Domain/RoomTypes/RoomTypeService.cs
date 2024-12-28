@@ -51,6 +51,19 @@ namespace DDDSample1.Domain.RoomTypes
             
             }
 
+        public async Task<RoomTypeDto> DeleteAsync(RoomTypeCode id)
+        {
+            var roomType = await this._repo.GetByIdAsync(id);
+            if (roomType == null) throw new BusinessRuleValidationException("Room Type not found");
+
+            this._repo.Remove(roomType);
+            await this._unitOfWork.CommitAsync();
+            
+            var resultDto = MapToDto(roomType);
+
+            return resultDto;
+    }
+
         // Método de mapeamento de RoomType para RoomTypeDto
         private RoomTypeDto MapToDto(RoomType roomType)
         {

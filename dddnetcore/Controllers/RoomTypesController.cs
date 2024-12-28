@@ -54,5 +54,26 @@ namespace DDDSample1.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred." });
             }
         }
+
+        // DELETE: api/roomTypes/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<RoomTypeDto>> HardDelete(string id)
+        {
+            try
+            {
+                var deletedRoomType = await _service.DeleteAsync(new RoomTypeCode(id));
+
+                if (deletedRoomType == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(deletedRoomType);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }
