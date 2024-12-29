@@ -22,6 +22,16 @@ export class RoomTypeService {
           
         return this.http.post(`${this.apiUrl}/roomTypes`, roomTypeData, {headers});
     }
+
+    delete(code: string): Observable<any> {
+        
+        const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+          });
+      
+        return this.http.delete(`${this.apiUrl}/patients/${code}`,{headers});    
+      }
       
 }
 

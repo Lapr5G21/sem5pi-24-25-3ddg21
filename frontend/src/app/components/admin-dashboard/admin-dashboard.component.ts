@@ -19,6 +19,7 @@ import { ListAllergiesComponent } from './allergies/list-allergies/list-allergie
 import { CreateMedicalConditionsComponent } from './medicalConditions/create-medical-conditions/create-medical-conditions.component';
 import { ListMedicalConditionsComponent } from './medicalConditions/list-medical-conditions/list-medical-conditions.component';
 import { CreateRoomTypesComponent } from './roomTypes/create-room-types/create-room-types.component';
+import { ListRoomTypesComponent } from './roomTypes/list-room-types/list-room-types.component';
 import { CreateSurgeryRoomsComponent } from './surgeryRooms/create-surgery-rooms/create-surgery-rooms.component';
 
 
@@ -44,6 +45,7 @@ import { CreateSurgeryRoomsComponent } from './surgeryRooms/create-surgery-rooms
     CreateMedicalConditionsComponent,
     ListMedicalConditionsComponent,
     CreateRoomTypesComponent,
+    ListRoomTypesComponent,
     CreateSurgeryRoomsComponent
   ],
   templateUrl: './admin-dashboard.component.html',
@@ -58,7 +60,8 @@ export class AdminDashboardComponent implements OnInit {
   showHospitalModel: boolean = false;
   showSpecializationList: boolean = false;
   showAllergiesList: boolean = false;
-  showMedicalConditionsList: boolean = false; 
+  showMedicalConditionsList: boolean = false;
+  showRoomTypesList: boolean = false; 
 
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
@@ -75,6 +78,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(CreateMedicalConditionsComponent) createMedicalConditionsComponent!: CreateMedicalConditionsComponent;
   @ViewChild(ListMedicalConditionsComponent) listMedicalConditionsComponent!: ListMedicalConditionsComponent;
   @ViewChild(CreateRoomTypesComponent) createRoomTypesComponent!: CreateRoomTypesComponent;
+  @ViewChild(ListRoomTypesComponent) listRoomTypesComponent!: ListRoomTypesComponent;
   @ViewChild(CreateSurgeryRoomsComponent) createSurgeryRoomsComponent!: CreateSurgeryRoomsComponent;
 
 
@@ -261,6 +265,19 @@ export class AdminDashboardComponent implements OnInit {
             icon: 'pi pi-check',
             command: () => this.createRoomType()
           },
+          {
+            label: 'List Room Types',
+            icon: 'pi pi-list',
+            command: () => {
+              this.showPatientsList = false;
+              this.showRoomTypesList = true;
+              this.showOperationTypesList=false;
+              this.showStaffsList=false;
+              this.showSpecializationList = false;
+              this.showAllergiesList = false;
+              this.showMedicalConditionsList = false;
+            }
+          }
         ]
       },
       {
