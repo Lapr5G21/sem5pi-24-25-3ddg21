@@ -26,15 +26,15 @@ The global views are available in the views folder.
 
 ### LEVEL 1
 
-![level1_view](views/level1/RoomTypesCreation(level1).png)
+![level1_view](views/level1/AddRoomTypes(level1).png)
 
 ### LEVEL 2
 
-![level2_view](views/level2/RoomTypesCreation(level2).png)
+![level2_view](views/level2/AddRoomTypes(level2).png)
 
 ### LEVEL 3
 
-![level3_view](views/level3/RoomTypesCreationn(level1).png)
+![level3_view](views/level3/AddRoomTypes(level1).png)
 
 
 ## Observations

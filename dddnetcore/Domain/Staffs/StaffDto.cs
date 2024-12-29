@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.Staffs;
 
 namespace DDDSample1.Domain.Staffs
 
@@ -18,6 +18,25 @@ namespace DDDSample1.Domain.Staffs
         public List<AvailabilitySlot> StaffAvailabilitySlots { get; set; }
         public string UserId { get; set; }
         public bool Active { get; set;}
+
+        public StaffDto() {}
+
+        public StaffDto(Staff staff) {
+            this.StaffId = staff.Id.ToString();
+            this.StaffFirstName = staff.StaffFirstName.FirstNameString;
+            this.StaffLastName = staff.StaffLastName.LastNameString;
+            this.StaffFullName = staff.StaffFullName.FullNameString;
+            this.StaffEmail = staff.StaffEmail.EmailString;
+            this.StaffPhoneNumber = staff.StaffPhoneNumber.PhoneNumberString;
+            this.StaffLicenseNumber = staff.StaffLicenseNumber.LicenseNumberString;
+            this.StaffAvailabilitySlots = [];
+            foreach (var availabilitySlot in staff.AvailabilitySlots) {
+                StaffAvailabilitySlots.Add(availabilitySlot);
+            }
+            this.SpecializationId = staff.SpecializationId.ToString(); 
+            this.UserId = staff.UserId.ToString();
+            this.Active = staff.Active;
+        }
     }
 
     public class StaffDtoOpType{
@@ -30,4 +49,6 @@ namespace DDDSample1.Domain.Staffs
     public class StaffAvailabilitySlotDto{
         public AvailabilitySlotDto AvailabilitySlotDto { get; set; }
     }
+
+    
 }

@@ -28,6 +28,36 @@ namespace DDDSample1.Infraestructure.SurgeryRooms
         {
             return await _context.SurgeryRooms.Include(a => a.RoomType)
             .ToListAsync();
-        }       
+        }
+
+
+        public async Task<bool> IsRoomAvailableAsync(SurgeryRoomNumber roomNumber, DateTime startTime, DateTime endTime, Guid? excludedAppointmentId = null)
+        {
+            var appointments = await _context.Appointments
+               .Where(a => a.Room.Id == roomNumber && a.Status == AppointmentStatus.SCHEDULED)
+               .Include(a => a.OperationRequest)
+               .ToListAsync();
+
+            foreach (var appointment in appointments)
+            {
+                if (excludedAppointmentId.HasValue && appointment.Id.AsGuid() == excludedAppointmentId.Value)
+                {
+                    continue;
+                }
+
+                var estimatedDuration = await _context.OperationTypes
+                    .Where(ot => ot.Id == appointment.OperationRequest.OperationTypeId)
+                    .Select(ot => ot.EstimatedTimeDuration.Minutes)
+                    .FirstOrDefaultAsync();
+
+                var appointmentEndTime = appointment.Date.Date.AddMinutes(estimatedDuration);
+                if (appointment.Date.Date < endTime && appointmentEndTime > startTime)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }       
     }
-}

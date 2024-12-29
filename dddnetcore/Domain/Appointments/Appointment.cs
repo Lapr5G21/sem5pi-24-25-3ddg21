@@ -75,5 +75,15 @@ namespace DDDSample1.Domain.Appointments
                    $"Status: {Status}, " +
                    $"Date: {Date.Date.ToString("yyyy-MM-dd HH:mm") ?? "N/A"}]";
         }
+
+        public void ChangeSurgeryRoom(SurgeryRoom newSurgeryRoom){
+            ArgumentNullException.ThrowIfNull(newSurgeryRoom);
+            this.Room = newSurgeryRoom;
+        }
+
+        public void ChangeDateAndTime(AppointmentDate newDate){
+            ArgumentNullException.ThrowIfNull(newDate);
+            this.Date = newDate;
+        }
 }
 }

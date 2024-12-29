@@ -40,6 +40,7 @@ namespace DDDSample1.Controllers{
         }
 
         // POST: api/appointments
+        //[Authorize(Policy="DoctorRole")]
         [HttpPost]
         public async Task<ActionResult<AppointmentDto>> Create(CreatingAppointmentDto dto)
         {
