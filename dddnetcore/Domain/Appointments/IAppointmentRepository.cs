@@ -10,5 +10,7 @@ namespace DDDSample1.Domain.Appointments{
         public  Task<List<Appointment>> GetByPatientIdAsync(PatientMedicalRecordNumber medicalRecordNumber);
         public  Task<List<Appointment>> GetByStaffIdAsync(StaffId staffId);
         public new Task<Appointment> GetByIdAsync(AppointmentId id);
+        public Task<Appointment> UpdateAsync(Appointment appointment);
+        public Task RemoveAsync(Appointment appointment);
     }
 }

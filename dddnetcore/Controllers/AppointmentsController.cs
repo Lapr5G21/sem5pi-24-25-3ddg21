@@ -61,6 +61,30 @@ namespace DDDSample1.Controllers{
             }
         }
 
+         // PUT: api/appointments/{id}
+         //[Authorize(Policy="DoctorRole")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<AppointmentDto>> Update(string id, [FromBody] UpdateAppointmentDto dto)
+        {
+            Console.WriteLine(id);
+            try
+            {
+                var updatedAppointment = await _service.UpdateAsync(dto);
+
+                if (updatedAppointment == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(updatedAppointment);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
         [HttpGet("staffs")]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentStaffs()
         {

@@ -48,5 +48,24 @@ namespace dddnetcore.Infraestructure.Appointments
             .Include(a => a.OperationRequest)
             .FirstOrDefaultAsync(a => a.Id == id);
         }
+
+
+        
+        public async Task<Appointment> UpdateAsync(Appointment appointment)
+        {
+            _context.Appointments.Update(appointment);
+            
+            await _context.SaveChangesAsync();
+
+            return appointment;
+        }
+
+        public async Task RemoveAsync(Appointment appointment)
+        {
+            _context.Appointments.Remove(appointment);
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

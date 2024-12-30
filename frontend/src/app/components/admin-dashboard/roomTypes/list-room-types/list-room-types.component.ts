@@ -30,7 +30,7 @@ import { RoomType } from '../../../../domain/roomType-model';
     providers: [MessageService, ConfirmationService]
 })
 export class ListRoomTypesComponent implements OnInit {
-    roomTypes: RoomType[] = []; // Lista de tipos de sala
+    roomTypes: any[] = []; // Lista de tipos de sala
     loading: boolean = false; // Indicador de carregamento
 
     constructor(
@@ -50,19 +50,19 @@ export class ListRoomTypesComponent implements OnInit {
             (roomTypes) => {
                 console.log('Room types received:', roomTypes);
                 this.roomTypes = roomTypes;
-                this.loading = false;
+                this.loading = false; // Certifique-se de que o loading é desativado
             },
             (error) => {
                 console.error('Error loading room types:', error);
-                this.loading = false;
+                this.loading = false; // Certifique-se de que o loading é desativado
             }
         );
     }
 
 // Método para abrir o diálogo de confirmação
-confirmDeleteRoomType(roomType: RoomType): void {
+confirmDeleteRoomType(roomType: any): void {
   this.confirmationService.confirm({
-    message: `Are you sure you want to delete <br> <strong>${roomType.Code}</strong>?`,
+    message: `Are you sure you want to delete <br> <strong>${roomType.code}</strong>?`,
     header: 'Confirm Delete',
     icon: 'pi pi-exclamation-triangle',
     acceptLabel: 'Yes',
@@ -83,13 +83,13 @@ confirmDeleteRoomType(roomType: RoomType): void {
 }
 
 // Método para deletar um tipo de sala
-deleteRoomType(roomType: RoomType): void {
-  this.roomTypeService.delete(roomType.Code).subscribe(
+deleteRoomType(roomType: any): void {
+  this.roomTypeService.delete(roomType.code).subscribe(
     (response) => {
       this.messageService.add({
         severity: 'success',
         summary: 'Deleted',
-        detail: `${roomType.Code} has been deleted.`,
+        detail: `${roomType.code} has been deleted.`,
       });
       this.loadRoomTypes(); // Recarrega a lista após a exclusão
     },

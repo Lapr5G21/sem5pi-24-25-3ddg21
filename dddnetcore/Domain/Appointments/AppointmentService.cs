@@ -283,5 +283,122 @@ namespace DDDSample1.Domain.Appointments
                     Team = appointment.AppointmentTeam.Select(a => new StaffDto(a.Staff)).ToList()
                 };
         }
+
+
+public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
+{
+    var appointment = await _repo.GetByIdAsync(new AppointmentId(dto.Id)) ??
+                      throw new NullReferenceException("Appointment not found: " + dto.Id);
+
+    var surgeryRoom = await _surgeryRoomRepo.GetByIdAsync(new SurgeryRoomNumber(dto.SurgeryRoomId)) ??
+                      throw new NullReferenceException("Surgery Room not found: " + dto.SurgeryRoomId);
+
+    var operationRequest = appointment.OperationRequest;
+    
+    var operationType = await _operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
+
+    var startTime = DateTime.Parse(dto.Date);
+    var endTime = startTime.AddMinutes(operationType.EstimatedTimeDuration.Minutes);
+
+    // Check room availability
+    var isRoomAvailable = await _surgeryRoomRepo.IsRoomAvailableAsync(surgeryRoom.Id, startTime, endTime, appointment.Id.AsGuid());
+    if (!isRoomAvailable)
+    {
+        throw new BusinessRuleValidationException("The room is not available for the chosen time.");
+    }
+
+    // Validate staff specializations
+    await ValidateStaffSpecializationsAsync(dto.TeamIds, operationType);
+
+    // Check staff availability
+    var isStaffAvailable = true;
+    foreach (var id in dto.TeamIds)
+    {
+        var staffId = new StaffId(id);
+        isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staffId, startTime, endTime, appointment.Id.AsGuid());
+    }
+
+    if (!isStaffAvailable)
+    {
+        throw new BusinessRuleValidationException("At least one staff member is unavailable for the chosen time.");
+    }
+
+    // Update surgery room and date
+    appointment.ChangeSurgeryRoom(surgeryRoom);
+    appointment.ChangeDateAndTime(new AppointmentDate(DateTime.Parse(dto.Date)));
+
+    // Update team
+    var currentTeam = appointment.AppointmentTeam.Select(a => a.Staff.Id.ToString()).ToList();
+    var newTeam = dto.TeamIds.Except(currentTeam).ToList();
+    var removedTeam = currentTeam.Except(dto.TeamIds).ToList();
+
+    foreach (var staffId in newTeam)
+    {
+        var staff = await _staffRepo.GetByIdAsync(new StaffId(staffId)) ??
+                    throw new NullReferenceException("Staff not found: " + staffId);
+
+        var appointmentStaff = new AppointmentStaff(appointment, staff);
+        await _appointmentStaffRepo.AddAsync(appointmentStaff);
+    }
+
+    foreach (var staffId in removedTeam)
+    {
+        var staff = await _staffRepo.GetByIdAsync(new StaffId(staffId));
+        if (staff != null)
+        {
+            var appointmentStaff = appointment.AppointmentTeam.FirstOrDefault(a => a.Staff.Id.ToString() == staffId);
+            if (appointmentStaff != null)
+            {
+                await _appointmentStaffRepo.RemoveAsync(appointmentStaff);
+            }
+        }
+    }
+
+    await _repo.UpdateAsync(appointment);
+    await _unitOfWork.CommitAsync();
+
+    // Return updated DTO
+    return new AppointmentDto
+    {
+        Id = appointment.Id.AsGuid(),
+        SurgeryRoomDto = new SurgeryRoomDto
+        {
+            Id = appointment.Room.Id.Value,
+            RoomType = new RoomTypeDto
+            {
+                Code = appointment.Room.RoomType.Id.Value,
+                Designation = appointment.Room.RoomType.Designation.Value,
+                Description = appointment.Room.RoomType.Description?.Value,
+                IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery
+            },
+            RoomCapacity = appointment.Room.RoomCapacity.Capacity,
+            Status = appointment.Room.Status.ToString(),
+            MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
+            Equipment = appointment.Room.Equipment.Equipment
+        },
+        OperationRequestDto = new OperationRequestWithAllDataDto
+        {
+            Id = operationRequest.Id.AsGuid(),
+            DoctorId = operationRequest.StaffId.AsString(),
+            OperationType = new OperationTypeDto
+            {
+                Id = operationType.Id.AsGuid(),
+                Name = operationType.Name.Name,
+                EstimatedDuration = operationType.EstimatedTimeDuration.Minutes,
+                SurgeryTime = operationType.SurgeryTime.Minutes,
+                AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
+                CleaningTime = operationType.CleaningTime.Minutes
+            },
+            MedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.Value,
+            Deadline = operationRequest.DeadlineDate.Value.ToString("yyyy-MM-dd"),
+            Priority = operationRequest.PriorityLevel.ToString(),
+            Status = operationRequest.Status.ToString()
+        },
+        Status = appointment.Status.ToString(),
+        DateAndTime = appointment.Date.Date,
+        Team = appointment.AppointmentTeam.Select(a => new StaffDto(a.Staff)).ToList()
+    };
+}
+
     }
 }
