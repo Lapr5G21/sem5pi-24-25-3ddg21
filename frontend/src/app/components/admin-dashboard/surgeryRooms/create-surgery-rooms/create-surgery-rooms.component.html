@@ -8,8 +8,8 @@
 
 
         <div class="flex align-items-center gap-3 mb-5">
-            <label for="Number" class="font-semibold w-6rem">Number</label>
-            <input pInputText id="Number" [(ngModel)]="Number" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isNumberValid}" placeholder="Insert surgery room number"/>
+            <label for="Id" class="font-semibold w-6rem">Number</label>
+            <input pInputText id="Id" [(ngModel)]="Id" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isNumberValid}" placeholder="Insert surgery room number"/>
             <div *ngIf="isSubmitted && !isNumberValid" class="error-text">
                 Number is required.
             </div>
@@ -24,8 +24,8 @@
         </div>
 
         <div class="flex align-items-center gap-3 mb-5">
-            <label for="Capacity" class="font-semibold w-6rem">Capacity</label>
-            <input pInputText id="Capacity" [(ngModel)]="Capacity" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isCapacityValid}" placeholder="Insert surgery room capacity" />
+            <label for="RoomCapacity" class="font-semibold w-6rem">Capacity</label>
+            <input pInputText id="RoomCapacity" [(ngModel)]="RoomCapacity" class="flex-auto" autocomplete="off" required  (ngModelChange)="validateFields()" [ngClass]="{'invalid-border': isSubmitted && !isCapacityValid}" placeholder="Insert surgery room capacity" />
             <div *ngIf="isSubmitted && !isCapacityValid" class="error-text">
                 Capacity is required.
             </div>

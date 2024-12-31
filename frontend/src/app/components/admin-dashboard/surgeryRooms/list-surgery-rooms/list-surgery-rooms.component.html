@@ -1,1 +1,66 @@
-<p>list-surgery-rooms works!</p>
+<div class="card">
+    <p-table [value]="surgeryRooms" [tableStyle]="{ 'min-width': '60rem' }" [loading]="loading">
+        <ng-template pTemplate="caption">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between" style="width: 100%;">
+                    <span class="text-xl font-bold">Surgery Rooms</span>
+                    <p-button 
+                        icon="pi pi-refresh" 
+                        rounded 
+                        raised 
+                        [style.marginLeft]="'auto'"
+                        (click)="loadSurgeryRooms()">
+                    </p-button>
+                </div>      
+            </div>
+        </ng-template>
+        
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Id</th>
+                <th>Room Type Code</th>
+                <th>Room Capacity</th>
+                <th>Maintenance Slots</th>
+                <th>Equipment</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-surgeryRoom>
+            <tr (click)="logData(surgeryRoom)">
+                <td>{{ surgeryRoom.id }}</td>
+                <td>{{ surgeryRoom.roomType.code }}</td>
+                <td>{{ surgeryRoom.roomCapacity }}</td>
+                <td>{{ surgeryRoom.maintenanceSlots }}</td>
+                <td>{{ surgeryRoom.equipment }}</td>
+                <td>
+                    <p-tag 
+                        [value]="surgeryRoom.status" 
+                        [severity]="getStatusSeverity(surgeryRoom.status)">
+                    </p-tag>
+                </td>
+                <td>
+                    <div class="flex gap-2">
+                        <button 
+                            pButton 
+                            icon="pi pi-pencil" 
+                            class="p-button-rounded p-button-primary" 
+                            (click)="editSurgeryRoom(surgeryRoom)" 
+                            title="Edit">
+                        </button>
+                        <button 
+                            pButton 
+                            icon="pi pi-trash" 
+                            class="p-button-rounded p-button-danger" 
+                            (click)="confirmDeleteSurgeryRoom(surgeryRoom)" 
+                            title="Delete">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-confirmDialog></p-confirmDialog>
+</div>

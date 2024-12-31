@@ -44,9 +44,9 @@ enum Status
 export class CreateSurgeryRoomsComponent {
   visible: boolean = false;
 
-  Number: string = '';
+  Id: string = '';
   RoomTypeCode: string = '';
-  Capacity: number = 0;
+  RoomCapacity: number = 0;
   MaintenanceSlots: string = '';
   Equipment: string = '';
   Status: string = '';
@@ -91,13 +91,15 @@ export class CreateSurgeryRoomsComponent {
           this.isStatusValid
       ) {
           const surgeryRoom = new CreateSurgeryRoomDto(
-              this.Number,
+              this.Id,
               this.RoomTypeCode,
-              this.Capacity,
+              this.RoomCapacity,
               this.MaintenanceSlots,
               this.Equipment,
               this.Status
           );
+
+          console.log('Surgery Room Object:', surgeryRoom); // Verifique o que está sendo enviado
   
           console.log('Payload:', JSON.stringify(surgeryRoom));
   
@@ -128,18 +130,18 @@ export class CreateSurgeryRoomsComponent {
   }
   
   validateFields() {
-      this.isNumberValid = !!this.Number;
+      this.isNumberValid = !!this.Id;
       this.isRoomTypeCodeValid = !!this.RoomTypeCode;
-      this.isCapacityValid = this.Capacity > 0;
+      this.isCapacityValid = this.RoomCapacity > 0;
       this.isMaintenanceSlotsValid = this.MaintenanceSlots !== null;
       this.isEquipmentValid = !!this.Equipment;
       this.isStatusValid = !!this.Status;
   }
   
   resetForm() {
-      this.Number = '';
+      this.Id = '';
       this.RoomTypeCode = '';
-      this.Capacity = 0;
+      this.RoomCapacity = 0;
       this.MaintenanceSlots = '';
       this.Equipment = '';
       this.Status = '';
