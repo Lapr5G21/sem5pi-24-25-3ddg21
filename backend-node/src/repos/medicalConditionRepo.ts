@@ -35,41 +35,31 @@ export default class MedicalConditionRepo implements IMedicalConditionRepo {
   public async save(medicalCondition: MedicalCondition): Promise<MedicalCondition> {
     const query = { domainId: medicalCondition.id.toString() };
     try {
-      // Procura pela condição médica existente no banco de dados
       let medicalConditionDocument = await this.medicalConditionSchema.findOne(query);
   
       if (medicalConditionDocument === null) {
-        // Caso não exista, cria uma nova entrada
         const rawMedicalCondition = MedicalConditionMap.toPersistence(medicalCondition);
   
-        // Cria a nova condição médica no banco
         const medicalConditionCreated = await this.medicalConditionSchema.create(rawMedicalCondition);
   
-        // Retorna a entidade convertida para domínio
         return MedicalConditionMap.toDomain(medicalConditionCreated);
       } else {
 
-        // Atualiza os campos no documento existente
         medicalConditionDocument.name = medicalCondition.props.name.value;
         medicalConditionDocument.code = medicalCondition.props.code.value;
         medicalConditionDocument.description = medicalCondition.props.description.value;
         medicalConditionDocument.symptoms = medicalCondition.props.symptoms.value;
 
-        // Salva as alterações no banco
         await medicalConditionDocument.save();
   
-        // Retorna a entidade atualizada convertida para o domínio
         return MedicalConditionMap.toDomain(medicalConditionDocument);
       }
     } catch (err) {
-      // Tratamento de erro com mensagem clara e detalhada
       console.error("Error saving medical condition:", err);
       throw new Error(`Could not save medical condition: ${err.message}`);
     }
   }
   
-  
-
   public async getAll(): Promise<MedicalCondition[]> {
     try {
       const medicalConditionDocuments = await this.medicalConditionSchema.find({}).exec();

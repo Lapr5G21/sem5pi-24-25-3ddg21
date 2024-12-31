@@ -72,16 +72,17 @@ export class ListMedicalConditionsComponent implements OnInit {
   }
 
   onSearch(): void {
-    if (!this.nameFilter && !this.codeFilter) {
-      this.filteredMedicalConditions = [...this.medicalConditions];
-    } else {
-      this.filteredMedicalConditions = this.medicalConditions.filter(item => {
-        const matchesName = item.name.toLowerCase() === this.nameFilter.toLowerCase();
-        const matchesCode = item.code.toLowerCase() === this.codeFilter.toLowerCase();
-        return matchesName || matchesCode;
-      });
-    }
-
+    this.filteredMedicalConditions = this.medicalConditions.filter(item => {
+      const matchesName = this.nameFilter
+        ? item.name.toLowerCase().startsWith(this.nameFilter.toLowerCase())
+        : true;
+      const matchesCode = this.codeFilter
+        ? item.code.toLowerCase().startsWith(this.codeFilter.toLowerCase())
+        : true;
+  
+      return matchesName && matchesCode;
+    });
+  
     if (this.filteredMedicalConditions.length === 0) {
       this.messageService.add({
         severity: 'info',
@@ -90,7 +91,7 @@ export class ListMedicalConditionsComponent implements OnInit {
       });
     }
   }
-
+  
   openEditDialog(item: any) {
     this.selectedMedicalCondition = { ...item };
     this.editDialogVisible = true;

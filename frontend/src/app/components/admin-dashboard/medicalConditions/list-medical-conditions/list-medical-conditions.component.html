@@ -5,13 +5,13 @@
           <div class="flex gap-4">
   
             <p-floatLabel class="flex-1">
+              <input pInputText id="codeFilter" [(ngModel)]="codeFilter" placeholder="Search by code" class="p-inputtext-sm" />
+              <label for="codeFilter">Code</label>
+            </p-floatLabel>
+            
+            <p-floatLabel class="flex-1">
                 <input pInputText id="nameFilter" [(ngModel)]="nameFilter" placeholder="Search by name" class="p-inputtext-sm" />
                 <label for="nameFilter">Name</label>
-              </p-floatLabel>
-  
-              <p-floatLabel class="flex-1">
-                <input pInputText id="codeFilter" [(ngModel)]="codeFilter" placeholder="Search by code" class="p-inputtext-sm" />
-                <label for="codeFilter">Code</label>
               </p-floatLabel>
  
             <div class="flex items-end">
@@ -25,16 +25,16 @@
         <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
   
           <div class="grid grid-nogutter text-center font-bold bg-primary text-white">
-            <div class="col" style="flex: 2;">Name</div>
             <div class="col" style="flex: 2;">Code</div>
+            <div class="col" style="flex: 2;">Name</div>
             <div class="col" style="flex: 4;">Description</div>
             <div class="col" style="flex: 4;">Symptoms</div>
             <div class="col" style="flex: 2;">Actions</div>
           </div>
           
           <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
-            <div class="col font-bold text-900" style="flex: 2;">{{ item.name || 'Not specified' }}</div>
-            <div class="col" style="flex: 2;">{{ item.code || 'Not specified' }}</div>
+            <div class="col font-bold text-900" style="flex: 2;">{{ item.code || 'Not specified' }}</div>
+            <div class="col" style="flex: 2;">{{ item.name || 'Not specified' }}</div>
             <div class="col text-container" style="flex: 4;">{{ item.description || 'Not specified' }}</div>
             <div class="col text-container" style="flex: 4;">{{ item.symptoms || 'Not specified' }}</div>
 
@@ -44,10 +44,8 @@
                 <p-button icon="pi pi-trash" label="Delete" class="p-button-danger" (click)="onRemove(item.id)" [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }"></p-button>
               </div>
             </div>
-        
-          
   
-   <!-- Diálogo para editar as informações do Staff -->
+   <!-- Edit medical condition dialogue -->
   <p-dialog header="Edit Medical Condition Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
   <div class="card">
     <p-dataView [value]="[selectedMedicalCondition]" [rows]="1">
@@ -104,7 +102,6 @@
             class="flex-auto"
             id="description" 
             [(ngModel)]="selectedMedicalCondition.description" 
-            class="flex-auto" 
             rows="4"
             required
             maxlength="2048"
@@ -135,12 +132,14 @@
       </ng-template>
     </p-dataView>
     <div class="flex justify-content-end">
-      <button pButton label="Save" icon="pi pi-check" [disabled]="!selectedMedicalCondition?.name || 
+      <button pButton label="Save" icon="pi pi-check" 
+      [disabled]="!selectedMedicalCondition?.name || 
       !selectedMedicalCondition?.code || 
       selectedMedicalCondition?.code?.length < 6 || 
       selectedMedicalCondition?.code?.length > 7 || 
       !selectedMedicalCondition?.description || 
-      !selectedMedicalCondition?.symptoms"  (click)="saveMedicalConditionInfo(selectedMedicalCondition)" class="p-button-primary"></button>
+      !selectedMedicalCondition?.symptoms"  
+      (click)="saveMedicalConditionInfo(selectedMedicalCondition)" class="p-button-primary"></button>
     </div>
   </div>
   </p-dialog>

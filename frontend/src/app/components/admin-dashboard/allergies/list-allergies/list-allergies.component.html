@@ -6,15 +6,6 @@
     <ng-template pTemplate="header">
       <div class="flex justify-between mt-2 mb-2">
         <div class="flex gap-4">
-          <p-floatLabel class="flex-1">
-            <input 
-              pInputText 
-              id="nameFilter" 
-              [(ngModel)]="nameFilter" 
-              placeholder="Search by name" 
-              class="p-inputtext-sm" />
-            <label for="nameFilter">Name</label>
-          </p-floatLabel>
 
           <p-floatLabel class="flex-1">
             <input 
@@ -24,6 +15,16 @@
               placeholder="Search by code" 
               class="p-inputtext-sm"/>
             <label for="codeFilter">Code</label>
+          </p-floatLabel>
+          
+          <p-floatLabel class="flex-1">
+            <input 
+              pInputText 
+              id="nameFilter" 
+              [(ngModel)]="nameFilter" 
+              placeholder="Search by name" 
+              class="p-inputtext-sm" />
+            <label for="nameFilter">Name</label>
           </p-floatLabel>
 
           <div class="flex items-end">
@@ -36,15 +37,15 @@
     <ng-template pTemplate="list" let-items>
       <p-scrollPanel [style]="{ width: '100%', height: '750px' }">
         <div class="grid grid-nogutter text-center font-bold bg-primary text-white">
-          <div class="col" style="flex: 2;">Name</div>
           <div class="col" style="flex: 1;">Code</div>
+          <div class="col" style="flex: 2;">Name</div>
           <div class="col" style="flex: 4;">Description</div>
           <div class="col" style="flex: 1;">Actions</div>
         </div>
         
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
+          <div class="col font-bold text-900" style="flex: 1;">{{ item.code || 'Not specified' }}</div>
           <div class="col" style="flex: 2;">{{ item.name || 'Not specified' }}</div>
-          <div class="col" style="flex: 1;">{{ item.code || 'Not specified' }}</div>
           <div class="col text-container" style="flex: 4;">{{ item.description || 'Not specified' }}</div>
           <div class="col" style="flex: 1;">
             <p-button icon="pi pi-pencil" [outlined]="true" (click)="openEditDialog(item)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
@@ -66,7 +67,15 @@
                     <label for="name">Name</label>
                   </div>
                   <div class="col p-2">
-                    <input pInputText id="name" [(ngModel)]="selectedAllergy.name" />
+                    <input 
+                    pInputText 
+                    class="flex-auto"
+                    id="name" 
+                    [(ngModel)]="selectedAllergy.name" 
+                    required 
+                    maxlength="100" 
+                    #allergyNameInput="ngModel"/>
+                    <small *ngIf="allergyNameInput.invalid && allergyNameInput.touched" class="p-error validation-error">Name is required.</small>
                   </div>
                 </div>
                 
@@ -75,7 +84,16 @@
                     <label for="code">Code</label>
                   </div>
                   <div class="col p-2">
-                    <input pInputText id="code" [(ngModel)]="selectedAllergy.code" />
+                    <input 
+                    pInputText 
+                    id="code" 
+                    [(ngModel)]="selectedAllergy.code" 
+                    required 
+                    maxlength="7"
+                    minlength="6"
+                    #allergyCodeInput="ngModel"/>
+                    <small *ngIf="allergyCodeInput.errors?.['minlength'] && allergyCodeInput.touched" class="p-error validation-error">Code must be 6 or 7 characters long.</small>
+                    <small *ngIf="allergyCodeInput.invalid && allergyCodeInput.touched" class="p-error validation-error">Code is required.</small>        
                   </div>
                 </div>
                 <div class="grid grid-nogutter text-center border-top-1 surface-border">
@@ -83,13 +101,29 @@
                     <label for="description">Description</label>
                   </div>
                   <div class="col p-2">
-                    <input pInputText id="description" [(ngModel)]="selectedAllergy.description" />
+                    <textarea 
+                    pInputText 
+                    id="description" 
+                    [(ngModel)]="selectedAllergy.description" 
+                    class="flex-auto"
+                    rows="4"
+                    required
+                    maxlength="2048"
+                    #allergyDescriptionInput="ngModel">
+                  </textarea>
+                  <small *ngIf="allergyDescriptionInput.invalid && allergyDescriptionInput.touched" class="p-error validation-error">Description is required.</small>
                   </div>
                 </div>   
               </ng-template>
             </p-dataView>
             <div class="flex justify-content-end">
-              <button pButton label="Save" icon="pi pi-check" (click)="saveAllergyInfo(selectedAllergy)" class="p-button-primary"></button>
+              <button pButton label="Save" icon="pi pi-check" 
+              [disabled]="!selectedAllergy?.name || 
+              !selectedAllergy?.code || 
+              selectedAllergy?.code?.length < 6 || 
+              selectedAllergy?.code?.length > 7 || 
+              !selectedAllergy?.description" 
+              (click)="saveAllergyInfo(selectedAllergy)" class="p-button-primary"></button>
             </div>
           </div>
           </p-dialog>

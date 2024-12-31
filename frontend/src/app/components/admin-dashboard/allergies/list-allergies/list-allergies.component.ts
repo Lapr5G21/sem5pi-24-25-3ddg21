@@ -64,17 +64,17 @@ export class ListAllergiesComponent implements OnInit {
   }
 
   onSearch(): void {
-    if (!this.nameFilter && !this.codeFilter) {
-      this.filteredAllergies = [...this.allergies];
-    } else {
-
-      this.filteredAllergies = this.allergies.filter(item => {
-        const matchesName = item.name.toLowerCase() === this.nameFilter.toLowerCase(); 
-        const matchesCode = item.code.toLowerCase() === this.codeFilter.toLowerCase(); 
-        return matchesName || matchesCode;
-      });
-    }
-    
+    this.filteredAllergies = this.allergies.filter(item => {
+      const matchesName = this.nameFilter
+        ? item.name.toLowerCase().startsWith(this.nameFilter.toLowerCase())
+        : true;
+      const matchesCode = this.codeFilter
+        ? item.code.toLowerCase().startsWith(this.codeFilter.toLowerCase())
+        : true;
+  
+      return matchesName && matchesCode;
+    });
+  
     if (this.filteredAllergies.length === 0) {
       this.messageService.add({
         severity: 'info',
