@@ -128,6 +128,7 @@ export class ListMedicalConditionsComponent implements OnInit {
     });
   }
   
+
   onRemove(id: string): void {
     this.medicalConditionService.removeMedicalCondition(id).subscribe(
       () => {

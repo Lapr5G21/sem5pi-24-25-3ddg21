@@ -23,3 +23,11 @@
     max-width: 100%; /* Limita a largura máxima do contêiner */
     cursor: pointer; /* Para indicar que o texto pode ter mais conteúdo */
 }
+
+.validation-error {
+  color: #f44336; /* Cor de erro */
+  margin-top: 0.5rem; /* Espaçamento superior */
+  display: block; /* Exibe o texto abaixo do campo */
+  font-size: 0.85rem; /* Ajusta o tamanho da fonte */
+  font-weight: 400; /* Peso da fonte */
+}

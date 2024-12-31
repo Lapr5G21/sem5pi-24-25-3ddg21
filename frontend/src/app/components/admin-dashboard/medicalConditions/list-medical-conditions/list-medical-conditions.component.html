@@ -64,7 +64,15 @@
             <label for="name">Name</label>
           </div>
           <div class="col p-2">
-            <input pInputText id="name" [(ngModel)]="selectedMedicalCondition.name" />
+            <input 
+            pInputText 
+            class="flex-auto"
+            id="name" 
+            [(ngModel)]="selectedMedicalCondition.name"
+            required 
+            maxlength="100" 
+            #medicalConditionNameInput="ngModel"/>
+            <small *ngIf="medicalConditionNameInput.invalid && medicalConditionNameInput.touched" class="p-error validation-error">Name is required.</small>
           </div>
         </div>
         
@@ -73,7 +81,17 @@
             <label for="code">Code</label>
           </div>
           <div class="col p-2">
-            <input pInputText id="code" [(ngModel)]="selectedMedicalCondition.code" />
+            <input 
+            pInputText 
+            class="flex-auto"
+            id="code" 
+            [(ngModel)]="selectedMedicalCondition.code"
+            required 
+            maxlength="7"
+            minlength="6"
+            #medicalConditionCodeInput="ngModel"/>
+            <small *ngIf="medicalConditionCodeInput.errors?.['minlength'] && medicalConditionCodeInput.touched" class="p-error validation-error">Code must be 6 or 7 characters long.</small>
+            <small *ngIf="medicalConditionCodeInput.invalid && medicalConditionCodeInput.touched" class="p-error validation-error">Code is required.</small>
           </div>
         </div>
         <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
@@ -83,11 +101,16 @@
           <div class="col p-2">
             <textarea 
             pInputText
+            class="flex-auto"
             id="description" 
             [(ngModel)]="selectedMedicalCondition.description" 
             class="flex-auto" 
-            rows="4">
+            rows="4"
+            required
+            maxlength="2048"
+            #medicalConditionDescriptionInput="ngModel">
         </textarea>
+        <small *ngIf="medicalConditionDescriptionInput.invalid && medicalConditionDescriptionInput.touched" class="p-error validation-error">Description is required.</small>
           </div>
         </div>
         <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
@@ -97,17 +120,27 @@
           <div class="col p-2">
             <textarea 
             pInputText
+            class="flex-auto"
             id="symptoms" 
             [(ngModel)]="selectedMedicalCondition.symptoms" 
             class="flex-auto" 
-            rows="4" >
+            rows="4" 
+            required 
+            maxlength="2048"
+            #medicalConditionSymptomsInput="ngModel">
         </textarea>
+        <small *ngIf="medicalConditionSymptomsInput.invalid && medicalConditionSymptomsInput.touched" class="p-error validation-error">Symptoms is required.</small>
           </div>
         </div>     
       </ng-template>
     </p-dataView>
     <div class="flex justify-content-end">
-      <button pButton label="Save" icon="pi pi-check" (click)="saveMedicalConditionInfo(selectedMedicalCondition)" class="p-button-primary"></button>
+      <button pButton label="Save" icon="pi pi-check" [disabled]="!selectedMedicalCondition?.name || 
+      !selectedMedicalCondition?.code || 
+      selectedMedicalCondition?.code?.length < 6 || 
+      selectedMedicalCondition?.code?.length > 7 || 
+      !selectedMedicalCondition?.description || 
+      !selectedMedicalCondition?.symptoms"  (click)="saveMedicalConditionInfo(selectedMedicalCondition)" class="p-button-primary"></button>
     </div>
   </div>
   </p-dialog>
