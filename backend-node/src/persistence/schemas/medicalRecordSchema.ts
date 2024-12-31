@@ -4,7 +4,7 @@ import { IMedicalRecordPersistence } from '../../dataschema/IMedicalRecordPersis
 const medicalRecordSchema = new mongoose.Schema(
   {
     domainId: { type: String, required: true, unique: true, default: () => new mongoose.Types.ObjectId() },
-    patientMedicalRecordNumber: { type: String, unique: true },
+    patientMedicalRecordNumber: { type: String },
     allergies: [{ type: String}],
     medicalConditions: [{ type: String}],
     notations: { type: String }

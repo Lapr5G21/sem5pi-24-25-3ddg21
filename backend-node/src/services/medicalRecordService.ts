@@ -106,14 +106,14 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
   public async updateMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
-      // Buscar o registro médico pelo ID
+    
       const medicalRecord = await this.medicalRecordRepo.findByDomainId(medicalRecordDTO.id);
 
-      if (!medicalRecord) {
-        return Result.fail<IMedicalRecordDTO>("Medical Record not found");
+      if (medicalRecord === null) {
+        return Result.fail<IMedicalRecordDTO>("Medical Record not found at Service");
       }
 
-      // Atualizar o número do registro médico
+      
       const patientNumberOrError = PatientMedicalRecordNumber.create({
         medicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber,
       });
@@ -129,27 +129,39 @@ export default class MedicalRecordService implements IMedicalRecordService {
         MedicalRecordAllergies.create({ allergies: [allergyId] })
       );
 
-      const invalidAllergies = allergiesOrErrors.find((result) => result.isFailure);
-      if (invalidAllergies) {
-        return Result.fail<IMedicalRecordDTO>(`Error updating allergies: ${invalidAllergies.errorValue()}`);
-      }
-
-      medicalRecord.allergiesId = allergiesOrErrors.map((result) => result.getValue());
+      medicalRecord.props.allergiesId = allergiesOrErrors.map((result) => result.getValue());
 
       // Atualizar as condições médicas
       const medicalConditionsOrErrors = medicalRecordDTO.medicalConditionsId.map((conditionId) =>
         MedicalRecordMedicalConditions.create({ medicalConditions: [conditionId] })
       );
 
-      const invalidConditions = medicalConditionsOrErrors.find((result) => result.isFailure);
-      if (invalidConditions) {
-        return Result.fail<IMedicalRecordDTO>(`Error updating medical conditions: ${invalidConditions.errorValue()}`);
+      medicalRecord.props.medicalConditionsId = medicalConditionsOrErrors.map((result) => result.getValue());
+
+      console.log("Processed Allergies:", allergiesOrErrors);
+      console.log("Processed Medical Conditions:", medicalConditionsOrErrors);
+
+      if (allergiesOrErrors.some((result) => result.isFailure)) {
+        console.error("Failed to process allergies:", allergiesOrErrors.filter((result) => result.isFailure));
+    }
+    
+      if (medicalConditionsOrErrors.some((result) => result.isFailure)) {
+        console.error("Failed to process medical conditions:", medicalConditionsOrErrors.filter((result) => result.isFailure));
+    }
+
+      // Atualizar as anotações
+
+      const notationsOrError = MedicalRecordNotations.create({ notations: medicalRecordDTO.notations });
+      if (notationsOrError.isFailure) {
+        return Result.fail<IMedicalRecordDTO>(`Invalid notations: ${notationsOrError.errorValue()}`);
       }
 
-      medicalRecord.medicalConditionsId = medicalConditionsOrErrors.map((result) => result.getValue());
+      medicalRecord.notations = notationsOrError.getValue();
 
       // Salvar o registro médico atualizado no repositório
+      console.log("MedicalRecord Before Save:", medicalRecord);
       await this.medicalRecordRepo.save(medicalRecord);
+      console.log("MedicalRecord After Save:", medicalRecord);
 
       // Converter para DTO e retornar o resultado
       const medicalRecordDTOResult = MedicalRecordMap.toDTO(medicalRecord) as IMedicalRecordDTO;

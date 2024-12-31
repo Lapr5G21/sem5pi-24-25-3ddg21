@@ -9,10 +9,11 @@ import { MedicalRecordMap } from '../mappers/MedicalRecordMap';
 @Service()
 export default class MedicalRecordRepo implements IMedicalRecordRepo {
   private models: any;
+  medicalRecordRepo: any;
 
   constructor(
     @Inject('medicalRecordSchema') private medicalRecordSchema : Model<IMedicalRecordPersistence & Document>,) {}
-
+    
   private createBaseQuery (): any {
     return {
       where: {},
@@ -48,7 +49,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
         medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
         medicalRecordDocument.allergiesID = medicalRecord.props.allergiesId.map(a => a.toString());
         console.log("Medical conditions before saving:", medicalRecord.medicalConditionsId);
-        medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditionsId.map(a => a.toString());
+        medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditionsId.map(c => c.toString());
         medicalRecordDocument.notations = medicalRecord.props.notations.value;
         
 

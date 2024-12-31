@@ -56,8 +56,8 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
     return {
       id : medicalRecord.id.toString(),
       patientMedicalRecordNumber: medicalRecord.props.patientMedicalRecordNumber.value,
-      allergies: medicalRecord.props.allergiesId.map(allergy => allergy.props.allergies[0]),
-      medicalConditions: medicalRecord.props.medicalConditionsId.map(condition => condition.props.medicalConditions[0]),
+      allergies: medicalRecord.props.allergiesId.map(allergy => allergy.props.allergies.toString()),
+      medicalConditions: medicalRecord.props.medicalConditionsId.map(condition => condition.props.medicalConditions.toString()),
       notations: medicalRecord.props.notations.value,
     };
   }
