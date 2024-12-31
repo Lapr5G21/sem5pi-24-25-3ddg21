@@ -28,21 +28,23 @@
             id="Description" 
             [(ngModel)]="Description"  
             placeholder="Enter or update the description here" 
-            style="width: 100%; font-family: Arial, sans-serif; overflow: hidden; resize: none;"
+            style="width: 100%; overflow: hidden; resize: none;"
             (input)="adjustTextarea($event)">
           </textarea> 
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
-            <label for="SurgerySuitability" class="font-semibold w-6rem">Surgery Suitable</label>
+            <label for="IsSuitableForSurgery" class="font-semibold w-6rem">Surgery Suitable</label>
             <p-dropdown
-                id="SurgerySuitability" 
-                [options]="surgerySuitabilityOptions" 
-                [(ngModel)]="SurgerySuitability" 
-                optionLabel="label" 
-                placeholder="Select (Yes or No)" 
-                class="flex-auto">
-            </p-dropdown>
+            id="IsSuitableForSurgery" 
+            [options]="surgerySuitabilityOptions" 
+            [(ngModel)]="IsSuitableForSurgery" 
+            optionLabel="label" 
+            optionValue="value"
+            placeholder="Select (Yes or No)" 
+            class="flex-auto">
+        </p-dropdown>
+        
         </div>
 
 

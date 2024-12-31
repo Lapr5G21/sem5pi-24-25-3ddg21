@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, viewChild, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
@@ -21,6 +21,7 @@ import { ListMedicalConditionsComponent } from './medicalConditions/list-medical
 import { CreateRoomTypesComponent } from './roomTypes/create-room-types/create-room-types.component';
 import { ListRoomTypesComponent } from './roomTypes/list-room-types/list-room-types.component';
 import { CreateSurgeryRoomsComponent } from './surgeryRooms/create-surgery-rooms/create-surgery-rooms.component';
+import { ListSurgeryRoomsComponent } from './surgeryRooms/list-surgery-rooms/list-surgery-rooms.component';
 
 
 @Component({
@@ -46,7 +47,8 @@ import { CreateSurgeryRoomsComponent } from './surgeryRooms/create-surgery-rooms
     ListMedicalConditionsComponent,
     CreateRoomTypesComponent,
     ListRoomTypesComponent,
-    CreateSurgeryRoomsComponent
+    CreateSurgeryRoomsComponent,
+    ListSurgeryRoomsComponent
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
@@ -62,6 +64,7 @@ export class AdminDashboardComponent implements OnInit {
   showAllergiesList: boolean = false;
   showMedicalConditionsList: boolean = false;
   showRoomTypesList: boolean = false; 
+  showSurgeryRoomsList: boolean = false;
 
 
   @ViewChild(CreateOperationTypesComponent) createOperationTypesComponent!: CreateOperationTypesComponent;
@@ -80,6 +83,7 @@ export class AdminDashboardComponent implements OnInit {
   @ViewChild(CreateRoomTypesComponent) createRoomTypesComponent!: CreateRoomTypesComponent;
   @ViewChild(ListRoomTypesComponent) listRoomTypesComponent!: ListRoomTypesComponent;
   @ViewChild(CreateSurgeryRoomsComponent) createSurgeryRoomsComponent!: CreateSurgeryRoomsComponent;
+  @ViewChild(ListSurgeryRoomsComponent) listSurgeryRoomsComponent!: ListSurgeryRoomsComponent;
 
 
   constructor(private router: Router) {}
@@ -289,6 +293,19 @@ export class AdminDashboardComponent implements OnInit {
             icon: 'pi pi-check',
             command: () => this.createSurgeryRoom()
           },
+          {
+            label: 'List Surgery Rooms',
+            icon: 'pi pi-list',
+            command: () => {
+              this.showSurgeryRoomsList = true;
+              this.showPatientsList = false;
+              this.showOperationTypesList=false;
+              this.showStaffsList=false;
+              this.showSpecializationList = false;
+              this.showAllergiesList = false;
+              this.showMedicalConditionsList = false;
+            }
+          }
         ]
       },
       {

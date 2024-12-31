@@ -10,7 +10,7 @@ export class SurgeryRoomService {
 
     constructor(private http: HttpClient) {}
 
-    getRooms(): Observable<any[]> {
+    getSurgeryRooms(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/surgeryRooms`);
     }
 
@@ -22,6 +22,17 @@ export class SurgeryRoomService {
           
         return this.http.post(`${this.apiUrl}/surgeryRooms`, surgeryRoomData, {headers});
     }
+    
+    
+    delete(id: string): Observable<any> {
+        
+        const token = localStorage.getItem('access_token');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`  
+          });
+      
+        return this.http.delete(`${this.apiUrl}/surgeryRooms/${id}`,{headers});    
+      }
       
 }
 

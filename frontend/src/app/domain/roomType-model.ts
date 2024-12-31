@@ -3,16 +3,16 @@ export class CreateRoomTypeDto {
         public Code: string,
         public Designation: string,
         public Description: string,
-        public SurgerySuitability: boolean,
+        public IsSuitableForSurgery: boolean,
     ){}
 }
 
 
 export class RoomType {
     constructor(
-        public Code: string,
-        public Designation: string,
-        public Description: string,
-        public SurgerySuitability: boolean,    
+        public code: string,
+        public designation: string,
+        public description: string,
+        public isSuitableForSurgery: boolean,    
     ) {}
 }

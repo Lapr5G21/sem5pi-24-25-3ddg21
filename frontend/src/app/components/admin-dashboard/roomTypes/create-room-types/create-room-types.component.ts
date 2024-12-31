@@ -39,7 +39,7 @@ export class CreateRoomTypesComponent {
     Code: string = '';
     Designation: string = '';
     Description: string = '';
-    SurgerySuitability: boolean | null = null;
+    IsSuitableForSurgery: boolean | null = null;
     surgerySuitabilityOptions = [
       { label: 'Yes', value: true },
       { label: 'No', value: false }
@@ -65,13 +65,13 @@ export class CreateRoomTypesComponent {
         this.isSubmitted = true;
         this.validateFields();
 
-        if (this.isCodeValid && this.isDesignationValid && this.SurgerySuitability !== null) {
+        if (this.isCodeValid && this.isDesignationValid && this.IsSuitableForSurgery !== null) {
                 
             const roomType = new CreateRoomTypeDto(
             this.Code,
             this.Designation,
             this.Description,
-            this.SurgerySuitability
+            this.IsSuitableForSurgery
         );
 
         console.log('Payload:', JSON.stringify(roomType));
@@ -122,7 +122,7 @@ export class CreateRoomTypesComponent {
         this.Code = '';
         this.Designation = '';
         this.Description = '';
-        this.SurgerySuitability = null;
+        this.IsSuitableForSurgery = null;
         this.isCodeValid = true;
         this.isDesignationValid = true;
         this.isSubmitted = false;

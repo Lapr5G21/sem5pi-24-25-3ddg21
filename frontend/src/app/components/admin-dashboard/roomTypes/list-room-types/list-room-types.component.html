@@ -1,39 +1,52 @@
-<p-table [value]="roomTypes" [tableStyle]="{ 'min-width': '60rem' }" [loading]="loading">
-    <ng-template #caption>
-        <div class="flex items-center justify-between">
-            <span class="text-xl font-bold">Room Types</span>
-            <p-button icon="pi pi-refresh" rounded raised (onClick)="loadRoomTypes()"></p-button>
-        </div>
-    </ng-template>
-    <ng-template #header>
-        <tr>
-            <th>Internal Code</th>
-            <th>Designation</th>
-            <th>Description</th>
-            <th>Surgery Suitable</th>
-            <th>Actions</th>
-        </tr>
-    </ng-template>
-    <tr *ngFor="let roomType of roomTypes">
-            <td>{{ roomType.code }}</td>
-            <td>{{ roomType.designation }}</td>
-            <td>{{ roomType.description }}</td>
-            <td>
-                <p-tag 
-                    [value]="roomType.isSuitableForSurgery ? 'Yes' : 'No'" 
-                    [severity]="roomType.isSuitableForSurgery ? 'success' : 'warning'">
-                </p-tag>
-            </td>
-            <td>
-                <div class="flex gap-2">
-                    <button 
-                        pButton 
-                        icon="pi pi-trash" 
-                        class="p-button-rounded p-button-danger" 
-                        (onClick)="confirmDeleteRoomType(roomType)" 
-                        title="Delete">
-                    </button>
-                </div>
-            </td>
-        </tr>
-</p-table>
+<div class="card">
+    <p-table [value]="roomTypes" [tableStyle]="{ 'min-width': '60rem' }" [loading]="loading">
+        <ng-template pTemplate="caption">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between" style="width: 100%;">
+                    <span class="text-xl font-bold">Room Types</span>
+                    <p-button 
+                        icon="pi pi-refresh" 
+                        rounded 
+                        raised 
+                        [style.marginLeft]="'auto'"
+                        (click)="loadRoomTypes()">
+                    </p-button>
+                </div>      
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Internal Code</th>
+                <th>Designation</th>
+                <th>Description</th>
+                <th>Surgery Suitable</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-roomType>
+            <tr (click)="logData(roomType)">
+                <td>{{ roomType.code }}</td>
+                <td>{{ roomType.designation }}</td>
+                <td>{{ roomType.description }}</td>
+                <td>
+                    <p-tag 
+                        [value]="roomType.isSuitableForSurgery ? 'Yes' : 'No'" 
+                        [severity]="roomType.isSuitableForSurgery ? 'success' : 'warning'">
+                    </p-tag>
+                </td>
+                <td>
+                    <div class="flex gap-2">
+                        <button 
+                            pButton 
+                            icon="pi pi-trash" 
+                            class="p-button-rounded p-button-danger" 
+                            (click)="confirmDeleteRoomType(roomType)" 
+                            title="Delete">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-confirmDialog></p-confirmDialog>
+</div>
