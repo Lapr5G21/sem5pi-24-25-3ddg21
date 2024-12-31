@@ -30,7 +30,7 @@ export class RoomTypeService {
             'Authorization': `Bearer ${token}`  
           });
       
-        return this.http.delete(`${this.apiUrl}/patients/${code}`,{headers});    
+        return this.http.delete(`${this.apiUrl}/roomTypes/${code}`,{headers});    
       }
       
 }

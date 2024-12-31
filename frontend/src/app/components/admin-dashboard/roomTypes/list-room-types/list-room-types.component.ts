@@ -40,11 +40,18 @@ export class ListRoomTypesComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+      console.log('ngOnInit called');
         this.loadRoomTypes(); // Carregar os tipos de sala ao inicializar o componente
     }
 
+    logData(data: any): void {
+      console.log(data);
+    }
+    
+
     // Carrega os tipos de sala
     loadRoomTypes(): void {
+      console.log('loadRoomTypes called');
         this.loading = true;
         this.roomTypeService.getRoomTypes().subscribe(
             (roomTypes) => {
@@ -60,7 +67,8 @@ export class ListRoomTypesComponent implements OnInit {
     }
 
 // Método para abrir o diálogo de confirmação
-confirmDeleteRoomType(roomType: any): void {
+confirmDeleteRoomType(roomType: RoomType): void {
+  console.log('Opening confirmation dialog for:', roomType); // Adicione este log
   this.confirmationService.confirm({
     message: `Are you sure you want to delete <br> <strong>${roomType.code}</strong>?`,
     header: 'Confirm Delete',
@@ -83,7 +91,7 @@ confirmDeleteRoomType(roomType: any): void {
 }
 
 // Método para deletar um tipo de sala
-deleteRoomType(roomType: any): void {
+deleteRoomType(roomType: RoomType): void {
   this.roomTypeService.delete(roomType.code).subscribe(
     (response) => {
       this.messageService.add({
