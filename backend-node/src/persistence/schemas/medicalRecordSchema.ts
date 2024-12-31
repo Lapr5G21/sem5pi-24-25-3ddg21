@@ -7,6 +7,7 @@ const medicalRecordSchema = new mongoose.Schema(
     patientMedicalRecordNumber: { type: String, unique: true },
     allergies: [{ type: String}],
     medicalConditions: [{ type: String}],
+    notations: { type: String }
   },
   {
     timestamps: true

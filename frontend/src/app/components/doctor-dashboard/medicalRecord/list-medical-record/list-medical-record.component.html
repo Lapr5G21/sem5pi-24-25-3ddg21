@@ -27,13 +27,15 @@
           <div class="col" style="flex: 2;">Patient Record Number</div>
           <div class="col" style="flex: 6;">Allergies</div>
           <div class="col" style="flex: 6;">Medical Conditions</div>
+          <div class="col" style="flex: 2;">Notations</div>
           <div class="col" style="flex: 2;">Actions</div>
         </div>
 
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let record of records">
           <div class="col font-bold text-900" style="flex: 2;">{{ record.patientMedicalRecordNumber }}</div>
-          <div class="col" style="flex: 6;">{{ record.allergies?.join(', ') || 'No Allergies' }}</div>
-          <div class="col" style="flex: 6;">{{ record.medicalConditions?.join(', ') || 'No Medical Conditions' }}</div>
+          <div class="col" style="flex: 6;">{{ record.allergies || 'No Allergies' }}</div>
+          <div class="col" style="flex: 6;">{{ record.medicalConditions || 'No Medical Conditions' }}</div>
+          <div class="col" style="flex: 2;">{{ record.notations || 0 }}</div>
 
           <div class="col text-center" style="flex: 2;">
             <div class="flex justify-center gap-2">

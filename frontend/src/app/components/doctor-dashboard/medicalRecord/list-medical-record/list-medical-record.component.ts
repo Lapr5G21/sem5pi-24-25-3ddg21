@@ -47,6 +47,7 @@ export class ListMedicalRecordComponent implements OnInit {
     patientMedicalRecordNumber: '',
     allergies: [],
     medicalConditions: [],
+    notations: '',
     
   };
 
@@ -70,7 +71,8 @@ export class ListMedicalRecordComponent implements OnInit {
           ...record,
           patientMedicalRecordNumber: record.patientMedicalRecordNumber || '',
           allergiesID: record.allergies || [], 
-          medicalConditionsID: record.medicalConditions || [], 
+          medicalConditionsID: record.medicalConditions || [],
+          notations: record.notations || '',
         }));
         this.filteredMedicalRecords = records;
       },

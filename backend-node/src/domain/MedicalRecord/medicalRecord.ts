@@ -5,12 +5,14 @@ import { Result } from "../../core/logic/Result";
 import { MedicalRecordAllergies } from "./medicalRecordAllergies";
 import { MedicalRecordId } from "./medicalRecordId";
 import { MedicalRecordMedicalConditions } from "./medicalRecordMedicalConditions";
+import { MedicalRecordNotations } from "./medicalRecordNotations";
 import { PatientMedicalRecordNumber } from "./patientMedicalRecordNumber";
 
 interface MedicalRecordProps {
   patientMedicalRecordNumber: PatientMedicalRecordNumber;
   allergiesId: MedicalRecordAllergies[];
   medicalConditionsId: MedicalRecordMedicalConditions[];
+  notations: MedicalRecordNotations;
 }
 
 export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
@@ -18,7 +20,6 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
     get id (): UniqueEntityID {
         return this._id;
       }
-    
 
       get medicalRecordId (): MedicalRecordId {
         return new MedicalRecordId(this.medicalRecordId.toValue());
@@ -48,6 +49,14 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
             this.props.medicalConditionsId = value;
         }
 
+        get notations (): MedicalRecordNotations {
+            return this.props.notations;
+        }
+
+        set notations (value: MedicalRecordNotations) {
+            this.props.notations = value;
+        }
+
       private constructor (props: MedicalRecordProps, id?: UniqueEntityID) {
         super(props, id);
       }
@@ -58,6 +67,7 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
           { argument: props.patientMedicalRecordNumber, argumentName: 'patientMedicalRecordNumber' },
           { argument: props.allergiesId, argumentName: 'allergiesId' },
           { argument: props.medicalConditionsId, argumentName: 'medicalConditionsId' },
+          { argument: props.notations, argumentName: 'notations' }
         ];
     
         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);

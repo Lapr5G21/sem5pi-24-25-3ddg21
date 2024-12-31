@@ -10,6 +10,7 @@ import { MedicalRecordMap } from '../mappers/MedicalRecordMap';
 import { MedicalRecord } from '../domain/MedicalRecord/medicalRecord';
 import { MedicalRecordAllergies } from '../domain/MedicalRecord/medicalRecordAllergies';
 import { MedicalRecordMedicalConditions } from '../domain/MedicalRecord/medicalRecordMedicalConditions';
+import { MedicalRecordNotations } from '../domain/MedicalRecord/medicalRecordNotations';
 
 @Service()
 export default class MedicalRecordService implements IMedicalRecordService {
@@ -54,6 +55,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
         }).getValue(),
         allergiesId: allergiesID,
         medicalConditionsId: medicalConditionsID,
+        notations: MedicalRecordNotations.create({ notations: medicalRecordDTO.notations,}).getValue(),
       };
 
       const medicalRecordOrError = MedicalRecord.create(medicalRecordProps);

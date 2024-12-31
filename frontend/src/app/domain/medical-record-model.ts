@@ -3,6 +3,7 @@ export class MedicalRecord {
         public id: string,
         public patientMedicalRecordNumber: string,
         public allergies : string[],
-        public medicalConditions: string[]
+        public medicalConditions: string[],
+        public notations: string,
     ) {}
 }

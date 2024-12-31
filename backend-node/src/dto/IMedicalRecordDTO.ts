@@ -5,4 +5,5 @@ export default interface IMedicalRecordDTO {
     patientMedicalRecordNumber: string;
     allergiesId: string[];
     medicalConditionsId: string[];
+    notations: string;
   }

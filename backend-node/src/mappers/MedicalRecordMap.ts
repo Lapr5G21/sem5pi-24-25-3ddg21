@@ -26,6 +26,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
       patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,
       allergiesId: rawData.allergiesId?.map(a => a._id || a) || [],
       medicalConditionsId: rawData.medicalConditionsId?.map(mc => mc._id) || [],
+      notations: rawData.notations || null,
     };
   }
 
@@ -37,6 +38,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
         patientMedicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber,
         allergiesId: medicalRecordDTO.allergiesId || [],
         medicalConditionsId: medicalRecordDTO.medicalConditionsId || [],
+        notations: medicalRecordDTO.notations || null,
       },
       new UniqueEntityID(medicalRecordDTO.domainId)
     );
@@ -56,6 +58,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
       patientMedicalRecordNumber: medicalRecord.props.patientMedicalRecordNumber.value,
       allergies: medicalRecord.props.allergiesId.map(allergy => allergy.props.allergies[0]),
       medicalConditions: medicalRecord.props.medicalConditionsId.map(condition => condition.props.medicalConditions[0]),
+      notations: medicalRecord.props.notations.value,
     };
   }
 }

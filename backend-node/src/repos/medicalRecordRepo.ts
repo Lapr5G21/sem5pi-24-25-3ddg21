@@ -49,6 +49,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
         medicalRecordDocument.allergiesID = medicalRecord.props.allergiesId.map(a => a.toString());
         console.log("Medical conditions before saving:", medicalRecord.medicalConditionsId);
         medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditionsId.map(a => a.toString());
+        medicalRecordDocument.notations = medicalRecord.props.notations.value;
         
 
         await medicalRecordDocument.save();
