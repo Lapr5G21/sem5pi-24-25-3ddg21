@@ -15,6 +15,7 @@
                    class="flex-auto" 
                    autocomplete="off" 
                    required 
+                   maxlength="100"
                    #allergyNameInput="ngModel" />
             <small *ngIf="allergyNameInput.invalid && allergyNameInput.touched" class="p-error">Name is required.</small>
         </div>
@@ -28,7 +29,10 @@
                    class="flex-auto" 
                    autocomplete="off" 
                    required 
+                   maxlength="7"
+                   minlength="6"
                    #allergyCodeInput="ngModel" />
+            <small *ngIf="allergyCodeInput.errors?.['minlength'] && allergyCodeInput.touched" class="p-error">Code must be 6 or 7 characters long.</small>
             <small *ngIf="allergyCodeInput.invalid && allergyCodeInput.touched" class="p-error">Code is required.</small>
         </div>
 
@@ -39,10 +43,13 @@
                 id="allergyDescription" 
                 [(ngModel)]="allergyDescription" 
                 class="flex-auto" 
-                rows="4" 
+                rows="4"
+                required 
+                maxlength="2048"
                 placeholder="Insert the description here..." 
                 #allergyDescriptionInput="ngModel">
             </textarea>
+            <small *ngIf="allergyDescriptionInput.invalid && allergyDescriptionInput.touched" class="p-error">Description is required.</small>
         </div>
 
         <ng-template pTemplate="footer">
@@ -56,7 +63,7 @@
                 [outlined]="true" 
                 severity="primary" 
                 (onClick)="createAllergy()" 
-                [disabled]="!allergyName || !allergyCode"></p-button>
+                [disabled]="!allergyName || !allergyCode || !allergyDescription || !isFormValid()"></p-button>
         </ng-template>
     </p-dialog>
 

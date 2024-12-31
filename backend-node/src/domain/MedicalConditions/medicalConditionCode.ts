@@ -20,6 +20,10 @@ export class MedicalConditionCode extends ValueObject<MedicalConditionCodeProps>
     public static create (props: MedicalConditionCodeProps): Result<MedicalConditionCode> {
         const propsResult = Guard.againstNullOrUndefined(props.code, 'code');
     
+        if ( props.code.length > 7 && props.code.length < 6) {
+          return Result.fail<MedicalConditionCode>("Medical condition code must be 6 or 7 characters long");
+        }
+
         if (!propsResult.succeeded) {
           return Result.fail<MedicalConditionCode>(propsResult.message);
         } else {

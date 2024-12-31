@@ -15,3 +15,11 @@
     text-align: center;
     padding: 0.5rem;
   }
+  
+  .text-container {
+    white-space: nowrap; /* Garante que o texto fique em uma linha */
+    overflow: hidden; /* Esconde o texto que ultrapassa o tamanho do contêiner */
+    text-overflow: ellipsis; /* Adiciona "..." para textos cortados */
+    max-width: 100%; /* Limita a largura máxima do contêiner */
+    cursor: pointer; /* Para indicar que o texto pode ter mais conteúdo */
+}

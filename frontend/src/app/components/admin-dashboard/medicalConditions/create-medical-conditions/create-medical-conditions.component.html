@@ -14,11 +14,9 @@
                 class="flex-auto" 
                 autocomplete="off" 
                 required 
-                (ngModelChange)="validateFields()" 
-                [ngClass]="{'invalid-border': isSubmitted && !isNameValid}" />
-        </div>
-        <div *ngIf="isSubmitted && !isNameValid" class="error-text">
-            Name is required.
+                maxlength="100"
+                #medicalConditionNameInput="ngModel"/>
+            <small *ngIf="medicalConditionNameInput.invalid && medicalConditionNameInput.touched" class="p-error">Name is required.</small>
         </div>
         
         <div class="flex align-items-center gap-3 mb-3">
@@ -30,11 +28,11 @@
                 class="flex-auto" 
                 autocomplete="off" 
                 required 
-                (ngModelChange)="validateFields()" 
-                [ngClass]="{'invalid-border': isSubmitted && !isCodeValid}" />
-        </div>
-        <div *ngIf="isSubmitted && !isCodeValid" class="error-text">
-            Code is required.
+                maxlength="7"
+                minlength="6"
+                #medicalConditionCodeInput="ngModel" />
+            <small *ngIf="medicalConditionCodeInput.errors?.['minlength'] && medicalConditionCodeInput.touched" class="p-error">Code must be 6 or 7 characters long.</small>
+            <small *ngIf="medicalConditionCodeInput.invalid && medicalConditionCodeInput.touched" class="p-error">Code is required.</small>
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
@@ -43,15 +41,13 @@
                 id="description" 
                 [(ngModel)]="description" 
                 class="flex-auto" 
-                rows="4" 
+                rows="4"
+                required 
                 placeholder="Insert the description here..." 
-                #allergyDescriptionInput="ngModel"
-                (ngModelChange)="validateFields()"
-                [ngClass]="{'invalid-border': isSubmitted && !isDescriptionValid}" >
+                maxlength="2048"
+                #medicalConditionDescriptionInput="ngModel">
             </textarea>
-        </div>
-        <div *ngIf="isSubmitted && !isDescriptionValid" class="error-text">
-            Description is required.
+            <small *ngIf="medicalConditionDescriptionInput.invalid && medicalConditionDescriptionInput.touched" class="p-error">Description is required.</small>
         </div>
         
         <div class="flex align-items-center gap-3 mb-5">
@@ -61,14 +57,12 @@
                 [(ngModel)]="symptoms" 
                 class="flex-auto" 
                 rows="4" 
+                required 
+                maxlength="2048"
                 placeholder="Insert the symptoms here..." 
-                #allergyDescriptionInput="ngModel"
-                (ngModelChange)="validateFields()"
-                [ngClass]="{'invalid-border': isSubmitted && !isSymptomsValid}" >
+                #medicalConditionSymptomsInput="ngModel">
             </textarea>
-        </div>
-        <div *ngIf="isSubmitted && !isSymptomsValid" class="error-text">
-            Symptoms are required.
+            <small *ngIf="medicalConditionSymptomsInput.invalid && medicalConditionSymptomsInput.touched" class="p-error">Symptoms is required.</small>
         </div>
         <ng-template pTemplate="footer">
             <p-button 
@@ -80,7 +74,8 @@
                 label="Save" 
                 [outlined]="true" 
                 severity="primary" 
-                (onClick)="saveMedicalCondition()"></p-button>
+                (onClick)="saveMedicalCondition()"
+                [disabled]="!name || !code || !description || !symptoms || !isFormValid()"></p-button>
         </ng-template>
     </p-dialog>
 

@@ -35,22 +35,13 @@
           <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
             <div class="col font-bold text-900" style="flex: 2;">{{ item.name || 'Not specified' }}</div>
             <div class="col" style="flex: 2;">{{ item.code || 'Not specified' }}</div>
-            <div class="col" style="flex: 4;">{{ item.description || 'Not specified' }}</div>
-            <div class="col" style="flex: 4;">{{ item.symptoms || 'Not specified' }}</div>
+            <div class="col text-container" style="flex: 4;">{{ item.description || 'Not specified' }}</div>
+            <div class="col text-container" style="flex: 4;">{{ item.symptoms || 'Not specified' }}</div>
 
-            <div class="col text-center" style="flex: 2;">
+            <div class="col" style="flex: 2;">
               <div class="flex justify-center gap-2">
                 <p-button icon="pi pi-pencil" [outlined]="true" (click)="openEditDialog(item)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
-                <p-button 
-                
-                icon="pi pi-trash" 
-                label="Delete" 
-                class="p-button-danger" 
-                (click)="onRemove(item.id)"
-                [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }">
-              </p-button>
-            
-             
+                <p-button icon="pi pi-trash" label="Delete" class="p-button-danger" (click)="onRemove(item.id)" [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }"></p-button>
               </div>
             </div>
         
@@ -68,7 +59,7 @@
       </ng-template>
       
       <ng-template pTemplate="list" let-staff>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+        <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
           <div class="col p-2">
             <label for="name">Name</label>
           </div>
@@ -77,7 +68,7 @@
           </div>
         </div>
         
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+        <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
           <div class="col p-2">
             <label for="code">Code</label>
           </div>
@@ -85,20 +76,32 @@
             <input pInputText id="code" [(ngModel)]="selectedMedicalCondition.code" />
           </div>
         </div>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+        <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
           <div class="col p-2">
             <label for="description">Description</label>
           </div>
           <div class="col p-2">
-            <input pInputText id="description" [(ngModel)]="selectedMedicalCondition.description" />
+            <textarea 
+            pInputText
+            id="description" 
+            [(ngModel)]="selectedMedicalCondition.description" 
+            class="flex-auto" 
+            rows="4">
+        </textarea>
           </div>
         </div>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+        <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
           <div class="col p-2">
             <label for="symptoms">Symptoms</label>
           </div>
           <div class="col p-2">
-            <input pInputText id="symptoms" [(ngModel)]="selectedMedicalCondition.symptoms" />
+            <textarea 
+            pInputText
+            id="symptoms" 
+            [(ngModel)]="selectedMedicalCondition.symptoms" 
+            class="flex-auto" 
+            rows="4" >
+        </textarea>
           </div>
         </div>     
       </ng-template>

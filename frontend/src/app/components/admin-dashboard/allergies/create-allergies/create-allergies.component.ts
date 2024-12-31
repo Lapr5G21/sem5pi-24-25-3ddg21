@@ -69,6 +69,11 @@ export class CreateAllergiesComponent {
   );
   }
 
+  isFormValid(): boolean {
+    return this.allergyName?.length > 0 && this.allergyCode?.length >= 6 && this.allergyCode?.length <= 7 
+        && this.allergyDescription?.length > 0;
+  }
+  
   resetForm() {
     this.allergyName = '';
   }

@@ -20,6 +20,10 @@ export class MedicalConditionSymptoms extends ValueObject<MedicalConditionSympto
     public static create (props: MedicalConditionSymptomsProps): Result<MedicalConditionSymptoms> {
         const propsResult = Guard.againstNullOrUndefined(props.symptoms, 'symptoms');
     
+        if ( props.symptoms.length > 2048){
+          return Result.fail<MedicalConditionSymptoms>("Medical condition symptoms its too long");
+        }
+
         if (!propsResult.succeeded) {
           return Result.fail<MedicalConditionSymptoms>(propsResult.message);
         } else {

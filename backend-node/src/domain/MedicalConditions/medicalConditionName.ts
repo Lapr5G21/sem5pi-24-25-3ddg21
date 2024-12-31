@@ -20,6 +20,10 @@ export class MedicalConditionName extends ValueObject<MedicalConditionNameProps>
     public static create (props: MedicalConditionNameProps): Result<MedicalConditionName> {
         const propsResult = Guard.againstNullOrUndefined(props.name, 'name');
     
+        if ( props.name.length > 100){
+          return Result.fail<MedicalConditionName>("Medical condition name its too long");
+        }
+
         if (!propsResult.succeeded) {
           return Result.fail<MedicalConditionName>(propsResult.message);
         } else {

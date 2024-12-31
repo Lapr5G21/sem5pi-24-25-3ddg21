@@ -39,11 +39,6 @@ export class CreateMedicalConditionsComponent {
   description: string = '';
   symptoms: string = '';
 
-  isNameValid: boolean = true;
-  isCodeValid: boolean = true;
-  isDescriptionValid: boolean = true;
-  isSymptomsValid: boolean = true;
-
   isSubmitted: boolean = false;
 
   constructor(
@@ -58,8 +53,6 @@ export class CreateMedicalConditionsComponent {
 
     saveMedicalCondition() {
       this.isSubmitted = true;
-      this.validateFields();
-      if (this.isNameValid && this.isCodeValid && this.isDescriptionValid && this.isSymptomsValid) {
 
           const medicalCondition = new CreateMedicalConditionDto(
               this.name,
@@ -94,15 +87,12 @@ export class CreateMedicalConditionsComponent {
                   });
               }
           );
-      }
-  }
+    }
   
-  validateFields() {
-      this.isNameValid = !!this.name;
-      this.isCodeValid = !!this.code;
-      this.isDescriptionValid = !!this.description;
-      this.isSymptomsValid = !!this.symptoms;
-  }
+    isFormValid(): boolean {
+        return this.name?.length > 0 && this.code?.length >= 6 && this.code?.length <= 7 
+            && this.description?.length > 0 && this.symptoms?.length > 0;
+    }
 
   resetForm() {
       this.name = '';
@@ -110,9 +100,5 @@ export class CreateMedicalConditionsComponent {
       this.description = '';
       this.symptoms = '';
       this.isSubmitted = false;
-      this.isNameValid = true;
-      this.isCodeValid = true;
-      this.isDescriptionValid = true;
-      this.isSymptomsValid = true;
   }
 }
