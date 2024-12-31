@@ -2,13 +2,15 @@ import { AggregateRoot } from "../../core/domain/AggregateRoot";
 import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
 import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
+import { MedicalRecordAllergies } from "./medicalRecordAllergies";
 import { MedicalRecordId } from "./medicalRecordId";
+import { MedicalRecordMedicalConditions } from "./medicalRecordMedicalConditions";
 import { PatientMedicalRecordNumber } from "./patientMedicalRecordNumber";
 
 interface MedicalRecordProps {
   patientMedicalRecordNumber: PatientMedicalRecordNumber;
-  allergiesID: String[];
-  medicalConditionsID: String[];
+  allergiesId: MedicalRecordAllergies[];
+  medicalConditionsId: MedicalRecordMedicalConditions[];
 }
 
 export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
@@ -30,20 +32,20 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
             this.props.patientMedicalRecordNumber = value;
         }
 
-        get allergiesID (): String[] {
-            return this.props.allergiesID;
+        get allergiesId (): MedicalRecordAllergies[] {
+            return this.props.allergiesId;
         }
 
-        set allergiesID (value: String[]) {
-            this.props.allergiesID = value;
+        set allergiesId (value: MedicalRecordAllergies[]) {
+            this.props.allergiesId = value;
         }
 
-        get medicalConditionsID (): String[] {
-            return this.props.medicalConditionsID;
+        get medicalConditionsId (): MedicalRecordMedicalConditions[] {
+            return this.props.medicalConditionsId;
         }
 
-        set medicalConditionsID (value: String[]) {
-            this.props.medicalConditionsID = value;
+        set medicalConditionsId (value: MedicalRecordMedicalConditions[]) {
+            this.props.medicalConditionsId = value;
         }
 
       private constructor (props: MedicalRecordProps, id?: UniqueEntityID) {
@@ -54,8 +56,8 @@ export class MedicalRecord extends AggregateRoot<MedicalRecordProps> {
 
         const guardedProps = [
           { argument: props.patientMedicalRecordNumber, argumentName: 'patientMedicalRecordNumber' },
-          { argument: props.allergiesID, argumentName: 'allergiesID' },
-          { argument: props.medicalConditionsID, argumentName: 'medicalConditionsID' },
+          { argument: props.allergiesId, argumentName: 'allergiesId' },
+          { argument: props.medicalConditionsId, argumentName: 'medicalConditionsId' },
         ];
     
         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);

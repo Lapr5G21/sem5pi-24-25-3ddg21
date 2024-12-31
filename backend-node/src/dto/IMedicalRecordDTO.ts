@@ -3,6 +3,6 @@ import { PatientMedicalRecordNumber } from "../domain/MedicalRecord/patientMedic
 export default interface IMedicalRecordDTO {
     id: string;
     patientMedicalRecordNumber: string;
-    allergiesID: string[];
-    medicalConditionsID: string[];
+    allergiesId: string[];
+    medicalConditionsId: string[];
   }

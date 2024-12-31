@@ -14,76 +14,68 @@ export default class MedicalRecordController implements IMedicalRecordController
   ) {}
 
   public async getMedicalRecord(req: Request, res: Response, next: NextFunction) {
-  
     try {
-      const medicalRecord = await this.medicalRecordServiceInstance.getMedicalRecord(req.params.id);
+      const medicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.params.id);
 
-      if (medicalRecord === null) {
-        return res.status(404).send("Medical Record not found or error in retrieving medical record ");
+      if (medicalRecordOrError.isFailure) {
+        return res.status(404).json({ message: medicalRecordOrError.errorValue() });
       }
-      return res.json(medicalRecord).status(200);
+
+      return res.status(200).json(medicalRecordOrError.getValue());
+    } catch (err) {
+      console.error("Error retrieving medical record:", err);
+      res.status(500).json({ message: err.message });
     }
-    catch (err) {
-      res.status(500).json({ message: err.message }); 
-    }
-  };
+  }
 
 
   // api/medicalRecords
   public async getAllMedicalRecords(req: Request, res: Response, next: NextFunction) {
     try {
-     
-      console.log('Entering getAllMedicalRecords controller');
       const result = await this.medicalRecordServiceInstance.getAllMedicalRecords();
 
-      if ( result === null ) {
-        return res.status(404).send("Failed to retrieve medical records");
+      if (result.isFailure) {
+        return res.status(404).json({ message: "Failed to retrieve medical records" });
       }
-      
-      const medicalRecordsDTO = result.getValue();
 
-      return res.json(medicalRecordsDTO).status(200);
+      return res.status(200).json(result.getValue());
     } catch (err) {
-      res.status(500).json({ message: err.message }); 
+      console.error("Error retrieving all medical records:", err);
+      res.status(500).json({ message: err.message });
     }
-  };
+  }
 
 
 
   // api/medicalRecords
   public async createMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const medicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
-        
+      const medicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body as IMedicalRecordDTO);
+
       if (medicalRecordOrError.isFailure) {
-        return res.status(402).send("Error creating medicalRecord");
+        return res.status(400).json({ message: medicalRecordOrError.errorValue() });
       }
 
-      const medicalRecordDTO = medicalRecordOrError.getValue();
-      return res.json( medicalRecordDTO ).status(201);
+      return res.status(201).json(medicalRecordOrError.getValue());
+    } catch (e) {
+      console.error("Error creating medical record:", e);
+      res.status(500).json({ message: e.message });
     }
-    catch (e) {
-      console.error('Error creating medical record:', e); 
-      return next(e);
-    }
-  };
+  }
 
   // api/medicalRecords/:id
   public async updateMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
-
-      const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
+      const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IMedicalRecordDTO);
 
       if (medicalRecordOrError.isFailure) {
-        
-        return res.status(404).send("Medical Record not found");
+        return res.status(404).json({ message: medicalRecordOrError.errorValue() });
       }
 
-      const medicalRecordDTO = medicalRecordOrError.getValue();
-      return res.status(201).json( medicalRecordDTO );
+      return res.status(200).json(medicalRecordOrError.getValue());
+    } catch (e) {
+      console.error("Error updating medical record:", e);
+      res.status(500).json({ message: e.message });
     }
-    catch (e) {
-      return next(e);
-    }
-  };
+  }
 }

@@ -24,21 +24,21 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
     return {
       id: rawData.domainId || medicalRecord._id?.toString() || null,
       patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,
-      allergiesID: rawData.allergies?.map(a => a._id || a) || [],
-      medicalConditionsID: rawData.medicalConditionsID?.map(mc => mc._id) || [],
+      allergiesId: rawData.allergiesId?.map(a => a._id || a) || [],
+      medicalConditionsId: rawData.medicalConditionsId?.map(mc => mc._id) || [],
     };
   }
 
-  public static toDomain(medicalRecord: any): MedicalRecord {
-    console.log("toDomain input medicalRecord:", medicalRecord);
+  public static toDomain(medicalRecordDTO: any): MedicalRecord {
+    console.log("toDomain input medicalRecord:", medicalRecordDTO);
   
     const medicalRecordOrError = MedicalRecord.create(
       {
-        patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber,
-        allergiesID: medicalRecord.allergies || [],
-        medicalConditionsID: medicalRecord.medicalConditions || [],
+        patientMedicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber,
+        allergiesId: medicalRecordDTO.allergiesId || [],
+        medicalConditionsId: medicalRecordDTO.medicalConditionsId || [],
       },
-      new UniqueEntityID(medicalRecord.domainId)
+      new UniqueEntityID(medicalRecordDTO.domainId)
     );
   
     if (medicalRecordOrError.isFailure) {
@@ -53,9 +53,9 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
   public static toPersistence (medicalRecord: MedicalRecord): any {
     return {
       id : medicalRecord.id.toString(),
-      patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber.value,
-      allergies: medicalRecord.allergiesID,
-      medicalConditions: medicalRecord.medicalConditionsID,
+      patientMedicalRecordNumber: medicalRecord.props.patientMedicalRecordNumber.value,
+      allergies: medicalRecord.props.allergiesId.map(allergy => allergy.props.allergies[0]),
+      medicalConditions: medicalRecord.props.medicalConditionsId.map(condition => condition.props.medicalConditions[0]),
     };
   }
 }
