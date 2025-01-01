@@ -31,4 +31,8 @@ export class MedicalRecordMedicalConditions extends ValueObject<MedicalRecordMed
         }
       }
 
+      public static createMedicalConditions (medicalConditions: string[]): MedicalRecordMedicalConditions[] {
+        return medicalConditions.map( medicalCondition => new MedicalRecordMedicalConditions({medicalConditions: [medicalCondition]}));
+      }
+
 }

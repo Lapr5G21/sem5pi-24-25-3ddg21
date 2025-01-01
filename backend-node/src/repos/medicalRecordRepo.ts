@@ -47,9 +47,8 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
       } else {
 
         medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
-        medicalRecordDocument.allergiesID = medicalRecord.props.allergiesId.map(a => a.toString());
-        console.log("Medical conditions before saving:", medicalRecord.medicalConditionsId);
-        medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditionsId.map(c => c.toString());
+        medicalRecordDocument.allergiesId = medicalRecord.props.allergiesId.map(a => a.toString());
+        medicalRecordDocument.medicalConditionsId = medicalRecord.medicalConditionsId.map(c => c.toString());
         medicalRecordDocument.notations = medicalRecord.props.notations.value;
         
 
@@ -64,7 +63,6 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   public async getAll(): Promise<MedicalRecord[]> {
     try {
       const medicalRecordDocuments = await this.medicalRecordSchema.find({}).exec();
-      console.log("repo:", medicalRecordDocuments);
       return medicalRecordDocuments.map(doc => MedicalRecordMap.toDomain(doc)); 
     } catch (err) {
       throw new Error(`Error fetching medical records: ${err.message}`);

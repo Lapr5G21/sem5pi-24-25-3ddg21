@@ -1,6 +1,7 @@
 import { ValueObject } from "../../core/domain/ValueObject";
 import { Guard } from "../../core/logic/Guard";
 import { Result } from "../../core/logic/Result";
+import { Allergy } from "../Allergies/allergy";
 
 
 interface MedicalRecordAllergiesProps{
@@ -31,4 +32,7 @@ export class MedicalRecordAllergies extends ValueObject<MedicalRecordAllergiesPr
         }
       }
 
+    public static createAllergies (allergies: string[]): MedicalRecordAllergies[] {
+      return allergies.map( allergy => new MedicalRecordAllergies({allergies: [allergy]}));
+    }
 }

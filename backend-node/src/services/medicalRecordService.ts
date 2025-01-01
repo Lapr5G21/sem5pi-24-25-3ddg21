@@ -45,9 +45,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
       const medicalConditionsID = medicalConditionsOrErrors
         .filter((result) => result.isSuccess)
         .map((result) => result.getValue());
-
-      console.log("AllergiesOrErrors:", allergiesOrErrors);
-      console.log("MedicalConditionsOrErrors:", medicalConditionsOrErrors);
+      
 
       const medicalRecordProps = {
         patientMedicalRecordNumber: PatientMedicalRecordNumber.create({
@@ -104,6 +102,62 @@ export default class MedicalRecordService implements IMedicalRecordService {
     }
   }
 
+public async updateMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
+  try {
+    const medicalRecord = await this.medicalRecordRepo.findByDomainId(medicalRecordDTO.id);
+
+    if (medicalRecord === null) {
+      return Result.fail<IMedicalRecordDTO>("Medical Rceord not found");
+    }
+    
+    console.log("MedicalRecordDTO:", medicalRecordDTO);
+
+    const medicalRecordDTOOld = MedicalRecordMap.toDTO(medicalRecord.props);
+
+    console.log("MedicalRecordDTOOld:", medicalRecordDTOOld);
+
+    const patientMedicalRecordNumberOrError = 
+    medicalRecordDTOOld.patientMedicalRecordNumber !== medicalRecordDTO.patientMedicalRecordNumber
+        ? PatientMedicalRecordNumber.create({ medicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber })
+        : Result.ok<PatientMedicalRecordNumber>(medicalRecord.props.patientMedicalRecordNumber);
+
+        const allergiesInstances = MedicalRecordAllergies.createAllergies(medicalRecordDTO.allergiesId);
+        const allergiesOrError = Result.ok<MedicalRecordAllergies[]>(allergiesInstances);
+       
+        const medicalConditionsInstances = MedicalRecordMedicalConditions.createMedicalConditions(medicalRecordDTO.medicalConditionsId);
+        const medicalConditionsOrError = Result.ok<MedicalRecordMedicalConditions[]>(medicalConditionsInstances);
+
+    const notationsOrError = 
+    medicalRecordDTOOld.notations !== medicalRecordDTO.notations
+        ? MedicalRecordNotations.create({ notations: medicalRecordDTO.notations })
+        : Result.ok<MedicalRecordNotations>(medicalRecord.props.notations);
+
+    if (patientMedicalRecordNumberOrError.isFailure || allergiesOrError.isFailure || medicalConditionsOrError.isFailure || notationsOrError.isFailure) {
+      return Result.fail<IMedicalRecordDTO>("Invalid data provided");
+    }
+
+    if (patientMedicalRecordNumberOrError.isSuccess) medicalRecord.props.patientMedicalRecordNumber = patientMedicalRecordNumberOrError.getValue();
+    console.log("patientMedicalRecord", patientMedicalRecordNumberOrError.getValue());
+    if (allergiesOrError.isSuccess) medicalRecord.props.allergiesId = allergiesOrError.getValue();
+    console.log("allergies", allergiesOrError.getValue());
+    if (medicalConditionsOrError.isSuccess) medicalRecord.props.medicalConditionsId = medicalConditionsOrError.getValue();
+    console.log("medicalConditions", medicalConditionsOrError.getValue());
+    if (notationsOrError.isSuccess) medicalRecord.props.notations = notationsOrError.getValue();
+    console.log("notations", notationsOrError.getValue());
+
+    await this.medicalRecordRepo.save(medicalRecord);
+
+    const medicalRecordDTOResult = MedicalRecordMap.toDTO(medicalRecord.props) as IMedicalRecordDTO;
+    return Result.ok<IMedicalRecordDTO>(medicalRecordDTOResult);
+  } catch (e) {
+    console.error("Error during update:", e);
+    return Result.fail<IMedicalRecordDTO>(`Error updating medical record: ${e.message}`);
+  }
+}
+
+
+
+  /*
   public async updateMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<Result<IMedicalRecordDTO>> {
     try {
     
@@ -112,6 +166,9 @@ export default class MedicalRecordService implements IMedicalRecordService {
       if (medicalRecord === null) {
         return Result.fail<IMedicalRecordDTO>("Medical Record not found at Service");
       }
+
+      console.log("MedicalRecordDTO:", medicalRecordDTO);
+      console.log("MedicalRecord Before Update:", medicalRecord);
 
       
       const patientNumberOrError = PatientMedicalRecordNumber.create({
@@ -131,6 +188,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
       medicalRecord.props.allergiesId = allergiesOrErrors.map((result) => result.getValue());
 
+
       // Atualizar as condições médicas
       const medicalConditionsOrErrors = medicalRecordDTO.medicalConditionsId.map((conditionId) =>
         MedicalRecordMedicalConditions.create({ medicalConditions: [conditionId] })
@@ -138,8 +196,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
 
       medicalRecord.props.medicalConditionsId = medicalConditionsOrErrors.map((result) => result.getValue());
 
-      console.log("Processed Allergies:", allergiesOrErrors);
-      console.log("Processed Medical Conditions:", medicalConditionsOrErrors);
+  
 
       if (allergiesOrErrors.some((result) => result.isFailure)) {
         console.error("Failed to process allergies:", allergiesOrErrors.filter((result) => result.isFailure));
@@ -171,4 +228,5 @@ export default class MedicalRecordService implements IMedicalRecordService {
       throw e;
     }
   }
+    */
 }

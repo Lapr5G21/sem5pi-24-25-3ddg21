@@ -66,18 +66,17 @@ export default class MedicalRecordController implements IMedicalRecordController
   // api/medicalRecords
   public async updateMedicalRecord(req: Request, res: Response, next: NextFunction) {
     try {
-      const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IMedicalRecordDTO);
+      const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body as IMedicalRecordDTO) as Result<IMedicalRecordDTO>;
 
       if (medicalRecordOrError.isFailure) {
-        return res.status(404);
+        return res.status(404).send();
       }
 
       const medicalRecordDTO = medicalRecordOrError.getValue();
 
-      return res.status(201).json(medicalRecordDTO).send("Medical Record updated successfully");
+      return res.status(201).json(medicalRecordDTO);
     } catch (e) {
-      console.error("Error updating medical record:", e);
-      res.status(500).json({ message: e.message });
+      return next(e);
     }
   }
 }
