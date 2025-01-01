@@ -1,0 +1,92 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant CTRL as "MedicalConditionController" <<component (C4)>>
+participant MedicalConditionService as "MedicalConditionService" <<component (C4)>>
+participant MedicalConditionRepo as "MedicalConditionRepo" <<persistence>>
+participant MedicalCondition as "MedicalCondition" <<domain>>
+activate Doctor
+
+    Doctor -> ComponentUI : selects edit properttie from medical conditions list
+    activate ComponentUI
+
+        ComponentUI --> Doctor : displays old data and asks to update
+    
+    deactivate ComponentUI
+
+    Doctor -> ComponentUI : update data and confirm
+
+    activate ComponentUI
+
+        ComponentUI -> Component : update medical condition
+        activate Component
+
+            Component -> Service** : create
+
+            Component -> Service : update medical condition
+            activate Service
+
+                Service -> HTTP : put('/medicalConditions')
+
+                activate HTTP
+                    HTTP -> CTRL : PUT /medicalConditions
+                    activate CTRL
+
+                    CTRL -> MedicalConditionService : updateAsync(MedicalConditionDto)
+                    
+                    activate MedicalConditionService 
+
+                    MedicalConditionService -> MedicalConditionRepo : getByIdAsync(MedicalConditionDto.id)
+
+                    activate MedicalConditionRepo 
+
+                    MedicalConditionRepo --> MedicalConditionService : MedicalCondition
+
+                    deactivate MedicalConditionRepo
+
+                    MedicalConditionService -> MedicalCondition : ChangeMedicalConditionName(MedicalConditionDto.name)
+                    MedicalConditionService -> MedicalCondition : ChangeMedicalConditionCode(MedicalConditionDto.code)
+                    MedicalConditionService -> MedicalCondition : ChangeMedicalConditionDescription(MedicalConditionDto.description)
+                    MedicalConditionService -> MedicalCondition : ChangeMedicalConditionSymptoms(MedicalConditionDto.symptoms)
+
+                    MedicalConditionService -> MedicalConditionRepo : save(MedicalCondition)
+
+                    activate MedicalConditionRepo 
+
+                    MedicalConditionRepo --> MedicalConditionService : MedicalCondition
+
+                    deactivate MedicalConditionRepo
+
+                    MedicalConditionService -> MedicalConditionService : toDto(MedicalCondition)
+
+                    MedicalConditionService --> CTRL : MedicalConditionDto
+                    deactivate MedicalConditionService
+
+                    CTRL --> HTTP : 200 (MedicalConditionDto)
+
+                    deactivate CTRL
+                                        
+                    HTTP --> Service : MedicalConditionDto
+
+                deactivate HTTP
+
+                Service --> Component : MedicalConditionDto
+            deactivate Service
+
+            Component --> ComponentUI : MedicalConditionDto
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows updated data
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml
