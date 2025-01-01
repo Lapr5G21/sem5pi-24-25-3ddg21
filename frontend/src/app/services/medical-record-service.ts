@@ -13,19 +13,20 @@ export class MedicalRecordService {
   constructor(private http: HttpClient) { }
 
 
-  getMedicalRecord(): Observable<any[]> {
+  getMedicalRecords(): Observable<any[]> {
       return this.http.get<any[]>(`${this.apiUrl}/medicalRecords`);
     }
 
-    updateMedicalRecord(medicalRecordId: string,medicalRecordData: any): Observable<any> {
-            const token = localStorage.getItem('access_token');
-            const headers = new HttpHeaders({
-                'Authorization': `Bearer ${token}`
-            });
-            return this.http.put(`${this.apiUrl}/medicalRecords/${medicalRecordId}`, medicalRecordData, { headers });
-        }
 
-        saveMedicalRecord(medicalRecordData: any): Observable<any> {
-          return this.http.post(`${this.apiUrl}/medicalRecords`, medicalRecordData);
-        }      
+  updateMedicalRecord(medicalRecordId: string,medicalRecordData: any): Observable<any> {
+      const token = localStorage.getItem('access_token');
+      const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+      });
+      return this.http.put(`${this.apiUrl}/medicalRecords/${medicalRecordId}`, medicalRecordData, { headers });
+      }
+
+  saveMedicalRecord(medicalRecordData: any): Observable<any> {
+      return this.http.post(`${this.apiUrl}/medicalRecords`, medicalRecordData);
+  }      
 }

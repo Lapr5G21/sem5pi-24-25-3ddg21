@@ -1,138 +1,135 @@
 import { Component, OnInit } from '@angular/core';
-import { MedicalRecord } from '../../../../domain/medical-record-model';
-import { AllergyService } from '../../../../services/allergy.service';
-import { MedicalConditionService } from '../../../../services/medical-condition.service';
 import { MedicalRecordService } from '../../../../services/medical-record-service';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
-import { FormsModule } from '@angular/forms';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { DataViewModule } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
-import { ScrollPanelModule } from 'primeng/scrollpanel';
-import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
+import { BadgeModule } from 'primeng/badge';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { InputTextModule } from 'primeng/inputtext';  
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { CalendarModule } from 'primeng/calendar';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MedicalRecord } from '../../../../domain/medical-record-model';
+
 
 @Component({
-  selector: 'app-list-medical-record',
+  selector: 'list-medical-record',
   standalone: true,
-  templateUrl: './list-medical-record.component.html',
-  styleUrls: ['./list-medical-record.component.scss'],
-  imports:[
-    ToastModule,
-    FormsModule,
-    MultiSelectModule,
+  imports: [
+    TableModule,
     DialogModule,
     DataViewModule,
     ButtonModule,
+    CommonModule,
+    BadgeModule,
     ScrollPanelModule,
     InputTextModule,
-    CommonModule,
-    FloatLabelModule,],
-  providers: [MessageService, AllergyService, MedicalConditionService, MedicalRecordService],
+    FormsModule,
+    DropdownModule,
+    FloatLabelModule,
+    CalendarModule,
+    ToastModule,
+    ConfirmDialogModule,
+    CheckboxModule
+  ],
+  templateUrl: './list-medical-record.component.html',
+  styleUrl: './list-medical-record.component.scss',
+  providers:[MessageService, ConfirmationService]
 })
 export class ListMedicalRecordComponent implements OnInit {
-  recordNumberFilter: string = '';
+  nameFilter: string = '';
+  codeFilter: string = '';
+
   medicalRecords: MedicalRecord[] = [];
-  allergies: any[] = [];
-  medicalConditions: any[] = [];
-  filteredMedicalRecords: MedicalRecord[] = [];
 
   editDialogVisible: boolean = false;
+  selectedMedicalRecord: any = {}; 
+  filteredMedicalRecords: MedicalRecord[] = [];
 
-  selectedMedicalRecord: MedicalRecord = {
-    id: '',
-    patientMedicalRecordNumber: '',
-    allergies: [],
-    medicalConditions: [],
-    notations: '',
-    
-  };
+  allergies: any[] = [];
+  allergiesDialogVisible: boolean = false; 
 
-  constructor(
-    private medicalRecordService: MedicalRecordService,
-    private allergyService: AllergyService,
-    private medicalConditionService: MedicalConditionService,
-    private messageService: MessageService
+  constructor(private medicalRecordService: MedicalRecordService, private messageService : MessageService,  private confirmationService: ConfirmationService,
   ) {}
 
   ngOnInit(): void {
-    this.loadMedicalRecords();
-    this.loadAllergies();
-    this.loadMedicalConditions();
+    this.loadMedicalRecords();  
   }
 
   loadMedicalRecords(): void {
-    this.medicalRecordService.getMedicalRecord().subscribe({
-      next: (records) => {
-        this.medicalRecords = records.map((record) => ({
-          ...record,
-          patientMedicalRecordNumber: record.patientMedicalRecordNumber || '',
-          allergiesID: record.allergies || [], 
-          medicalConditionsID: record.medicalConditions || [],
-          notations: record.notations || '',
-        }));
-        this.filteredMedicalRecords = records;
-      },
-      error: (error) => console.error('Error loading medical records', error),
-    });
+    
+    this.medicalRecordService.getMedicalRecords().subscribe(
+        (medicalRecords) => {
+            this.medicalRecords = medicalRecords;   
+            this.filteredMedicalRecords = [...this.medicalRecords];
+        },
+        (error) => console.error('Error loading medical records', error)
+    );
   }
 
-  loadAllergies(): void {
-    this.allergyService.getAllergies().subscribe({
-      next: (allergies) => (this.allergies = allergies),
-      error: (error) => console.error('Error loading allergies', error),
-    });
-  }
-
-  loadMedicalConditions(): void {
-    this.medicalConditionService.getMedicalConditions().subscribe({
-      next: (conditions) => (this.medicalConditions = conditions),
-      error: (error) =>
-        console.error('Error loading medical conditions', error),
-    });
-  }
 
   onSearch(): void {
-    if (!this.recordNumberFilter) {
-      this.filteredMedicalRecords = [...this.medicalRecords];
-    } else {
-      this.filteredMedicalRecords = this.medicalRecords.filter((record) =>
-        record.patientMedicalRecordNumber
-          .toLowerCase()
-          .includes(this.recordNumberFilter.toLowerCase())
-      );
-    }
+    // this.filteredMedicalRecords = this.medicalRecords.filter(item => {
+    //   const matchesName = this.nameFilter
+    //     ? item.name.toLowerCase().startsWith(this.nameFilter.toLowerCase())
+    //     : true;
+    //   const matchesCode = this.codeFilter
+    //     ? item.code.toLowerCase().startsWith(this.codeFilter.toLowerCase())
+    //     : true;
+  
+    //   return matchesName && matchesCode;
+    // });
+  
+    // if (this.filteredMedicalConditions.length === 0) {
+    //   this.messageService.add({
+    //     severity: 'info',
+    //     summary: 'No Results',
+    //     detail: 'No medical conditions found matching the criteria.',
+    //   });
+    // }
   }
-
-  openEditDialog(record: MedicalRecord): void {
-    this.selectedMedicalRecord = { ...record };
+  
+  openEditDialog(item: any) {
+    this.selectedMedicalRecord = { ...item };
     this.editDialogVisible = true;
+    
   }
 
-  saveMedicalRecord(): void {
-    if (!this.selectedMedicalRecord) return;
-
-    this.medicalRecordService
-      .updateMedicalRecord(this.selectedMedicalRecord.id, this.selectedMedicalRecord)
-      .subscribe({
-        next: () => {
+   saveMedicalRecordInfo(selectedMedicalRecord: MedicalRecord) {
+      console.log('Saving medical record info:', selectedMedicalRecord);
+      
+      this.medicalRecordService.updateMedicalRecord(selectedMedicalRecord.id, selectedMedicalRecord).subscribe({
+        next: (response) => {
+          console.log('Medical record info updated successfully:', response);
+          
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Medical record updated successfully!',
+            detail: 'Medical record information updated successfully!',
           });
-          this.editDialogVisible = false;
-          this.loadMedicalRecords();
+          
+          this.editDialogVisible = false; 
         },
-        error: () =>
+        error: (error) => {
+          console.error('Failed to update medical record info:', error);
+          
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to update medical record.',
-          }),
+            detail: 'Failed to update medical record information.',
+          });
+        },
+        complete: () => {
+          console.log('Update medical record proccess complete.');
+          this.loadMedicalRecords();
+        }
       });
-  }
+    }
 }
