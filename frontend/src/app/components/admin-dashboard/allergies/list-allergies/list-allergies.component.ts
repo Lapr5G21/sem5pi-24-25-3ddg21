@@ -92,7 +92,7 @@ export class ListAllergiesComponent implements OnInit {
           summary: 'Deleted',
           detail: 'Allergy deleted successfully!'
         });
-        this.refreshAllergies(); 
+        this.loadAllergies(); 
       },
       (error) => {
         console.error('Error deleting Allergy:', error);
