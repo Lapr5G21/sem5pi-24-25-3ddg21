@@ -56,6 +56,9 @@ export class ListMedicalRecordComponent implements OnInit {
   allergies: any[] = [];
   allergiesDialogVisible: boolean = false; 
 
+  medicalConditions: any[] = [];
+  medicalConditionsDialogVisible: boolean = false; 
+
   constructor(private medicalRecordService: MedicalRecordService, private messageService : MessageService,  private confirmationService: ConfirmationService,
   ) {}
 
@@ -101,7 +104,57 @@ export class ListMedicalRecordComponent implements OnInit {
     this.editDialogVisible = true;
     
   }
+  
+  showAllergies(allergyIds: string[]) {
+    this.loadAllergies(allergyIds);
+    this.allergiesDialogVisible = true;
+  }
 
+  loadAllergies(allergyIds: string[]) {
+    if (!allergyIds || allergyIds.length === 0) {
+      console.warn('No allergy IDs provided.');
+      this.allergies = [];
+      return;
+    }
+  
+    this.allergies = [];
+  
+    allergyIds.forEach((id) => {
+      this.medicalRecordService.getAllergyById(id).subscribe(
+        (allergy) => {
+          this.allergies.push(allergy);
+          console.log('Allergy loaded:', allergy);
+        },
+        (error) => console.error(`Error loading allergy with ID ${id}:`, error)
+      );
+    });
+  }
+  
+  showMedicalConditions(medicalConditionsIds: string[]) {
+    this.loadMedicalConditions(medicalConditionsIds);
+    this.medicalConditionsDialogVisible = true;
+  }
+
+  loadMedicalConditions(medicalConditionsIds: string[]) {
+    if (!medicalConditionsIds || medicalConditionsIds.length === 0) {
+      console.warn('No medical conditions IDs provided.');
+      this.medicalConditions = [];
+      return;
+    }
+  
+    this.medicalConditions = [];
+  
+    medicalConditionsIds.forEach((id) => {
+      this.medicalRecordService.getMedicalConditionById(id).subscribe(
+        (medicalCondition) => {
+          this.medicalConditions.push(medicalCondition);
+          console.log('Medical condition loaded:', medicalCondition);
+        },
+        (error) => console.error(`Error loading medical condition with ID ${id}:`, error)
+      );
+    });
+  }
+  
    saveMedicalRecordInfo(selectedMedicalRecord: MedicalRecord) {
       console.log('Saving medical record info:', selectedMedicalRecord);
       

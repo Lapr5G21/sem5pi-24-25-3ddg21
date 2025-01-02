@@ -35,10 +35,10 @@
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
           <div class="col font-bold text-900" style="flex: 2;">{{ item.patientMedicalRecordNumber || 'Not specified' }}</div>
           <div class="col" style="flex: 2;">
-            <p-button icon="pi pi-eye" [outlined]="true" label="View"  [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
+            <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showAllergies(item.allergies)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
           </div>
           <div class="col text-container" style="flex: 2;">
-            <p-button icon="pi pi-eye" [outlined]="true" label="View"  [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
+            <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showMedicalConditions(item.medicalConditions)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
           </div>
           <div class="col text-container" style="flex: 4;">{{ item.notations || 'Not specified' }}</div>
 
@@ -47,89 +47,118 @@
               <!-- <p-button icon="pi pi-trash" label="Delete" class="p-button-danger" (click)="onRemove(item.id)" [style]="{ 'background-color': '#f44336', 'border-color': '#f44336', 'color': 'white' }"></p-button> --> 
           </div>
 
-<!-- Edit medical record dialogue -->
-<p-dialog header="Edit Medical Record Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
-  <div class="card">
-    <p-dataView [value]="[selectedMedicalRecord]" [rows]="1">
-      <ng-template pTemplate="header">
-        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-          <div class="col">Field</div>
-          <div class="col">Value</div>
-        </div>
-      </ng-template>
-      
-      <ng-template pTemplate="list" let-staff>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
-          <div class="col p-2">
-            <label for="name">Patient Medical Record Number</label>
+        <!-- Edit medical record dialogue -->
+        <p-dialog header="Edit Medical Record Information" [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
+          <div class="card">
+            <p-dataView [value]="[selectedMedicalRecord]" [rows]="1">
+              <ng-template pTemplate="header">
+                <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                  <div class="col">Field</div>
+                  <div class="col">Value</div>
+                </div>
+              </ng-template>
+              
+              <ng-template pTemplate="list" let-staff>
+                <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
+                  <div class="col p-2">
+                    <label for="name">Patient Medical Record Number</label>
+                  </div>
+                  <div class="col p-2">
+                    <input 
+                    pInputText 
+                    class="flex-auto"
+                    id="name" 
+                    [(ngModel)]="selectedMedicalRecord.patientMedicalRecordNumber"
+                    required 
+                    maxlength="100" 
+                    #patientMedicalRecordNumberInput="ngModel"/>
+                    <small *ngIf="patientMedicalRecordNumberInput.invalid && patientMedicalRecordNumberInput.touched" class="p-error validation-error">Patient Medical Record Number is required.</small>
+                  </div>
+                </div>
+                
+                <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
+                  <div class="col p-2">
+                    <label for="description">Notations</label>
+                  </div>
+                  <div class="col p-2">
+                    <textarea 
+                    pInputText
+                    class="flex-auto"
+                    id="description" 
+                    [(ngModel)]="selectedMedicalRecord.notations" 
+                    rows="4"
+                    maxlength="2048"
+                    #notationsInput="ngModel">
+                </textarea>
+                </div>
+                </div>
+
+              </ng-template>
+            </p-dataView>
+            <div class="flex justify-content-end">
+              <button pButton label="Save" icon="pi pi-check" 
+              [disabled]="!selectedMedicalRecord?.patientMedicalRecordNumber"  
+              (click)="saveMedicalRecordInfo(selectedMedicalRecord)" class="p-button-primary"></button>
+            </div>
           </div>
-          <div class="col p-2">
-            <input 
-            pInputText 
-            class="flex-auto"
-            id="name" 
-            [(ngModel)]="selectedMedicalRecord.patientMedicalRecordNumber"
-            required 
-            maxlength="100" 
-            #patientMedicalRecordNumberInput="ngModel"/>
-            <small *ngIf="patientMedicalRecordNumberInput.invalid && patientMedicalRecordNumberInput.touched" class="p-error validation-error">Patient Medical Record Number is required.</small>
+          </p-dialog>
+
+          <!-- Add allergies dialogue -->
+          <div class="card flex justify-content-center">
+            <p-dialog 
+            header="Allergies" 
+            [(visible)]="allergiesDialogVisible" 
+            modal="true" 
+            [responsive]="true"
+            [style]="{ width: '80rem', height: '50rem' }">
+
+            <div class="card">
+
+                <p-dataView #dv [value]="allergies" [rows]="10" [paginator]="true">
+                    <ng-template pTemplate="list" let-slot>
+                        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                            <div class="col">Code</div>
+                            <div class="col">Name</div>
+                        </div>
+
+                        <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let allergy of allergies; let first = first">
+                            <div class="col-2">{{ allergy.code || 'Not specified' }}</div>
+                            <div class="col-2">{{ allergy.name ? allergy.name : 'Not specified' }}</div>
+                          </div>
+                    </ng-template>
+                </p-dataView>
+            </div>
+          </p-dialog>
           </div>
-        </div>
-        
-        <div class="grid grid-nogutter text-center border-top-1 surface-border align-items-center">
-          <div class="col p-2">
-            <label for="description">Notations</label>
+
+          <!-- Add medical conditions dialogue -->
+          <div class="card flex justify-content-center">
+            <p-dialog 
+            header="Medical Conditions" 
+            [(visible)]="medicalConditionsDialogVisible" 
+            modal="true" 
+            [responsive]="true"
+            [style]="{ width: '80rem', height: '50rem' }">
+
+            <div class="card">
+
+                <p-dataView #dv [value]="medicalConditions" [rows]="10" [paginator]="true">
+                    <ng-template pTemplate="list" let-slot>
+                        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                            <div class="col">Code</div>
+                            <div class="col">Name</div>
+                        </div>
+
+                        <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let medicalCondition of medicalConditions; let first = first">
+                            <div class="col-2">{{ medicalCondition.code || 'Not specified' }}</div>
+                            <div class="col-2">{{ medicalCondition.name ? medicalCondition.name : 'Not specified' }}</div>
+                          </div>
+                    </ng-template>
+                </p-dataView>
+            </div>
+          </p-dialog>
           </div>
-          <div class="col p-2">
-            <textarea 
-            pInputText
-            class="flex-auto"
-            id="description" 
-            [(ngModel)]="selectedMedicalRecord.notations" 
-            rows="4"
-            maxlength="2048"
-            #notationsInput="ngModel">
-        </textarea>
-        </div>
-        </div>
 
-      </ng-template>
-    </p-dataView>
-    <div class="flex justify-content-end">
-      <button pButton label="Save" icon="pi pi-check" 
-      [disabled]="!selectedMedicalRecord?.patientMedicalRecordNumber"  
-      (click)="saveMedicalRecordInfo(selectedMedicalRecord)" class="p-button-primary"></button>
-    </div>
-  </div>
-  </p-dialog>
-
-
-<!-- <div class="card flex justify-content-center">
-  <p-dialog 
-  header="Allergies" 
-  [(visible)]="allergiesDialogVisible" 
-  modal="true" 
-  [responsive]="true"
-  [style]="{ width: '80rem', height: '50rem' }">
-
-  <div class="card">
-
-      <p-dataView #dv [value]="allergies" [rows]="10" [paginator]="true">
-          <ng-template pTemplate="list" let-slot>
-              <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-                  <div class="col">Code</div>
-                  <div class="col">Name</div>
-              </div>
-
-              <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let slot of slots; let first = first">
-                  <div class="col-2">{{ allergy.code || 'Not specified' }}</div>
-                  <div class="col-2">{{ allergy.name 'Not specified' }}</div>
-              </div>
-          </ng-template>
-      </p-dataView>
-  </div>
-</p-dialog>
-</div> -->
         </div>
       </p-scrollPanel>
     </ng-template>
