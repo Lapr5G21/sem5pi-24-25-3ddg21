@@ -51,9 +51,7 @@ export class PatientService {
     searchPatients(name: string, birthDate: string, gender: string, email: string, phoneNumber: string, mrn: string, isActive: boolean | null): Observable<any[]> {
         let params = new HttpParams();
         const token = localStorage.getItem('access_token');
-        const headers = new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        });
+;
       
         // Adiciona os filtros conforme definidos
         if (name) {
@@ -78,7 +76,7 @@ export class PatientService {
           params = params.append('isActive', isActive.toString());
         }
       
-        return this.http.get<any[]>(`${this.apiUrl}/patients/search`, { params, headers });
+        return this.http.get<any[]>(`${this.apiUrl}/patients/search`, { params });
     }
       
 

@@ -75,11 +75,6 @@ export default class MedicalConditionController implements IMedicalConditionCont
       return res.status(500).json({ message: err.message });
     }
   }
-  
-  
-  
-  
-  
 
   // api/medicalConditions
   public async createMedicalCondition(req: Request, res: Response, next: NextFunction) {
@@ -98,7 +93,7 @@ export default class MedicalConditionController implements IMedicalConditionCont
     }
   };
 
-  // api/medicalConditions/:id
+  // api/medicalConditions
   public async updateMedicalCondition(req: Request, res: Response, next: NextFunction) {
     try {
       const medicalConditionOrError = await this.medicalConditionServiceInstance.updateMedicalCondition(req.body as IMedicalConditionDTO) as Result<IMedicalConditionDTO>;

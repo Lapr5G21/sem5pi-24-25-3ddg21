@@ -1,4 +1,4 @@
-import { Component, OnInit, viewChild, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { CreateOperationTypesComponent } from './operationTypes/create-operation-types/create-operation-types.component';
 import { CreateStaffsComponent } from './staffs/create-staffs/create-staffs.component';
@@ -94,10 +94,14 @@ export class AdminDashboardComponent implements OnInit {
         label: 'Home',
         icon: 'pi pi-home',
         command: () => {
-        this.showOperationTypesList=false;
-        this.showStaffsList=false;
-        this.showPatientsList=false;
-        this.showSpecializationList=false;
+          this.showOperationTypesList = false;
+          this.showStaffsList = false;
+          this.showPatientsList = false;
+          this.showSpecializationList = false;
+          this.showAllergiesList = false;
+          this.showMedicalConditionsList = false;
+          this.showRoomTypesList = false;
+          this.showSurgeryRoomsList = false;
         }
       },
       {
@@ -119,6 +123,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showSpecializationList = false;
               this.showAllergiesList = false;
               this.showMedicalConditionsList = false;
+              this.showRoomTypesList = false;
+              this.showSurgeryRoomsList = false;
             }          
           }
         ]
@@ -143,6 +149,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showPatientsList = false;
               this.showAllergiesList = false;
               this.showMedicalConditionsList = false;
+              this.showRoomTypesList = false;
+              this.showSurgeryRoomsList = false;
             }          
           }
         ]
@@ -165,6 +173,9 @@ export class AdminDashboardComponent implements OnInit {
               this.showStaffsList = false;
               this.showPatientsList = false;
               this.showMedicalConditionsList = false;
+              this.showRoomTypesList = false;
+              this.showSurgeryRoomsList = false;
+              this.showSpecializationList = false;
             }          
           }
         ]
@@ -175,7 +186,7 @@ export class AdminDashboardComponent implements OnInit {
         icon: '',
         items: [
           {
-            label: 'Create Medical Conditions',
+            label: 'Create Medical Condition',
             icon: 'pi pi-check',
             command: () => this.createMedicalConditions()
           },
@@ -189,6 +200,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showPatientsList = false;
               this.showMedicalConditionsList = true;
               this.showAllergiesList = false;
+              this.showRoomTypesList = false;
+              this.showSurgeryRoomsList = false;
             }          
           }
         ]
@@ -212,6 +225,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showSpecializationList = false;
               this.showAllergiesList = false;
               this.showMedicalConditionsList = false;
+              this.showRoomTypesList = false;
+              this.showSurgeryRoomsList = false;
             }   
           }
         ]
@@ -235,6 +250,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showSpecializationList = false;
               this.showAllergiesList = false;
               this.showMedicalConditionsList = false;
+              this.showRoomTypesList = false;
+              this.showSurgeryRoomsList = false;
             }
           }
         ]
@@ -280,6 +297,8 @@ export class AdminDashboardComponent implements OnInit {
               this.showSpecializationList = false;
               this.showAllergiesList = false;
               this.showMedicalConditionsList = false;
+              this.showSurgeryRoomsList = false;
+              this.showSurgeryRoomsList = false;
             }
           }
         ]
@@ -304,6 +323,7 @@ export class AdminDashboardComponent implements OnInit {
               this.showSpecializationList = false;
               this.showAllergiesList = false;
               this.showMedicalConditionsList = false;
+              this.showRoomTypesList = false;
             }
           }
         ]

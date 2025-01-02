@@ -15,7 +15,6 @@ import { DoctorDashboardComponent } from './components/doctor-dashboard/doctor-d
 import { HospitalModelComponent } from './components/hospital-model/hospital-model/hospital-model.component';
 import { ListOperationTypesComponent } from './components/admin-dashboard/operationTypes/list-operation-types/list-operation-types/list-operation-types.component';
 import { PatientDashboardComponent } from './components/patient-dashboard/patient-dashboard.component';
-import { ListMedicalRecordComponent } from './components/doctor-dashboard/medicalRecord/list-medical-record/list-medical-record.component';
 import { CreateMedicalRecordComponent } from './components/doctor-dashboard/medicalRecord/create-medical-record/create-medical-record.component';
 import { CreateRoomTypesComponent } from './components/admin-dashboard/roomTypes/create-room-types/create-room-types.component';
 import { ListRoomTypesComponent } from './components/admin-dashboard/roomTypes/list-room-types/list-room-types.component';
@@ -49,7 +48,6 @@ export const routes: Routes = [
     { path: 'doctorDashboard/home', component: DoctorDashboardComponent },
     { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },
     { path: 'doctorDashboard/3DModule', component: HospitalModelComponent },
-    { path: 'doctorDashboard/medicalRecords', component: ListMedicalRecordComponent },
     { path: 'doctorDashboard/medicalRecords/create', component: CreateMedicalRecordComponent },
     // Patient Dashboard 
     { path: 'patientDashboard/home', component: PatientDashboardComponent }
