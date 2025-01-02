@@ -22,6 +22,15 @@ export default (app: Router) => {
       }),
     }),
     (req, res, next) => ctrl.getMedicalRecord(req, res, next));
+    
+  route.get('/patientMedicalRecordNumber/:patientMedicalRecordNumber',
+    celebrate({
+      params: Joi.object({
+        patientMedicalRecordNumber: Joi.string().required(),
+      }),
+    }),
+    (req, res, next) => ctrl.getByPatientMedicalRecordNumber(req, res, next)
+  );
 
     route.post('',
       (req, res, next) => ctrl.createMedicalRecord(req, res, next)

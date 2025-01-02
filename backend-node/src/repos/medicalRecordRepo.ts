@@ -5,6 +5,7 @@ import { IMedicalRecordPersistence } from '../dataschema/IMedicalRecordPersisten
 import { MedicalRecord } from '../domain/MedicalRecord/medicalRecord';
 import { MedicalRecordId } from '../domain/MedicalRecord/medicalRecordId';
 import { MedicalRecordMap } from '../mappers/MedicalRecordMap';
+import { PatientMedicalRecordNumber } from '../domain/MedicalRecord/patientMedicalRecordNumber';
 
 @Service()
 export default class MedicalRecordRepo implements IMedicalRecordRepo {
@@ -81,6 +82,22 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   } catch (error) {
     console.error('Error finding medical record:', error);
     return null;
+  }
+
+  public async findByPatientMedicalRecordNumber(patientMedicalRecordNumber: string): Promise<MedicalRecord | null> {
+    try {
+      const query = { patientMedicalRecordNumber };
+      const medicalRecordDocument = await this.medicalRecordSchema.findOne(query);
+  
+      if (medicalRecordDocument != null) {
+        return MedicalRecordMap.toDomain(medicalRecordDocument);
+      }
+  
+      return null;
+    } catch (err) {
+      console.error(`Erro ao encontrar prontuário por número de prontuário: ${err.message}`);
+      throw new Error(`Error finding medical record: ${err.message}`);
+    }
   }
 
   public async delete (medicalRecord: MedicalRecord): Promise<any> {

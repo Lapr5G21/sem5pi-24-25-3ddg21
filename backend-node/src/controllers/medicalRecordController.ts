@@ -28,7 +28,23 @@ export default class MedicalRecordController implements IMedicalRecordController
     }
   }
 
-
+  public async getByPatientMedicalRecordNumber(req: Request, res: Response) {
+    const { patientMedicalRecordNumber } = req.params;
+  
+    try {
+      const medicalRecordOrError = await this.medicalRecordServiceInstance.getByPatientMedicalRecordNumber(patientMedicalRecordNumber);
+  
+      if (medicalRecordOrError.isFailure) {
+        return res.status(404).json({ message: medicalRecordOrError.errorValue() });
+      }
+  
+      return res.status(200).json(medicalRecordOrError.getValue());
+    } catch (err) {
+      console.error("Error retrieving medical record by number:", err);
+      return res.status(500).json({ message: err.message });
+    }
+  }
+  
   // api/medicalRecords
   public async getAllMedicalRecords(req: Request, res: Response, next: NextFunction) {
     try {
@@ -44,8 +60,6 @@ export default class MedicalRecordController implements IMedicalRecordController
       res.status(500).json({ message: err.message });
     }
   }
-
-
 
   // api/medicalRecords
   public async createMedicalRecord(req: Request, res: Response, next: NextFunction) {

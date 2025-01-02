@@ -88,6 +88,23 @@ export default class MedicalRecordService implements IMedicalRecordService {
     }
   }
 
+  
+  public async getByPatientMedicalRecordNumber(patientMedicalRecordNumber: string): Promise<Result<IMedicalRecordDTO>> {
+    try {
+      const medicalRecord = await this.medicalRecordRepo.findByPatientMedicalRecordNumber(patientMedicalRecordNumber);
+  
+      if (!medicalRecord) {
+        return Result.fail<IMedicalRecordDTO>('Medical record not found');
+      }
+  
+      return Result.ok<IMedicalRecordDTO>(MedicalRecordMap.toDTO(medicalRecord));
+    } catch (err) {
+      console.error("Erro ao buscar prontuário:", err); // Log de erro no serviço
+      return Result.fail<IMedicalRecordDTO>('Error retrieving medical record');
+    }
+  }
+  
+  
   public async getAllMedicalRecords(): Promise<Result<IMedicalRecordDTO[]>> {
     try {
       const medicalRecords = await this.medicalRecordRepo.getAll();

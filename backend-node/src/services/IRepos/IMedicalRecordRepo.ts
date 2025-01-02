@@ -7,4 +7,5 @@ export default interface IMedicalRecordRepo extends Repo<MedicalRecord> {
   save(medicalRecord: MedicalRecord): Promise<MedicalRecord>;
   findByDomainId (medicalRecordId: MedicalRecordId | string): Promise<MedicalRecord>;
   getAll(): Promise<MedicalRecord[]>;
+  findByPatientMedicalRecordNumber(patientMedicalRecordNumber: string): Promise<MedicalRecord | null>;
 }
