@@ -1,0 +1,83 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+participant MedicalRecordsController as "MedicalRecordsController" <<component (C4)>>
+participant MedicalRecordService as "MedicalRecordService" <<component (C4)>>
+participant Allergy as "Allergy" <<domain>>
+participant MedicalRecordRepo as "Medical Record Repository" <<persistence>>
+
+activate Doctor
+
+    Doctor -> ComponentUI : asks to update the patient's medical record
+    activate ComponentUI
+
+        ComponentUI -> Doctor : shows the patient's medical record
+
+    deactivate ComponentUI
+
+    Doctor -> ComponentUI : input information to add to the patient's medical record
+    
+    activate ComponentUI
+    
+        ComponentUI -> Component : add information
+        activate Component
+
+            Component -> Service** : create
+            
+            Component -> Service : update medical record 
+            activate Service
+
+                Service -> HTTP : put('api/medicalRecords')
+
+                activate HTTP
+                    HTTP -> MedicalRecordsController : PUT /medicalRecords
+
+                    activate MedicalRecordsController
+
+                    MedicalRecordsController -> MedicalRecordService : updateMedicalRecord(IMedicalRecordDTO.patientMedicalRecordNumber, IMedicalRecordDTO.allergiesID,\n IMedicalRecordDTO.medicalConditionsID)
+
+                    activate MedicalRecordService 
+
+                    MedicalRecordService -> Allergy : updateMedicalRecord(MedicalRecordProps))
+
+
+
+                    MedicalRecordService -> MedicalRecordRepo : save(MedicalRecordProps)
+
+                    activate MedicalRecordRepo
+
+                    MedicalRecordRepo --> MedicalRecordService : medicalRecord
+
+                    deactivate MedicalRecordRepo
+
+                    MedicalRecordService -> MedicalRecordService : toDto(medicalRecord)
+
+                    MedicalRecordService --> MedicalRecordsController : IMedicalRecordDTO
+
+                    deactivate MedicalRecordService
+
+                    MedicalRecordsController --> HTTP : 200 (medicalRecord)
+
+                    deactivate MedicalRecordsController
+
+                    HTTP --> Service : medicalRecord
+
+                deactivate HTTP
+
+                Service --> Component : medicalRecord
+            deactivate Service
+
+            Component --> ComponentUI : medicalRecord
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows update success message
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml

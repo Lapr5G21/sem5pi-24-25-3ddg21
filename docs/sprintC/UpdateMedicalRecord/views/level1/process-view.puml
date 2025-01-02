@@ -1,0 +1,19 @@
+@startuml
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system (C4)>>
+
+activate Doctor 
+
+Doctor --> SYS : asks to update a patient's medical record 
+
+activate SYS 
+SYS --> Doctor : displays the patoient's medical record
+deactivate SYS
+
+Doctor --> SYS : submits the form with allergies, medical conditions or notations
+activate SYS
+SYS --> Doctor : displays confirmation message that the informatition was \n added into the patient's medical record
+
+deactivate SYS
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml process-view
+autonumber
+
+actor "Doctor" as Doctor
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendNode" <<system (C4)>>
+
+activate Doctor
+    Doctor -> Frontend : asks to update the patient's medical record
+    activate Frontend
+        Frontend --> Doctor : displays the patient's medical record
+    
+    deactivate Frontend
+    Doctor -> Frontend : inserts the new information into the patient's medical record
+    activate Frontend
+    
+        Frontend-> Backend : PUT /medicalRecords
+        activate Backend
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+    Frontend --> Doctor : displays confirmation message that the medical record was updated
+    
+    deactivate Frontend
+    deactivate Doctor
+@enduml
