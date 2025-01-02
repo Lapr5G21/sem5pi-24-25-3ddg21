@@ -114,7 +114,6 @@ namespace DDDSample1.Controllers
             }
         }
 
-            [Authorize(Policy="AdminRole")]
             [HttpGet("search")]
             public async Task<IActionResult> SearchPatients([FromQuery] string fullName, [FromQuery] string birthDate, [FromQuery] string gender, [FromQuery] string email, [FromQuery] string phoneNumber, [FromQuery] string mrn, [FromQuery] bool? isActive)
             {      

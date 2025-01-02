@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { HospitalModelComponent } from '../hospital-model/hospital-model/hospital-model.component';
 import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/profile-menu-component.component';
 import { CreateMedicalRecordComponent } from './medicalRecord/create-medical-record/create-medical-record.component';
+import { ListPatientsComponent } from './patients/list-patients/list-patients.component';
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -23,7 +24,8 @@ import { CreateMedicalRecordComponent } from './medicalRecord/create-medical-rec
     ListMedicalRecordComponent,
     CommonModule,
     HospitalModelComponent,
-    ProfileMenuComponent
+    ProfileMenuComponent,
+    ListPatientsComponent
   ],
   templateUrl: './doctor-dashboard.component.html',
   styleUrls: ['./doctor-dashboard.component.scss'],
@@ -35,11 +37,14 @@ export class DoctorDashboardComponent implements OnInit {
   showOperationRequestsList: boolean = false;
   showHospitalModel: boolean = false;
   showMedicalRecordsList: boolean = false;
+  showPatientsList: boolean = false;
+
 
   @ViewChild(CreateOperationRequestsComponent) createOperationRequestsComponent!: CreateOperationRequestsComponent;
   @ViewChild(CreateMedicalRecordComponent) createMedicalRecordComponent!: CreateMedicalRecordComponent;
   @ViewChild(ListOperationRequestsComponent) listOperationRequestsComponent!: ListOperationRequestsComponent;
   @ViewChild(ListMedicalRecordComponent) listMedicalRecordComponent!: ListMedicalRecordComponent;
+  @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent
   @ViewChild(ProfileMenuComponent) profileMenuComponent!: ProfileMenuComponent
   constructor(private router: Router) {}
@@ -64,6 +69,17 @@ export class DoctorDashboardComponent implements OnInit {
             label: 'Search/List',
             icon: 'pi pi-list',
             command: () => this.listMedicalRecords() 
+          } 
+        ]
+      },
+      {
+        label: 'Patients',
+        icon: 'pi pi-file',
+        items:[
+          {
+            label: 'Search/List',
+            icon: 'pi pi-list',
+            command: () => this.listPatients() 
           } 
         ]
       },
@@ -131,12 +147,20 @@ export class DoctorDashboardComponent implements OnInit {
   listMedicalRecords() {
     this.showMedicalRecordsList = true;
     this.showOperationRequestsList = false;
+    this.showPatientsList = false;
   }
 
   listOperationRequests() {
     this.showOperationRequestsList = true;
     this.showMedicalRecordsList = false;
+    this.showPatientsList = false;
     this.listOperationRequestsComponent.loadOperationRequests();
+  }
+
+  listPatients() {
+    this.showMedicalRecordsList = false;
+    this.showOperationRequestsList = false;
+    this.showPatientsList = true;
   }
 
   showHospitalModelComponent() {

@@ -68,7 +68,6 @@
           <div class="col text-center" style="flex: 2;">Address</div>
           <div class="col text-center" style="flex: 1;">Medical Record</div>
           <div class="col text-center" style="flex: 1;">Emergency Contact</div>
-          <div class="col text-center" style="flex: 1;">Actions</div>
         </div>
 
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let patient of patients; let first = first">
@@ -121,102 +120,8 @@
             {{ patient.emergencyContact || 'Not specified' }}
           </div>
 
-
-          <div class="col p-2 text-center" style="flex: 1;">
-            <div class="flex justify-center gap-2">
-              <p-button icon="pi pi-pencil" [outlined]="true" [disabled]="!patient.active" (click)="openEditDialog(patient)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
-              <app-delete-patients [patient]="patient" (patientDeleted)="patientDeleted()"></app-delete-patients>
-            </div>
-          </div>
-
 <!-- Diálogo para editar as informações do Paciente -->
-<p-dialog [(visible)]="editDialogVisible" [responsive]="true" [style]="{ width: '50%' }">
-  <ng-template pTemplate="header">
-    <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">          
-      <div class="col">Edit Patient Information</div>
-    </div>
-  </ng-template>   
-  <div class="card">
-    <p-dataView [value]="[selectedPatient]" [rows]="1">
-      <ng-template pTemplate="header">
-        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-          <div class="col">Field</div>
-          <div class="col">Value</div>
-        </div>
-      </ng-template>
-      
-      <ng-template pTemplate="list" let-patient>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
-          <div class="col p-2">
-            <label for="firstName">First Name</label>
-          </div>
-          <div class="col p-2">
-            <input pInputText id="firstName" [(ngModel)]="selectedPatient.firstName" />
-          </div>
-        </div>
-        
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
-          <div class="col p-2">
-            <label for="lastName">Last Name</label>
-          </div>
-          <div class="col p-2">
-            <input pInputText id="lastName" [(ngModel)]="selectedPatient.lastName" />
-          </div>
-        </div>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
-          <div class="col p-2">
-            <label for="fullName">Full Name</label>
-          </div>
-          <div class="col p-2">
-            <input pInputText id="fullName" [(ngModel)]="selectedPatient.fullName" />
-          </div>
-        </div>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
-          <div class="col p-2">
-            <label for="medicalRecord">Medical Record</label>
-          </div>
-          <div class="col p-2">
-            <button 
-              pButton 
-              label="Edit Medical Record" 
-              class="p-button-primary"
-              icon="pi pi-pencil"
-              (click)="openMedicalRecordDialog()">
-            </button>
-          </div>
-        </div>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
-          <div class="col p-2">
-            <label for="phoneNumber">Phone Number</label>
-          </div>
-          <div class="col p-2">
-            <input pInputText id="phoneNumber" [(ngModel)]="selectedPatient.phoneNumber" />
-          </div>
-        </div>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
-          <div class="col p-2">
-            <label for="email">Email</label>
-          </div>
-          <div class="col p-2">
-            <input pInputText id="email" [(ngModel)]="selectedPatient.email" />
-          </div>
-        </div>
-        <div class="grid grid-nogutter text-center border-top-1 surface-border">
-          <div class="col p-2">
-            <label for="address">Address</label>
-          </div>
-          <div class="col p-2">
-            <input pInputText id="address" [(ngModel)]="selectedPatient.address" />
-          </div>
-        </div>
-      </ng-template>
-    </p-dataView>
-    <div class="flex justify-content-end gap-2"  style="margin-top: 30px;">
-      <button pButton label="Save" icon="pi pi-check" (click)="updatePatient(selectedPatient)" class="p-button-primary"></button>
-      <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary" (click)="closeEditDialog()"></button>
-  </div>
-  </div>
-  </p-dialog>
+
 
         </div>
       </p-scrollPanel>
