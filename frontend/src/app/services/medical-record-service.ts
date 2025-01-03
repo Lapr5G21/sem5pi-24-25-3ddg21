@@ -19,14 +19,18 @@ export class MedicalRecordService {
       return this.http.get<any[]>(`${this.apiUrl}/medicalRecords`);
     }
 
-    getAllergyById(allergyId: string): Observable<Allergy> {
-      return this.http.get<Allergy>(`/api/allergies/${allergyId}`);
+    getAllergyById(allergyId: string): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/allergies/${allergyId}`);
     }
 
     getMedicalConditionById(medicalConditionId: string): Observable<MedicalCondition> {
       return this.http.get<MedicalCondition>(`/api/medicalConditions/${medicalConditionId}`);
     }
     
+    getMedicalRecordByPatientMedicalRecordNumber(patientMedicalRecordNumber: string): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/medicalRecords/patientMedicalRecordNumber/${patientMedicalRecordNumber}`);
+    }
+
   updateMedicalRecord(medicalRecordId: string,medicalRecordData: any): Observable<any> {
       const token = localStorage.getItem('access_token');
       const headers = new HttpHeaders({

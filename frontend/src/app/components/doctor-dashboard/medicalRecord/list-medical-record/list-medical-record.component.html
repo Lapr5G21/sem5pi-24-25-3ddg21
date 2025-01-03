@@ -35,10 +35,10 @@
         <div class="grid grid-nogutter text-center border-top-1 surface-border" *ngFor="let item of items">
           <div class="col font-bold text-900" style="flex: 2;">{{ item.patientMedicalRecordNumber || 'Not specified' }}</div>
           <div class="col" style="flex: 2;">
-            <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showAllergies(item.allergies)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
+            <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showAllergies(item.allergiesId)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
           </div>
           <div class="col text-container" style="flex: 2;">
-            <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showMedicalConditions(item.medicalConditions)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
+            <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showMedicalConditions(item.medicalConditionsId)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
           </div>
           <div class="col text-container" style="flex: 4;">{{ item.notations || 'Not specified' }}</div>
 
@@ -103,61 +103,80 @@
           </div>
           </p-dialog>
 
-          <!-- Add allergies dialogue -->
+          <!-- Show allergies dialogue -->
           <div class="card flex justify-content-center">
             <p-dialog 
-            header="Allergies" 
-            [(visible)]="allergiesDialogVisible" 
-            modal="true" 
-            [responsive]="true"
-            [style]="{ width: '80rem', height: '50rem' }">
-
-            <div class="card">
-
-                <p-dataView #dv [value]="allergies" [rows]="10" [paginator]="true">
+              header="Allergies" 
+              [(visible)]="allergiesDialogVisible" 
+              modal="true" 
+              [responsive]="true"
+              [style]="{ width: '40rem', height: '50rem' }">
+              
+              <div class="card">
+                
+            
+                <!-- Verifica se há alergias para exibir -->
+                <ng-container *ngIf="allergies && allergies.length > 0; else noAllergies">
+                  <p-dataView #dv [value]="allergies" [rows]="10" [paginator]="true">
+                    
                     <ng-template pTemplate="list" let-slot>
-                        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-                            <div class="col">Code</div>
-                            <div class="col">Name</div>
-                        </div>
-
-                        <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let allergy of allergies; let first = first">
-                            <div class="col-2">{{ allergy.code || 'Not specified' }}</div>
-                            <div class="col-2">{{ allergy.name ? allergy.name : 'Not specified' }}</div>
-                          </div>
+                      <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                        <div class="col" style="flex: 2;">Code</div>
+                        <div class="col" style="flex: 2;">Name</div>
+                      </div>
+                      <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let allergy of allergies; let first = first">
+                        <div class="col font-bold text-900" style="flex: 2;">{{ allergy.code || 'Not specified' }}</div>
+                        <div class="col" style="flex: 2;">{{ allergy.name || 'Not specified' }}</div>
+                      </div>
                     </ng-template>
-                </p-dataView>
-            </div>
-          </p-dialog>
+                  </p-dataView>
+                </ng-container>
+          
+                <!-- Mensagem caso não haja alergias -->
+                <ng-template #noAllergies>
+                  <p class="text-center">No allergies found.</p>
+                </ng-template>
+          
+              </div>
+            </p-dialog>
           </div>
-
+          
           <!-- Add medical conditions dialogue -->
           <div class="card flex justify-content-center">
             <p-dialog 
-            header="Medical Conditions" 
-            [(visible)]="medicalConditionsDialogVisible" 
-            modal="true" 
-            [responsive]="true"
-            [style]="{ width: '80rem', height: '50rem' }">
-
-            <div class="card">
-
-                <p-dataView #dv [value]="medicalConditions" [rows]="10" [paginator]="true">
+              header="Medical Conditions" 
+              [(visible)]="medicalConditionsDialogVisible" 
+              modal="true" 
+              [responsive]="true"
+              [style]="{ width: '40rem', height: '50rem' }">
+              
+              <div class="card">
+          
+                <!-- Verifica se há condições médicas para exibir -->
+                <ng-container *ngIf="medicalConditions && medicalConditions.length > 0; else noMedicalConditions">
+                  <p-dataView #dv [value]="medicalConditions" [rows]="10" [paginator]="true">
                     <ng-template pTemplate="list" let-slot>
-                        <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
-                            <div class="col">Code</div>
-                            <div class="col">Name</div>
-                        </div>
-
-                        <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let medicalCondition of medicalConditions; let first = first">
-                            <div class="col-2">{{ medicalCondition.code || 'Not specified' }}</div>
-                            <div class="col-2">{{ medicalCondition.name ? medicalCondition.name : 'Not specified' }}</div>
-                          </div>
+                      <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+                        <div class="col" style="flex: 2;">Code</div>
+                        <div class="col" style="flex: 2;">Name</div>
+                      </div>
+                      <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let medicalCondition of medicalConditions; let first = first">
+                        <div class="col font-bold text-900" style="flex: 2;">{{ medicalCondition.code || 'Not specified' }}</div>
+                        <div class="col" style="flex: 2;">{{ medicalCondition.name || 'Not specified' }}</div>
+                      </div>
                     </ng-template>
-                </p-dataView>
-            </div>
-          </p-dialog>
+                  </p-dataView>
+                </ng-container>
+          
+                <!-- Mensagem caso não haja condições médicas -->
+                <ng-template #noMedicalConditions>
+                  <p class="text-center">No medical conditions found.</p>
+                </ng-template>
+          
+              </div>
+            </p-dialog>
           </div>
+          
 
         </div>
       </p-scrollPanel>
