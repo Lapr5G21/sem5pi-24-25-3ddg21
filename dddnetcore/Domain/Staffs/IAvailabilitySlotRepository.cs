@@ -10,6 +10,8 @@ namespace DDDSample1.Domain.Staffs
     {
     Task<List<AvailabilitySlot>> GetByStaffIdAsync(StaffId staffId);
     Task<bool> RemoveBySlot(StaffId staffId, DateTime start, DateTime end);
+    Task<bool> IsStaffAvailableInSlotAsync(StaffId staffId, DateTime startTime, DateTime endTime);
+
     }
 
 }

@@ -41,5 +41,15 @@ public class AvailabilitySlotRepository : BaseRepository<AvailabilitySlot, Avail
 
     return false; 
     }
+
+    public async Task<bool> IsStaffAvailableInSlotAsync(StaffId staffId, DateTime startTime, DateTime endTime)
+{
+    return await _context.AvailabilitySlots
+        .AnyAsync(slot => 
+            slot.StaffId == staffId && 
+            slot.Start <= startTime && 
+            slot.End >= endTime);
+}
+
 }
 }

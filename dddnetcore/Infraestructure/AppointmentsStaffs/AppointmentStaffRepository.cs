@@ -1,5 +1,6 @@
 using DDDSample1.Infrastructure.Shared;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using DDDSample1.Domain.Staffs;
 using System;
 using System.Linq;
@@ -20,56 +21,14 @@ namespace DDDSample1.Infrastructure.AppointmentsStaffs
             _context = context;
         }
 
-public async Task<bool> IsStaffAvailableAsync(StaffId staffId, DateTime startTime, DateTime endTime, Guid? excludedAppointmentId = null)
-{
-    // Obter o Staff pelo ID
-    var staff = await _context.Staffs
-        .Include(s => s.AppointmentTeam)
-        .ThenInclude(at => at.Appointment)
-        .ThenInclude(a => a.OperationRequest)
-        .Include(s => s.AvailabilitySlots)
-        .FirstOrDefaultAsync(s => s.Id == staffId);
 
-    if (staff == null)
+    public async Task<List<AppointmentStaff>> GetAppointmentsByStaffIdAsync(StaffId staffId)
     {
-        throw new NullReferenceException($"Staff not found: {staffId}");
+        return await _context.Set<AppointmentStaff>()
+            .Include(obj => obj.Appointment) // Inclui os detalhes do Appointment, se necessário
+            .Where(obj => obj.Staff.Id == staffId)
+            .ToListAsync();
     }
-
-    // Verificar conflitos com compromissos agendados
-    foreach (var appointmentStaff in staff.AppointmentTeam)
-    {
-        var appointment = appointmentStaff.Appointment;
-        var operationRequest = appointment.OperationRequest;
-
-        if (excludedAppointmentId.HasValue && appointment.Id.AsGuid() == excludedAppointmentId.Value)
-        {
-            continue; // Ignorar o compromisso excluído
-        }
-
-        var estimatedDuration = await _context.OperationTypes
-            .Where(ot => ot.Id == operationRequest.OperationTypeId)
-            .Select(ot => ot.EstimatedTimeDuration.Minutes)
-            .FirstOrDefaultAsync();
-
-        var appointmentEndTime = appointment.Date.Date.AddMinutes(estimatedDuration);
-
-        if (appointment.Date.Date < endTime && appointmentEndTime > startTime)
-        {
-            return false; // Conflito com outro compromisso
-        }
-    }
-
-    // Verificar disponibilidade nos AvailabilitySlots
-    var isAvailableInSlots = staff.AvailabilitySlots.Any(slot =>
-        slot.Start <= startTime && slot.End >= endTime);
-
-    if (!isAvailableInSlots)
-    {
-        return false; // Fora do horário de disponibilidade
-    }
-
-    return true; // Disponível
-}
 
 
         public async Task RemoveAsync(AppointmentStaff appointmentStaff)
@@ -78,6 +37,13 @@ public async Task<bool> IsStaffAvailableAsync(StaffId staffId, DateTime startTim
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task AddAsync(AppointmentStaff appointmentStaff)
+        {
+            _context.AppointmentsStaffs.Add(appointmentStaff);
+            await _context.SaveChangesAsync();
+}
+
 
     }
 }

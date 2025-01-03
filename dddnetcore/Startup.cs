@@ -43,6 +43,9 @@ using dddnetcore.Infraestructure.Appointments;
 using DDDSample1.Domain.Hospital;
 using DDDSample1.Domain.RoomTypes;
 using DDDSample1.Infraestructure.RoomTypes;
+using DDDSample1.Domain.AppointmentsStaffs;
+using dddnetcore.Infraestructure.AppointmentsStaffs;
+using DDDSample1.Infrastructure.AppointmentsStaffs;
 
 
 
@@ -199,6 +202,8 @@ public void ConfigureServices(IServiceCollection services)
 
             services.AddTransient<IRoomTypeRepository,RoomTypeRepository>();
             services.AddTransient<RoomTypeService>();
+
+            services.AddTransient<IAppointmentStaffRepository, AppointmentStaffRepository>(); 
 
         }
     }

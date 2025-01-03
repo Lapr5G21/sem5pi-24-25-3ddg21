@@ -9,6 +9,7 @@ namespace DDDSample1.Domain.OperationTypes
     {
         public Task<IEnumerable<OperationType>> SearchAsync(SearchOperationTypeDto searchDto);
         public Task<List<OperationType>> GetOperationTypesAsync();
+        Task<int> GetEstimatedDurationMinutesAsync(OperationTypeId operationTypeId);
 
     }
 }

@@ -47,7 +47,7 @@ namespace DDDSample1.Controllers{
             try{
                 var appointment = await _service.AddAsync(dto);
 
-                return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, appointment);
+                return StatusCode(201, appointment);
 
             }catch(BusinessRuleValidationException exception){
                 
