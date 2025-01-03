@@ -42,15 +42,12 @@ export default class MedicalRecordService implements IMedicalRecordService {
         return Result.fail<IMedicalRecordDTO>(`Error creating medical conditions: ${invalidConditions.errorValue()}`);
       }
 
-      const medicalConditionsID = medicalConditionsOrErrors
-        .filter((result) => result.isSuccess)
-        .map((result) => result.getValue());
+      const medicalConditionsID = medicalConditionsOrErrors.map((result) => result.getValue());
       
 
       const medicalRecordProps = {
         patientMedicalRecordNumber: PatientMedicalRecordNumber.create({
-          medicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber,
-        }).getValue(),
+          patientMedicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber,}).getValue(),
         allergiesId: allergiesID,
         medicalConditionsId: medicalConditionsID,
         notations: MedicalRecordNotations.create({ notations: medicalRecordDTO.notations,}).getValue(),
@@ -66,6 +63,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
       await this.medicalRecordRepo.save(medicalRecordResult);
 
       const medicalRecordDTOResult = MedicalRecordMap.toDTO(medicalRecordResult) as IMedicalRecordDTO;
+
       return Result.ok<IMedicalRecordDTO>(medicalRecordDTOResult);
     } catch (e) {
       console.error("Error creating medical record:", e);
@@ -76,7 +74,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
   public async getMedicalRecord(medicalRecordId: string): Promise<Result<IMedicalRecordDTO>> {
     try {
       const medicalRecord = await this.medicalRecordRepo.findByDomainId(medicalRecordId);
-
+      
       if (!medicalRecord) {
         return Result.fail<IMedicalRecordDTO>("Medical Record not found");
       }
@@ -92,7 +90,7 @@ export default class MedicalRecordService implements IMedicalRecordService {
   public async getByPatientMedicalRecordNumber(patientMedicalRecordNumber: string): Promise<Result<IMedicalRecordDTO>> {
     try {
       const medicalRecord = await this.medicalRecordRepo.findByPatientMedicalRecordNumber(patientMedicalRecordNumber);
-  
+
       if (!medicalRecord) {
         return Result.fail<IMedicalRecordDTO>('Medical record not found');
       }
@@ -108,8 +106,8 @@ export default class MedicalRecordService implements IMedicalRecordService {
   public async getAllMedicalRecords(): Promise<Result<IMedicalRecordDTO[]>> {
     try {
       const medicalRecords = await this.medicalRecordRepo.getAll();
-
-      const medicalRecordsDTO = medicalRecords.map((medicalRecord) =>
+      console.log("absvdhsgdasd", medicalRecords);
+      const medicalRecordsDTO = medicalRecords.map(medicalRecord =>
         MedicalRecordMap.toDTO(medicalRecord) as IMedicalRecordDTO
       );
 
@@ -135,7 +133,7 @@ public async updateMedicalRecord(medicalRecordDTO: IMedicalRecordDTO): Promise<R
 
     const patientMedicalRecordNumberOrError = 
     medicalRecordDTOOld.patientMedicalRecordNumber !== medicalRecordDTO.patientMedicalRecordNumber
-        ? PatientMedicalRecordNumber.create({ medicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber })
+        ? PatientMedicalRecordNumber.create({ patientMedicalRecordNumber: medicalRecordDTO.patientMedicalRecordNumber })
         : Result.ok<PatientMedicalRecordNumber>(medicalRecord.props.patientMedicalRecordNumber);
 
         const allergiesInstances = MedicalRecordAllergies.createAllergies(medicalRecordDTO.allergiesId);

@@ -21,6 +21,7 @@ export default class MedicalRecordController implements IMedicalRecordController
         return res.status(404).json({ message: medicalRecordOrError.errorValue() });
       }
 
+      console.log("Medical record or error", medicalRecordOrError);
       return res.status(200).json(medicalRecordOrError.getValue());
     } catch (err) {
       console.error("Error retrieving medical record:", err);
