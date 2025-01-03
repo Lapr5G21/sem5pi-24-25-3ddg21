@@ -23,8 +23,8 @@ export class MedicalRecordService {
       return this.http.get<any>(`${this.apiUrl}/allergies/${allergyId}`);
     }
 
-    getMedicalConditionById(medicalConditionId: string): Observable<MedicalCondition> {
-      return this.http.get<MedicalCondition>(`/api/medicalConditions/${medicalConditionId}`);
+    getMedicalConditionById(medicalConditionId: string): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/medicalConditions/${medicalConditionId}`);
     }
     
     getMedicalRecordByPatientMedicalRecordNumber(patientMedicalRecordNumber: string): Observable<any> {
