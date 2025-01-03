@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Appointments;
 using DDDSample1.Domain.OperationTypes;
+using DDDSample1.Domain.RoomTypes;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.OperationTypes;
 using FluentAssertions;
@@ -118,8 +119,60 @@ public class HospitalModelService
  
       return hospitalMap;
     }
+
+
+  public async Task<AppointmentDto> GetCurrentAppointmentsByRoomIdAsync(SurgeryRoomNumber roomId){
+    var appointments = await _appointmentRepository.GetAppointmentsBySurgeryRoom(roomId);
+    AppointmentDto currentAppointmentDto = null;
+    var currentTime = new DateTimeOffset(DateTime.Now).ToUnixTimeMilliseconds();
+
+    foreach (Appointment appointment in appointments){
+          OperationType operationType =  await _operationTypeRepository.GetByIdAsync(appointment.OperationRequest.OperationTypeId);
+          var operationStartTime = new DateTimeOffset(appointment.Date.Date).ToUnixTimeMilliseconds();
+          var operationEndTime = new DateTimeOffset(appointment.Date.Date).AddMinutes(operationType.EstimatedTimeDuration.Minutes).ToUnixTimeMilliseconds();
+
+          if (currentTime >= operationStartTime && currentTime <= operationEndTime)
+          {            
+            currentAppointmentDto = new AppointmentDto{
+              Id = appointment.Id.AsGuid(),
+                    SurgeryRoomDto = new SurgeryRoomDto
+                    {
+                        Id= appointment.Room.Id.Value,
+                        RoomType = new RoomTypeDto{Code = appointment.Room.RoomType.Id.Value, Designation = appointment.Room.RoomType.Designation.Value, Description = appointment.Room.RoomType.Description?.Value, IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery},
+                        RoomCapacity = appointment.Room.RoomCapacity.Capacity,
+                        Status = appointment.Room.Status.ToString(),
+                        MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
+                        Equipment = appointment.Room.Equipment.Equipment
+                    },
+                    OperationRequestDto = new OperationRequestWithAllDataDto
+                    {
+                        Id = appointment.OperationRequest.Id.AsGuid(),
+                        DoctorId = appointment.OperationRequest.StaffId.AsString(),
+                        OperationType = new Appointments.OperationTypeDto
+                        {
+                            Id = operationType.Id.AsGuid(),
+                            Name = operationType.Name.Name,
+                            EstimatedDuration = operationType.EstimatedTimeDuration.Minutes,
+                            SurgeryTime = operationType.SurgeryTime.Minutes,
+                            AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
+                            CleaningTime = operationType.CleaningTime.Minutes
+                        },
+                        MedicalRecordNumber = appointment.OperationRequest.PatientMedicalRecordNumber.Value,
+                        Deadline = appointment.OperationRequest.DeadlineDate.Value.ToString("yyyy-MM-dd"),
+                        Priority = appointment.OperationRequest.PriorityLevel.ToString(),
+                        Status = appointment.OperationRequest.Status.ToString()
+                    },
+                    Status = appointment.Status.ToString(),
+                    DateAndTime = appointment.Date.Date
+                };
+          }
+    }
+
+    return currentAppointmentDto;
   }
 }
+}
+
 
 
 

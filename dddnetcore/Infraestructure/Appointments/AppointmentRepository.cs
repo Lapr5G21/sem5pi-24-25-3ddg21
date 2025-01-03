@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Appointments;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Staffs;
+using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure;
 using DDDSample1.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -67,5 +69,13 @@ namespace dddnetcore.Infraestructure.Appointments
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<Appointment>> GetAppointmentsBySurgeryRoom(SurgeryRoomNumber roomId)
+        {
+            return await _context.Appointments
+                .Include(a => a.OperationRequest)
+                .Include(a => a.Room)
+                .Where(a => a.Room.Id == roomId)
+                .ToListAsync();
+        }
     }
 }

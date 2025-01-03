@@ -3,6 +3,7 @@ import Ground from "./ground.js";
 import Wall from "./wall.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import TWEEN, { Group, Tween } from '@tweenjs/tween.js';
+
 /*
  * parameters = {
  *  url: String,
@@ -411,23 +412,96 @@ export default class Maze {
         this.overlayVisible = !this.overlayVisible;
         const overlayElement = document.getElementById("overlay");
         if (this.overlayVisible) {
+            overlayElement.style.display = "none";
+        
+        setTimeout(() => {
             overlayElement.style.display = "block";  
-            this.updateOverlayContent(this.selectedRoom);
+            this.fetchRoomInfo(this.clickedObject);  
+        }, 500);
         } else {
             overlayElement.style.display = "none";  // Esconde o overlay
         }
     }
     
 
-    updateOverlayContent(selectedRoom) {
-    const roomInfo = document.getElementById('room-info');
-    if (roomInfo && selectedRoom) {
-        roomInfo.textContent = `You are in room: ${selectedRoom}`; // Exemplo de conteúdo
+    updateOverlayContent(data) {
+        console.log(data);
+        const overlayContent = document.getElementById("overlay-content");
+        let contentHTML = "";
+    
+        if (data.id && data.equipment && data.roomCapacity && data.status && data.maintenanceSlots) {
+            contentHTML += `
+                <h2>Informações da Sala</h2>
+                <p><strong>ID:</strong> ${data.id}</p>
+                <p><strong>Equipment:</strong> ${data.equipment}</p>
+                <p><strong>Capacity:</strong> ${data.roomCapacity}</p>
+                <p><strong>Room Type:</strong> ${data.roomType.designation}</p>
+                <p><strong>Maintenance Slots:</strong> ${data.maintenanceSlots}</p>
+                <p><strong>Status:</strong> ${data.status}</p>
+            `;
+        }
+    
+        if (data.patientName && data.doctorName) {
+            contentHTML += `
+                <h2>Informações do Appointment</h2>
+                <p><strong>Paciente:</strong> ${data.patientName}</p>
+                <p><strong>Médico:</strong> ${data.doctorName}</p>
+                <p><strong>Horário:</strong> ${data.startTime} - ${data.endTime}</p>
+                <p><strong>Status:</strong> ${data.status}</p>
+            `;
+        }
+    
+        if (contentHTML === "") {
+            contentHTML = `<p>Nenhuma informação disponível para exibição.</p>`;
+        }
+    
+        overlayContent.innerHTML = contentHTML;
+        this.showOverlay();
     }
-    }
+    
 
-    fetchRoomInfo(selectedRoom){
-        
+    async fetchRoomInfo() {
+        const intersects = this.raycaster.intersectObjects(this.scene3D.children, true);
+        const clickedObject = intersects[0].object;
+        console.log("Object clicked:", clickedObject.name);
+        let surgeryRoomId = "";
+    
+        // Identificar o ID da Sala
+        if (clickedObject.name.includes("2_2")) {
+            surgeryRoomId = "SR001";
+        } else if (clickedObject.name.includes("2_8")) {
+            surgeryRoomId = "SR002";
+        } else if (clickedObject.name.includes("8_2")) {
+            surgeryRoomId = "SR003";
+        } else if (clickedObject.name.includes("8_8")) {
+            surgeryRoomId = "SR004";
+        }
+    
+        try {
+            // Buscar informações da Sala
+            if (clickedObject.name.includes("Bed")) {
+                const roomResponse = await fetch(`https://localhost:5001/api/surgeryRooms/${surgeryRoomId}`);
+                const roomData = await roomResponse.json();
+                this.updateOverlayContent(roomData);
+            } 
+            // Buscar informações do Appointment para a Sala
+            else if (clickedObject.name.includes("Patient")) {
+                const appointmentResponse = await fetch(`http://localhost:5000/api/hospitalModel/currentAppointment/${surgeryRoomId}`);
+                const appointmentData = await appointmentResponse.json();
+                this.updateOverlayContent(appointmentData);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar informações:", error);
+        }
+    }
+    
+    showOverlay() {
+        const overlayElement = document.getElementById("overlay");
+        if (this.overlayVisible) {
+            overlayElement.style.display = "block";  // Exibe o overlay
+        } else {
+            overlayElement.style.display = "none";   // Esconde o overlay
+        }
     }
 
     // Convert cell [row, column] coordinates to cartesian (x, y, z) coordinates
