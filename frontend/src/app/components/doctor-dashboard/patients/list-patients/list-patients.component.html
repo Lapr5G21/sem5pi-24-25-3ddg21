@@ -134,10 +134,7 @@
             {{ patient.emergencyContact || 'Not specified' }}
           </div>
 
-<!-- Diálogo para editar as informações do Paciente -->
-
-
-        </div>
+      </div>
       </p-scrollPanel>
     </ng-template>
   </p-dataView>
@@ -154,7 +151,7 @@
                 <div class="col" style="flex: 2;">Patient Medical Record Number</div>
                 <div class="col" style="flex: 2;">Allergies</div>
                 <div class="col" style="flex: 2;">Medical Conditions</div>
-                <div class="col" style="flex: 4;">Notations</div>
+                <div class="col" style="flex: 2;">Notations</div>
                 <div class="col" style="flex: 1;">Actions</div>
               </div>
               
@@ -166,7 +163,9 @@
                 <div class="col text-container" style="flex: 2;">
                   <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showMedicalConditions(medicalRecord.medicalConditionsId)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
                 </div>
-                <div class="col text-container" style="flex: 4;">{{ medicalRecord.notations || 'Not specified' }}</div>
+                <div class="col text-container" style="flex: 2;">
+                  <p-button icon="pi pi-eye" [outlined]="true" label="View" (click)="showNotations(medicalRecord.notations)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
+                </div>
         
                 <div class="col" style="flex: 1;">       
                     <p-button icon="pi pi-pencil" [outlined]="true" (click)="openEditDialog(medicalRecord)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
@@ -178,6 +177,16 @@
           </ng-template>
         </p-dataView>
         
+          <!-- Notations -->
+           <p-dialog [(visible)]="notationsDialogVisible" header="Notations" [modal]="true" [responsive]="true" [style]="{ width: '50rem', height: 'auto', maxHeight: '80vh' }">
+            <div class="card p-3">
+              <div class="description-box" style="max-height: 70vh; overflow-y: auto; text-align: left;">
+                <p class="text-lg font-medium" style="word-wrap: break-word; white-space: pre-line;">
+                  {{ selectedNotations || 'No notations available.' }}
+                </p>
+              </div>
+            </div>
+          </p-dialog>
         <!-- Edit medical record dialogue -->
         <p-dialog header="Edit Medical Record Information" [(visible)]="editDialogMRVisible" [responsive]="true" [style]="{ width: '50%' }">
           <div class="card">
@@ -228,15 +237,34 @@
             [style]="{ width: '40rem', height: '50rem' }">
             
             <div class="card">
-              <!-- Verifica se há alergias para exibir -->
               <ng-container *ngIf="allergies && allergies.length > 0; else noAllergies">
-                <p-dataView #dv [value]="allergies" [rows]="10" [paginator]="true">
+                <p-dataView #dv [value]="filteredAllergies" [rows]="10" [paginator]="true">
+                  <ng-template pTemplate="header">
+                    <div class="flex justify-between mt-2 mb-2">
+                      <div class="flex gap-4">
+              
+                        <p-floatLabel class="flex-1">
+                          <input pInputText id="allergyCodeFilter" [(ngModel)]="allergyCodeFilter" placeholder="Search by code" class="p-inputtext-sm" />
+                          <label for="allergyCodeFilter">Code</label>
+                        </p-floatLabel>
+                        
+                        <p-floatLabel class="flex-1">
+                            <input pInputText id="allergyNameFilter" [(ngModel)]="allergyNameFilter" placeholder="Search by name" class="p-inputtext-sm" />
+                            <label for="allergyNameFilter">Name</label>
+                          </p-floatLabel>
+             
+                        <div class="flex items-end">
+                          <button (click)="onSearchAllergies()" class="p-button p-button-sm p-button-primary">Search</button>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
                   <ng-template pTemplate="list" let-slot>
                     <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
                       <div class="col" style="flex: 2;">Code</div>
                       <div class="col" style="flex: 2;">Name</div>
                     </div>
-                    <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let allergy of allergies; let first = first">
+                    <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let allergy of filteredAllergies; let first = first">
                       <div class="col font-bold text-900" style="flex: 2;">{{ allergy.code || 'Not specified' }}</div>
                       <div class="col" style="flex: 2;">{{ allergy.name || 'Not specified' }}</div>
                     </div>
@@ -244,12 +272,11 @@
                 </p-dataView>
               </ng-container>
         
-              <!-- Mensagem caso não haja alergias -->
               <ng-template #noAllergies>
                 <p class="text-center">No allergies found.</p>
               </ng-template>
         
-              <!-- Seção para adicionar alergias -->
+              <!-- Add Allergies -->
               <div class="mt-4">
                 <label for="allergyMultiSelect" class="p-text-secondary block mb-2">Add Allergies:</label>
                 <div class="card flex justify-content-center mb-3">
@@ -265,7 +292,7 @@
                 </div>
                 <div class="flex justify-content-end">
                   <p-button 
-                    label="Add Allergies" 
+                    label="Add" 
                     icon="pi pi-check" 
                     class="p-button-primary"
                     (click)="addSelectedAllergies()">
@@ -284,19 +311,36 @@
             [(visible)]="medicalConditionsDialogVisible"
             modal="true"
             [responsive]="true"
-            [style]="{ width: '40rem', height: '50rem' }">
-        
+            [style]="{ width: '40rem', height: '50rem' }">      
             <div class="card">
         
-              <!-- Verifica se há condições médicas para exibir -->
               <ng-container *ngIf="medicalConditions && medicalConditions.length > 0; else noMedicalConditions">
-                <p-dataView #dv [value]="medicalConditions" [rows]="10" [paginator]="true">
+                <p-dataView #dv [value]="filteredMedicalConditions" [rows]="10" [paginator]="true">
+                  <ng-template pTemplate="header">
+                    <div class="flex justify-between mt-2 mb-2">
+                      <div class="flex gap-4">
+                        <p-floatLabel class="flex-1">
+                          <input pInputText id="medicalConditionCodeFilter" [(ngModel)]="medicalConditionCodeFilter" placeholder="Search by code" class="p-inputtext-sm" />
+                          <label for="medicalConditionCodeFilter">Code</label>
+                        </p-floatLabel>
+                        
+                        <p-floatLabel class="flex-1">
+                            <input pInputText id="medicalConditionNameFilter" [(ngModel)]="medicalConditionNameFilter" placeholder="Search by name" class="p-inputtext-sm" />
+                            <label for="medicalConditionNameFilter">Name</label>
+                          </p-floatLabel>
+             
+                        <div class="flex items-end">
+                          <button (click)="onSearchMedicalConditions()" class="p-button p-button-sm p-button-primary">Search</button>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
                   <ng-template pTemplate="list" let-slot>
                     <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
                       <div class="col" style="flex: 2;">Code</div>
                       <div class="col" style="flex: 2;">Name</div>
                     </div>
-                    <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let medicalCondition of medicalConditions; let first = first">
+                    <div class="grid grid-nogutter text-center border-top-1 surface-border p-2" *ngFor="let medicalCondition of filteredMedicalConditions; let first = first">
                       <div class="col font-bold text-900" style="flex: 2;">{{ medicalCondition.code || 'Not specified' }}</div>
                       <div class="col" style="flex: 2;">{{ medicalCondition.name || 'Not specified' }}</div>
                     </div>
@@ -304,12 +348,11 @@
                 </p-dataView>
               </ng-container>
         
-              <!-- Mensagem caso não haja condições médicas -->
               <ng-template #noMedicalConditions>
                 <p class="text-center">No medical conditions found.</p>
               </ng-template>
         
-              <!-- Seção para adicionar condições médicas -->
+              <!-- Add Medical Conditions -->
               <div class="mt-4">
                 <label for="medicalConditionMultiSelect" class="p-text-secondary block mb-2">Add Medical Conditions:</label>
                 <div class="card flex justify-content-center mb-3">
@@ -325,7 +368,7 @@
                 </div>
                 <div class="flex justify-content-end">
                   <p-button
-                    label="Add Medical Conditions"
+                    label="Add"
                     icon="pi pi-check"
                     class="p-button-primary"
                     (click)="addSelectedMedicalConditions()">

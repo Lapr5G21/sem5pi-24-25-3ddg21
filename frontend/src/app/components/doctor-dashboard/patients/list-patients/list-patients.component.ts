@@ -65,6 +65,10 @@ export class ListPatientsComponent implements OnInit {
     phoneNumberFilter: string = '';
     mrnFilter: string = '';
     statusFilter: boolean = true;
+    allergyNameFilter: string = '';
+    allergyCodeFilter: string = '';
+    medicalConditionNameFilter: string = '';
+    medicalConditionCodeFilter: string = '';
 
     medicalHistoryDialogVisible: boolean = false;
     selectedMedicalHistory: string = '';
@@ -72,9 +76,10 @@ export class ListPatientsComponent implements OnInit {
     editDialogVisible: boolean = false;
     selectedPatient: any = {};
 
-    medicalRecordDialogVisible: boolean = false;
-  
-     medicalRecord: any = {};
+    medicalRecordDialogVisible: boolean = false; 
+    medicalRecord: any = {};
+    notationsDialogVisible: boolean = false;
+    selectedNotations = "";
     
       editDialogMRVisible: boolean = false;
       selectedMedicalRecord: any = {}; 
@@ -82,14 +87,15 @@ export class ListPatientsComponent implements OnInit {
     
       allAllergies: any[] = [];
       allergies: any[] = [];
+      filteredAllergies: any[] = [];
+      availableAllergies: any[] = [];
+      selectedAllergiesId: any[] = [];
       allergiesDialogVisible: boolean = false; 
     
       allMedicalConditions: any[] = [];
       medicalConditions: any[] = [];
+      filteredMedicalConditions: any[] = [];
       medicalConditionsDialogVisible: boolean = false; 
-
-      availableAllergies: any[] = [];
-      selectedAllergiesId: any[] = [];
       availableMedicalConditions: any[] = [];
       selectedMedicalConditionsId: any[] = [];
 
@@ -164,6 +170,7 @@ export class ListPatientsComponent implements OnInit {
         console.warn('No allergy IDs provided.');
         this.allergies = [];
         this.availableAllergies = [];
+        this.filteredAllergies = []; // Certificar que filteredAllergies é vazio neste caso
         return;
       }
     
@@ -178,9 +185,10 @@ export class ListPatientsComponent implements OnInit {
           if (allergyIds.length === 0) {
             // Se não há IDs de alergias, todas as alergias estão disponíveis
             this.availableAllergies = allAllergies;
+            this.filteredAllergies = []; // Garantir que filteredAllergies seja vazio neste caso
           } else {
             // Carregar as alergias associadas ao registro médico
-            const allergyObservables = allergyIds.map((id) => 
+            const allergyObservables = allergyIds.map((id) =>
               this.medicalRecordService.getAllergyById(id)
             );
     
@@ -188,6 +196,10 @@ export class ListPatientsComponent implements OnInit {
               (allergies) => {
                 this.allergies = allergies;
                 console.log('Allergies loaded:', this.allergies);
+    
+                // Atribuir as alergias carregadas ao filteredAllergies
+                this.filteredAllergies = [...this.allergies];
+                console.log('Filtered Allergies:', this.filteredAllergies);
     
                 // Filtrar as alergias disponíveis (as que não estão associadas)
                 this.availableAllergies = allAllergies.filter(
@@ -201,6 +213,7 @@ export class ListPatientsComponent implements OnInit {
               (error) => {
                 console.error('Error loading allergies by ID:', error);
                 this.availableAllergies = allAllergies;  // Se erro na busca, mostrar todas as alergias disponíveis
+                this.filteredAllergies = []; // Garantir que filteredAllergies seja vazio neste caso
               }
             );
           }
@@ -208,9 +221,12 @@ export class ListPatientsComponent implements OnInit {
         (error) => {
           console.error('Error loading all allergies:', error);
           this.availableAllergies = [];  // Caso erro ao carregar todas as alergias
+          this.filteredAllergies = []; // Garantir que filteredAllergies seja vazio neste caso
         }
       );
     }
+    
+    
     
     showMedicalConditions(medicalConditionsIds: string[]) {
       this.loadMedicalConditions(medicalConditionsIds);
@@ -219,35 +235,41 @@ export class ListPatientsComponent implements OnInit {
       this.medicalConditionsDialogVisible = true;
     }
   
-    loadMedicalConditions(medicalConditionsIds: string[]) {
-      if (!medicalConditionsIds || medicalConditionsIds.length === 0) {
-        console.warn('No medical conditions IDs provided.');
+    loadMedicalConditions(medicalConditionIds: string[]) {
+      if (!medicalConditionIds || medicalConditionIds.length === 0) {
+        console.warn('No medical condition IDs provided.');
         this.medicalConditions = [];
         this.availableMedicalConditions = [];
+        this.filteredMedicalConditions = []; // Certificar que filteredMedicalConditions é vazio neste caso
         return;
       }
     
       this.medicalConditions = [];
       this.availableMedicalConditions = [];
     
-      // Carregar todas as condições médicas disponíveis
+      // Carregar todas as condições médicas existentes
       this.medicalConditionService.getMedicalConditions().subscribe(
         (allMedicalConditions) => {
           console.log('All medical conditions loaded:', allMedicalConditions);
     
-          if (medicalConditionsIds.length === 0) {
-            // Se não há IDs de condições médicas, todas as condições estão disponíveis
+          if (medicalConditionIds.length === 0) {
+            // Se não há IDs de condições médicas, todas estão disponíveis
             this.availableMedicalConditions = allMedicalConditions;
+            this.filteredMedicalConditions = []; // Garantir que filteredMedicalConditions seja vazio neste caso
           } else {
             // Carregar as condições médicas associadas ao registro médico
-            const conditionObservables = medicalConditionsIds.map((id) => 
+            const medicalConditionObservables = medicalConditionIds.map((id) =>
               this.medicalRecordService.getMedicalConditionById(id)
             );
     
-            forkJoin(conditionObservables).subscribe(
-              (conditions) => {
-                this.medicalConditions = conditions;
+            forkJoin(medicalConditionObservables).subscribe(
+              (medicalConditions) => {
+                this.medicalConditions = medicalConditions;
                 console.log('Medical conditions loaded:', this.medicalConditions);
+    
+                // Atribuir as condições médicas carregadas ao filteredMedicalConditions
+                this.filteredMedicalConditions = [...this.medicalConditions];
+                console.log('Filtered Medical Conditions:', this.filteredMedicalConditions);
     
                 // Filtrar as condições médicas disponíveis (as que não estão associadas)
                 this.availableMedicalConditions = allMedicalConditions.filter(
@@ -256,21 +278,24 @@ export class ListPatientsComponent implements OnInit {
                   )
                 );
     
-                console.log('availableMedicalConditions:', this.availableMedicalConditions);
+                console.log('Available Medical Conditions:', this.availableMedicalConditions);
               },
               (error) => {
                 console.error('Error loading medical conditions by ID:', error);
-                this.availableMedicalConditions = allMedicalConditions;  // Se erro na busca, mostrar todas as condições disponíveis
+                this.availableMedicalConditions = allMedicalConditions; // Se erro na busca, mostrar todas as condições médicas disponíveis
+                this.filteredMedicalConditions = []; // Garantir que filteredMedicalConditions seja vazio neste caso
               }
             );
           }
         },
         (error) => {
           console.error('Error loading all medical conditions:', error);
-          this.availableMedicalConditions = [];  // Caso erro ao carregar todas as condições
+          this.availableMedicalConditions = []; // Caso erro ao carregar todas as condições médicas
+          this.filteredMedicalConditions = []; // Garantir que filteredMedicalConditions seja vazio neste caso
         }
       );
     }
+    
     
     
      saveMedicalRecordInfo(selectedMedicalRecord: MedicalRecord) {
@@ -348,6 +373,10 @@ addSelectedAllergies() {
         code: selectedAllergy.code || 'Unknown',
         name: selectedAllergy.name || 'Unnamed Allergy'
       });
+      this.filteredAllergies.push({
+        code: selectedAllergy.code || 'Unknown',
+        name: selectedAllergy.name || 'Unnamed Allergy'
+      });
     }
   });
   // Limpar seleção após adicionar
@@ -362,9 +391,44 @@ addSelectedMedicalConditions() {
         code: selectedMedicalCondition.code || 'Unknown',
         name: selectedMedicalCondition.name || 'Unnamed Allergy'
       });
+      this.filteredMedicalConditions.push({
+        code: selectedMedicalCondition.code || 'Unknown',
+        name: selectedMedicalCondition.name || 'Unnamed Allergy'
+      });
     }
   });
   this.selectedMedicalConditionsId = [];
 }
 
+showNotations(notations: string): void {
+  this.notationsDialogVisible = true;
+  this.selectedNotations = notations;
+}
+
+onSearchAllergies(): void {
+  this.filteredAllergies = this.allergies.filter(item => {
+    const matchesNameAllergy = this.allergyNameFilter
+      ? item.name.toLowerCase().startsWith(this.allergyNameFilter.toLowerCase())
+      : true;
+    const matchesCodeAllergy = this.allergyCodeFilter
+      ? item.code.toLowerCase().startsWith(this.allergyCodeFilter.toLowerCase())
+      : true;
+
+    return matchesNameAllergy && matchesCodeAllergy;
+  });
+
+}
+
+onSearchMedicalConditions(): void {
+  this.filteredMedicalConditions = this.medicalConditions.filter(item => {
+    const matchesNameMedicalCondition = this.medicalConditionNameFilter
+      ? item.name.toLowerCase().startsWith(this.medicalConditionNameFilter.toLowerCase())
+      : true;
+    const matchesCodeMedicalCondition = this.medicalConditionCodeFilter
+      ? item.code.toLowerCase().startsWith(this.medicalConditionCodeFilter.toLowerCase())
+      : true;
+
+    return matchesNameMedicalCondition && matchesCodeMedicalCondition;
+  });
+}
 }

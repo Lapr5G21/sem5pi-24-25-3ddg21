@@ -133,6 +133,7 @@ export class DoctorDashboardComponent implements OnInit {
     this.showOperationRequestsList = false; 
     this.showHospitalModel = false;
     this.showMedicalRecordsList = false;
+    this.showPatientsList = false;
     this.router.navigate(['/doctorDashboard/home']); 
   }
 
