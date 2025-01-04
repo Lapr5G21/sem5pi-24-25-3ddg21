@@ -380,32 +380,37 @@ public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
     appointment.ChangeDateAndTime(new AppointmentDate(DateTime.Parse(dto.Date)));
 
     // Update team
-    var currentTeam = appointment.AppointmentTeam.Select(a => a.Staff.Id.ToString()).ToList();
-    var newTeam = dto.TeamIds.Except(currentTeam).ToList();
-    var removedTeam = currentTeam.Except(dto.TeamIds).ToList();
+    // Get current staff associated with the appointment
+    var currentAppointmentStaffs = await _appointmentStaffRepo.GetStaffsByAppointmentIdAsync(appointment.Id);
+    var currentStaffIds = currentAppointmentStaffs.Select(a => a.Staff.Id.AsString()).ToList();
 
-    foreach (var staffId in newTeam)
+    // Synchronize team
+    foreach (var staffId in dto.TeamIds)
     {
-        var staff = await _staffRepo.GetByIdAsync(new StaffId(staffId)) ??
-                    throw new NullReferenceException("Staff not found: " + staffId);
-
-        var appointmentStaff = new AppointmentStaff(appointment, staff);
-        await _appointmentStaffRepo.AddAsync(appointmentStaff);
-    }
-
-    foreach (var staffId in removedTeam)
-    {
-        var staff = await _staffRepo.GetByIdAsync(new StaffId(staffId));
-        if (staff != null)
+        if (!currentStaffIds.Contains(staffId))
         {
-            var appointmentStaff = appointment.AppointmentTeam.FirstOrDefault(a => a.Staff.Id.ToString() == staffId);
-            if (appointmentStaff != null)
-            {
-                _appointmentStaffRepo.Remove(appointmentStaff);
-            }
+            // Add new staff
+            var staff = await _staffRepo.GetByIdAsync(new StaffId(staffId)) ??
+                        throw new NullReferenceException("Staff not found: " + staffId);
+
+            var newAppointmentStaff = new AppointmentStaff(appointment, staff);
+            await _appointmentStaffRepo.AddAsync(newAppointmentStaff);
         }
     }
 
+    foreach (var currentStaffId in currentStaffIds)
+    {
+        if (!dto.TeamIds.Contains(currentStaffId))
+        {
+            // Remove old staff
+            var appointmentStaffToRemove = currentAppointmentStaffs.FirstOrDefault(a => a.Staff.Id.AsString() == currentStaffId);
+            if (appointmentStaffToRemove != null)
+            {
+                _appointmentStaffRepo.Remove(appointmentStaffToRemove);
+            }
+        }
+    }
+ 
     await _repo.UpdateAsync(appointment);
     await _unitOfWork.CommitAsync();
 

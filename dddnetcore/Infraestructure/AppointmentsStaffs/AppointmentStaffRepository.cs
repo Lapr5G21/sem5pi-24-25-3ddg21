@@ -30,5 +30,32 @@ namespace DDDSample1.Infrastructure.AppointmentsStaffs
             .ToListAsync();
     }
 
+        public async Task<AppointmentStaff> UpdateAsync(AppointmentStaff appointmentStaff)
+        {
+            _context.AppointmentsStaffs.Update(appointmentStaff);
+            
+            await _context.SaveChangesAsync();
+
+            return appointmentStaff;
+        }
+
+        public async Task RemoveAsync(AppointmentStaff appointmentStaff)
+        {
+            _context.AppointmentsStaffs.Remove(appointmentStaff);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<AppointmentStaff>> GetStaffsByAppointmentIdAsync(AppointmentId appointmentId)
+        {
+            return await _context.Set<AppointmentStaff>()
+                .Include(a => a.Staff)
+                .Where(a => a.Appointment.Id == appointmentId)
+                .ToListAsync();
+        }
+
+
+
+
     }
 }
