@@ -1,6 +1,6 @@
 <div class="card flex justify-content-center">
     <p-dialog header="Create Medical Record" [(visible)]="visible" [modal]="true"
-        [style]="{ width: '50rem', height: 'auto' }">
+        [style]="{ width: '60rem', height: '40rem' }">
 
         <!-- Select Patient -->
         <div class="mb-4">
@@ -54,6 +54,21 @@
                     [style]="{width:'25rem'}"
                     [ngModelOptions]="{standalone: true}">
                 </p-multiSelect>
+            </div>
+        </div>
+
+        <!-- Input for Notations -->
+        <div class="mb-4">
+            <label for="notationsInput" class="p-text-secondary block">Add Notations:</label>
+            <div class="card flex justify-content-center">
+                <textarea 
+                    id="notationsInput" 
+                    [(ngModel)]="notations" 
+                    rows="3" 
+                    placeholder="Enter observations or comments" 
+                    [style]="{width: '25rem'}"
+                    [ngModelOptions]="{standalone: true}">
+                </textarea>
             </div>
         </div>
 

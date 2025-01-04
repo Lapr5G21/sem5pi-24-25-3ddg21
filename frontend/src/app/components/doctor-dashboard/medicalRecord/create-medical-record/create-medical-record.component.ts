@@ -46,6 +46,8 @@ export class CreateMedicalRecordComponent {
   selectedMedicalConditionsId: any[] = [];
   selectedAllergiesId: any[] = [];
 
+  notations: string = "";
+
   constructor(
     private medicalRecordService: MedicalRecordService,
     private operationRequestService: OperationRequestService,
@@ -120,46 +122,52 @@ export class CreateMedicalRecordComponent {
     console.log('Patient:', this.selectedPatient);
     console.log('Allergies:', this.selectedAllergies);
     console.log('Medical Conditions:', this.selectedMedicalConditions);
+    console.log('Notations:', this.notations); // Log das notations
 
+    // Verificar se o paciente foi selecionado
     if (!this.selectedPatient) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'The patient field is required!'
-      });
-      console.error('The patient field is required!');
-      return;
+        this.messageService.add({
+            severity: 'warn',
+            summary: 'Warning',
+            detail: 'The patient field is required!'
+        });
+        console.error('The patient field is required!');
+        return;
     }
 
+    // Montar o objeto do registro médico
     const medicalRecord = {
-      patientMedicalRecordNumber: this.selectedPatient.value,
-      allergiesId: this.selectedAllergiesId.map((allergy) => allergy.value),
-      medicalConditionsId: this.selectedMedicalConditionsId.map((condition) => condition.value)
+        patientMedicalRecordNumber: this.selectedPatient.value,
+        allergiesId: this.selectedAllergiesId.map((allergy) => allergy.value),
+        medicalConditionsId: this.selectedMedicalConditionsId.map((condition) => condition.value),
+        notations: this.notations
     };
 
     console.log('Payload:', medicalRecord);
 
+    // Salvar o registro médico
     this.medicalRecordService.saveMedicalRecord(medicalRecord).subscribe(
-      () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Medical Record Successfully Saved!'
-        });
-        console.log('Medical record saved successfully!');
-        this.resetForm();
-        this.visible = false;
-      },
-      (error) => {
-        console.error('Error saving medical record', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'The medical record could not be saved!'
-        });
-      }
+        () => {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Medical Record Successfully Saved!'
+            });
+            console.log('Medical record saved successfully!');
+            this.resetForm();
+            this.visible = false;
+        },
+        (error) => {
+            console.error('Error saving medical record', error);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'The medical record could not be saved!'
+            });
+        }
     );
-  }
+}
+
 
   isFormValid(): boolean {
     return this.selectedPatient !== null;
