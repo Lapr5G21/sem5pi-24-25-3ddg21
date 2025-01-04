@@ -12,6 +12,25 @@ export class Appointment {
     ) {}
 }
 
+export class CreatingAppointmentDto {
+    constructor(
+    public SurgeryRoomId: string, // ID da sala de cirurgia
+    public OperationRequestId: string, // ID da requisição de operação
+    public Date: string, // Data do agendamento
+    public TeamIds: string[] // IDs da equipe
+) {}
+  }
+  
+  export class UpdateAppointmentDto {
+    constructor(
+    public Id: string, // ID do agendamento
+    public SurgeryRoomId: string, // ID da sala de cirurgia
+    public Date: string, // Data do agendamento
+    public TeamIds: string[] // IDs da equipe
+) {}
+  }
+  
+
 // DTO completo para OperationRequestWithAllData
 export class OperationRequestWithAllDataDto {
     constructor(
