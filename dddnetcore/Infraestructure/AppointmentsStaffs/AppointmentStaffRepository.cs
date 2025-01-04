@@ -25,25 +25,10 @@ namespace DDDSample1.Infrastructure.AppointmentsStaffs
     public async Task<List<AppointmentStaff>> GetAppointmentsByStaffIdAsync(StaffId staffId)
     {
         return await _context.Set<AppointmentStaff>()
-            .Include(obj => obj.Appointment) // Inclui os detalhes do Appointment, se necessário
+            .Include(obj => obj.Appointment)
             .Where(obj => obj.Staff.Id == staffId)
             .ToListAsync();
     }
-
-
-        public async Task RemoveAsync(AppointmentStaff appointmentStaff)
-        {
-            _context.AppointmentsStaffs.Remove(appointmentStaff);
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task AddAsync(AppointmentStaff appointmentStaff)
-        {
-            _context.AppointmentsStaffs.Add(appointmentStaff);
-            await _context.SaveChangesAsync();
-}
-
 
     }
 }

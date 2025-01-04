@@ -27,7 +27,7 @@ namespace dddnetcore.Controllers
         }
 
         //GET: api/hospitalModel/currentAppointment
-        [HttpGet("/currentAppointment/{surgeryRoomId}")]
+        [HttpGet("currentAppointment/{surgeryRoomId}")]
         public async Task<IActionResult> GetCurrentAppointment(string surgeryRoomId)
         {
             if (string.IsNullOrWhiteSpace(surgeryRoomId))

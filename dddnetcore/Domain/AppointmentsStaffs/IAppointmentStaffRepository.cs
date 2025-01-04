@@ -8,8 +8,6 @@ namespace DDDSample1.Domain.AppointmentsStaffs
 {
     public interface IAppointmentStaffRepository : IRepository<AppointmentStaff, AppointmentStaffId>
     {
-        public Task RemoveAsync(AppointmentStaff appointmentStaff);
-        public Task AddAsync(AppointmentStaff appointmentStaff);
         public Task<List<AppointmentStaff>> GetAppointmentsByStaffIdAsync(StaffId staffId);
 
 

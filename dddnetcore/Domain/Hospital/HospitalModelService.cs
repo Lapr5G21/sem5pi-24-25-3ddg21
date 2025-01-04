@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Appointments;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.RoomTypes;
+using DDDSample1.Domain.Staffs;
 using DDDSample1.Domain.SurgeryRooms;
 using DDDSample1.Infrastructure.OperationTypes;
 using FluentAssertions;
@@ -130,20 +132,23 @@ public class HospitalModelService
           OperationType operationType =  await _operationTypeRepository.GetByIdAsync(appointment.OperationRequest.OperationTypeId);
           var operationStartTime = new DateTimeOffset(appointment.Date.Date).ToUnixTimeMilliseconds();
           var operationEndTime = new DateTimeOffset(appointment.Date.Date).AddMinutes(operationType.EstimatedTimeDuration.Minutes).ToUnixTimeMilliseconds();
-
+          if (appointment == null)
+          {
+            throw new InvalidOperationException("Appointment not found for the given SurgeryRoomId.");
+          }
           if (currentTime >= operationStartTime && currentTime <= operationEndTime)
           {            
             currentAppointmentDto = new AppointmentDto{
               Id = appointment.Id.AsGuid(),
-                    SurgeryRoomDto = new SurgeryRoomDto
-                    {
-                        Id= appointment.Room.Id.Value,
-                        RoomType = new RoomTypeDto{Code = appointment.Room.RoomType.Id.Value, Designation = appointment.Room.RoomType.Designation.Value, Description = appointment.Room.RoomType.Description?.Value, IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery},
-                        RoomCapacity = appointment.Room.RoomCapacity.Capacity,
-                        Status = appointment.Room.Status.ToString(),
-                        MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
-                        Equipment = appointment.Room.Equipment.Equipment
-                    },
+              SurgeryRoomDto = new SurgeryRoomDto
+              {
+                    Id= appointment.Room.Id.Value,
+                    RoomType = new RoomTypeDto{Code = appointment.Room.RoomType.Id.AsString(), Designation = appointment.Room.RoomType.Designation.Value, Description = appointment.Room.RoomType.Description?.Value, IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery},
+                    RoomCapacity = appointment.Room.RoomCapacity.Capacity,
+                    Status = appointment.Room.Status.ToString(),
+                    MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
+                    Equipment = appointment.Room.Equipment.Equipment
+              },
                     OperationRequestDto = new OperationRequestWithAllDataDto
                     {
                         Id = appointment.OperationRequest.Id.AsGuid(),
@@ -163,7 +168,8 @@ public class HospitalModelService
                         Status = appointment.OperationRequest.Status.ToString()
                     },
                     Status = appointment.Status.ToString(),
-                    DateAndTime = appointment.Date.Date
+                    DateAndTime = appointment.Date.Date,
+                    Team = appointment.AppointmentTeam.Select(a => new StaffDto(a.Staff)).ToList()
                 };
           }
     }

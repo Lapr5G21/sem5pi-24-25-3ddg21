@@ -486,7 +486,7 @@ export default class Maze {
             } 
             // Buscar informações do Appointment para a Sala
             else if (clickedObject.name.includes("Patient")) {
-                const appointmentResponse = await fetch(`http://localhost:5000/api/hospitalModel/currentAppointment/${surgeryRoomId}`);
+                    const appointmentResponse = await fetch(`https://localhost:5001/api/hospitalModel/currentAppointment/${surgeryRoomId}`);
                 const appointmentData = await appointmentResponse.json();
                 this.updateOverlayContent(appointmentData);
             }
