@@ -18,6 +18,10 @@
         <list-patients></list-patients>
     </div>
 
+    <div *ngIf="showAppointmentsList">
+        <list-appointments></list-appointments>
+    </div>
+
 </div>
 <app-profile-menu></app-profile-menu>
 <router-outlet></router-outlet>

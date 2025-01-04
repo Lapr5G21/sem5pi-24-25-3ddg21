@@ -11,6 +11,8 @@ namespace DDDSample1.Domain.Staffs
     {
     public Task<IEnumerable<Staff>> SearchAsync(StaffSearchDto searchDto);
     public Task<IEnumerable<Staff>> CheckSpecializationIsAtributtedToStaff(Specialization specialization);
+    Task<bool> IsAvailableInSlotsAsync(StaffId staffId, DateTime startTime, DateTime endTime);
+
     }
 
 }

@@ -18,6 +18,10 @@ export class MedicalConditionService {
     return this.http.get<any>(`${this.apiUrl}/medicalConditions/${medicalConditionCode}`);
   }
 
+  getMedicalConditionByPatientMedicalRecordNumber(number: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/medicalConditions/${number}`);
+  }
+
   saveMedicalCondition(medicalConditonData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/medicalConditions`, medicalConditonData);
   }

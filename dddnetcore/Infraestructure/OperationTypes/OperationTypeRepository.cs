@@ -53,5 +53,13 @@ namespace DDDSample1.Infrastructure.OperationTypes
             return await query.ToListAsync();
         }
 
+            public async Task<int> GetEstimatedDurationMinutesAsync(OperationTypeId operationTypeId)
+    {
+        return await _context.Set<OperationType>()
+            .Where(ot => ot.Id == operationTypeId)
+            .Select(ot => ot.EstimatedTimeDuration.Minutes)
+            .FirstOrDefaultAsync();
+    }
+
     }
 }

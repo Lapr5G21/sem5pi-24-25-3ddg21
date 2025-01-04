@@ -20,6 +20,7 @@ import { CreateRoomTypesComponent } from './components/admin-dashboard/roomTypes
 import { ListRoomTypesComponent } from './components/admin-dashboard/roomTypes/list-room-types/list-room-types.component';
 import { CreateSurgeryRoomsComponent } from './components/admin-dashboard/surgeryRooms/create-surgery-rooms/create-surgery-rooms.component';
 import { ListSurgeryRoomsComponent } from './components/admin-dashboard/surgeryRooms/list-surgery-rooms/list-surgery-rooms.component';
+import { ListAppointmentsComponent } from './components/doctor-dashboard/appointments/list-appointments/list-appointments.component';
 
 
 export const routes: Routes = [
@@ -49,6 +50,8 @@ export const routes: Routes = [
     { path: 'doctorDashboard/operationRequests/create', component: CreateOperationRequestsComponent },
     { path: 'doctorDashboard/3DModule', component: HospitalModelComponent },
     { path: 'doctorDashboard/medicalRecords/create', component: CreateMedicalRecordComponent },
+    { path: 'doctorDashboard/appointments/list', component: ListAppointmentsComponent },
+
     // Patient Dashboard 
     { path: 'patientDashboard/home', component: PatientDashboardComponent }
 ];

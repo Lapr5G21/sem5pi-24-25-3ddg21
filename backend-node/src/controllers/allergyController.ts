@@ -16,22 +16,19 @@ export default class AllergyController implements IAllergyController  {
 ) {}
       
   public async getAllergy(req: Request, res: Response, next: NextFunction) {
-  
     try {
       const allergy = await this.allergyServiceInstance.getAllergy(req.params.id);
 
-      if (allergy === null) {
-        return res.status(404).send("Allergy not found or error in retrieving allergy");
+      if (allergy.isFailure) {
+        return res.status(404).json({ message: "Allergy not found" });
       }
-      return res.json(allergy).status(200);
-    }
-    catch (err) {
-      res.status(500).json({ message: err.message }); 
+
+      return res.status(200).json(allergy.getValue());
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
   };
 
-
-  
   public async getAllAllergies(req: Request, res: Response, next: NextFunction) {
     try {
      
@@ -52,8 +49,6 @@ export default class AllergyController implements IAllergyController  {
   };
 
 
-
-  
   public async createAllergy(req: Request, res: Response, next: NextFunction) {
     try {
       const allergyOrError = await this.allergyServiceInstance.createAllergy(req.body as IAllergyDTO) as Result<IAllergyDTO>;

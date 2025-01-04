@@ -66,5 +66,13 @@ namespace DDDSample1.Infrastructure.Staffs
         return staffs;
     }
 
+        public async Task<bool> IsAvailableInSlotsAsync(StaffId staffId, DateTime startTime, DateTime endTime)
+    {
+        return await _context.Set<Staff>()
+            .Where(s => s.Id == staffId)
+            .SelectMany(s => s.AvailabilitySlots)
+            .AnyAsync(slot => slot.Start <= startTime && slot.End >= endTime);
+    }
+
     }
 }

@@ -12,6 +12,7 @@ using DDDSample1.Domain.RoomTypes;
 using DDDSample1.Domain.Specializations;
 using DDDSample1.Domain.Staffs;
 using DDDSample1.Domain.AppointmentsStaffs;
+using DDDSample1.Domain.OperationTypesSpecializations;
 using DDDSample1.Domain.Users;
 
 namespace DDDSample1.Domain.Appointments
@@ -26,7 +27,8 @@ namespace DDDSample1.Domain.Appointments
         private readonly IAppointmentStaffRepository _appointmentStaffRepo;
         private readonly IStaffRepository _staffRepo;
         private readonly ISpecializationRepository _specializationRepo;
-
+        private readonly IOperationTypeSpecializationRepository _operationTypeSpecializationRepo;
+        private readonly IAvailabilitySlotRepository _availabilitySlotRepo;
 
 
 
@@ -38,7 +40,10 @@ namespace DDDSample1.Domain.Appointments
             IOperationTypeRepository operationTypeRepository,
             IAppointmentStaffRepository appointmentStaffRepo,
             IStaffRepository staffRepo,
-            ISpecializationRepository specializationRepo)
+            ISpecializationRepository specializationRepo,
+            IOperationTypeSpecializationRepository operationTypeSpecializationRepo,
+            IAvailabilitySlotRepository availabilitySlotRepo
+            )
         {
             this._unitOfWork = unitOfWork;
             this._repo = repo;
@@ -48,21 +53,24 @@ namespace DDDSample1.Domain.Appointments
             this._appointmentStaffRepo = appointmentStaffRepo;
             this._staffRepo = staffRepo;
             this._specializationRepo = specializationRepo;
+            this._operationTypeSpecializationRepo = operationTypeSpecializationRepo;
+            this._availabilitySlotRepo = availabilitySlotRepo;
         }
 
         public async Task<List<AppointmentDto>> GetAllAsync()
         {
             var list = await this._repo.GetAllAsync();
-
             var listDto = new List<AppointmentDto>();
 
             foreach (var appointment in list)
             {
                 Console.WriteLine("OpId" + appointment.OperationRequestId);
-                Console.WriteLine("RoomNumber" + appointment.RoomNumber.Value);               
-            var operationRequest = await this._operationRequestRepo.GetByIdAsync(appointment.OperationRequestId);
+                Console.WriteLine("RoomNumber" + appointment.RoomNumber.Value);          
+                 var operationRequest = await this._operationRequestRepo.GetByIdAsync(appointment.OperationRequestId);
 
-            var operationType = await this._operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
+                var operationType = await this._operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
+                var team = appointment.AppointmentTeam?.Select(a => new StaffDto(a.Staff)).ToList() ?? new List<StaffDto>();   
+                
                 listDto.Add(new AppointmentDto
                 {
                     Id = appointment.Id.AsGuid(),
@@ -94,7 +102,8 @@ namespace DDDSample1.Domain.Appointments
                         Status = operationRequest.Status.ToString()
                     },
                     Status = appointment.Status.ToString(),
-                    DateAndTime = appointment.Date.Date
+                    DateAndTime = appointment.Date.Date,
+                    Team = team
                 });
             }
 
@@ -142,14 +151,15 @@ namespace DDDSample1.Domain.Appointments
                         Status = operationRequest.Status.ToString()
                     },
                     Status = appointment.Status.ToString(),
-                    DateAndTime = appointment.Date.Date
+                    DateAndTime = appointment.Date.Date,
+                    Team = appointment.AppointmentTeam.Select(a => new StaffDto(a.Staff)).ToList()
                 };
         }
 
 
         private async Task ValidateStaffSpecializationsAsync(List<string> staffIds, OperationType operationType)
         {
-            var requiredSpecializations = operationType.Specializations;
+            var requiredSpecializations = await _operationTypeSpecializationRepo.GetSpecializationsByOperationTypeAsync(operationType.Id);
 
             var staffSpecializationCount = new Dictionary<Specialization, int>();
 
@@ -164,9 +174,10 @@ namespace DDDSample1.Domain.Appointments
                 var requiredSpecialization = requiredSpecializations
                     .FirstOrDefault(rs => rs.Specialization.Id == staffSpecialization.Id);
 
+
                 if (requiredSpecialization == null)
                 {
-                    throw new BusinessRuleValidationException($"Staff {staffId} does not have the required specialization.");
+                    throw new BusinessRuleValidationException($"Staff {staffId} does not have the required specialization; {requiredSpecializations.Count}");
                 }
                 if (!staffSpecializationCount.ContainsKey(staffSpecialization))
                 {
@@ -193,6 +204,44 @@ namespace DDDSample1.Domain.Appointments
                 }
             }
         }
+
+public async Task<bool> IsStaffAvailableAsync(StaffId staffId, DateTime startTime, DateTime endTime, Guid? excludedAppointmentId = null)
+{
+    Console.WriteLine(staffId.AsString());
+    var appointmentsStaff = await _appointmentStaffRepo.GetAppointmentsByStaffIdAsync(staffId)
+                    ?? throw new NullReferenceException($"Appointments with Staff ID {staffId} not found."); 
+
+    // Verificar conflitos com compromissos agendados
+    foreach (var appointmentStaff in appointmentsStaff)
+    {
+        var appointment = appointmentStaff.Appointment;
+        var operationRequest = appointment.OperationRequest;
+
+        if (excludedAppointmentId.HasValue && appointment.Id.AsGuid() == excludedAppointmentId.Value)
+        {
+            continue; // Ignorar o compromisso excluído
+        }
+
+        var estimatedDuration = await _operationTypeRepo.GetEstimatedDurationMinutesAsync(operationRequest.OperationTypeId);
+        var appointmentEndTime = appointment.Date.Date.AddMinutes(estimatedDuration);
+
+        if (appointment.Date.Date < endTime && appointmentEndTime > startTime)
+        {
+            return false; // Conflito com outro compromisso
+        }
+    }
+
+    // Verificar disponibilidade nos AvailabilitySlots
+    var isAvailableInSlots = await _availabilitySlotRepo.IsStaffAvailableInSlotAsync(staffId,startTime,endTime);
+    
+    if (!isAvailableInSlots)
+    {
+        return false; // Fora do horário de disponibilidade
+    }
+
+    return true; // Disponível
+}
+
 
 
         public async Task<AppointmentDto> AddAsync(CreatingAppointmentDto dto)
@@ -222,9 +271,8 @@ namespace DDDSample1.Domain.Appointments
             foreach (var id in dto.TeamIds)
             {
                 var staffId = new StaffId(id);
-                isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staffId, startTime, endTime);
+                isStaffAvailable &= await IsStaffAvailableAsync(staffId, startTime, endTime);
             }
-
             if (!isStaffAvailable)
             {
                 throw new BusinessRuleValidationException("At least one staff member is unavailable for the chosen time.");
@@ -234,12 +282,16 @@ namespace DDDSample1.Domain.Appointments
 
             await this._repo.AddAsync(appointment);
 
+            Console.WriteLine("AQUII");
             foreach (var staffId in dto.TeamIds)
             {
                 var staff = await _staffRepo.GetByIdAsync(new StaffId(staffId))
                             ?? throw new NullReferenceException("Staff not found: " + staffId);
-
+                Console.WriteLine(staff.StaffFullName);
                 var appointmentStaff = new AppointmentStaff(appointment, staff);
+                Console.WriteLine(appointmentStaff.Appointment.Id.AsString());
+                Console.WriteLine(appointmentStaff.Staff.Id.AsString());
+                Console.WriteLine(appointmentStaff.Id.AsString());
                 await _appointmentStaffRepo.AddAsync(appointmentStaff);
             }
 
@@ -315,7 +367,7 @@ public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
     foreach (var id in dto.TeamIds)
     {
         var staffId = new StaffId(id);
-        isStaffAvailable &= await _appointmentStaffRepo.IsStaffAvailableAsync(staffId, startTime, endTime, appointment.Id.AsGuid());
+        isStaffAvailable &= await IsStaffAvailableAsync(staffId, startTime, endTime, appointment.Id.AsGuid());
     }
 
     if (!isStaffAvailable)
@@ -349,7 +401,7 @@ public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
             var appointmentStaff = appointment.AppointmentTeam.FirstOrDefault(a => a.Staff.Id.ToString() == staffId);
             if (appointmentStaff != null)
             {
-                await _appointmentStaffRepo.RemoveAsync(appointmentStaff);
+                _appointmentStaffRepo.Remove(appointmentStaff);
             }
         }
     }
