@@ -35,9 +35,9 @@ surgery(so4,45,75,45).
 surgery_id(so100001,so2).
 surgery_id(so100002,so3).
 surgery_id(so100003,so4).
-surgery_id(so100004,so2).
-surgery_id(so100005,so4).
-surgery_id(so100006,so2).
+%surgery_id(so100004,so2).
+%surgery_id(so100005,so4).
+%surgery_id(so100006,so2).
 %surgery_id(so100007,so3).
 %surgery_id(so100008,so2).
 %surgery_id(so100009,so2).
@@ -49,11 +49,11 @@ surgery_id(so100006,so2).
 assignment_surgery(so100001,d001).
 assignment_surgery(so100002,d002).
 assignment_surgery(so100003,d003).
-assignment_surgery(so100004,d001).
-assignment_surgery(so100004,d002).
-assignment_surgery(so100005,d002).
-assignment_surgery(so100005,d003).
-assignment_surgery(so100006,d001).
+%assignment_surgery(so100004,d001).
+%assignment_surgery(so100004,d002).
+%assignment_surgery(so100005,d002).
+%assignment_surgery(so100005,d003).
+%assignment_surgery(so100006,d001).
 %assignment_surgery(so100007,d003).
 %assignment_surgery(so100008,d004).
 %assignment_surgery(so100008,d003).
@@ -118,11 +118,11 @@ generate:-
  
 generate_population(Pop):-
   population(PopSize),
-  count_surgery_ids(NumT), % ! Substituir por um contador de surgeries (FEITO)
+  count_surgery_ids(NumT), % ! Substituir por um contador de surgeries 
  
   % Add surgery_penalty facts
   create_surgery_penalties,
-  findall(Surgery,surgery_penalty(Surgery,_,_),SurgeriesList), % ! Substituir para utilizar surgeries (FEITO)
+  findall(Surgery,surgery_penalty(Surgery,_,_),SurgeriesList), % ! Substituir para utilizar surgeries 
  
   generate_population(PopSize,SurgeriesList,NumT,Pop).
  
@@ -286,7 +286,7 @@ include_best(Best*BestValue, Population, FinalPopulation) :-
     ; include_best_non_elitist(Best*BestValue, Population, FinalPopulation)
   ).
  
-% Elitist selection method
+% Elitist 
 include_best_elitist(Best*BestValue, Population, FinalPopulation) :-
   % Remove the worst individual from the population
   append(Front, [_|Rest], Population),
@@ -294,13 +294,13 @@ include_best_elitist(Best*BestValue, Population, FinalPopulation) :-
   % Insert the best individual at the start
   append([Best*BestValue], TempPopulation, FinalPopulation).
  
-% Non-elitist selection using tournament
+% Non-elitist 
 include_best_non_elitist(Best*BestValue, Population, FinalPopulation) :-
   % Always keep the best individual
   population(_PS),  % Get population size
   random(0.0, 1.0, R),  % Generate random number between 0 and 1
  
-  % 80% chance to keep best individual, 20% chance for tournament selection
+  % 80% Best individual, 20% Tournament selection
   (R < 0.8 ->
     % Elitist approach - keep the best
     append(Front, [_|Rest], Population),

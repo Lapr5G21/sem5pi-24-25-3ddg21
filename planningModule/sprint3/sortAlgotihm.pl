@@ -58,7 +58,7 @@ assignment_surgery(so100010,d003).
 %assignment_surgery(so100012,d001).
 %assignment_surgery(so100013,d004).
  
-agenda_operation_room(or1,20241028,[(520,579,so100000),(1000,1059,so099999)]).
+agenda_operation_room(or1,20241028,[(520,579,so123456),(1000,1059,so098765)]).
 agenda_operation_room(or2,20241028,[]).
 agenda_operation_room(or3,20241028,[]).
  
