@@ -12,11 +12,15 @@ import { Router } from '@angular/router';
 import { OperationRequestService } from '../../../../services/operation-request.service';
 import { PatientService } from '../../../../services/patient.service';
 import { StaffService } from '../../../../services/staff.service';
+import { AppointmentService } from '../../../../services/appointment.service';
 import { OperationTypeService } from '../../../../services/operation-type-service.service';
 import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
+import { CreatingAppointmentDto, Appointment } from '../../../../domain/appointment-model';
+import { MultiSelectModule } from 'primeng/multiselect';
+
 
 @Component({
   selector: 'list-operation-requests',
@@ -33,7 +37,8 @@ import { ToastModule } from 'primeng/toast';
     ConfirmDialogModule,
     CalendarModule,
     DialogModule,
-    ToastModule
+    ToastModule,
+    MultiSelectModule
   ],
   templateUrl: './list-operation-requests.component.html',
   styleUrls: ['./list-operation-requests.component.scss'],
@@ -83,11 +88,29 @@ export class ListOperationRequestsComponent implements OnInit {
     { label: 'On Schedule', value: 'onSchedule' },
   ];
 
+  appointmentDialog: boolean = false;
+
+  SurgeryRoomId: string = '';
+  OperationRequestId: string = ''; // Variável para armazenar o ID do request selecionado
+  Date: string = '';
+  TeamIds: string[] = [];
+  AuxiliarDate: Date | null = null;
+
+  isSurgeryRoomIdValid: boolean = true;
+  isAuxiliarDateValid: boolean = true;
+  isTeamIdsValid: boolean = true;
+
+  isSubmitted: boolean = false;
+  staffOptions: { label: string, value: string }[] = [];
+
+
+
   constructor(
     private operationRequestService: OperationRequestService,
     private patientService: PatientService,
     private staffService: StaffService,
     private operationTypeService: OperationTypeService,
+    private appointmentService: AppointmentService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router
@@ -321,5 +344,115 @@ export class ListOperationRequestsComponent implements OnInit {
         this.loadOperationRequests();
       }
     });
+  }
+
+//CREATING APPOINTMENT
+
+  // Função chamada ao abrir o diálogo de agendamento
+  openAppointmentDialog(requestId: string) {
+    this.loadStaffs(); // Carrega as opções de staff
+    this.operationRequestId = requestId; // Armazena o ID do request
+    this.appointmentDialog = true; // Abre o diálogo de agendamento
+  }
+
+    // Função para formatar a data para o formato ISO 8601
+    formatDateToISO(date: Date): string {
+      return date.toISOString(); // Converte a data para o formato ISO 8601
+    }
+  
+    // Atualiza a data formatada quando o valor da data muda
+    onDateChange() {
+      if (this.AuxiliarDate) {
+        const isoDate = this.formatDateToISO(this.AuxiliarDate);
+        console.log('ISO Date:', isoDate);
+        this.Date = isoDate; // Armazenar a data formatada como string
+      }
+    }
+
+     saveAppointment() {
+            this.isSubmitted = true;
+            this.validateFields();
+    
+            if (this.isSurgeryRoomIdValid && this.isAuxiliarDateValid && this.isTeamIdsValid !== null) {
+                    
+                const appointment = new CreatingAppointmentDto(
+                this.SurgeryRoomId,
+                this.OperationRequestId,
+                this.Date,
+                this.TeamIds,
+            );
+    
+            console.log('Payload:', JSON.stringify(appointment));
+    
+            this.appointmentService.saveAppointment(appointment).subscribe(
+                () => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Appointment Successfully Saved!'
+                    });
+                    this.resetForm();
+                    this.appointmentDialog = false;
+                    this.isSubmitted = false;
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500); 
+                },
+                (error) => {
+                    console.error('Appointment Saving Error:', error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Erro',
+                        detail: 'The appointment could not be saved'
+                    });
+                }
+            );
+        }
+        }
+
+
+        validateFields() {
+          this.isSurgeryRoomIdValid = !!this.SurgeryRoomId;
+          this.isAuxiliarDateValid = !!this.AuxiliarDate;
+          this.isTeamIdsValid = this.TeamIds.length > 0;
+        }
+      
+        // Resetar o formulário
+        resetForm() {
+          this.SurgeryRoomId = '';
+          this.AuxiliarDate = null;
+          this.Date = '';
+          this.TeamIds = [];
+          this.OperationRequestId = '';
+          this.isSurgeryRoomIdValid = true;
+          this.isAuxiliarDateValid = true;
+          this.isTeamIdsValid = true;
+          this.isSubmitted = false;
+        }
+
+        cancelDialog(): void {
+          this.resetForm();  // Chama o método para limpar os campos
+          this.appointmentDialog = false;  // Fecha o diálogo
+        }
+
+          // Método para carregar os staffs
+  loadStaffs(): void {
+    //this.staffService.getStaffs().subscribe(
+      //(staffs) => {
+        // Converte os dados recebidos em uma lista de opções para o p-multiSelect
+        //this.staffOptions = staffs.map(staff => ({
+          //label: `${staff.staffFullName} (${staff.staffId})`,  // Nome e id do médico
+          //value: staff.satffId 
+        //}));
+      //},
+      //(error) => {
+        //console.error('Erro ao carregar os staffs', error);
+      //}
+    //);
+    this.staffOptions = Array.from(this.doctors.entries()).map(([key, value]) => ({
+      label: value,
+      value: key,
+    }));
+    console.log('Staff Options:', this.staffOptions);
   }
 }  
