@@ -61,3 +61,30 @@
   width: 150px;
 }
 
+/* Estilos para o diálogo */
+.custom-dialog {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Espaçamento entre os campos */
+.custom-field {
+  margin-bottom: 20px; /* Espaço entre os campos */
+}
+
+/* Espaçamento interno entre o label e o input */
+.custom-field label {
+  margin-bottom: 8px; /* Espaço entre o label e o campo */
+  display: block; /* Garante que o label fique acima do campo */
+}
+
+/* Footer fixado no fundo do diálogo */
+.custom-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Espaço entre os botões */
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #ccc; /* Linha separadora opcional */
+}

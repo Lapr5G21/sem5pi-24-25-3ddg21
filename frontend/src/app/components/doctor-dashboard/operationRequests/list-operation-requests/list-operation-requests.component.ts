@@ -93,7 +93,7 @@ export class ListOperationRequestsComponent implements OnInit {
   SurgeryRoomId: string = '';
   OperationRequestId: string = ''; // Variável para armazenar o ID do request selecionado
   Date: string = '';
-  TeamIds: string[] = [];
+  TeamIds: { label: string; value: string }[] = [];
   AuxiliarDate: Date | null = null;
 
   isSurgeryRoomIdValid: boolean = true;
@@ -101,8 +101,10 @@ export class ListOperationRequestsComponent implements OnInit {
   isTeamIdsValid: boolean = true;
 
   isSubmitted: boolean = false;
+  
   staffOptions: { label: string, value: string }[] = [];
-
+  
+  appointmentStatusMap: Map<String, boolean> = new Map();
 
 
   constructor(
@@ -130,6 +132,15 @@ export class ListOperationRequestsComponent implements OnInit {
 
         const operationTypeIds = operationRequests.map(req => req.operationTypeId);
         this.loadOperationTypes(operationTypeIds);
+        console.log("Operation Requests Filtered", this.filteredOperationRequests);
+        console.log("Operation Requests", this.operationRequests);
+        if (operationRequests.length > 0) {
+          const firstRequest = operationRequests[0];
+          console.log("Primeiro Request:", firstRequest);
+          console.log("Tipo do ID (id):", typeof firstRequest.id);
+        }
+
+
       },
       (error) => {
         console.error('Erro ao carregar solicitações de operação', error);
@@ -351,7 +362,7 @@ export class ListOperationRequestsComponent implements OnInit {
   // Função chamada ao abrir o diálogo de agendamento
   openAppointmentDialog(requestId: string) {
     this.loadStaffs(); // Carrega as opções de staff
-    this.operationRequestId = requestId; // Armazena o ID do request
+    this.OperationRequestId = requestId; // Armazena o ID do request
     this.appointmentDialog = true; // Abre o diálogo de agendamento
   }
 
@@ -369,17 +380,34 @@ export class ListOperationRequestsComponent implements OnInit {
       }
     }
 
+
+    isAppointmentCreated(): boolean {
+      if (this.OperationRequestId === null) {
+        return false;
+      }
+      return this.appointmentStatusMap.get(this.OperationRequestId) || false;
+    }
+
      saveAppointment() {
             this.isSubmitted = true;
             this.validateFields();
     
             if (this.isSurgeryRoomIdValid && this.isAuxiliarDateValid && this.isTeamIdsValid !== null) {
+
+              // Formatar a data no formato ISO 8601 sem o sufixo 'Z'
+              const formattedDate = this.AuxiliarDate
+              ? new Date(this.AuxiliarDate).toISOString().slice(0, 19)
+              : '';
+
+              // Extrair apenas os valores (IDs) dos membros da equipe
+              const formattedTeamIds = this.TeamIds.map((member) => member.value);
+
                     
                 const appointment = new CreatingAppointmentDto(
                 this.SurgeryRoomId,
                 this.OperationRequestId,
-                this.Date,
-                this.TeamIds,
+                formattedDate,
+                formattedTeamIds,
             );
     
             console.log('Payload:', JSON.stringify(appointment));
@@ -391,6 +419,7 @@ export class ListOperationRequestsComponent implements OnInit {
                         summary: 'Success',
                         detail: 'Appointment Successfully Saved!'
                     });
+                    this.appointmentStatusMap.set(this.OperationRequestId, true);  // Atualizar o estado do request para "Appointment Created"
                     this.resetForm();
                     this.appointmentDialog = false;
                     this.isSubmitted = false;
@@ -437,18 +466,6 @@ export class ListOperationRequestsComponent implements OnInit {
 
           // Método para carregar os staffs
   loadStaffs(): void {
-    //this.staffService.getStaffs().subscribe(
-      //(staffs) => {
-        // Converte os dados recebidos em uma lista de opções para o p-multiSelect
-        //this.staffOptions = staffs.map(staff => ({
-          //label: `${staff.staffFullName} (${staff.staffId})`,  // Nome e id do médico
-          //value: staff.satffId 
-        //}));
-      //},
-      //(error) => {
-        //console.error('Erro ao carregar os staffs', error);
-      //}
-    //);
     this.staffOptions = Array.from(this.doctors.entries()).map(([key, value]) => ({
       label: value,
       value: key,
