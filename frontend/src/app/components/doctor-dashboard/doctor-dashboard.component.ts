@@ -11,6 +11,8 @@ import { HospitalModelComponent } from '../hospital-model/hospital-model/hospita
 import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/profile-menu-component.component';
 import { CreateMedicalRecordComponent } from './medicalRecord/create-medical-record/create-medical-record.component';
 import { ListPatientsComponent } from './patients/list-patients/list-patients.component';
+import { ListAppointmentsComponent } from './appointments/list-appointments/list-appointments.component';
+
 
 @Component({
   selector: 'app-doctor-dashboard',
@@ -25,7 +27,8 @@ import { ListPatientsComponent } from './patients/list-patients/list-patients.co
     CommonModule,
     HospitalModelComponent,
     ProfileMenuComponent,
-    ListPatientsComponent
+    ListPatientsComponent,
+    ListAppointmentsComponent
   ],
   templateUrl: './doctor-dashboard.component.html',
   styleUrls: ['./doctor-dashboard.component.scss'],
@@ -38,6 +41,7 @@ export class DoctorDashboardComponent implements OnInit {
   showHospitalModel: boolean = false;
   showMedicalRecordsList: boolean = false;
   showPatientsList: boolean = false;
+  showAppointmentsList: boolean = false;
 
 
   @ViewChild(CreateOperationRequestsComponent) createOperationRequestsComponent!: CreateOperationRequestsComponent;
@@ -45,6 +49,7 @@ export class DoctorDashboardComponent implements OnInit {
   @ViewChild(ListOperationRequestsComponent) listOperationRequestsComponent!: ListOperationRequestsComponent;
   @ViewChild(ListMedicalRecordComponent) listMedicalRecordComponent!: ListMedicalRecordComponent;
   @ViewChild(ListPatientsComponent) listPatientsComponent!: ListPatientsComponent;
+  @ViewChild(ListAppointmentsComponent) listAppointmentsComponent!: ListAppointmentsComponent;
   @ViewChild(HospitalModelComponent) hospitalModelComponent!: HospitalModelComponent
   @ViewChild(ProfileMenuComponent) profileMenuComponent!: ProfileMenuComponent
   constructor(private router: Router) {}
@@ -100,6 +105,17 @@ export class DoctorDashboardComponent implements OnInit {
         ]
       },
       {
+        label: 'Appointments',
+        icon: '',
+        items: [
+          {
+            label: 'Search/List',
+            icon: 'pi pi-list',
+            command: () => this.listAppointments()
+          }
+        ]
+      },
+      {
         label: '3D Visualization',
         icon: '',
         items: [
@@ -134,6 +150,7 @@ export class DoctorDashboardComponent implements OnInit {
     this.showHospitalModel = false;
     this.showMedicalRecordsList = false;
     this.showPatientsList = false;
+    this.showAppointmentsList = false;
     this.router.navigate(['/doctorDashboard/home']); 
   }
 
@@ -162,6 +179,13 @@ export class DoctorDashboardComponent implements OnInit {
     this.showMedicalRecordsList = false;
     this.showOperationRequestsList = false;
     this.showPatientsList = true;
+  }
+
+  listAppointments() {
+    this.showMedicalRecordsList = false;
+    this.showOperationRequestsList = false;
+    this.showPatientsList = false;
+    this.showAppointmentsList = true;
   }
 
   showHospitalModelComponent() {

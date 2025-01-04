@@ -1,0 +1,59 @@
+<div class="card">
+    <p-table [value]="appointments" [tableStyle]="{ 'min-width': '60rem' }" [loading]="loading">
+        <ng-template pTemplate="caption">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between" style="width: 100%;">
+                    <span class="text-xl font-bold">Appointments</span>
+                    <p-button 
+                        icon="pi pi-refresh" 
+                        rounded 
+                        raised 
+                        [style.marginLeft]="'auto'"
+                        (click)="loadAppointments()">
+                    </p-button>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>ID</th>
+                <th>Date and Time</th>
+                <th>Room ID</th>
+                <th>Team</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-appointment>
+            <tr (click)="logData(appointment)">
+                <!-- ID -->
+                <td>{{ appointment.id }}</td>
+
+                <!-- Date and Time -->
+                <td>{{ appointment.dateAndTime | date: 'full' }}</td>
+
+                <!-- Room ID -->
+                <td>{{ appointment.surgeryRoomDto?.id }}</td>
+
+                <!-- Team -->
+                <td>
+                    <div *ngFor="let staff of appointment.team">
+                        {{ staff.staffFullName }} - {{ staff.userId }}
+                    </div>
+                </td>
+
+                <!-- Actions -->
+                <td>
+                    <div class="flex gap-2">
+                        <button 
+                            pButton 
+                            icon="pi pi-pencil" 
+                            class="p-button-rounded p-button-info" 
+                            (click)="editAppointment(appointment)" 
+                            title="Edit">
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
