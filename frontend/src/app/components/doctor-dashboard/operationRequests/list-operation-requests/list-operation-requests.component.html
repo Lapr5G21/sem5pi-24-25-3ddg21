@@ -85,6 +85,7 @@
                 <div class="flex flex-row-reverse md:flex-row gap-2">
                   <p-button icon="pi pi-trash" styleClass="trash-button" [outlined]="true" (onClick)="confirmDeactivateOperationRequest(item.id)"></p-button>
                   <p-button icon="pi pi-pencil" label="Editar" [disabled]="item.status === 'CONCLUÍDO'" (click)="openDialog(item)"></p-button>
+                  <p-button icon="pi pi-calendar-plus" label="Transform into Appointment" (click)="openAppointmentDialog(item.id)"></p-button>
                 </div>
               </div>
             </div>
@@ -164,5 +165,68 @@
     
   </div>
 </p-dialog>
+
+
+
+<p-dialog 
+  [(visible)]="appointmentDialog" 
+  [modal]="true" 
+  [responsive]="true" 
+  [style]="{width: '50vw'}" 
+  header="Transform into Appointment">
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="SurgeryRoomId">Surgery Room</label>
+      <input 
+        pInputText 
+        id="SurgeryRoomId" 
+        [(ngModel)]="SurgeryRoomId" 
+        placeholder="Enter surgery room ID" 
+        (ngModelChange)="validateFields()" 
+        [ngClass]="{'invalid-border': isSubmitted && !isSurgeryRoomIdValid}" />
+      <div *ngIf="isSubmitted && !isSurgeryRoomIdValid" class="error-text">
+        Surgery Room ID is required.
+      </div>
+    </div>
+
+    <div class="p-field">
+      <label for="AuxiliarDate">Date</label>
+      <p-calendar 
+        id="AuxiliarDate" 
+        [(ngModel)]="AuxiliarDate" 
+        [showIcon]="true" 
+        placeholder="Select appointment date" 
+        (ngModelChange)="validateFields()" 
+        [ngClass]="{'invalid-border': isSubmitted && !isAuxiliarDateValid}">
+      </p-calendar>
+      <div *ngIf="isSubmitted && !isAuxiliarDateValid" class="error-text">
+        Appointment date is required.
+      </div>
+    </div>
+
+    <div class="p-field">
+      <label for="teamIds">Team Members</label>
+      <p-multiSelect 
+        id="TeamIds" 
+        [(ngModel)]="TeamIds" 
+        [options]="staffOptions" 
+        optionLabel="label" 
+        placeholder="Select team members" 
+        (ngModelChange)="validateFields()" 
+        [ngClass]="{'invalid-border': isSubmitted && !isTeamIdsValid}">
+      </p-multiSelect>
+      <div *ngIf="isSubmitted && !isTeamIdsValid" class="error-text">
+        At least one team member is required.
+      </div>
+    </div>
+  </div>
+
+  <div class="p-dialog-footer">
+    <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="appointmentDialog = false"></button>
+    <button pButton type="button" label="Create Appointment" icon="pi pi-check" (click)="saveAppointment()"></button>
+  </div>
+</p-dialog>
+
+
 
 <p-toast></p-toast>
