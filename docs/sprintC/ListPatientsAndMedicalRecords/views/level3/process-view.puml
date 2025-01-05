@@ -1,0 +1,115 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant CTRL as "MedicalRecordController" <<component (C4)>>
+participant PatientService as "PatientService" <<component (C4)>>
+participant PatientRepo as "PatientRepo" <<persistence>>
+participant MedicalRecordService as "MedicalRecordService" <<component (C4)>>
+participant MedicalRecordRepo as "MedicalRecordRepo" <<persistence>>
+activate Doctor
+
+    Doctor -> ComponentUI : asks to list
+    activate ComponentUI
+
+        ComponentUI -> Component : get Patients
+        activate Component
+
+            Component -> Service** : create
+
+            Component -> Service : get Patients
+            activate Service
+
+                Service -> HTTP : get('/patients')
+
+                activate HTTP
+                    HTTP -> CTRL : GET /patients
+                    activate CTRL
+
+                    CTRL -> PatientService : getAll()
+                    
+                    activate PatientService 
+
+                    PatientService -> PatientRepo : getAll()
+
+                    activate PatientRepo 
+
+                    PatientRepo --> PatientService : allPatients
+
+                    deactivate PatientRepo
+
+                    PatientService -> PatientService : toDto(allPatients)
+
+                    PatientService --> CTRL : listSpecializationsDto
+                    deactivate PatientService
+
+                    CTRL --> HTTP : 200 (patients)
+
+                    deactivate CTRL
+                                        
+                    HTTP --> Service : patients
+
+                deactivate HTTP
+
+                Service --> Component : patients
+            deactivate Service
+
+            Component --> ComponentUI : patients
+        deactivate Component
+
+                ComponentUI -> Component : get MedicalRecords
+        activate Component
+
+            Component -> Service : get MedicalRecords
+            activate Service
+
+                Service -> HTTP : get('/medicalRecords')
+
+                activate HTTP
+                    HTTP -> CTRL : GET /medicalRecords
+                    activate CTRL
+
+                    CTRL -> MedicalRecordService : getAll()
+                    
+                    activate MedicalRecordService 
+
+                    MedicalRecordService -> MedicalRecordRepo : getAll()
+
+                    activate MedicalRecordRepo 
+
+                    MedicalRecordRepo --> MedicalRecordService : allMedicalRecords
+
+                    deactivate MedicalRecordRepo
+
+                    MedicalRecordService -> MedicalRecordService : toDto(allMedicalRecords)
+
+                    MedicalRecordService --> CTRL : listMedicalRecordsDto
+                    deactivate MedicalRecordService
+
+                    CTRL --> HTTP : 200 (medicalRecords)
+
+                    deactivate CTRL
+                                        
+                    HTTP --> Service : medicalRecords
+
+                deactivate HTTP
+
+                Service --> Component : medicalRecords
+            deactivate Service
+
+            Component --> ComponentUI : medicalRecords
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows success message
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml

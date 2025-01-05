@@ -1,0 +1,19 @@
+@startuml
+
+actor Doctor as "Doctor"
+participant SYS as "HealthCare System" <<system>>
+
+activate Doctor
+
+    Doctor -> SYS : asks to list patients and respectives medical records
+    
+    activate SYS
+
+        SYS --> Doctor: displays all patients and respectives medical records
+        
+    deactivate SYS
+
+deactivate Doctor
+
+
+@enduml

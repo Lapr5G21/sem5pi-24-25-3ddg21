@@ -1,11 +1,11 @@
-# US 7.2.3
+# US 7.2.6
 
-As a Doctor, I want to search for Allergies, so that I can use it to update the Patient Medical Record.
+As a Doctor, I want to update the Patient Medical Record, namely respecting Medical Conditions and Allergies.
 
 ## 2. Requirements
 
 
-**US 7.2.3** As a Doctor, I want to search for Allergies, so that I can use it to update the Patient Medical Record.
+**US 7.2.6** As a Doctor, I want to update the Patient Medical Record, namely respecting Medical Conditions and Allergies.
 
 ## 3. Views
 

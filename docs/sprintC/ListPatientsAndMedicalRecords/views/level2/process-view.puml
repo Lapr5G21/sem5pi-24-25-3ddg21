@@ -1,0 +1,33 @@
+@startuml
+
+autonumber
+actor Doctor as  "Doctor"
+participant Frontend as "Frontend" <<system (C4)>>
+participant SYS as "Backend Management" <<system>>
+
+activate Doctor
+
+ Doctor -> Frontend : asks to list patients and respectives medical records
+
+    activate Frontend
+        Frontend-> SYS : GET /patients 
+        activate SYS
+
+            Frontend <-- SYS : 200 OK
+
+        deactivate SYS
+
+         Frontend-> SYS : GET /medicalRecords 
+        activate SYS
+
+            Frontend <-- SYS : 200 OK
+
+        deactivate SYS
+
+    Frontend --> Doctor : displays all patients and respectives medical records
+    
+    deactivate Frontend
+deactivate Doctor
+
+
+@enduml
