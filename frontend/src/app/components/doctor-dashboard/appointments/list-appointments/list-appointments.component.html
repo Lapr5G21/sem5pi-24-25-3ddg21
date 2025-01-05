@@ -56,4 +56,90 @@
             </tr>
         </ng-template>
     </p-table>
+
+
+
+    <!-- Diálogo para editar as informações do Paciente -->
+    <p-dialog [(visible)]="editDialogVisible" [responsive]="true"   [style]="{width: '50vw', height: '95vh'}">
+    <ng-template pTemplate="header">
+      <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">          
+        <div class="col">Edit Appointment Information</div>
+      </div>
+    </ng-template> 
+
+    <div class="card">
+        <p-dataView [value]="[selectedAppointment]" [rows]="1">
+          <ng-template pTemplate="header">
+            <div class="grid grid-nogutter text-center p-2 font-bold bg-primary text-white">
+              <div class="col">Field</div>
+              <div class="col">Value</div>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="list" let-appointment>
+            <div class="grid grid-nogutter text-center border-top-1 surface-border">
+              <div class="col p-2">
+                <label for="id">Appointment ID</label>
+              </div>
+              <div class="col p-2">
+                <input pInputText id="id" [(ngModel)]="selectedAppointment.id" disabled />
+              </div>
+            </div>
+
+            <div class="grid grid-nogutter text-center border-top-1 surface-border">
+                <div class="col p-2">
+                  <label for="surgeryRoomDto.id">Surgery Room ID</label>
+                </div>
+                <div class="col p-2">
+                  <input pInputText id="surgeryRoomDto.id" [(ngModel)]="selectedAppointment.surgeryRoomDto.id" />
+                </div>
+            </div>
+
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+                <label for="dateAndTime">Date and Time</label>
+            </div>
+            <div class="col p-2">
+                <input 
+                    id="dateAndTime" 
+                    type="datetime-local" 
+                    [(ngModel)]="selectedAppointment.dateAndTime" 
+                    pInputText />
+            </div>
+        </div>
+
+        <div class="grid grid-nogutter text-center border-top-1 surface-border">
+            <div class="col p-2">
+                <label for="team">Team Members</label>
+            </div>
+            <div class="col p-2">
+                <p-multiSelect 
+                id="selectedAppointment.team" 
+                [(ngModel)]="selectedAppointment.team" 
+                [options]="teamOptions" 
+                optionLabel="label" 
+                placeholder="Select team members">
+              </p-multiSelect>
+            </div>
+        </div>
+    </ng-template>
+</p-dataView>
+
+    <p-footer>
+        <button 
+            pButton 
+            label="Save" 
+            icon="pi pi-check" 
+            (click)="updateAppointment(selectedAppointment)">
+        </button>
+        <button 
+            pButton 
+            label="Cancel" 
+            icon="pi pi-times" 
+            class="p-button-secondary" 
+            (click)="editDialogVisible = false">
+        </button>
+    </p-footer>
+</div>
+</p-dialog>
 </div>
