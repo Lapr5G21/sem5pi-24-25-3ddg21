@@ -28,7 +28,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
       patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,
       allergiesId: rawData.allergiesId?.map((a: any) => a._id || a) || [],
       medicalConditionsId: rawData.medicalConditionsId?.map((mc: any) => mc._id || mc) || [],
-      notations: rawData.notations || null,
+      notations: rawData.notations !== undefined && rawData.notations !== null ? rawData.notations : "",
     };
   }
   
@@ -38,7 +38,7 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
       patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber,
       allergiesId: medicalRecord.allergies || [],
       medicalConditionsId: medicalRecord.medicalConditions || [],
-      notations: medicalRecord.notations || null,
+      notations: medicalRecord.notations || "",
     };
   
     const medicalRecordOrError = MedicalRecord.create(

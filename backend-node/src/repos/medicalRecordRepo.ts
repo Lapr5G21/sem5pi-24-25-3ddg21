@@ -50,7 +50,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
         medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
         medicalRecordDocument.allergies = medicalRecord.props.allergiesId.map(a => a.value).flat();
         medicalRecordDocument.medicalConditions = medicalRecord.medicalConditionsId.map(c => c.value).flat();
-        medicalRecordDocument.notations = medicalRecord.props.notations.value;
+        medicalRecordDocument.notations = medicalRecord.props.notations.value || "";
 
         await medicalRecordDocument.save();
         return MedicalRecordMap.toDomain(medicalRecordDocument);
@@ -93,7 +93,7 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   
       return null;
     } catch (err) {
-      console.error(`Erro ao encontrar prontuário por número de prontuário: ${err.message}`);
+      console.error(`Error finding medical record by medical record number: ${err.message}`);
       throw new Error(`Error finding medical record: ${err.message}`);
     }
   }
