@@ -53,6 +53,19 @@ export class ListAppointmentsComponent implements OnInit {
     this.loadAppointments(); // Carregar os appointments ao inicializar o componente
   }
 
+  validateSelectedTeamMembers(): void {
+    const uniqueMembers = new Map();
+    this.selectedTeamMembers.forEach(member => {
+        if (!uniqueMembers.has(member.value)) {
+            uniqueMembers.set(member.value, member);
+        }
+    });
+
+    this.selectedTeamMembers = Array.from(uniqueMembers.values());
+    console.log('Validated Team Members:', this.selectedTeamMembers);
+}
+
+
   // Carrega os appointments
   loadAppointments(): void {
     console.log('loadAppointments called');
@@ -114,9 +127,14 @@ export class ListAppointmentsComponent implements OnInit {
       console.log(this.doctors);
       console.table(Array.from(this.doctors.entries()));  // Exibe os dados de forma tabular
       this.loadStaffs();
+
+      // Mapear membros da equipa para o formato correto
+        this.selectedTeamMembers = appointment.team.map((member: any) => ({
+          label: member.staffFullName,
+          value: member.staffId,
+      }));      
       this.selectedAppointment = { ...appointment }; // Passa o appointment selecionado
       console.log(this.selectedAppointment);
-      this.selectedTeamMembers = this.selectedAppointment.team || []; // Preenche os membros selecionados
       this.editDialogVisible = true; // Exibe o diálogo
     } else {
       console.error('No appointment selected!');
@@ -134,7 +152,7 @@ export class ListAppointmentsComponent implements OnInit {
     // Converte a lista de membros selecionados para apenas os `staffId`
     const formattedTeamIds = this.selectedTeamMembers.map((member: any) => {
       console.log(member);
-      return member.staffId; // Aqui estamos assumindo que a lista contém apenas `staffId`
+      return member.value; // Aqui estamos a assumir que a lista contém apenas `staffId`
     });
 
     console.log('Formatted Team Ids:', formattedTeamIds); // Exibe os IDs formatados

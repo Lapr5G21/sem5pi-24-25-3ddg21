@@ -1,0 +1,32 @@
+/* Estilo personalizado para os campos de input */
+.custom-input {
+    width: 100%; /* Faz o input ocupar toda a largura disponível */
+    padding: 0.5rem; /* Adiciona espaçamento interno */
+    border: 1px solid #ced4da; /* Define uma borda leve */
+    border-radius: 5px; /* Bordas arredondadas */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    font-size: 1rem; /* Aumenta o tamanho da fonte */
+    color: #495057; /* Cor do texto */
+    background-color: #ffffff; /* Fundo branco */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Animação ao interagir */
+}
+
+/* Foco no input */
+.custom-input:focus {
+    border-color: #007bff; /* Cor azul na borda ao focar */
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5); /* Sombra azul ao focar */
+    outline: none; /* Remove a borda padrão de foco */
+}
+
+/* Estilo para o label */
+label {
+    font-weight: bold; /* Torna o texto do label mais destacado */
+    margin-bottom: 0.5rem; /* Espaçamento abaixo do label */
+    display: block; /* Garante que o label fique acima do input */
+    color: #495057; /* Cor do texto */
+}
+
+/* Espaçamento entre os campos */
+.grid .col {
+    margin-bottom: 1rem; /* Espaço entre os campos */
+}

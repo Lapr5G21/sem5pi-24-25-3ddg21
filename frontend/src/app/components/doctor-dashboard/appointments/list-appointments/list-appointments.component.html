@@ -16,8 +16,10 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th>ID</th>
-                <th>Date and Time</th>
+                <th style="width: 20%;"> ID </th>
+                <th style="width: 10%;">Patient</th>
+                <th style="width: 10%;">Operation Type</th>
+                <th style="width: 20%;">Date and Time</th>
                 <th>Room ID</th>
                 <th>Team</th>
                 <th>Actions</th>
@@ -26,10 +28,16 @@
         <ng-template pTemplate="body" let-appointment>
             <tr (click)="logData(appointment)">
                 <!-- ID -->
-                <td>{{ appointment.id }}</td>
+                <td style="width: 20%;">{{ appointment.id }}</td>
+
+                <!-- Medical Record Number -->
+                <td style="width: 10%;">{{ appointment.operationRequestDto.medicalRecordNumber }}</td>
+
+                <!-- Operation Type -->
+                <td style="width: 10%;">{{ appointment.operationRequestDto.operationType.name }}</td>
 
                 <!-- Date and Time -->
-                <td>{{ appointment.dateAndTime | date: 'full' }}</td>
+                <td style="width: 20%;">{{ appointment.dateAndTime | date: 'full' }}</td>
 
                 <!-- Room ID -->
                 <td>{{ appointment.surgeryRoomDto?.id }}</td>
@@ -92,7 +100,7 @@
         <label for="surgeryRoomDto.id">Surgery Room ID</label>
     </div>
     <div class="col p-2">
-        <input pInputText id="surgeryRoomDto.id" [(ngModel)]="selectedAppointment.surgeryRoomDto.id" />
+        <input pInputText id="surgeryRoomDto.id" [(ngModel)]="selectedAppointment.surgeryRoomDto.id" class="custom-input"        />
     </div>
 </div>
 
@@ -106,7 +114,9 @@
                     id="dateAndTime" 
                     type="datetime-local" 
                     [(ngModel)]="selectedAppointment.dateAndTime" 
-                    pInputText />
+                    pInputText 
+                    class="custom-input"
+                />
             </div>
         </div>
 
@@ -117,10 +127,12 @@
             <div class="col p-2">
                 <p-multiSelect 
                 id="selectedAppointment.team" 
-                [(ngModel)]="selectedAppointment.team" 
+                [(ngModel)]="selectedTeamMembers" 
                 [options]="teamOptions" 
                 optionLabel="label" 
-                placeholder="Select team members">
+                placeholder="Select team members"
+                (onChange)="validateSelectedTeamMembers()"
+                class="custom-input">
               </p-multiSelect>
             </div>
         </div>
@@ -128,6 +140,7 @@
 </p-dataView>
 
     <p-footer>
+        <div class="flex justify-end gap-2" style="position: absolute; bottom: 1rem; right: 1rem;">
         <button 
             pButton 
             label="Save" 
@@ -141,6 +154,7 @@
             class="p-button-secondary" 
             (click)="editDialogVisible = false">
         </button>
+        </div>
     </p-footer>
 </div>
 </p-dialog>
