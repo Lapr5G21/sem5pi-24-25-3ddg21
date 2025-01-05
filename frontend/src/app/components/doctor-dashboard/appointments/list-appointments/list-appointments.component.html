@@ -16,7 +16,6 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th style="width: 20%;"> ID </th>
                 <th style="width: 10%;">Patient</th>
                 <th style="width: 10%;">Operation Type</th>
                 <th style="width: 20%;">Date and Time</th>
@@ -27,11 +26,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-appointment>
             <tr (click)="logData(appointment)">
-                <!-- ID -->
-                <td style="width: 20%;">{{ appointment.id }}</td>
-
                 <!-- Medical Record Number -->
-                <td style="width: 10%;">{{ appointment.operationRequestDto.medicalRecordNumber }}</td>
+                <td style="width: 10%;">{{ appointment.patientName }}</td>
 
                 <!-- Operation Type -->
                 <td style="width: 10%;">{{ appointment.operationRequestDto.operationType.name }}</td>
@@ -86,12 +82,6 @@
 
           <ng-template pTemplate="list" let-appointment>
             <div class="grid grid-nogutter text-center border-top-1 surface-border">
-              <div class="col p-2">
-                <label for="id">Appointment ID</label>
-              </div>
-              <div class="col p-2">
-                <input pInputText id="id" [(ngModel)]="selectedAppointment.id" disabled />
-              </div>
             </div>
 
             <!-- Surgery Room ID -->

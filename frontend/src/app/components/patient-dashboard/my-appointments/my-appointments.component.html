@@ -1,12 +1,12 @@
 <div class="appointments">
-    <h2>Meus Agendamentos</h2>
+    <h2>My Appointments</h2>
   
     <div *ngFor="let appointment of appointments" class="appointment-card-container">
       <p-card class="appointment-card" [ngClass]="getStatusClass(appointment.status)" header="{{ appointment.operationRequestDto.operationType.name }}">
         <ng-template pTemplate="content">
           <div class="appointment-details">
-            <p><strong>Duração da operação:</strong> {{ appointment.operationRequestDto.operationType.estimatedDuration }} minutos</p>
-            <p><strong>Data da operação:</strong> {{ formatDate(appointment.dateAndTime) }}</p>
+            <p><strong>Duration:</strong> {{ appointment.operationRequestDto.operationType.estimatedDuration }} minutes</p>
+            <p><strong>Date:</strong> {{ formatDate(appointment.dateAndTime) }}</p>
             <p><strong>Status:</strong>
               <p-badge [value]="appointment.status" [severity]="getBadgeSeverity(appointment.status)"></p-badge>
             </p>
@@ -16,7 +16,7 @@
         <p-footer>
           <!-- Botão com ícone de seta para baixo -->
           <button pButton type="button" icon="pi pi-chevron-down" (click)="overlayPanel.toggle($event)" class="p-button p-button-outlined p-button-info p-button-lg">
-            Ver mais
+            More
           </button>
         </p-footer>
   

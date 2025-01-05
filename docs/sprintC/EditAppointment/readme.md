@@ -22,21 +22,13 @@ The global views are available in the views folder.
 
 ### LEVEL 1
 
-![level1_view](views/level1/UpdateAppointment(level1).png)
+![level1_view](views/level1/EditAppointment(level1).png)
 
 ### LEVEL 2
 
-![level2_view](views/level2/UpdateAppointment(level2).png)
+![level2_view](views/level2/EditAppointment(level2).png)
 
 ### LEVEL 3
 
-![level3_view](views/level3/UpdateAppointment(level1).png)
+![level3_view](views/level3/EditAppointment(level3).png)
 
-
-## Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the development this work.*

@@ -131,7 +131,7 @@ export class DoctorDashboardComponent implements OnInit {
         icon: 'pi pi-user',
         items: [
           {
-            label: 'Ver Perfil',
+            label: 'Profile',
             command: () => {
               this.openProfileDialog()
             }
@@ -166,12 +166,14 @@ export class DoctorDashboardComponent implements OnInit {
     this.showMedicalRecordsList = true;
     this.showOperationRequestsList = false;
     this.showPatientsList = false;
+    this.showAppointmentsList = false;
   }
 
   listOperationRequests() {
     this.showOperationRequestsList = true;
     this.showMedicalRecordsList = false;
     this.showPatientsList = false;
+    this.showAppointmentsList = false;
     this.listOperationRequestsComponent.loadOperationRequests();
   }
 
@@ -179,6 +181,7 @@ export class DoctorDashboardComponent implements OnInit {
     this.showMedicalRecordsList = false;
     this.showOperationRequestsList = false;
     this.showPatientsList = true;
+    this.showAppointmentsList = false;
   }
 
   listAppointments() {

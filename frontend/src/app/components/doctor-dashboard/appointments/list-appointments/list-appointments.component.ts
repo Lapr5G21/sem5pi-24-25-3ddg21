@@ -13,6 +13,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { UpdateAppointmentDto } from '../../../../domain/appointment-model';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DataViewModule } from 'primeng/dataview';
+import { PatientService } from '../../../../services/patient.service';
 
 @Component({
   selector: 'list-appointments',
@@ -35,7 +36,7 @@ import { DataViewModule } from 'primeng/dataview';
 export class ListAppointmentsComponent implements OnInit {
   appointments: any[] = []; // Lista de appointments
   loading: boolean = false; // Indicador de carregamento
-
+  patient: any;
   editDialogVisible: boolean = false;
   selectedAppointment: any = { surgeryRoomDto: {} }; // Inicializando surgeryRoomDto
   teamOptions: { label: string; value: string }[] = []; // Lista de opções para TeamIds
@@ -45,7 +46,8 @@ export class ListAppointmentsComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService, 
     private staffService: StaffService, 
-    private messageService: MessageService
+    private messageService: MessageService,
+    private patientService: PatientService
   ) {}
 
   ngOnInit(): void {
@@ -73,6 +75,22 @@ export class ListAppointmentsComponent implements OnInit {
     this.appointmentService.getAppointments().subscribe(
       (appointments) => {
         this.appointments = appointments;
+        this.appointments.forEach((appointment) => {
+          if (appointment.operationRequestDto?.medicalRecordNumber) {
+            this.patientService.getPatientById(appointment.operationRequestDto.medicalRecordNumber).subscribe(
+              (patient) => {
+                appointment.patientName = patient?.fullName || 'Desconhecido';
+              },
+              (error) => {
+                console.error(`Error fetching patient ${appointment.operationRequestDto.patientId}:`, error);
+                appointment.patientName = 'Erro ao carregar';
+              }
+            );
+          } else {
+            appointment.patientName = 'ID do paciente não disponível';
+          }
+        });
+  
         this.loading = false;
       },
       (error) => {
@@ -80,6 +98,18 @@ export class ListAppointmentsComponent implements OnInit {
         this.loading = false;
       }
     );
+  }
+  
+
+  fetchPatient(id : string) {
+    this.patientService.getPatientById(id).subscribe({
+      next: (data) => {
+        this.patient = data;
+      },
+      error: (error) => {
+        this.patient = null;
+      }
+    });
   }
 
   // Método para carregar os staffs

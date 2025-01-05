@@ -93,7 +93,7 @@ export class ListOperationRequestsComponent implements OnInit {
   SurgeryRoomId: string = '';
   OperationRequestId: string = ''; // Variável para armazenar o ID do request selecionado
   Date: string = '';
-  TeamIds: { label: string, value: string }[] = [];
+  TeamIds: string[] = [];
   AuxiliarDate: Date | null = null;
 
   isSurgeryRoomIdValid: boolean = true;
@@ -400,18 +400,17 @@ export class ListOperationRequestsComponent implements OnInit {
           : '';
     
         // Transformar os TeamIds (labels/values) em um array de strings com os staffIds
-        const teamIdValues: string[] = this.TeamIds.map((team: any) => team.value);
+        console.log(this.TeamIds);
     
         console.log('Surgery Room ID:', this.SurgeryRoomId);
         console.log('Formatted Date:', formattedDate);
-        console.log('Team IDs:', teamIdValues);
     
         // Criar o DTO de nova consulta
         const appointment = new CreatingAppointmentDto(
           this.SurgeryRoomId,           // ID da sala de cirurgia
           this.OperationRequestId,      // ID do pedido de operação
           formattedDate,                // Data auxiliar no formato ISO
-          teamIdValues                  // IDs da equipe
+          this.TeamIds                  // IDs da equipe
         );
     
         // Chamar o serviço para salvar a consulta

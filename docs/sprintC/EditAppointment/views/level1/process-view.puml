@@ -1,20 +1,26 @@
-@startuml AppointmentCreation(level1)
+@startuml EditAppointment(level1)
 
 actor Doctor as "Doctor"
-participant SYS as "HealthCare System" <<system (C4)>>
+participant SYS as "HealthCare System" <<system>>
 
-activate Doctor 
-Doctor --> SYS : asks to create a new surgery appointment 
+activate Doctor
 
-activate SYS 
-SYS --> Doctor : displays the form for creating new appointment
-deactivate SYS
+    Doctor -> SYS : asks to update an appointment
+    
+    activate SYS
 
-Doctor --> SYS : submits the form with surgery appointment details
+        SYS --> Doctor : asks to edit data
 
-activate SYS
-SYS --> Doctor : displays confirmation message that the appointment was added
+    deactivate SYS
 
-deactivate SYS
+    Doctor -> SYS : edit data
+
+    activate SYS 
+        SYS --> Doctor: shows edited data
+        
+    deactivate SYS
+
+deactivate Doctor
+
 
 @enduml
