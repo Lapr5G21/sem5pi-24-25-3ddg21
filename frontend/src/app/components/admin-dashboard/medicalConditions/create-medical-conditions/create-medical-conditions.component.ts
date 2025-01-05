@@ -83,7 +83,7 @@ export class CreateMedicalConditionsComponent {
                   this.messageService.add({
                       severity: 'error',
                       summary: 'Error',
-                      detail: 'Unable to save medical condition.'
+                      detail: 'Not possible to save medical condition.'
                   });
               }
           );

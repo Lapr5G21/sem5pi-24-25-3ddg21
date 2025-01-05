@@ -1,6 +1,6 @@
 <div class="card flex justify-content-center">
     <p-dialog 
-        header="Add Medical Condition" 
+        header="Create Medical Condition" 
         [(visible)]="visible" 
         [modal]="true" 
         [style]="{ width: '30rem' }">
@@ -62,7 +62,7 @@
                 placeholder="Insert the symptoms here..." 
                 #medicalConditionSymptomsInput="ngModel">
             </textarea>
-            <small *ngIf="medicalConditionSymptomsInput.invalid && medicalConditionSymptomsInput.touched" class="p-error">Symptoms is required.</small>
+            <small *ngIf="medicalConditionSymptomsInput.invalid && medicalConditionSymptomsInput.touched" class="p-error">Symptoms are required.</small>
         </div>
         <ng-template pTemplate="footer">
             <p-button 
@@ -71,7 +71,7 @@
                 severity="secondary" 
                 (onClick)="resetForm(); visible = false"></p-button>
             <p-button 
-                label="Save" 
+                label="Create" 
                 [outlined]="true" 
                 severity="primary" 
                 (onClick)="saveMedicalCondition()"
