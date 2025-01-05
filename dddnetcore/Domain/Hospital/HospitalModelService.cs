@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Appointments;
+using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.OperationTypes;
 using DDDSample1.Domain.RoomTypes;
 using DDDSample1.Domain.Staffs;
@@ -24,6 +25,8 @@ public class HospitalModelService
     private readonly IAppointmentRepository _appointmentRepository;
 
     private readonly IOperationTypeRepository _operationTypeRepository;
+
+    private readonly IOperationRequestRepository _operationRequestRepository;
 
     private static readonly Dictionary<int, (int Row, int Col)> roomsMap = new Dictionary<int, (int Row, int Col)>{
         {1, (2,2)},
@@ -130,12 +133,14 @@ public class HospitalModelService
 
     foreach (Appointment appointment in appointments){
           OperationType operationType =  await _operationTypeRepository.GetByIdAsync(appointment.OperationRequest.OperationTypeId);
+          Console.WriteLine(appointment);
           var operationStartTime = new DateTimeOffset(appointment.Date.Date).ToUnixTimeMilliseconds();
           var operationEndTime = new DateTimeOffset(appointment.Date.Date).AddMinutes(operationType.EstimatedTimeDuration.Minutes).ToUnixTimeMilliseconds();
           if (appointment == null)
           {
             throw new InvalidOperationException("Appointment not found for the given SurgeryRoomId.");
           }
+
           if (currentTime >= operationStartTime && currentTime <= operationEndTime)
           {            
             currentAppointmentDto = new AppointmentDto{

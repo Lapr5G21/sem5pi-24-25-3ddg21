@@ -22,7 +22,7 @@ namespace DDDSample1.Domain.Staffs
         public StaffDto() {}
 
         public StaffDto(Staff staff) {
-            this.StaffId = staff.Id.ToString();
+            this.StaffId = staff.Id.AsString();
             this.StaffFirstName = staff.StaffFirstName.FirstNameString;
             this.StaffLastName = staff.StaffLastName.LastNameString;
             this.StaffFullName = staff.StaffFullName.FullNameString;
@@ -33,7 +33,7 @@ namespace DDDSample1.Domain.Staffs
             foreach (var availabilitySlot in staff.AvailabilitySlots) {
                 StaffAvailabilitySlots.Add(availabilitySlot);
             }
-            this.SpecializationId = staff.SpecializationId.ToString(); 
+            this.SpecializationId = staff.SpecializationId.AsString(); 
             this.UserId = staff.UserId.ToString();
             this.Active = staff.Active;
         }

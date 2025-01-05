@@ -441,13 +441,20 @@ export default class Maze {
             `;
         }
     
-        if (data.patientName && data.doctorName) {
+        if (data.patientName) {
             contentHTML += `
+             <h2>Informações da Sala</h2>
+                <p><strong>ID:</strong> ${data.surgeryRoomDto.id}</p>
+                <p><strong>Equipment:</strong> ${data.surgeryRoomDto.equipment}</p>
+                <p><strong>Capacity:</strong> ${data.surgeryRoomDto.roomCapacity}</p>
+                <p><strong>Room Type:</strong> ${data.surgeryRoomDto.roomType.designation}</p>
+                <p><strong>Maintenance Slots:</strong> ${data.surgeryRoomDto.maintenanceSlots}</p>
+            
                 <h2>Informações do Appointment</h2>
-                <p><strong>Paciente:</strong> ${data.patientName}</p>
-                <p><strong>Médico:</strong> ${data.doctorName}</p>
-                <p><strong>Horário:</strong> ${data.startTime} - ${data.endTime}</p>
-                <p><strong>Status:</strong> ${data.status}</p>
+                <p><strong>Patient:</strong> ${data.patientName}</p>
+                <p><strong>Operation:</strong> ${data.operationRequestDto.operationType.name}</p>
+                <p><strong>Status:</strong> ${data.dateAndTime}</p>
+                <p><strong>Duration:</strong> ${data.operationRequestDto.operationType.estimatedDuration}</p>
             `;
         }
     
@@ -486,8 +493,14 @@ export default class Maze {
             } 
             // Buscar informações do Appointment para a Sala
             else if (clickedObject.name.includes("Patient")) {
-                    const appointmentResponse = await fetch(`https://localhost:5001/api/hospitalModel/currentAppointment/${surgeryRoomId}`);
+                const appointmentResponse = await fetch(`https://localhost:5001/api/hospitalModel/currentAppointment/${surgeryRoomId}`);
                 const appointmentData = await appointmentResponse.json();
+                console.log(appointmentData);
+                console.log(appointmentData.operationRequestDto.medicalRecordNumber);
+                const patientData = await fetch(`https://localhost:5001/api/patients/${appointmentData.operationRequestDto.medicalRecordNumber}`);
+                const patientJson = await patientData.json();
+                appointmentData.patientName = patientJson.fullName;
+                console.log(appointmentData.patientName);
                 this.updateOverlayContent(appointmentData);
             }
         } catch (error) {
