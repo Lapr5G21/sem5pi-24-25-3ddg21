@@ -170,4 +170,50 @@ package SurgeryRoomAggregate #ddeeff {
     SurgeryRoom "1" --> "1.." MaintenanceSlots 
 }
 
+package AllergyAggregate #ddeeff {
+    entity Allergy <<root>> <<entity>> {}
+
+    class AllergyCode <<ValueObject>> {}
+    class AllergyDescription <<ValueObject>> {}
+    class AllergyName <<ValueObject>> {}
+
+    Allergy "1" --> "1" AllergyCode
+    Allergy "1" --> "1" AllergyDescription
+    Allergy "1" --> "1" AllergyName
+}
+
+package MedicalConditionsAggregate #ddeeff {
+    entity MedicalConditions <<root>> <<entity>> {}
+
+    class MedicalConditionsCode <<ValueObject>> {}
+    class MedicalConditionsName <<ValueObject>> {}
+    class MedicalConditionsDescription <<ValueObject>> {}
+    class MedicalConditionsSymphtoms <<ValueObject>> {}
+    
+
+    MedicalConditions "1" --> "1" MedicalConditionsCode
+    MedicalConditions "1" --> "1" MedicalConditionsName
+    MedicalConditions "1" --> "1" MedicalConditionsDescription
+    MedicalConditions "1" --> "1.." MedicalConditionsSymphtoms
+   
+}
+
+package MedicalRecordAggregate #ddeeff {
+    entity MedicalRecord <<root>> <<entity>> {}
+
+    class MedicalRecordId <<ValueObject>> {}
+    class MedicalRecordPatientMedicalRecordNumber <<ValueObject>> {}
+    class Notations <<ValueObject>> {}
+   
+
+    MedicalRecord "1" --> "1" MedicalRecordId
+    MedicalRecord "1" --> "1" MedicalRecordPatientMedicalRecordNumber
+    MedicalRecord "1" --> "1" Notations
+
+}
+
+MedicalRecord "1" --> "*" MedicalConditions : has
+MedicalRecord "1" --> "*" Allergy : has
+Patient "1" --> "1" MedicalRecord : has
+
 @enduml

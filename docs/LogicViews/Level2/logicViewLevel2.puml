@@ -20,6 +20,7 @@ component "Heallthcare System" <<component>> {
  
  interface "Backend API" as BEAPI
  interface "Planning API" as PAPI
+ interface "NodeBackendAPI" as NBEAPI
 
   component "Planning" <<component>> {
     portout " " as POPLANNING
@@ -38,6 +39,11 @@ component "Heallthcare System" <<component>> {
     portout " " as BEPOAUTH0
     portout " " as BEPOSMTP
   }
+
+  component "NodeBackend" <<component>> {
+    portin " " as NBEPI
+    portout " " as NBEPOAUTH0
+  }
  
  POPLANNING -( BEAPI
   POFE --( BEAPI
@@ -45,7 +51,8 @@ component "Heallthcare System" <<component>> {
   POHM --( BEAPI
   BEPI -( PAPI
   POPLANNING -- PAPI
-
+  NBEPI -- NBEAPI
+  NBEPOAUTH0 --( AUTH0
  
 }
  
