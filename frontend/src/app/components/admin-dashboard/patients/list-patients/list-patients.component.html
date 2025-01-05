@@ -66,7 +66,6 @@
           <div class="col text-center" style="flex: 3;">Email</div>
           <div class="col text-center" style="flex: 1;">Phone Number</div>
           <div class="col text-center" style="flex: 2;">Address</div>
-          <div class="col text-center" style="flex: 1;">Medical Record</div>
           <div class="col text-center" style="flex: 1;">Emergency Contact</div>
           <div class="col text-center" style="flex: 1;">Actions</div>
         </div>
@@ -106,15 +105,6 @@
 
           <div class="col p-2 text-center" style="flex: 2;">
             {{ patient.address || 'Not specified' }}
-          </div>
-
-          <div class="col p-2 text-center" style="flex: 1;">
-            <p-button
-              icon="pi pi-eye"
-              label="View"
-              (click)="showMedicalHistory(patient.medicalRecord)"
-              class="p-button-sm">
-            </p-button>
           </div>
 
           <div class="col p-2 text-center" style="flex: 1;">
