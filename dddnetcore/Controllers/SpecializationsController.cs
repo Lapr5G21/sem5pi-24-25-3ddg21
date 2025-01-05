@@ -21,7 +21,6 @@ namespace DDDSample1.Controllers
 
         // GET: api/specializations
         [HttpGet]
-        [Authorize(Policy="AdminRole")]
         public async Task<ActionResult<IEnumerable<SpecializationDto>>> GetAll()
         {
             var specializations = await _service.GetAllAsync();
@@ -29,7 +28,6 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/specializations/{id}
-        [Authorize(Policy="AdminRole")]
         [HttpGet("{id}")]
         public async Task<ActionResult<SpecializationDto>> GetById(string id)
         {
@@ -44,7 +42,6 @@ namespace DDDSample1.Controllers
         }
 
         // POST: api/specializations
-        [Authorize(Policy="AdminRole")]
         [HttpPost]
         public async Task<ActionResult<SpecializationDto>> Create([FromBody] CreatingSpecializationDto dto)
         {
