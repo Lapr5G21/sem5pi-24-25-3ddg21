@@ -13,6 +13,9 @@ class MedicalConditionSymptoms extends ValueObject_1.ValueObject {
     }
     static create(props) {
         const propsResult = Guard_1.Guard.againstNullOrUndefined(props.symptoms, 'symptoms');
+        if (props.symptoms.length > 2048) {
+            return Result_1.Result.fail("Medical condition symptoms its too long");
+        }
         if (!propsResult.succeeded) {
             return Result_1.Result.fail(propsResult.message);
         }

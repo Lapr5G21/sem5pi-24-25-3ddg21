@@ -17,15 +17,19 @@ exports.default = (app) => {
             id: celebrate_1.Joi.string().required(),
         }),
     }), (req, res, next) => ctrl.getMedicalRecord(req, res, next));
-    route.post('', (req, res, next) => ctrl.createMedicalRecord(req, res, next));
-    route.put('/medicalRecords/:id', (0, celebrate_1.celebrate)({
-        body: celebrate_1.Joi.object({
-            name: celebrate_1.Joi.string().required(),
-            code: celebrate_1.Joi.string().required(),
-            description: celebrate_1.Joi.string().required()
-        }),
+    route.get('/patientMedicalRecordNumber/:patientMedicalRecordNumber', (0, celebrate_1.celebrate)({
         params: celebrate_1.Joi.object({
+            patientMedicalRecordNumber: celebrate_1.Joi.string().required(),
+        }),
+    }), (req, res, next) => ctrl.getByPatientMedicalRecordNumber(req, res, next));
+    route.post('', (req, res, next) => ctrl.createMedicalRecord(req, res, next));
+    route.put('', (0, celebrate_1.celebrate)({
+        body: celebrate_1.Joi.object({
             id: celebrate_1.Joi.string().required(),
+            patientMedicalRecordNumber: celebrate_1.Joi.string().required(),
+            allergiesId: celebrate_1.Joi.array().items(celebrate_1.Joi.string()).required(),
+            medicalConditionsId: celebrate_1.Joi.array().items(celebrate_1.Joi.string()).required(),
+            notations: celebrate_1.Joi.string().required(),
         }),
     }), (req, res, next) => ctrl.updateMedicalRecord(req, res, next));
 };

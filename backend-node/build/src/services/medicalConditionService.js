@@ -123,7 +123,6 @@ let MedicalConditionService = class MedicalConditionService {
                 medicalCondition.props.description = descriptionOrError.getValue();
             if (symptomsOrError.isSuccess)
                 medicalCondition.props.symptoms = symptomsOrError.getValue();
-            console.log("medical condition FINALLLLLLLLLLLLLv", medicalCondition);
             await this.medicalConditionRepo.save(medicalCondition);
             const medicalConditionDTOResult = MedicalConditionMap_1.MedicalConditionMap.toDTO(medicalCondition.props);
             return Result_1.Result.ok(medicalConditionDTOResult);

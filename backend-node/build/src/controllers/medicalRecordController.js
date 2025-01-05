@@ -23,55 +23,66 @@ let MedicalRecordController = class MedicalRecordController {
     }
     async getMedicalRecord(req, res, next) {
         try {
-            const medicalRecord = await this.medicalRecordServiceInstance.getMedicalRecord(req.params.id);
-            if (medicalRecord === null) {
-                return res.status(404).send("Medical Record not found or error in retrieving medical record ");
+            const medicalRecordOrError = await this.medicalRecordServiceInstance.getMedicalRecord(req.params.id);
+            if (medicalRecordOrError.isFailure) {
+                return res.status(404).json({ message: medicalRecordOrError.errorValue() });
             }
-            return res.json(medicalRecord).status(200);
+            console.log("Medical record or error", medicalRecordOrError);
+            return res.status(200).json(medicalRecordOrError.getValue());
         }
         catch (err) {
+            console.error("Error retrieving medical record:", err);
             res.status(500).json({ message: err.message });
         }
     }
-    ;
+    async getByPatientMedicalRecordNumber(req, res) {
+        const { patientMedicalRecordNumber } = req.params;
+        try {
+            const medicalRecordOrError = await this.medicalRecordServiceInstance.getByPatientMedicalRecordNumber(patientMedicalRecordNumber);
+            if (medicalRecordOrError.isFailure) {
+                return res.status(404).json({ message: medicalRecordOrError.errorValue() });
+            }
+            return res.status(200).json(medicalRecordOrError.getValue());
+        }
+        catch (err) {
+            console.error("Error retrieving medical record by number:", err);
+            return res.status(500).json({ message: err.message });
+        }
+    }
     // api/medicalRecords
     async getAllMedicalRecords(req, res, next) {
         try {
-            console.log('Entering getAllMedicalRecords controller');
             const result = await this.medicalRecordServiceInstance.getAllMedicalRecords();
-            if (result === null) {
-                return res.status(404).send("Failed to retrieve medical records");
+            if (result.isFailure) {
+                return res.status(404).json({ message: "Failed to retrieve medical records" });
             }
-            const medicalRecordsDTO = result.getValue();
-            return res.json(medicalRecordsDTO).status(200);
+            return res.status(200).json(result.getValue());
         }
         catch (err) {
+            console.error("Error retrieving all medical records:", err);
             res.status(500).json({ message: err.message });
         }
     }
-    ;
     // api/medicalRecords
     async createMedicalRecord(req, res, next) {
         try {
             const medicalRecordOrError = await this.medicalRecordServiceInstance.createMedicalRecord(req.body);
             if (medicalRecordOrError.isFailure) {
-                return res.status(402).send("Error creating medicalRecord");
+                return res.status(400).json({ message: medicalRecordOrError.errorValue() });
             }
-            const medicalRecordDTO = medicalRecordOrError.getValue();
-            return res.json(medicalRecordDTO).status(201);
+            return res.status(201).json(medicalRecordOrError.getValue());
         }
         catch (e) {
-            console.error('Error creating medical record:', e);
-            return next(e);
+            console.error("Error creating medical record:", e);
+            res.status(500).json({ message: e.message });
         }
     }
-    ;
-    // api/medicalRecords/:id
+    // api/medicalRecords
     async updateMedicalRecord(req, res, next) {
         try {
             const medicalRecordOrError = await this.medicalRecordServiceInstance.updateMedicalRecord(req.body);
             if (medicalRecordOrError.isFailure) {
-                return res.status(404).send("Medical Record not found");
+                return res.status(404).send();
             }
             const medicalRecordDTO = medicalRecordOrError.getValue();
             return res.status(201).json(medicalRecordDTO);
@@ -80,7 +91,6 @@ let MedicalRecordController = class MedicalRecordController {
             return next(e);
         }
     }
-    ;
 };
 MedicalRecordController = __decorate([
     (0, typedi_1.Service)(),

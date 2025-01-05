@@ -6,36 +6,52 @@ const UniqueEntityID_1 = require("../core/domain/UniqueEntityID");
 const medicalRecord_1 = require("../domain/MedicalRecord/medicalRecord");
 class MedicalRecordMap extends Mapper_1.Mapper {
     static toDTO(medicalRecord) {
-        var _a;
+        var _a, _b, _c;
+        // Verifica se o registro médico é nulo ou indefinido
         if (!medicalRecord) {
-            console.error("MedicalRecord is null or undefined aqui.");
+            console.error("MedicalRecord is null or undefined.");
             return null;
         }
+        // Acessa os dados do registro médico
         const rawData = medicalRecord._doc || medicalRecord;
-        if (!rawData) {
-            console.error("Invalid medicalCondition object structure:", medicalRecord);
+        console.log('rawData bbbbbbbbbbbbbbbbbbbbbbbbb', rawData);
+        // Verifica se rawData é válido
+        if (!rawData || typeof rawData !== 'object') {
+            console.error("Invalid medicalRecord object structure:", medicalRecord);
             return null;
         }
+        // Verifica os dados do registro médico
+        console.log("rawData:", rawData); // Verificando os dados antes de mapear
+        // Retorna o DTO com os dados processados
         return {
             id: rawData.domainId || ((_a = medicalRecord._id) === null || _a === void 0 ? void 0 : _a.toString()) || null,
             patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,
-            allergiesID: rawData.allergiesID || [],
-            medicalConditionsID: rawData.medicalConditionsID || [],
+            allergiesId: ((_b = rawData.allergiesId) === null || _b === void 0 ? void 0 : _b.map((a) => a._id || a)) || [],
+            medicalConditionsId: ((_c = rawData.medicalConditionsId) === null || _c === void 0 ? void 0 : _c.map((mc) => mc._id || mc)) || [],
+            notations: rawData.notations || null, // Notações do prontuário
         };
     }
     static toDomain(medicalRecord) {
-        console.log("todomain", medicalRecord);
-        const medicalRecordOrError = medicalRecord_1.MedicalRecord.create(medicalRecord, new UniqueEntityID_1.UniqueEntityID(medicalRecord.domainId));
-        medicalRecordOrError.isFailure ? console.log(medicalRecordOrError.error) : '';
-        console.log(" toDomain : ", medicalRecordOrError);
+        console.log("toDomain input medicalRecord:", medicalRecord);
+        const medicalRecordProps = {
+            patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber,
+            allergiesId: medicalRecord.allergies || [],
+            medicalConditionsId: medicalRecord.medicalConditions || [],
+            notations: medicalRecord.notations || null,
+        };
+        const medicalRecordOrError = medicalRecord_1.MedicalRecord.create(medicalRecordProps, new UniqueEntityID_1.UniqueEntityID(medicalRecord.domainId));
+        if (medicalRecordOrError.isFailure) {
+            console.error("Error creating MedicalRecord domain object:", medicalRecordOrError.error);
+        }
         return medicalRecordOrError.isSuccess ? medicalRecordOrError.getValue() : null;
     }
     static toPersistence(medicalRecord) {
         return {
             id: medicalRecord.id.toString(),
-            patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber.value,
-            allergies: medicalRecord.allergiesID,
-            medicalConditions: medicalRecord.medicalConditionsID,
+            patientMedicalRecordNumber: medicalRecord.props.patientMedicalRecordNumber.value,
+            allergies: medicalRecord.props.allergiesId.map(allergy => allergy.props.allergies.toString()),
+            medicalConditions: medicalRecord.props.medicalConditionsId.map(condition => condition.props.medicalConditions.toString()),
+            notations: medicalRecord.props.notations.value,
         };
     }
 }

@@ -13,7 +13,7 @@ class AllergyDescription extends ValueObject_1.ValueObject {
     }
     static create(props) {
         const propsResult = Guard_1.Guard.againstNullOrUndefined(props.description, 'description');
-        if (props.description.length > 200) {
+        if (props.description.length > 2048) {
             return Result_1.Result.fail("Allergy description its too long");
         }
         if (!propsResult.succeeded) {

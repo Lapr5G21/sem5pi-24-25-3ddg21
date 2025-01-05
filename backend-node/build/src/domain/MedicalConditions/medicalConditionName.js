@@ -13,6 +13,9 @@ class MedicalConditionName extends ValueObject_1.ValueObject {
     }
     static create(props) {
         const propsResult = Guard_1.Guard.againstNullOrUndefined(props.name, 'name');
+        if (props.name.length > 100) {
+            return Result_1.Result.fail("Medical condition name its too long");
+        }
         if (!propsResult.succeeded) {
             return Result_1.Result.fail(propsResult.message);
         }

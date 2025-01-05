@@ -42,8 +42,9 @@ let MedicalRecordRepo = class MedicalRecordRepo {
             }
             else {
                 medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
-                medicalRecordDocument.allergiesID = medicalRecord.props.allergiesID.map(a => a.toString());
-                medicalRecordDocument.medicalConditionsID = medicalRecord.medicalConditionsID.map(a => a.toString());
+                medicalRecordDocument.allergiesId = medicalRecord.props.allergiesId.map(a => a.toString());
+                medicalRecordDocument.medicalConditionsId = medicalRecord.medicalConditionsId.map(c => c.toString());
+                medicalRecordDocument.notations = medicalRecord.props.notations.value;
                 await medicalRecordDocument.save();
                 return MedicalRecordMap_1.MedicalRecordMap.toDomain(medicalRecordDocument);
             }
@@ -55,7 +56,6 @@ let MedicalRecordRepo = class MedicalRecordRepo {
     async getAll() {
         try {
             const medicalRecordDocuments = await this.medicalRecordSchema.find({}).exec();
-            console.log("repo:", medicalRecordDocuments);
             return medicalRecordDocuments.map(doc => MedicalRecordMap_1.MedicalRecordMap.toDomain(doc));
         }
         catch (err) {
@@ -65,6 +65,7 @@ let MedicalRecordRepo = class MedicalRecordRepo {
     async findByDomainId(medicalRecordId) {
         const query = { domainId: medicalRecordId.toString() };
         const medicalRecordRecord = await this.medicalRecordSchema.findOne(query);
+        console.log("Find by id", medicalRecordRecord);
         if (medicalRecordRecord != null) {
             return MedicalRecordMap_1.MedicalRecordMap.toDomain(medicalRecordRecord);
         }
@@ -74,6 +75,20 @@ let MedicalRecordRepo = class MedicalRecordRepo {
     catch(error) {
         console.error('Error finding medical record:', error);
         return null;
+    }
+    async findByPatientMedicalRecordNumber(patientMedicalRecordNumber) {
+        try {
+            const query = { patientMedicalRecordNumber };
+            const medicalRecordDocument = await this.medicalRecordSchema.findOne(query);
+            if (medicalRecordDocument != null) {
+                return MedicalRecordMap_1.MedicalRecordMap.toDomain(medicalRecordDocument);
+            }
+            return null;
+        }
+        catch (err) {
+            console.error(`Erro ao encontrar prontuário por número de prontuário: ${err.message}`);
+            throw new Error(`Error finding medical record: ${err.message}`);
+        }
     }
     async delete(medicalRecord) {
         const query = { domainId: medicalRecord.id.toString() };

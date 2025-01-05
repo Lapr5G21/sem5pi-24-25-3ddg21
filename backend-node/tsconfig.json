@@ -24,9 +24,9 @@
     "esModuleInterop": true
   },
   "include": [
-    "./src/**/*", "index.js","test"
+    "./src/**/*", "index.js",
   ],
   "exclude": [
-    "node_modules",
+    "node_modules","tests",
   ]
 }

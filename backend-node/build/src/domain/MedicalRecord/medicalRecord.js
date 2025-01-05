@@ -18,17 +18,23 @@ class MedicalRecord extends AggregateRoot_1.AggregateRoot {
     set patientMedicalRecordNumber(value) {
         this.props.patientMedicalRecordNumber = value;
     }
-    get allergiesID() {
-        return this.props.allergiesID;
+    get allergiesId() {
+        return this.props.allergiesId;
     }
-    set allergiesID(value) {
-        this.props.allergiesID = value;
+    set allergiesId(value) {
+        this.props.allergiesId = value;
     }
-    get medicalConditionsID() {
-        return this.props.medicalConditionsID;
+    get medicalConditionsId() {
+        return this.props.medicalConditionsId;
     }
-    set medicalConditionsID(value) {
-        this.props.medicalConditionsID = value;
+    set medicalConditionsId(value) {
+        this.props.medicalConditionsId = value;
+    }
+    get notations() {
+        return this.props.notations;
+    }
+    set notations(value) {
+        this.props.notations = value;
     }
     constructor(props, id) {
         super(props, id);
@@ -36,8 +42,9 @@ class MedicalRecord extends AggregateRoot_1.AggregateRoot {
     static create(props, id) {
         const guardedProps = [
             { argument: props.patientMedicalRecordNumber, argumentName: 'patientMedicalRecordNumber' },
-            { argument: props.allergiesID, argumentName: 'allergiesID' },
-            { argument: props.medicalConditionsID, argumentName: 'medicalConditionsID' },
+            { argument: props.allergiesId, argumentName: 'allergiesId' },
+            { argument: props.medicalConditionsId, argumentName: 'medicalConditionsId' },
+            { argument: props.notations, argumentName: 'notations' }
         ];
         const guardResult = Guard_1.Guard.againstNullOrUndefinedBulk(guardedProps);
         if (!guardResult.succeeded) {

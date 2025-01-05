@@ -24,10 +24,10 @@ let MedicalConditionController = class MedicalConditionController {
     async getMedicalCondition(req, res, next) {
         try {
             const medicalCondition = await this.medicalConditionServiceInstance.getMedicalCondition(req.params.id);
-            if (medicalCondition === null) {
+            if (medicalCondition.isFailure) {
                 return res.status(404).send("Medical condition not found or error in retrieving medical condition");
             }
-            return res.json(medicalCondition).status(200);
+            return res.status(200).json(medicalCondition.getValue());
         }
         catch (err) {
             res.status(500).json({ message: err.message });
@@ -86,7 +86,7 @@ let MedicalConditionController = class MedicalConditionController {
         }
     }
     ;
-    // api/medicalConditions/:id
+    // api/medicalConditions
     async updateMedicalCondition(req, res, next) {
         try {
             const medicalConditionOrError = await this.medicalConditionServiceInstance.updateMedicalCondition(req.body);
