@@ -7,11 +7,12 @@ import { CreateStaffsComponent } from './components/admin-dashboard/staffs/creat
 import { ListStaffsComponent } from './components/admin-dashboard/staffs/list-staffs/list-staffs.component';
 import { MenubarComponent } from './components/menubar/menubar.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,AdminDashboardComponent,MenubarComponent],
+  imports: [RouterOutlet,AdminDashboardComponent,MenubarComponent,CheckboxModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

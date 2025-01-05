@@ -93,7 +93,7 @@ export class ListOperationRequestsComponent implements OnInit {
   SurgeryRoomId: string = '';
   OperationRequestId: string = ''; // Variável para armazenar o ID do request selecionado
   Date: string = '';
-  TeamIds: string[] = [];
+  TeamIds: { label: string, value: string }[] = [];
   AuxiliarDate: Date | null = null;
 
   isSurgeryRoomIdValid: boolean = true;
@@ -388,56 +388,57 @@ export class ListOperationRequestsComponent implements OnInit {
       return this.appointmentStatusMap.get(this.OperationRequestId) || false;
     }
 
-     saveAppointment() {
-            this.isSubmitted = true;
-            this.validateFields();
+    saveAppointment() {
+      this.isSubmitted = true;
+      this.validateFields();
     
-            if (this.isSurgeryRoomIdValid && this.isAuxiliarDateValid && this.isTeamIdsValid !== null) {
-
-              // Formatar a data no formato ISO 8601 sem o sufixo 'Z'
-              const formattedDate = this.AuxiliarDate
-              ? new Date(this.AuxiliarDate).toISOString().slice(0, 19)
-              : '';
-              console.log(this.TeamIds);
-              const teamIdValues: string[] = this.TeamIds;  
-
-              console.log(teamIdValues);
-
-                const appointment = new CreatingAppointmentDto(
-                this.SurgeryRoomId,
-                this.OperationRequestId,
-                formattedDate,
-                teamIdValues,
-            );
+      // Verificar se todos os campos são válidos
+      if (this.isSurgeryRoomIdValid && this.isAuxiliarDateValid && this.isTeamIdsValid !== null) {
+        // Formatar a data no formato ISO 8601
+        const formattedDate = this.AuxiliarDate
+          ? new Date(this.AuxiliarDate).toISOString().slice(0, 19)  // Remover o sufixo 'Z'
+          : '';
     
-            console.log('Payload:', JSON.stringify(appointment));
+        // Transformar os TeamIds (labels/values) em um array de strings com os staffIds
+        const teamIdValues: string[] = this.TeamIds.map((team: any) => team.value);
     
-            this.appointmentService.saveAppointment(appointment).subscribe(
-                () => {
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Success',
-                        detail: 'Appointment Successfully Saved!'
-                    });
-                    this.appointmentStatusMap.set(this.OperationRequestId, true);  // Atualizar o estado do request para "Appointment Created"
-                    this.resetForm();
-                    this.appointmentDialog = false;
-                    this.isSubmitted = false;
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500); 
-                },
-                (error) => {
-                    console.error('Appointment Saving Error:', error);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Erro',
-                        detail: 'The appointment could not be saved'
-                    });
-                }
-            );
-        }
-        }
+        console.log('Surgery Room ID:', this.SurgeryRoomId);
+        console.log('Formatted Date:', formattedDate);
+        console.log('Team IDs:', teamIdValues);
+    
+        // Criar o DTO de nova consulta
+        const appointment = new CreatingAppointmentDto(
+          this.SurgeryRoomId,           // ID da sala de cirurgia
+          this.OperationRequestId,      // ID do pedido de operação
+          formattedDate,                // Data auxiliar no formato ISO
+          teamIdValues                  // IDs da equipe
+        );
+    
+        // Chamar o serviço para salvar a consulta
+        this.appointmentService.saveAppointment(appointment).subscribe({
+          next: (response) => {
+            console.log('Appointment created successfully:', response);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Appointment created successfully!',
+            });
+    
+            this.appointmentDialog = false; // Fechar o diálogo
+            this.loadOperationRequests();  // Recarregar os pedidos de operação
+          },
+          error: (error) => {
+            console.error('Error creating appointment:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to create appointment.',
+            });
+          }
+        });
+      }
+    }    
+    
 
 
         validateFields() {

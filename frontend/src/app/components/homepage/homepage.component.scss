@@ -56,4 +56,30 @@
     padding-top: 10px;
     margin: 1;
   }
+
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    margin-left: 40px; /* Ajuste a margem conforme necessário */
+  }
+  
+  .privacy-checkbox {
+    margin-right: 10px; /* Espaçamento entre a checkbox e o texto */
+    transform: scale(1.2); /* Aumenta o tamanho da checkbox */
+  }
+  
+  .privacy-policy-label {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .privacy-policy-label a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .privacy-policy-label a:hover {
+    text-decoration: underline;
+  }
   
