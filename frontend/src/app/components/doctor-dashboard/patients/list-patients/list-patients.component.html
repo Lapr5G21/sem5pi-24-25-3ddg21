@@ -108,28 +108,9 @@
           </div>
 
           <div class="col p-2 text-center" style="flex: 1;">
-          <!-- Verifica se o histórico médico do paciente já existe -->
-          <ng-container *ngIf="patient.medicalRecord">
-            <!-- Se existir, mostra o botão "View" -->
-            <p-button
-              icon="pi pi-eye"
-              label="View"
-              (click)="showMedicalHistory(patient.medicalRecordNumber)"
-              class="p-button-sm">
-            </p-button>
-          </ng-container>
-          <ng-container *ngIf="!patient.medicalRecord">
-            <!-- Se não existir, mostra o botão "Create Medical Record" -->
-            <p-button
-              icon="pi pi-plus"
-              label="Create"
-              class="p-button-sm">
-            </p-button>
-          </ng-container>
-
+            <p-button icon="pi pi-eye" label="View" (click)="showMedicalHistory(patient.medicalRecordNumber)" class="p-button-sm"></p-button>
           </div>
         
-
           <div class="col p-2 text-center" style="flex: 1;">
             {{ patient.emergencyContact || 'Not specified' }}
           </div>
@@ -155,7 +136,7 @@
               </div>
               
               <div class="grid grid-nogutter text-center border-top-1 surface-border" style="padding-top: 10px">
-                <div class="col font-bold text-900" style="flex: 2;">{{ medicalRecord.patientMedicalRecordNumber || 'Not specified' }}</div>
+                <div class="col font-bold text-900" style="flex: 2;">{{ medicalRecord.patientMedicalRecordNumber || 'Medical record not created yet' }}</div>
                 <div class="col" style="flex: 2;">
                   <p-button icon="pi pi-pencil" [outlined]="true" label="Edit" (click)="showAllergies(medicalRecord)" [style]="{ 'color': '#2196F3', 'border-color': '#2196F3' }"></p-button>
                 </div>
