@@ -7,7 +7,7 @@ participant SYS as "Backend Management" <<system>>
 
 activate Doctor
 
- Doctor -> Frontend : asks to update an Allergy
+ Doctor -> Frontend : asks to update an medical record
 
     activate Frontend
 
@@ -18,7 +18,7 @@ activate Doctor
  Doctor -> Frontend : update data
 
     activate Frontend
-        Frontend-> SYS : PUT /allergies 
+        Frontend-> SYS : PUT /medicalRecords 
         activate SYS
 
             Frontend <-- SYS : 200 OK

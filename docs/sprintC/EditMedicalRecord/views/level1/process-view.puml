@@ -5,11 +5,11 @@ participant SYS as "HealthCare System" <<system>>
 
 activate Doctor
 
-    Doctor -> SYS : asks to update an allergy
+    Doctor -> SYS : asks to update an medical record
     
     activate SYS
 
-        SYS --> Doctor : asks to edit allergy data
+        SYS --> Doctor : asks to edit medical record data
 
     deactivate SYS
 

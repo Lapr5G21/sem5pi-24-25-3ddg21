@@ -9,13 +9,13 @@ participant Component as "Component" <<component (C4)>>
 participant Service as "Service" <<component (C4)>>
 participant HTTP as "HTTP" <<component (C4)>>
 
-participant CTRL as "AllergyController" <<component (C4)>>
-participant AllergyService as "AllergyService" <<component (C4)>>
-participant AllergyRepo as "AllergyRepo" <<persistence>>
-participant Allergy as "Allergy" <<domain>>
+participant CTRL as "MedicalRecordController" <<component (C4)>>
+participant MedicalRecordService as "MedicalRecordService" <<component (C4)>>
+participant MedicalRecordRepo as "MedicalRecordRepo" <<persistence>>
+participant MedicalRecord as "MedicalRecord" <<domain>>
 activate Doctor
 
-    Doctor -> ComponentUI : selects edit properttie from Allergies List
+    Doctor -> ComponentUI : selects edit properttie from MedicalRecords List
     activate ComponentUI
 
         ComponentUI --> Doctor : displays old data and asks to update
@@ -26,61 +26,61 @@ activate Doctor
 
     activate ComponentUI
 
-        ComponentUI -> Component : update Allergy
+        ComponentUI -> Component : update MedicalRecord
         activate Component
 
             Component -> Service** : create
 
-            Component -> Service : update allergy
+            Component -> Service : update medicalRecord
             activate Service
 
-                Service -> HTTP : put('/allergies')
+                Service -> HTTP : put('/medicalRecords')
 
                 activate HTTP
-                    HTTP -> CTRL : PUT /allergies
+                    HTTP -> CTRL : PUT /medicalRecords
                     activate CTRL
 
-                    CTRL -> AllergyService : updateAsync(AllergyDto)
+                    CTRL -> MedicalRecordService : updateAsync(IMedicalRecordDto)
                     
-                    activate AllergyService 
+                    activate MedicalRecordService 
 
-                    AllergyService -> AllergyRepo : getByIdAsync(AllergyDto.id)
+                    MedicalRecordService -> MedicalRecordRepo : getByIdAsync(IMedicalRecordDto.id)
 
-                    activate AllergyRepo 
+                    activate MedicalRecordRepo 
 
-                    AllergyRepo --> AllergyService : Allergy
+                    MedicalRecordRepo --> MedicalRecordService : MedicalRecord
 
-                    deactivate AllergyRepo
+                    deactivate MedicalRecordRepo
 
-                    AllergyService -> Allergy : ChangeAllergyName(AllergyDto.name)
-                    AllergyService -> Allergy : ChangeAllergyCode(AllergyDto.code)
-                    AllergyService -> Allergy : ChangeAllergyDescription(AllergyDto.description)
+                    MedicalRecordService -> MedicalRecord : ChangeMedicalRecordAllergiesId(IMedicalRecordDto.allergiesId)
+                    MedicalRecordService -> MedicalRecord : ChangeMedicalRecordMedicalConditionsId(IMedicalRecordDto.medicalConditionsId)
+                    MedicalRecordService -> MedicalRecord : ChangeMedicalRecordNotations(IMedicalRecordDto.notations)
 
-                    AllergyService -> AllergyRepo : save(Allergy)
+                    MedicalRecordService -> MedicalRecordRepo : save(MedicalRecord)
 
-                    activate AllergyRepo 
+                    activate MedicalRecordRepo 
 
-                    AllergyRepo --> AllergyService : Allergy
+                    MedicalRecordRepo --> MedicalRecordService : MedicalRecord
 
-                    deactivate AllergyRepo
+                    deactivate MedicalRecordRepo
 
-                    AllergyService -> AllergyService : toDto(Allergy)
+                    MedicalRecordService -> MedicalRecordService : toDto(MedicalRecord)
 
-                    AllergyService --> CTRL : AllergyDto
-                    deactivate AllergyService
+                    MedicalRecordService --> CTRL : IMedicalRecordDto
+                    deactivate MedicalRecordService
 
-                    CTRL --> HTTP : 200 (AllergyDto)
+                    CTRL --> HTTP : 200 (IMedicalRecordDto)
 
                     deactivate CTRL
                                         
-                    HTTP --> Service : AllergyDto
+                    HTTP --> Service : IMedicalRecordDto
 
                 deactivate HTTP
 
-                Service --> Component : AllergyDto
+                Service --> Component : IMedicalRecordDto
             deactivate Service
 
-            Component --> ComponentUI : AllergyDto
+            Component --> ComponentUI : IMedicalRecordDto
         deactivate Component
 
     Doctor <-- ComponentUI : shows updated data
