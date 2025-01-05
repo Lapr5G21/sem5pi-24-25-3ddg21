@@ -11,17 +11,20 @@ import { BadgeModule } from 'primeng/badge';
 @Component({
   selector: 'app-my-appointments',
   standalone: true,
-  imports: [CardModule, OverlayPanelModule, CommonModule,BadgeModule],
+  imports: [CardModule, OverlayPanelModule, CommonModule, BadgeModule],
   templateUrl: './my-appointments.component.html',
   styleUrl: './my-appointments.component.scss',
   providers: [DatePipe],
 })
 export class MyAppointmentsComponent implements OnInit {
   appointments: Appointment[] = [];
-  patientId: string = "";
-  datePipe: DatePipe = new DatePipe('en-US'); 
+  patientId: string = '';
+  datePipe: DatePipe = new DatePipe('en-US');
 
-  constructor(private appointmentService: AppointmentService, private patientService: PatientService) {}
+  constructor(
+    private appointmentService: AppointmentService,
+    private patientService: PatientService
+  ) {}
 
   ngOnInit(): void {
     this.getPatient();
@@ -48,10 +51,10 @@ export class MyAppointmentsComponent implements OnInit {
   loadAppointments(patientId: string) {
     this.appointmentService.getAppointmentsByPatient(patientId).subscribe(
       (data: Appointment[]) => {
-        console.log('Agendamentos recebidos:', data); // Verificar se os agendamentos estão sendo recebidos
-        this.appointments = data.map(appointment => ({
+        console.log('Agendamentos recebidos:', data);
+        this.appointments = data.map((appointment) => ({
           ...appointment,
-          status: this.calculateStatus(appointment.operationRequestDto.deadline)
+          status: this.calculateStatus(appointment.dateAndTime.toString()),
         }));
       },
       (error) => {
@@ -63,11 +66,30 @@ export class MyAppointmentsComponent implements OnInit {
   calculateStatus(deadline: string): string {
     const currentDate = new Date();
     const operationDate = new Date(deadline);
-    
-    // Status de agendamento baseado na data de operação
-    if (operationDate < currentDate) {
+
+    const currentHours = currentDate.getHours();
+    const currentMinutes = currentDate.getMinutes();
+
+    const operationHours = operationDate.getHours();
+    const operationMinutes = operationDate.getMinutes();
+
+    if (
+      operationDate < currentDate ||
+      (operationDate.getFullYear() === currentDate.getFullYear() &&
+        operationDate.getMonth() === currentDate.getMonth() &&
+        operationDate.getDate() === currentDate.getDate() &&
+        (operationHours < currentHours ||
+          (operationHours === currentHours && operationMinutes < currentMinutes)))
+    ) {
       return 'Done'; // Já passou
-    } else if (operationDate > currentDate) {
+    } else if (
+      operationDate > currentDate ||
+      (operationDate.getFullYear() === currentDate.getFullYear() &&
+        operationDate.getMonth() === currentDate.getMonth() &&
+        operationDate.getDate() === currentDate.getDate() &&
+        (operationHours > currentHours ||
+          (operationHours === currentHours && operationMinutes > currentMinutes)))
+    ) {
       return 'Upcoming'; // No futuro
     } else {
       return 'Ongoing'; // No presente
@@ -96,17 +118,26 @@ export class MyAppointmentsComponent implements OnInit {
     return '';
   }
 
-  getBadgeSeverity(status: string): 'success' | 'info' | 'warning' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast' | null | undefined {
+  getBadgeSeverity(status: string):
+    | 'success'
+    | 'info'
+    | 'warning'
+    | 'danger'
+    | 'help'
+    | 'primary'
+    | 'secondary'
+    | 'contrast'
+    | null
+    | undefined {
     switch (status) {
       case 'Upcoming':
-        return 'success';  // Cor verde para operações futuras
+        return 'info'; // Cor verde para operações futuras
       case 'Ongoing':
-        return 'warning';  // Cor amarela para operações em andamento
+        return 'warning'; // Cor amarela para operações em andamento
       case 'Done':
-        return 'success';  // Cor verde para operações concluídas
+        return 'success'; // Cor verde para operações concluídas
       default:
-        return 'info';  // Cor padrão para status desconhecido
+        return 'info'; // Cor padrão para status desconhecido
     }
-  }  
-  
+  }
 }
