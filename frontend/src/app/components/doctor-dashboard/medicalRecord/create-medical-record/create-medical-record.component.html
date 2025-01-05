@@ -46,15 +46,15 @@
             <label for="medicalConditionMultiSelect" class="p-text-secondary block">Select Medical Conditions:</label>
             <div class="card flex justify-content-center">
                 <p-multiSelect 
-    id="medicalConditionMultiSelect"
-    [options]="selectedMedicalConditions" 
-    [(ngModel)]="selectedMedicalConditionsId"
-    optionLabel="label"
-    placeholder="Select Medical Conditions" 
-    [style]="{width:'25rem'}"
-    [ngModelOptions]="{standalone: true}"
-    (onChange)="onMedicalConditionsChange($event)">
-</p-multiSelect>
+                    id="medicalConditionMultiSelect"
+                    [options]="selectedMedicalConditions" 
+                    [(ngModel)]="selectedMedicalConditionsId"
+                    optionLabel="label"
+                    placeholder="Select Medical Conditions" 
+                    [style]="{width:'25rem'}"
+                    [ngModelOptions]="{standalone: true}"
+                    (onChange)="onMedicalConditionsChange($event)">
+                </p-multiSelect>
             </div>
         </div>
 
