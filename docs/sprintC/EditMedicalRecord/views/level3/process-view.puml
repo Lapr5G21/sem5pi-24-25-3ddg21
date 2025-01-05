@@ -1,0 +1,91 @@
+@startuml process-view
+autonumber
+skinparam DefaultTextAlignment center
+
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant CTRL as "AllergyController" <<component (C4)>>
+participant AllergyService as "AllergyService" <<component (C4)>>
+participant AllergyRepo as "AllergyRepo" <<persistence>>
+participant Allergy as "Allergy" <<domain>>
+activate Doctor
+
+    Doctor -> ComponentUI : selects edit properttie from Allergies List
+    activate ComponentUI
+
+        ComponentUI --> Doctor : displays old data and asks to update
+    
+    deactivate ComponentUI
+
+    Doctor -> ComponentUI : update data and confirm
+
+    activate ComponentUI
+
+        ComponentUI -> Component : update Allergy
+        activate Component
+
+            Component -> Service** : create
+
+            Component -> Service : update allergy
+            activate Service
+
+                Service -> HTTP : put('/allergies')
+
+                activate HTTP
+                    HTTP -> CTRL : PUT /allergies
+                    activate CTRL
+
+                    CTRL -> AllergyService : updateAsync(AllergyDto)
+                    
+                    activate AllergyService 
+
+                    AllergyService -> AllergyRepo : getByIdAsync(AllergyDto.id)
+
+                    activate AllergyRepo 
+
+                    AllergyRepo --> AllergyService : Allergy
+
+                    deactivate AllergyRepo
+
+                    AllergyService -> Allergy : ChangeAllergyName(AllergyDto.name)
+                    AllergyService -> Allergy : ChangeAllergyCode(AllergyDto.code)
+                    AllergyService -> Allergy : ChangeAllergyDescription(AllergyDto.description)
+
+                    AllergyService -> AllergyRepo : save(Allergy)
+
+                    activate AllergyRepo 
+
+                    AllergyRepo --> AllergyService : Allergy
+
+                    deactivate AllergyRepo
+
+                    AllergyService -> AllergyService : toDto(Allergy)
+
+                    AllergyService --> CTRL : AllergyDto
+                    deactivate AllergyService
+
+                    CTRL --> HTTP : 200 (AllergyDto)
+
+                    deactivate CTRL
+                                        
+                    HTTP --> Service : AllergyDto
+
+                deactivate HTTP
+
+                Service --> Component : AllergyDto
+            deactivate Service
+
+            Component --> ComponentUI : AllergyDto
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows updated data
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml
