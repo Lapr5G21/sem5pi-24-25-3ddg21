@@ -11,37 +11,28 @@ export class MedicalRecordMap extends Mapper<MedicalRecord> {
   
   public static toDTO(medicalRecord: any): IMedicalRecordDTO | null {
 
-    // Verifica se o registro médico é nulo ou indefinido
     if (!medicalRecord) {
       console.error("MedicalRecord is null or undefined.");
       return null;
     }
   
-    // Acessa os dados do registro médico
     const rawData = medicalRecord._doc || medicalRecord;
-    console.log('rawData bbbbbbbbbbbbbbbbbbbbbbbbb', rawData);
 
-    // Verifica se rawData é válido
     if (!rawData || typeof rawData !== 'object') {
       console.error("Invalid medicalRecord object structure:", medicalRecord);
       return null;
     }
   
-    // Verifica os dados do registro médico
-    console.log("rawData:", rawData);  // Verificando os dados antes de mapear
-
-    // Retorna o DTO com os dados processados
     return {
-      id: rawData.domainId || medicalRecord._id?.toString() || null,  // ID do registro médico
-      patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,  // Número do prontuário
-      allergiesId: rawData.allergiesId?.map((a: any) => a._id || a) || [],  // IDs de alergias (garante que se a alergia for um objeto, o _id seja extraído)
-      medicalConditionsId: rawData.medicalConditionsId?.map((mc: any) => mc._id || mc) || [],  // IDs das condições médicas
-      notations: rawData.notations || null,  // Notações do prontuário
+      id: rawData.domainId || medicalRecord._id?.toString() || null,
+      patientMedicalRecordNumber: rawData.patientMedicalRecordNumber || null,
+      allergiesId: rawData.allergiesId?.map((a: any) => a._id || a) || [],
+      medicalConditionsId: rawData.medicalConditionsId?.map((mc: any) => mc._id || mc) || [],
+      notations: rawData.notations || null,
     };
   }
   
   public static toDomain(medicalRecord: any | Model<IMedicalRecordPersistence & Document>): MedicalRecord {
-    console.log("toDomain input medicalRecord:", medicalRecord);
   
     const medicalRecordProps = {
       patientMedicalRecordNumber: medicalRecord.patientMedicalRecordNumber,

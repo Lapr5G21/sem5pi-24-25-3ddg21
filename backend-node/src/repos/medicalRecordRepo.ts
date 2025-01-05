@@ -5,7 +5,6 @@ import { IMedicalRecordPersistence } from '../dataschema/IMedicalRecordPersisten
 import { MedicalRecord } from '../domain/MedicalRecord/medicalRecord';
 import { MedicalRecordId } from '../domain/MedicalRecord/medicalRecordId';
 import { MedicalRecordMap } from '../mappers/MedicalRecordMap';
-import { PatientMedicalRecordNumber } from '../domain/MedicalRecord/patientMedicalRecordNumber';
 
 @Service()
 export default class MedicalRecordRepo implements IMedicalRecordRepo {
@@ -48,10 +47,10 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
       } else {
 
         medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
-        medicalRecordDocument.allergiesId = medicalRecord.props.allergiesId.map(a => a.toString());
-        medicalRecordDocument.medicalConditionsId = medicalRecord.medicalConditionsId.map(c => c.toString());
+        medicalRecordDocument.patientMedicalRecordNumber = medicalRecord.props.patientMedicalRecordNumber.value;
+        medicalRecordDocument.allergies = medicalRecord.props.allergiesId.map(a => a.value).flat();
+        medicalRecordDocument.medicalConditions = medicalRecord.medicalConditionsId.map(c => c.value).flat();
         medicalRecordDocument.notations = medicalRecord.props.notations.value;
-        
 
         await medicalRecordDocument.save();
         return MedicalRecordMap.toDomain(medicalRecordDocument);
@@ -73,7 +72,6 @@ export default class MedicalRecordRepo implements IMedicalRecordRepo {
   public async findByDomainId (medicalRecordId: MedicalRecordId | string): Promise<MedicalRecord> {
     const query = { domainId: medicalRecordId.toString() };
     const medicalRecordRecord = await this.medicalRecordSchema.findOne( query as FilterQuery<IMedicalRecordPersistence & Document> );
-    console.log("Find by id", medicalRecordRecord);
     if( medicalRecordRecord != null) {
       return MedicalRecordMap.toDomain(medicalRecordRecord);
     }
