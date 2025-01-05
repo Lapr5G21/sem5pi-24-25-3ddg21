@@ -4,14 +4,14 @@ import { ProfileMenuComponent } from '../admin-dashboard/profile-menu-component/
 import { MenubarComponent } from '../menubar/menubar.component';
 import { MenuItem } from 'primeng/api';
 import { PatientAccountComponent } from './patient-account-component/patient-account-component.component';
-import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { MyAppointmentsComponent } from './my-appointments/my-appointments.component';
+import { DownloadMedicalRecordComponent } from './download-medical-record/download-medical-record.component';  // Importe o componente
 
 @Component({
   selector: 'app-patient-dashboard',
   standalone: true,
-  imports: [RouterOutlet, ProfileMenuComponent, MenubarComponent, PatientAccountComponent, CommonModule, MyAppointmentsComponent],
+  imports: [RouterOutlet, ProfileMenuComponent, MenubarComponent, PatientAccountComponent, CommonModule, MyAppointmentsComponent, DownloadMedicalRecordComponent],  // Adicione o componente aqui
   templateUrl: './patient-dashboard.component.html',
   styleUrls: ['./patient-dashboard.component.scss']
 })
@@ -19,9 +19,11 @@ export class PatientDashboardComponent {
   items: MenuItem[] = [];
   showPatientAccountPanel: boolean = false;
   showMyAppointments: boolean = false;
+
   @ViewChild(PatientAccountComponent) PatientAccountComponentComponent!: PatientAccountComponent;
   @ViewChild(MyAppointmentsComponent) MyAppointmentsComponent!: MyAppointmentsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
+  @ViewChild(DownloadMedicalRecordComponent) downloadMedicalRecordComponent!: DownloadMedicalRecordComponent;
 
   constructor(private router: Router) {}
 
@@ -39,6 +41,18 @@ export class PatientDashboardComponent {
           this.showPatientAccountPanel = false;
           this.showPatientAppointments();
         }
+      },
+      {
+        label: 'Medical Record',
+        items:[
+          {
+            label: 'Download',
+            icon: 'pi pi-download',
+            command: () => {
+              this.showDownloadMedicalRecord();
+            }
+            },
+        ]  
       },
       {
         label: 'Account',
@@ -73,11 +87,13 @@ export class PatientDashboardComponent {
     }
   }
 
-  logout() {
-    this.ProfileMenuComponent.logout();
+  showDownloadMedicalRecord() {
+    if (this.downloadMedicalRecordComponent) {
+      this.downloadMedicalRecordComponent.generatePDF();  
+    }  
   }
 
-  downloadMedicalRecord() {
-    
+  logout() {
+    this.ProfileMenuComponent.logout();
   }
 }

@@ -3,11 +3,17 @@
     <h1 class="dashboard-title">Patient Dashboard</h1>
 </div>
 <app-profile-menu></app-profile-menu>
+
+<!-- Mostrar o painel de conta do paciente -->
 <div *ngIf="showPatientAccountPanel">
     <app-patient-account></app-patient-account>
 </div>
+
+<!-- Mostrar os agendamentos do paciente -->
 <div *ngIf="showMyAppointments">
     <app-my-appointments></app-my-appointments>
-  </div>
-<router-outlet></router-outlet>
+</div>
 
+<app-download-medical-record></app-download-medical-record> <!-- Componente para o download -->
+
+<router-outlet></router-outlet>
