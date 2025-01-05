@@ -60,10 +60,10 @@
               <!-- Dados da operação -->
               <div class="flex flex-column md:flex-row justify-content-between md:align-items-start flex-1 gap-4">
                 <div class="flex flex-column gap-2">
-                  <span class="font-medium text-primary text-sm">Tipo de Operação: {{ getOperationTypeName(item.operationTypeId) }}</span>
-                  <span class="font-medium text-secondary text-sm">Data de Prazo: {{ item.deadlineDate ? (item.deadlineDate | date: 'dd/MM/yyyy') : 'Não especificado' }}</span>
-                  <span class="font-medium text-secondary text-sm">Médico: {{ getDoctorName(item.doctorId) }}</span>
-                  <span class="font-medium text-secondary text-sm">Paciente: {{ getPatientName(item.pacientMedicalRecordNumber) }}</span>
+                  <span class="font-medium text-primary text-sm">Operation Type: {{ getOperationTypeName(item.operationTypeId) }}</span>
+                  <span class="font-medium text-secondary text-sm">Deadline Date: {{ item.deadlineDate ? (item.deadlineDate | date: 'dd/MM/yyyy') : 'Não especificado' }}</span>
+                  <span class="font-medium text-secondary text-sm">Doctor: {{ getDoctorName(item.doctorId) }}</span>
+                  <span class="font-medium text-secondary text-sm">Patient: {{ getPatientName(item.pacientMedicalRecordNumber) }}</span>
                 </div>
               </div>
   
@@ -84,7 +84,7 @@
   
                 <div class="flex flex-row-reverse md:flex-row gap-2">
                   <p-button icon="pi pi-trash" styleClass="trash-button" [outlined]="true" (onClick)="confirmDeactivateOperationRequest(item.id)"></p-button>
-                  <p-button icon="pi pi-pencil" label="Editar" [disabled]="item.status === 'CONCLUÍDO'" (click)="openDialog(item)"></p-button>
+                  <p-button icon="pi pi-pencil" label="Edit" [disabled]="item.status === 'CONCLUÍDO'" (click)="openDialog(item)"></p-button>
                   <p-button *ngIf="!appointmentStatusMap.get(item.id)" icon="pi pi-calendar-plus" label="Transform into Appointment" (click)="openAppointmentDialog(item.id)"></p-button>
                 </div>
               </div>
@@ -107,7 +107,7 @@
   <div class="p-fluid">
     <div class="p-field">
       <p></p>
-      <label for="priority">Prioridade</label>
+      <label for="priority">Priority</label>
       <p></p>
       <p-dropdown 
         id="priority"
@@ -115,7 +115,7 @@
         [options]="priorityOptions"
         optionLabel="label"
         optionValue="value"
-        placeholder="Selecione a prioridade"
+        placeholder="Select Priority"
         class="p-dropdown-sm">
       </p-dropdown>
     </div>
@@ -130,7 +130,7 @@
         [options]="statusOptions"
         optionLabel="label"
         optionValue="value"
-        placeholder="Selecione o status"
+        placeholder="Select status"
         class="p-dropdown-sm">
       </p-dropdown>
     </div>
@@ -141,13 +141,13 @@
       <p></p>
       <p></p>
       <p></p>
-      <label for="deadlineDate">Data de Prazo</label>
+      <label for="deadlineDate">Deadline Date</label>
       
       <p-calendar 
         id="deadlineDate" 
         [(ngModel)]="operationRequest.deadlineDate" 
         [showIcon]="true" 
-        placeholder="Selecione a data de prazo"
+        placeholder="Select deadline date"
         [style]="{'width': '250px'}">
       </p-calendar>
     </div>
@@ -158,8 +158,8 @@
     <p></p>
     <p></p>
     <div class="p-dialog-footer">
-      <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="display = false"></button>
-      <button pButton type="button" label="Salvar" icon="pi pi-check" (click)="saveChanges()"></button>
+      <button pButton type="button" label="Cancel" icon="pi pi-times" (click)="display = false"></button>
+      <button pButton type="button" label="Save" icon="pi pi-check" (click)="saveChanges()"></button>
     </div>
 
     

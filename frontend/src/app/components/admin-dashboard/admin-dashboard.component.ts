@@ -333,7 +333,7 @@ export class AdminDashboardComponent implements OnInit {
         icon: 'pi pi-user',
         items: [
           {
-            label: 'Ver Perfil',
+            label: 'Profile',
             command: () => {
               this.openProfileDialog()
             }

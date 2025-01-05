@@ -94,6 +94,10 @@ export class PatientService {
       
         return this.http.delete(`${this.apiUrl}/patients/${mrn}`,{headers});    
       }
+
+      getPatientById(id: string): Observable<any> {
+        return this.http.get(`${this.apiUrl}/patients/${id}`);
+      }
       
 }
 

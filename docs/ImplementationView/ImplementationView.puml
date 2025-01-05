@@ -10,7 +10,7 @@ interface "Database API" as DBAPI
 interface "Auth0 API" as A0API
  
 component "\nBackend" <<component>> {
-  
+
 portin " " as PIAPI
 
 portout " " as PODBAPI
@@ -106,7 +106,7 @@ Persistence -d- PAPI
 Persistence --( DMAPI
 Persistence -u- PODBAPI
 
-  }
+}
 
 API -- PIAPI
 POA0 --( A0API

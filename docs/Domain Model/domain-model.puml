@@ -13,7 +13,6 @@ package UserAggregate #00ff00 {
     class Email <<ValueObject>> {}
     class Username <<ValueObject>> {}
     class Role <<ValueObject>> {}
-
     User "1" --> "1" Email 
     User "1" --> "1" Username
     User "1" --> "1" Role 
