@@ -1,0 +1,34 @@
+<div class="appointments">
+    <h2>Meus Agendamentos</h2>
+  
+    <div *ngFor="let appointment of appointments" class="appointment-card-container">
+      <p-card class="appointment-card" [ngClass]="getStatusClass(appointment.status)" header="{{ appointment.operationRequestDto.operationType.name }}">
+        <ng-template pTemplate="content">
+          <div class="appointment-details">
+            <p><strong>Duração da operação:</strong> {{ appointment.operationRequestDto.operationType.estimatedDuration }} minutos</p>
+            <p><strong>Data da operação:</strong> {{ formatDate(appointment.dateAndTime) }}</p>
+            <p><strong>Status:</strong>
+              <p-badge [value]="appointment.status" [severity]="getBadgeSeverity(appointment.status)"></p-badge>
+            </p>
+          </div>
+        </ng-template>
+  
+        <p-footer>
+          <!-- Botão com ícone de seta para baixo -->
+          <button pButton type="button" icon="pi pi-chevron-down" (click)="overlayPanel.toggle($event)" class="p-button p-button-outlined p-button-info p-button-lg">
+            Ver mais
+          </button>
+        </p-footer>
+  
+        <!-- OverlayPanel contendo os detalhes adicionais -->
+        <p-overlayPanel #overlayPanel [dismissable]="true">
+          <div class="overlay-content">
+            <p><strong>Anesthesia Duration:</strong> {{ appointment.operationRequestDto.operationType.anesthesiaTime }} minutes</p>
+            <p><strong>Surgery Duration:</strong> {{ appointment.operationRequestDto.operationType.surgeryTime }} minutes</p>
+            <p><strong>Cleaning Duration:</strong> {{ appointment.operationRequestDto.operationType.cleaningTime }} minutes</p>
+          </div>
+        </p-overlayPanel>
+      </p-card>
+    </div>
+  </div>
+  

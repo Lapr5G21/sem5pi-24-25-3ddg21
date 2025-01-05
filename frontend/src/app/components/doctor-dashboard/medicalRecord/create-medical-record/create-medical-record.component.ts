@@ -56,6 +56,27 @@ export class CreateMedicalRecordComponent {
     private messageService: MessageService
   ) {}
 
+  ngOnInit() {
+    this.loadMedicalConditions();
+    this.loadAllergies();
+    this.loadPacients();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.visible) {
+      this.resetForm();
+    }
+  }
+
+  showDialog() {
+    this.visible = true;
+  }
+
+  closeDialog() {
+    this.visible = false;
+    this.resetForm();
+  }
+
   loadAllergies(): void {
     this.allergyService.getAllergies().subscribe(
       (allergies) => {
@@ -97,27 +118,6 @@ export class CreateMedicalRecordComponent {
     );
   }
 
-  ngOnInit() {
-    this.loadMedicalConditions();
-    this.loadAllergies();
-    this.loadPacients();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (!this.visible) {
-      this.resetForm();
-    }
-  }
-
-  showDialog() {
-    this.visible = true;
-  }
-
-  closeDialog() {
-    this.visible = false;
-    this.resetForm();
-  }
-
   saveMedicalRecord() {
     console.log('Patient:', this.selectedPatient);
     console.log('Allergies:', this.selectedAllergies);
@@ -135,12 +135,21 @@ export class CreateMedicalRecordComponent {
         return;
     }
 
-    // Montar o objeto do registro médico
+    // Filtrar os campos de alergias e condições médicas para garantir que não sejam undefined
+    const allergiesId = this.selectedAllergiesId && this.selectedAllergiesId.length > 0 
+        ? this.selectedAllergiesId.map((allergy) => allergy.value) 
+        : [];
+
+    const medicalConditionsId = this.selectedMedicalConditionsId && this.selectedMedicalConditionsId.length > 0 
+        ? this.selectedMedicalConditionsId.map((condition) => condition.value) 
+        : [];
+
+    // Montar o objeto do registro médico com valores válidos
     const medicalRecord = {
         patientMedicalRecordNumber: this.selectedPatient.value,
-        allergiesId: this.selectedAllergiesId.map((allergy) => allergy.value),
-        medicalConditionsId: this.selectedMedicalConditionsId.map((condition) => condition.value),
-        notations: this.notations
+        allergiesId: this.selectedAllergiesId, // Se não houver alergias, será um array vazio
+        medicalConditionsId: this.selectedMedicalConditionsId, // Se não houver condições médicas, será um array vazio
+        notations: this.notations || '' // Garantir que as anotações não sejam undefined
     };
 
     console.log('Payload:', medicalRecord);
@@ -166,8 +175,7 @@ export class CreateMedicalRecordComponent {
             });
         }
     );
-}
-
+  }
 
   isFormValid(): boolean {
     return this.selectedPatient !== null;
@@ -177,5 +185,14 @@ export class CreateMedicalRecordComponent {
     this.selectedPatient = null;
     this.selectedAllergies = [];
     this.selectedMedicalConditions = [];
+    this.selectedAllergiesId = [];
+    this.selectedMedicalConditionsId = [];
+    this.notations = "";
   }
+
+  onMedicalConditionsChange(event: any) {
+    console.log('Selected Medical Conditions:', event.value);
+    this.selectedMedicalConditionsId = event.value;
+  }
+
 }

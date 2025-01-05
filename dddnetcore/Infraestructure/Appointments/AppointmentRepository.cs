@@ -35,6 +35,9 @@ namespace dddnetcore.Infraestructure.Appointments
             return await _context.Appointments
                 .Include(a => a.OperationRequest)
                 .Include(a => a.Room)
+                .ThenInclude(ar => ar.RoomType)
+                .Include(a => a.AppointmentTeam)
+                .ThenInclude(at => at.Staff)
                 .Where(a => a.OperationRequest.PatientMedicalRecordNumber == medicalRecordNumber)
                 .ToListAsync();
         }

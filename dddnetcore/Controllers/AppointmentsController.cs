@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDSample1.Domain.Appointments;
+using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -89,6 +90,14 @@ namespace DDDSample1.Controllers{
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentStaffs()
         {
             return await _service.GetAllAsync();
+        }
+
+        [HttpGet("patient/{id}")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentsByPatient(string id)
+        {
+            PatientMedicalRecordNumber patientMedicalRecordNumber = new PatientMedicalRecordNumber(id);
+
+            return await _service.GetAppointmentsByPatient(patientMedicalRecordNumber);
         }
     }
 }

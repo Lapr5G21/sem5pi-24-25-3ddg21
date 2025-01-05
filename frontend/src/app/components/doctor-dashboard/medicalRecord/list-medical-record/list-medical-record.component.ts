@@ -93,21 +93,16 @@ export class ListMedicalRecordComponent implements OnInit {
 
   onSearch(): void {
     this.filteredMedicalRecords = this.medicalRecords.filter(item => {
-      const matchesNumber = this.numberFilter
-        ? item.patientMedicalRecordNumber.toLowerCase().startsWith(this.numberFilter.toLowerCase())
-        : true;
-  
-      return matchesNumber;
+      if (item && item.patientMedicalRecordNumber) {
+        const matchesNumber = this.numberFilter
+          ? item.patientMedicalRecordNumber.toLowerCase().startsWith(this.numberFilter.toLowerCase())
+          : true;
+        return matchesNumber;
+      }
+      return false;
     });
-  
-    if (this.filteredMedicalRecords.length === 0) {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'No Results',
-        detail: 'No medical records found matching the criteria.',
-      });
-    }
   }
+  
   
   
   showAllergies(allergyIds: string[]) {

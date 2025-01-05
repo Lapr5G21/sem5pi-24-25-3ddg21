@@ -458,5 +458,54 @@ public async Task<AppointmentDto> UpdateAsync(UpdateAppointmentDto dto)
     };
 }
 
+    public async Task<List<AppointmentDto>> GetAppointmentsByPatient(PatientMedicalRecordNumber patientMedicalRecordNumber){
+        List<Appointment> appointments = await _repo.GetByPatientIdAsync(patientMedicalRecordNumber);
+        List<AppointmentDto> listDto = new List<AppointmentDto>();
+        foreach (var appointment in appointments)
+            {    
+                 var operationRequest = await this._operationRequestRepo.GetByIdAsync(appointment.OperationRequestId);
+
+                var operationType = await this._operationTypeRepo.GetByIdAsync(operationRequest.OperationTypeId);
+                var team = appointment.AppointmentTeam?.Select(a => new StaffDto(a.Staff)).ToList() ?? new List<StaffDto>();   
+                
+                listDto.Add(new AppointmentDto
+                {
+                    Id = appointment.Id.AsGuid(),
+                    SurgeryRoomDto = new SurgeryRoomDto
+                    {
+                        Id= appointment.Room.Id.Value,
+                        RoomType = new RoomTypeDto{Code = appointment.Room.RoomType.Id.Value, Designation = appointment.Room.RoomType.Designation.Value, Description = appointment.Room.RoomType.Description?.Value, IsSuitableForSurgery = appointment.Room.RoomType.SurgerySuitability.IsSuitableForSurgery},
+                        RoomCapacity = appointment.Room.RoomCapacity.Capacity,
+                        Status = appointment.Room.Status.ToString(),
+                        MaintenanceSlots = appointment.Room.MaintenanceSlots.MaintenanceSlots,
+                        Equipment = appointment.Room.Equipment.Equipment
+                    },
+                    OperationRequestDto = new OperationRequestWithAllDataDto
+                    {
+                        Id = operationRequest.Id.AsGuid(),
+                        DoctorId = operationRequest.StaffId.AsString(),
+                        OperationType = new OperationTypeDto
+                        {
+                            Id = operationType.Id.AsGuid(),
+                            Name = operationType.Name.Name,
+                            EstimatedDuration = operationType.EstimatedTimeDuration.Minutes,
+                            SurgeryTime = operationType.SurgeryTime.Minutes,
+                            AnesthesiaTime = operationType.AnesthesiaTime.Minutes,
+                            CleaningTime = operationType.CleaningTime.Minutes
+                        },
+                        MedicalRecordNumber = operationRequest.PatientMedicalRecordNumber.Value,
+                        Deadline = operationRequest.DeadlineDate.Value.ToString("yyyy-MM-dd"),
+                        Priority = operationRequest.PriorityLevel.ToString(),
+                        Status = operationRequest.Status.ToString()
+                    },
+                    Status = appointment.Status.ToString(),
+                    DateAndTime = appointment.Date.Date,
+                    Team = team
+                });
+            }
+
+            return listDto;
+
+        }
     }
 }

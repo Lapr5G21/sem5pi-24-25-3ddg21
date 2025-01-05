@@ -14,6 +14,10 @@ export class AppointmentService {
         return this.http.get<any[]>(`${this.apiUrl}/appointments`);
     }
 
+    getAppointmentsByPatient(id : string) : Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/appointments/patient/${id}`)
+    }
+
     saveAppointment(appointmentData: any): Observable<any> {
         const token = localStorage.getItem('access_token');
         const headers = new HttpHeaders({

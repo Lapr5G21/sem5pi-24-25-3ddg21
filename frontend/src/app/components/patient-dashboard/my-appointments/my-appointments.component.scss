@@ -1,0 +1,57 @@
+.appointments {
+    margin: 20px;
+    h2 {
+      font-size: 2em;
+      color: #000001;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  
+    .appointment-card-container {
+      margin-bottom: 20px;
+    }
+  
+    .appointment-card {
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+  
+    .appointment-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+  
+    .appointment-details {
+      font-size: 1.1em;
+      line-height: 1.6;
+      padding: 10px;
+    }
+  
+    .upcoming-status {
+      color: #17a2b8;
+      font-weight: bold;
+    }
+  
+    .ongoing-status {
+      color: #ffc107;
+      font-weight: bold;
+    }
+  
+    .done-status {
+      color: #a72828;
+      font-weight: bold;
+    }
+  
+    .p-footer {
+      text-align: center;
+      padding: 10px;
+    }
+  
+    .overlay-content {
+      padding: 20px;
+      font-size: 1.1em;
+    }
+  }
+  
