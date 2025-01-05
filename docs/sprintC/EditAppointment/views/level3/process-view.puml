@@ -1,0 +1,105 @@
+@startuml EditAppointment(level3)
+autonumber
+skinparam DefaultTextAlignment center
+
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+
+participant CTRL as "AppointmentsController" <<component (C4)>>
+participant AppointmentService as "AppointmentService" <<component (C4)>>
+participant AppointmentRepo as "AppointmentRepo" <<persistence>>
+participant AppointmentStaffRepo as "AppointmentStaffRepo" <<persistence>>
+participant Appointment as "Appointment" <<domain>>
+activate Doctor
+
+    Doctor -> ComponentUI : asks to update an appointment
+    activate ComponentUI
+
+        ComponentUI --> Doctor : asks to update data
+    
+    deactivate ComponentUI
+
+    Doctor -> ComponentUI : update data
+
+    activate ComponentUI
+
+        ComponentUI -> Component : update appointment
+        activate Component
+
+            Component -> Model** : create
+
+            Component -> Service : update appointment
+            activate Service
+
+                Service -> HTTP : put('/appointments/{id}')
+
+                activate HTTP
+                    HTTP -> CTRL : PUT /appointments/{id}
+                    activate CTRL
+
+                    CTRL -> AppointmentService : updateAsync(updateAppointmentDto)
+                    
+                    activate AppointmentService 
+
+                    AppointmentService -> AppointmentRepo : getByIdAsync(updateAppointmentDto.id)
+
+                    activate AppointmentRepo 
+
+                    AppointmentRepo --> AppointmentService : appointment
+
+                    deactivate AppointmentRepo
+
+                    AppointmentService -> Appointment : ChangeSurgeryRoomId(updateAppointmentDto.SurgeryRoomId)
+                    AppointmentService -> Appointment : ChangeDate(updateAppointmentDto.Date)
+
+                    AppointmentService -> AppointmentStaffRepo : getStaffsByAppointmentId(appointment.Id)
+                    activate AppointmentStaffRepo
+                    AppointmentStaffRepo --> AppointmentService : appointmentStaffList
+                    deactivate AppointmentStaffRepo
+
+                    ' Process each AppointmentStaff
+                    loop for each appointmentStaff in appointmentStaffList
+                        AppointmentService -> AppointmentStaffRepo : update or remove (appointmentStaff)
+                        activate AppointmentStaffRepo
+                        AppointmentStaffRepo --> AppointmentService : updated or removed
+                        deactivate AppointmentStaffRepo
+                    end
+
+
+                    AppointmentService -> AppointmentRepo : save(appointment)
+
+                    activate AppointmentRepo 
+
+                    AppointmentRepo --> AppointmentService : appointment
+
+                    deactivate AppointmentRepo
+
+                    AppointmentService -> AppointmentService : toDto(appointment)
+
+                    AppointmentService --> CTRL : appointmentDto
+                    deactivate AppointmentService
+
+                    CTRL --> HTTP : 200 (appointmentDto)
+
+                    deactivate CTRL
+                                        
+                    HTTP --> Service : appointmentDto
+
+                deactivate HTTP
+
+                Service --> Component : appointmentDto
+            deactivate Service
+
+            Component --> ComponentUI : appointmentDto
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows updated data
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml
