@@ -273,53 +273,6 @@ export default class HospitalModel {
         return null; // Retorne null se nenhuma sala foi encontrada
     }
 
-
-    moveCameraAndSpotlight(camera, spotlight, newPosition, newTarget, duration = 2000) {
-        if (!camera || !spotlight || !newPosition || !newTarget) {
-            console.error('Invalid parameters passed to moveCameraAndSpotlight');
-            return;
-        }
-
-        const cameraStart = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
-        const cameraEnd = { x: newPosition.x, y: newPosition.y, z: newPosition.z };
-
-        const spotlightStart = { x: spotlight.position.x, y: spotlight.position.y, z: spotlight.position.z };
-        const spotlightEnd = { x: newTarget.x, y: newTarget.y, z: newTarget.z };
-
-        new TWEEN.Tween(cameraStart)
-            .to(cameraEnd, duration)
-            .easing(TWEEN.Easing.Quadratic.InOut)
-            .onUpdate(() => {
-                camera.position.set(cameraStart.x, cameraStart.y, cameraStart.z);
-            })
-            .start();
-
-        new TWEEN.Tween(spotlightStart)
-            .to(spotlightEnd, duration)
-            .easing(TWEEN.Easing.Quadratic.InOut)
-            .onUpdate(() => {
-                spotlight.position.set(spotlightStart.x, spotlightStart.y, spotlightStart.z);
-            })
-            .start();
-    }
-
-    onRoomSelect(newRoomPosition, newRoomTarget) {
-        const camera = this.activeViewCamera; // Supondo que você tenha uma referência à câmera ativa
-        const spotlight = this.spotlight; // Supondo que você tenha uma referência ao holofote
-
-        if (!camera || !spotlight) {
-            console.error('Camera or spotlight is not defined');
-            return;
-        }
-
-        if (!newRoomPosition || !newRoomTarget) {
-            console.error('newRoomPosition or newRoomTarget is not defined');
-            return;
-        }
-
-        this.moveCameraAndSpotlight(camera, spotlight, newRoomPosition, newRoomTarget);
-    }
-
     render() {
         requestAnimationFrame(() => this.render());
 

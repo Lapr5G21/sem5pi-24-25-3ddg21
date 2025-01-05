@@ -227,6 +227,7 @@ public async Task<bool> IsStaffAvailableAsync(StaffId staffId, DateTime startTim
 
         if (appointment.Date.Date < endTime && appointmentEndTime > startTime)
         {
+            Console.WriteLine(appointmentStaff.Staff);
             return false; // Conflito com outro compromisso
         }
     }

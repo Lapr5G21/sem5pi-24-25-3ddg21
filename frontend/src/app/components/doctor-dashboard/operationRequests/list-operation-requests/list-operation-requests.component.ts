@@ -93,7 +93,7 @@ export class ListOperationRequestsComponent implements OnInit {
   SurgeryRoomId: string = '';
   OperationRequestId: string = ''; // Variável para armazenar o ID do request selecionado
   Date: string = '';
-  TeamIds: { label: string; value: string }[] = [];
+  TeamIds: string[] = [];
   AuxiliarDate: Date | null = null;
 
   isSurgeryRoomIdValid: boolean = true;
@@ -398,16 +398,16 @@ export class ListOperationRequestsComponent implements OnInit {
               const formattedDate = this.AuxiliarDate
               ? new Date(this.AuxiliarDate).toISOString().slice(0, 19)
               : '';
+              console.log(this.TeamIds);
+              const teamIdValues: string[] = this.TeamIds;  
 
-              // Extrair apenas os valores (IDs) dos membros da equipe
-              const formattedTeamIds = this.TeamIds.map((member) => member.value);
+              console.log(teamIdValues);
 
-                    
                 const appointment = new CreatingAppointmentDto(
                 this.SurgeryRoomId,
                 this.OperationRequestId,
                 formattedDate,
-                formattedTeamIds,
+                teamIdValues,
             );
     
             console.log('Payload:', JSON.stringify(appointment));

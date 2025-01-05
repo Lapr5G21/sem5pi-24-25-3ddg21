@@ -14,62 +14,62 @@ import { UpdateAppointmentDto } from '../../../../domain/appointment-model';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DataViewModule } from 'primeng/dataview';
 
-
-
 @Component({
-    selector: 'list-appointments',
-    templateUrl: './list-appointments.component.html',
-    styleUrls: ['./list-appointments.component.scss'],
-    standalone: true,
-    imports: [
-        TableModule,
-        DialogModule,
-        ButtonModule,
-        CommonModule,
-        FormsModule,
-        ToastModule,
-        TagModule,
-        MultiSelectModule,
-        DataViewModule
-    ],
-    providers: [MessageService, ConfirmationService]
+  selector: 'list-appointments',
+  templateUrl: './list-appointments.component.html',
+  styleUrls: ['./list-appointments.component.scss'],
+  standalone: true,
+  imports: [
+    TableModule,
+    DialogModule,
+    ButtonModule,
+    CommonModule,
+    FormsModule,
+    ToastModule,
+    TagModule,
+    MultiSelectModule,
+    DataViewModule
+  ],
+  providers: [MessageService, ConfirmationService]
 })
 export class ListAppointmentsComponent implements OnInit {
-    appointments: any[] = []; // Lista de appointments
-    loading: boolean = false; // Indicador de carregamento
+  appointments: any[] = []; // Lista de appointments
+  loading: boolean = false; // Indicador de carregamento
 
-    editDialogVisible: boolean = false;
-    selectedAppointment: any = {}; //Appointment Selecionado
-    teamOptions: { label: string; value: string }[] = []; // Lista de opções para TeamIds
-    doctors: Map<string, any> = new Map();
+  editDialogVisible: boolean = false;
+  selectedAppointment: any = { surgeryRoomDto: {} }; // Inicializando surgeryRoomDto
+  teamOptions: { label: string; value: string }[] = []; // Lista de opções para TeamIds
+  selectedTeamMembers: any[] = []; // Lista de membros selecionados
+  doctors: Map<string, any> = new Map();
 
+  constructor(
+    private appointmentService: AppointmentService, 
+    private staffService: StaffService, 
+    private messageService: MessageService
+  ) {}
 
+  ngOnInit(): void {
+    console.log('ngOnInit called');
+    this.loadAppointments(); // Carregar os appointments ao inicializar o componente
+  }
 
-    constructor(private appointmentService: AppointmentService, private staffService : StaffService, private messageService : MessageService
-    ) {}
+  // Carrega os appointments
+  loadAppointments(): void {
+    console.log('loadAppointments called');
+    this.loading = true;
+    this.appointmentService.getAppointments().subscribe(
+      (appointments) => {
+        this.appointments = appointments;
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error loading appointments:', error);
+        this.loading = false;
+      }
+    );
+  }
 
-    ngOnInit(): void {
-      console.log('ngOnInit called');
-        this.loadAppointments(); // Carregar os appointments ao inicializar o componente
-    }
-
-    // Carrega os appointments
-    loadAppointments(): void {
-      console.log('loadAppointments called');
-        this.loading = true;
-        this.appointmentService.getAppointments().subscribe(
-            (appointments) => {
-                this.appointments = appointments;
-                this.loading = false;
-            },
-            (error) => {
-                console.error('Error loading appointments:', error);
-                this.loading = false;
-            }
-        );
-    }
-
-              // Método para carregar os staffs
+  // Método para carregar os staffs
   loadStaffs(): void {
     this.teamOptions = Array.from(this.doctors.entries()).map(([key, value]) => ({
       label: value,
@@ -78,12 +78,27 @@ export class ListAppointmentsComponent implements OnInit {
     console.log('Team Options:', this.teamOptions);
   }
 
+  // Carrega os médicos
   loadDoctors() {
     this.staffService.getStaffs().subscribe(
       (doctors) => {
-        doctors.forEach(doctor => {
-          this.doctors.set(doctor.staffId, doctor.staffFullName);
-        });
+        // Verifica se a resposta é um array
+        if (Array.isArray(doctors)) {
+          // Itera sobre cada médico e mapeia as informações no Map
+          doctors.forEach(doctor => {
+            if (doctor.staffId && doctor.staffFullName) {
+              // Adiciona ao Map, usando o staffId como chave e staffFullName como valor
+              this.doctors.set(doctor.staffId, doctor.staffFullName);
+              console.log(`Médico adicionado: ${doctor.staffId} - ${doctor.staffFullName}`);
+            } else {
+              console.warn('Faltando staffId ou staffFullName para o médico:', doctor);
+            }
+          });
+          // Após adicionar, você pode chamar a função para atualizar a lista de opções do team
+          this.loadStaffs();
+        } else {
+          console.error('A resposta da API não é um array válido:', doctors);
+        }
       },
       (error) => {
         console.error('Erro ao carregar médicos', error);
@@ -91,67 +106,65 @@ export class ListAppointmentsComponent implements OnInit {
     );
   }
 
-    // Método para editar um appointment
-    editAppointment(appointment: any): void {
-        if (appointment) {
-            console.log('Selected appointment for editing:', appointment);
-            this.loadDoctors();
-            this.loadStaffs();
-            this.selectedAppointment = { ...appointment }; // Passa o appointment selecionado
-            this.editDialogVisible = true; // Exibe o diálogo
-          } else {
-            console.error('No appointment selected!');
-          }
-        }
-        
-  
-      closeEditDialog() {
-          this.editDialogVisible = false; // Fecha o diálogo
-      }
+  // Método para editar um appointment
+  editAppointment(appointment: any): void {
+    if (appointment) {
+      console.log('Selected appointment for editing:', appointment);
+      this.loadDoctors();
+      console.log(this.doctors);
+      console.table(Array.from(this.doctors.entries()));  // Exibe os dados de forma tabular
+      this.loadStaffs();
+      this.selectedAppointment = { ...appointment }; // Passa o appointment selecionado
+      console.log(this.selectedAppointment);
+      this.selectedTeamMembers = this.selectedAppointment.team || []; // Preenche os membros selecionados
+      this.editDialogVisible = true; // Exibe o diálogo
+    } else {
+      console.error('No appointment selected!');
+    }
+  }
 
+  closeEditDialog() {
+    this.editDialogVisible = false; // Fecha o diálogo
+  }
 
-      updateAppointment(selectedAppointment: any) {
-        console.log('Saving appointment info:', selectedAppointment);
-    
-            // Converte a lista de objetos `team` para apenas os `staffId`
-            const formattedTeamIds = selectedAppointment.team.map((member: any) => {
-                if (member.userId) {
-                    return member.userId.replace('@healthcare.com', '');
-                }
-                console.warn('Missing userId for team member:', member);
-                return null; // ou você pode lançar um erro ou tratar como preferir
-            });       
-        
-            this.appointmentService.updateAppointment(selectedAppointment, formattedTeamIds).subscribe({
-          next: (response) => {
-            console.log('Appointment info successfully updated:', response);
-            
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Appointment info successfully updated!',
-            });
-            
-            this.editDialogVisible = false; 
-          },
-          error: (error) => {
-            console.error('Error updating appointment info:', error);
-            
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to update appointment information.',
-            });
-          },
-          complete: () => {
-            console.log('Appointment update process completed.');
-            this.loadAppointments();
+  // Método para atualizar o appointment
+  updateAppointment(selectedAppointment: any) {
+    console.log('Saving appointment info:', selectedAppointment);
 
-          }
+    // Converte a lista de membros selecionados para apenas os `staffId`
+    const formattedTeamIds = this.selectedTeamMembers.map((member: any) => {
+      console.log(member);
+      return member.staffId; // Aqui estamos assumindo que a lista contém apenas `staffId`
+    });
+
+    console.log('Formatted Team Ids:', formattedTeamIds); // Exibe os IDs formatados
+
+    this.appointmentService.updateAppointment(selectedAppointment, formattedTeamIds).subscribe({
+      next: (response) => {
+        console.log('Appointment info successfully updated:', response);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Appointment info successfully updated!',
         });
+        this.editDialogVisible = false;
+      },
+      error: (error) => {
+        console.error('Error updating appointment info:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update appointment information.',
+        });
+      },
+      complete: () => {
+        console.log('Appointment update process completed.');
+        this.loadAppointments();
       }
+    });
+  }
 
-    logData(data: any): void {
-      console.log(data);
+  logData(data: any): void {
+    console.log(data);
   }
 }

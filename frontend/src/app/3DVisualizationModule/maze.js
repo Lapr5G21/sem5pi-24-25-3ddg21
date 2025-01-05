@@ -395,13 +395,13 @@ export default class Maze {
         
         this.spotlight.target.position.set(position.x, position.y, position.z); 
         
-        this.spotlight.color.set(0xADD8E6); // Cor amarela
+        this.spotlight.color.set(0xADD8E6); 
         
-        this.spotlight.intensity = 20; // Ajuste a intensidade conforme necessário
+        this.spotlight.intensity = 20; 
 
-        this.spotlight.angle = Math.PI / 6; // Ângulo de 30 graus, você pode ajustar esse valor
+        this.spotlight.angle = Math.PI / 6; 
 
-        this.spotlight.distance = 10; // Ajuste a distância, por exemplo, 10 unidades
+        this.spotlight.distance = 10;
     
     
         
@@ -425,7 +425,6 @@ export default class Maze {
     
 
     updateOverlayContent(data) {
-        console.log(data);
         const overlayContent = document.getElementById("overlay-content");
         let contentHTML = "";
     
@@ -495,12 +494,9 @@ export default class Maze {
             else if (clickedObject.name.includes("Patient")) {
                 const appointmentResponse = await fetch(`https://localhost:5001/api/hospitalModel/currentAppointment/${surgeryRoomId}`);
                 const appointmentData = await appointmentResponse.json();
-                console.log(appointmentData);
-                console.log(appointmentData.operationRequestDto.medicalRecordNumber);
                 const patientData = await fetch(`https://localhost:5001/api/patients/${appointmentData.operationRequestDto.medicalRecordNumber}`);
                 const patientJson = await patientData.json();
                 appointmentData.patientName = patientJson.fullName;
-                console.log(appointmentData.patientName);
                 this.updateOverlayContent(appointmentData);
             }
         } catch (error) {
