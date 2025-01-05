@@ -1,0 +1,82 @@
+@startuml AddRoomType(level3)
+autonumber
+skinparam DefaultTextAlignment center
+actor Admin as "Admin"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+participant RoomTypesController as "RoomTypesController" <<component (C4)>>
+participant RoomTypeService as "RoomTypeService" <<component (C4)>>
+participant RoomType as "RoomType" <<domain>>
+participant RoomTypeRepo as "Room Type Repository" <<persistence>>
+
+activate Admin
+
+    Admin -> ComponentUI : asks to add new room type
+    activate ComponentUI
+
+        ComponentUI --> Admin : asks to input data
+
+    deactivate ComponentUI
+
+    Admin -> ComponentUI : input data
+    
+    activate ComponentUI
+    
+        ComponentUI -> Component : add new room type
+        activate Component
+
+            Component -> Model** : create
+            
+            Component -> Service : add new room type
+            activate Service
+
+                Service -> HTTP : post('api/roomTypes')
+
+                activate HTTP
+                    HTTP -> RoomTypesController : POST /roomTypes
+
+                    activate RoomTypesController
+
+                    RoomTypesController -> RoomTypeService : createRoomType(creatingRoomTypeDto)
+
+                    activate RoomTypeService 
+
+                    RoomTypeService -> RoomType : create(creatingRoomTypeDto.Code, creatingRoomTypeDto.Designation, creatingRoomTypeDto.Description, creatingRoomTypeDto.IsSuitableForSurgery)
+
+                    RoomTypeService -> RoomTypeRepo : save(roomType)
+
+                    activate RoomTypeRepo
+
+                    RoomTypeRepo --> RoomTypeService : roomType
+
+                    deactivate RoomTypeRepo
+
+                    RoomTypeService -> RoomTypeService : toDto(roomType)
+
+                    RoomTypeService --> RoomTypesController : roomTypeDto
+
+                    deactivate RoomTypeService
+
+                    RoomTypesController --> HTTP : 201 (roomType)
+
+                    deactivate RoomTypesController
+
+                    HTTP --> Service : roomType
+
+                deactivate HTTP
+
+                Service --> Component : roomType
+            deactivate Service
+
+            Component --> ComponentUI : roomType
+        deactivate Component
+
+    Admin <-- ComponentUI : shows success message
+    deactivate ComponentUI
+
+deactivate Admin
+
+@enduml

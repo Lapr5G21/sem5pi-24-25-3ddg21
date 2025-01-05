@@ -1,0 +1,25 @@
+@startuml AddRoomType(level2)
+autonumber
+
+actor "Admin" as Admin
+participant Frontend as "Frontend" <<system (C4)>>
+participant Backend as "BackendManagement" <<system (C4)>>
+
+activate Admin
+    Admin -> Frontend : asks to add a new room type
+    activate Frontend
+        Frontend --> Admin : asks to insert the details of the room type
+    
+    deactivate Frontend
+    Admin -> Frontend : inserts the details
+    activate Frontend
+    
+        Frontend-> Backend : POST /roomTypes
+        activate Backend
+            Frontend <-- Backend : 200 OK
+        deactivate Backend
+    Frontend --> Admin : displays confirmation message that the room type was added
+    
+    deactivate Frontend
+    deactivate Admin
+@enduml
