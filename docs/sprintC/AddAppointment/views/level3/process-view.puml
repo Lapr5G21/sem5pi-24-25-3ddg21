@@ -1,0 +1,82 @@
+@startuml AddAppointment(level3)
+autonumber
+skinparam DefaultTextAlignment center
+actor Doctor as "Doctor"
+participant ComponentUI as "UI Component" <<component (C4)>>
+participant Component as "Component" <<component (C4)>>
+participant Model as "Model" <<component (C4)>>
+participant Service as "Service" <<component (C4)>>
+participant HTTP as "HTTP" <<component (C4)>>
+participant AppointmentsController as "AppointmentsController" <<component (C4)>>
+participant AppointmentService as "AppointmentService" <<component (C4)>>
+participant Appointment as "Appointment" <<domain>>
+participant AppointmentRepo as "Appointment Repository" <<persistence>>
+
+activate Doctor
+
+    Doctor -> ComponentUI : asks to add new appointment
+    activate ComponentUI
+
+        ComponentUI --> Doctor : asks to input data
+
+    deactivate ComponentUI
+
+    Doctor -> ComponentUI : input data
+    
+    activate ComponentUI
+    
+        ComponentUI -> Component : add new appointment
+        activate Component
+
+            Component -> Model** : create
+            
+            Component -> Service : add new appointment
+            activate Service
+
+                Service -> HTTP : post('api/appointments')
+
+                activate HTTP
+                    HTTP -> AppointmentsController : POST /appointments
+
+                    activate AppointmentsController
+
+                    AppointmentsController -> AppointmentService : createAppointment(creatingAppointmentDto)
+
+                    activate AppointmentService 
+
+                    AppointmentService -> Appointment : create(creatingAppointmentDto.SurgeryRoomId, creatingAppointmentDto.OperationRequestId, creatingAppointmentDto.Date, creatingAppointmentDto.TeamIds)
+
+                    AppointmentService -> AppointmentRepo : save(appointment)
+
+                    activate AppointmentRepo
+
+                    AppointmentRepo --> AppointmentService : appointment
+
+                    deactivate AppointmentRepo
+
+                    AppointmentService -> AppointmentService : toDto(appointment)
+
+                    AppointmentService --> AppointmentsController : appointmentDto
+
+                    deactivate AppointmentService
+
+                    AppointmentsController --> HTTP : 201 (appointment)
+
+                    deactivate AppointmentsController
+
+                    HTTP --> Service : appointment
+
+                deactivate HTTP
+
+                Service --> Component : appointment
+            deactivate Service
+
+            Component --> ComponentUI : appointment
+        deactivate Component
+
+    Doctor <-- ComponentUI : shows success message
+    deactivate ComponentUI
+
+deactivate Doctor
+
+@enduml

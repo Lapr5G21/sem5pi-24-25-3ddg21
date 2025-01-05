@@ -30,13 +30,4 @@ The global views are available in the views folder.
 
 ### LEVEL 3
 
-![level3_view](views/level3/AddAppointment(level1).png)
-
-
-## Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the development this work.*
+![level3_view](views/level3/AddAppointment(level3).png)
