@@ -117,16 +117,28 @@ namespace DDDSample1.Users
             var patient = await _patientRepository.FindByEmailAsync(new PatientEmail(user.Email.EmailString));
             if (patient == null) return false;
 
+
             var confirmationEndpoint = $"http://localhost:5000/api/users/confirm-delete/{username.UsernameString}";
 
             var emailBody = $@"
             <h2>Account Deletion Confirmation</h2>
-            <p>Hi {user.Email.EmailString},</p>
-            <p>Please click the button below to confirm the deletion of your account:</p>
+            <p>{"Hi we have a received a request to an account deletion with the following data :"},</p>
+            <p>Email:{user.Email.EmailString},</p>
+            <p>Name:{patient.FullName.FullName},</p>
+            <p>Please click the button below to confirm the deletion of this account:</p>
             <a href='{confirmationEndpoint}' style='display:inline-block; padding:10px 20px; color:white; background-color:red; text-decoration:none; border-radius:5px;'>Confirm Delete</a>
             <p>If you did not request this, please ignore this email.</p>";
 
-            await _emailService.SendEmailAsync(new List<string> { user.Email.EmailString }, "Confirm Account Deletion", emailBody);
+            await _emailService.SendEmailAsync(new List<string> { "brunofixe634@gmail.com" }, "Confirm Account Deletion", emailBody);
+
+            var emailBodyPatient = $@"
+            <h2>Account Deletion Received</h2>
+            <p>Hi {user.Email.EmailString},</p>
+            <p>Hi {patient.FullName.FullName},</p>
+            <p>We have received your request to delete the account. Within 30 days, your personal data will be removed from our systems, and we will no longer have access to this information. If you wish to cancel the deletion request during this period, please contact us immediately.</p>
+            <p>If you did not request this, please ignore this email.</p>";
+
+            await _emailService.SendEmailAsync(new List<string> { user.Email.EmailString }, "Account Deletion Received", emailBodyPatient);
 
             Console.WriteLine($"Confirmation email sent to {user.Email.EmailString}");
             return true;
