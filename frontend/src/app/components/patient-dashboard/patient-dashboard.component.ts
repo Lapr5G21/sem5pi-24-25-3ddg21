@@ -11,16 +11,16 @@ import { MyAppointmentsComponent } from './my-appointments/my-appointments.compo
 @Component({
   selector: 'app-patient-dashboard',
   standalone: true,
-  imports: [RouterOutlet,ProfileMenuComponent,MenubarComponent,PatientAccountComponent,CommonModule,MyAppointmentsComponent],
+  imports: [RouterOutlet, ProfileMenuComponent, MenubarComponent, PatientAccountComponent, CommonModule, MyAppointmentsComponent],
   templateUrl: './patient-dashboard.component.html',
-  styleUrl: './patient-dashboard.component.scss'
+  styleUrls: ['./patient-dashboard.component.scss']
 })
 export class PatientDashboardComponent {
   items: MenuItem[] = [];
-  showPatientAccountPanel : boolean = false;
-  showMyAppointments : boolean = false;
+  showPatientAccountPanel: boolean = false;
+  showMyAppointments: boolean = false;
   @ViewChild(PatientAccountComponent) PatientAccountComponentComponent!: PatientAccountComponent;
-  @ViewChild(MyAppointmentsComponent) MyAppointmentsComponent !: MyAppointmentsComponent;
+  @ViewChild(MyAppointmentsComponent) MyAppointmentsComponent!: MyAppointmentsComponent;
   @ViewChild(ProfileMenuComponent) ProfileMenuComponent!: ProfileMenuComponent;
 
   constructor(private router: Router) {}
@@ -35,7 +35,7 @@ export class PatientDashboardComponent {
         label: 'My Appointments',
         icon: 'pi pi-calendar',
         command: () => {
-          this.showMyAppointments=true;
+          this.showMyAppointments = true;
           this.showPatientAccountPanel = false;
           this.showPatientAppointments();
         }
@@ -47,9 +47,9 @@ export class PatientDashboardComponent {
           {
             label: 'My Account',
             command: () => {
-              this.showPatientAccount()
-              this.showPatientAccountPanel=true;
-              this.showMyAppointments=false;
+              this.showPatientAccount();
+              this.showPatientAccountPanel = true;
+              this.showMyAppointments = false;
             }
           },
           {
@@ -63,12 +63,12 @@ export class PatientDashboardComponent {
 
   showPatientAccount() {
     if (this.PatientAccountComponentComponent) {
-      this.PatientAccountComponentComponent.fetchPatientData(); 
+      this.PatientAccountComponentComponent.fetchPatientData();
     }
   }
 
-  showPatientAppointments(){
-    if(this.MyAppointmentsComponent){
+  showPatientAppointments() {
+    if (this.MyAppointmentsComponent) {
       this.MyAppointmentsComponent.getPatient();
     }
   }
@@ -76,5 +76,8 @@ export class PatientDashboardComponent {
   logout() {
     this.ProfileMenuComponent.logout();
   }
-}
 
+  downloadMedicalRecord() {
+    
+  }
+}

@@ -147,8 +147,8 @@ export class CreateMedicalRecordComponent {
     // Montar o objeto do registro médico com valores válidos
     const medicalRecord = {
         patientMedicalRecordNumber: this.selectedPatient.value,
-        allergiesId: this.selectedAllergiesId, // Se não houver alergias, será um array vazio
-        medicalConditionsId: this.selectedMedicalConditionsId, // Se não houver condições médicas, será um array vazio
+        allergiesId: allergiesId, // Se não houver alergias, será um array vazio
+        medicalConditionsId: medicalConditionsId, // Se não houver condições médicas, será um array vazio
         notations: this.notations || '' // Garantir que as anotações não sejam undefined
     };
 
